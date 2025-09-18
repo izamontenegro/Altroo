@@ -1,0 +1,48 @@
+# Xcode
+DerivedData/
+build/
+*.xcworkspace
+!default.xcworkspace
+xcuserdata/
+
+# iOS App Specific
+*.ipa
+*.dSYM.zip
+*.dSYM
+
+# Swift Package Manager
+.swiftpm/
+.build/
+
+# CocoaPods
+Pods/
+Podfile.lock
+
+# Carthage
+Carthage/Build/
+
+# Fastlane
+fastlane/report.xml
+fastlane/Preview.html
+fastlane/screenshots
+fastlane/test_output
+
+# User-specific files
+*.xcuserstate
+*.moved-aside
+*.hmap
+*.ipa
+
+# App sandbox files
+*.app
+
+# macOS files
+.DS_Store
+
+# Logs
+*.log
+
+# Temporary files
+*.swp
+*.lock
+*.tmp
