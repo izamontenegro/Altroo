@@ -8,6 +8,7 @@
 
 /* Begin PBXBuildFile section */
 		B61A785E2E818D7A00BC204C /* Gemfile in Resources */ = {isa = PBXBuildFile; fileRef = B61A785D2E818D7A00BC204C /* Gemfile */; };
+		B61A78732E81C5B600BC204C /* .ruby-version in Resources */ = {isa = PBXBuildFile; fileRef = B61A78722E81C5B600BC204C /* .ruby-version */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -27,6 +28,7 @@
 		B61A78602E818E9800BC204C /* Fastfile */ = {isa = PBXFileReference; lastKnownFileType = text; path = Fastfile; sourceTree = "<group>"; };
 		B61A78612E818EA300BC204C /* Scanfile */ = {isa = PBXFileReference; lastKnownFileType = text; path = Scanfile; sourceTree = "<group>"; };
 		B61A78662E81928A00BC204C /* AltrooTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = AltrooTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
+		B61A78722E81C5B600BC204C /* .ruby-version */ = {isa = PBXFileReference; lastKnownFileType = text; path = ".ruby-version"; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFileSystemSynchronizedBuildFileExceptionSet section */
@@ -76,6 +78,7 @@
 		367EC4862E7CB1AA008B22D1 = {
 			isa = PBXGroup;
 			children = (
+				B61A78722E81C5B600BC204C /* .ruby-version */,
 				B61A785F2E818E8E00BC204C /* Fastlane */,
 				B61A785A2E818C5600BC204C /* .github */,
 				367EC4912E7CB1AA008B22D1 /* Altroo */,
@@ -212,6 +215,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				B61A785E2E818D7A00BC204C /* Gemfile in Resources */,
+				B61A78732E81C5B600BC204C /* .ruby-version in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
