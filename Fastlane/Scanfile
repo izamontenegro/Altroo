@@ -3,8 +3,8 @@
 
 project "Altroo.xcodeproj"
 scheme "Altroo"
-sdk "iphonesimulator"
-device "iPhone 14 (16.0)"
+device "iPhone SE (3rd generation)"
+sdk "iphonesimulator16.4"
 code_coverage true
 xcargs '-parallelizeTargets'
 prelaunch_simulator true
