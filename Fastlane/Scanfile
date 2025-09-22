@@ -1,7 +1,7 @@
 # For more information about this configuration visit
 # https://github.com/fastlane/scan#scanfile
 
-workspace "Altroo.xcodeproj/project.xcworkspace"
+project "Altroo.xcodeproj"
 scheme "Altroo"
 sdk "iphonesimulator"
 device "iPhone 14 (16.0)"
