@@ -6,8 +6,16 @@
 	objectVersion = 77;
 	objects = {
 
+/* Begin PBXBuildFile section */
+		B61A785E2E818D7A00BC204C /* Gemfile in Resources */ = {isa = PBXBuildFile; fileRef = B61A785D2E818D7A00BC204C /* Gemfile */; };
+/* End PBXBuildFile section */
+
 /* Begin PBXFileReference section */
 		367EC48F2E7CB1AA008B22D1 /* Altroo.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = Altroo.app; sourceTree = BUILT_PRODUCTS_DIR; };
+		B61A785C2E818C7B00BC204C /* pullRequest.yml */ = {isa = PBXFileReference; lastKnownFileType = text.yaml; path = pullRequest.yml; sourceTree = "<group>"; };
+		B61A785D2E818D7A00BC204C /* Gemfile */ = {isa = PBXFileReference; lastKnownFileType = text; path = Gemfile; sourceTree = "<group>"; };
+		B61A78602E818E9800BC204C /* Fastfile */ = {isa = PBXFileReference; lastKnownFileType = text; path = Fastfile; sourceTree = "<group>"; };
+		B61A78612E818EA300BC204C /* Scanfile */ = {isa = PBXFileReference; lastKnownFileType = text; path = Scanfile; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFileSystemSynchronizedBuildFileExceptionSet section */
@@ -45,8 +53,11 @@
 		367EC4862E7CB1AA008B22D1 = {
 			isa = PBXGroup;
 			children = (
+				B61A785F2E818E8E00BC204C /* Fastlane */,
+				B61A785A2E818C5600BC204C /* .github */,
 				367EC4912E7CB1AA008B22D1 /* Altroo */,
 				367EC4902E7CB1AA008B22D1 /* Products */,
+				B61A785D2E818D7A00BC204C /* Gemfile */,
 			);
 			sourceTree = "<group>";
 		};
@@ -56,6 +67,31 @@
 				367EC48F2E7CB1AA008B22D1 /* Altroo.app */,
 			);
 			name = Products;
+			sourceTree = "<group>";
+		};
+		B61A785A2E818C5600BC204C /* .github */ = {
+			isa = PBXGroup;
+			children = (
+				B61A785B2E818C6300BC204C /* workflows */,
+			);
+			path = .github;
+			sourceTree = "<group>";
+		};
+		B61A785B2E818C6300BC204C /* workflows */ = {
+			isa = PBXGroup;
+			children = (
+				B61A785C2E818C7B00BC204C /* pullRequest.yml */,
+			);
+			path = workflows;
+			sourceTree = "<group>";
+		};
+		B61A785F2E818E8E00BC204C /* Fastlane */ = {
+			isa = PBXGroup;
+			children = (
+				B61A78612E818EA300BC204C /* Scanfile */,
+				B61A78602E818E9800BC204C /* Fastfile */,
+			);
+			path = Fastlane;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
@@ -122,6 +158,7 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				B61A785E2E818D7A00BC204C /* Gemfile in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
