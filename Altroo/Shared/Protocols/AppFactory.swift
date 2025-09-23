@@ -20,5 +20,4 @@ protocol AppFactory {
     func makeAddItemSheet(delegate: AddItemsSheetViewControllerDelegate) -> UIViewController
     
     func makeAddMedicine() -> UIViewController
-    
 }

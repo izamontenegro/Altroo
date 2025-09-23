@@ -18,7 +18,7 @@ final class AppCoordinator: Coordinator {
         patientService: PatientService = PatientSessionService()) {
         self.rootNavigation = rootNavigation
         self.patientService = patientService
-        self.factory = DefaultAppFactory(patientService: patientService) // <- NOVO
+        self.factory = DefaultAppFactory(patientService: patientService)
         rootNavigation.setNavigationBarHidden(true, animated: false)
     }
 

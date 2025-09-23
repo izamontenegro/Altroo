@@ -2,8 +2,9 @@
 //  PatientSessionService.swift
 //  Altroo
 //
-//  Created by Izadora de Oliveira Albuquerque Montenegro on 22/09/25.
+//  Created by Izadora de Oliveira Albuquerque Montenegro on 23/09/25.
 //
+
 
 final class PatientSessionService: PatientService {
     private var patientName: String?
