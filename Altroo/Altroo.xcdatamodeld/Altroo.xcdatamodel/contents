@@ -1,4 +1,174 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
-<model type="com.apple.IDECoreDataModeler.DataModel" documentVersion="1.0" lastSavedToolsVersion="1" systemVersion="11A491" minimumToolsVersion="Automatic" sourceLanguage="Swift" usedWithCloudKit="false" userDefinedModelVersionIdentifier="">
-    <elements/>
+<model type="com.apple.IDECoreDataModeler.DataModel" documentVersion="1.0" lastSavedToolsVersion="23605" systemVersion="24A335" minimumToolsVersion="Automatic" sourceLanguage="Swift" userDefinedModelVersionIdentifier="">
+    <entity name="BasicNeeds" representedClassName="BasicNeeds" syncable="YES" codeGenerationType="class">
+        <relationship name="careRecipient" optional="YES" maxCount="1" deletionRule="Nullify" destinationEntity="CareRecipient" inverseName="basicNeeds" inverseEntity="CareRecipient"/>
+        <relationship name="feeding" optional="YES" toMany="YES" deletionRule="Nullify" destinationEntity="FeedingRecord" inverseName="basicNeeds" inverseEntity="FeedingRecord"/>
+        <relationship name="hydration" optional="YES" toMany="YES" deletionRule="Nullify" destinationEntity="HydrationRecord" inverseName="basicNeeds" inverseEntity="HydrationRecord"/>
+        <relationship name="stool" optional="YES" toMany="YES" deletionRule="Nullify" destinationEntity="StoolRecord" inverseName="basicNeeds" inverseEntity="StoolRecord"/>
+        <relationship name="urine" optional="YES" toMany="YES" deletionRule="Nullify" destinationEntity="UrineRecord" inverseName="basicNeeds" inverseEntity="UrineRecord"/>
+    </entity>
+    <entity name="CareRecipient" representedClassName="CareRecipient" syncable="YES" codeGenerationType="class">
+        <relationship name="basicNeeds" optional="YES" maxCount="1" deletionRule="Nullify" destinationEntity="BasicNeeds" inverseName="careRecipient" inverseEntity="BasicNeeds"/>
+        <relationship name="events" optional="YES" toMany="YES" deletionRule="Nullify" destinationEntity="Event" inverseName="careRecipient" inverseEntity="Event"/>
+        <relationship name="healthProblems" optional="YES" maxCount="1" deletionRule="Nullify" destinationEntity="HealthProblems" inverseName="careRecipient" inverseEntity="HealthProblems"/>
+        <relationship name="mentalState" optional="YES" maxCount="1" deletionRule="Nullify" destinationEntity="MentalState" inverseName="careRecipient" inverseEntity="MentalState"/>
+        <relationship name="personalCare" optional="YES" maxCount="1" deletionRule="Nullify" destinationEntity="PersonalCare" inverseName="careRecipient" inverseEntity="PersonalCare"/>
+        <relationship name="personalData" optional="YES" maxCount="1" deletionRule="Nullify" destinationEntity="PersonalData" inverseName="careRecipient" inverseEntity="PersonalData"/>
+        <relationship name="physicalState" optional="YES" maxCount="1" deletionRule="Nullify" destinationEntity="PhysicalState" inverseName="careRecipient" inverseEntity="PhysicalState"/>
+        <relationship name="routineActivities" optional="YES" maxCount="1" deletionRule="Nullify" destinationEntity="RoutineActivities" inverseName="careRecipient" inverseEntity="RoutineActivities"/>
+        <relationship name="symptoms" optional="YES" toMany="YES" deletionRule="Nullify" destinationEntity="Symptom" inverseName="careRecipient" inverseEntity="Symptom"/>
+        <relationship name="user" optional="YES" toMany="YES" deletionRule="Nullify" destinationEntity="User" inverseName="careRecipient" inverseEntity="User"/>
+    </entity>
+    <entity name="Contact" representedClassName="Contact" syncable="YES" codeGenerationType="class">
+        <attribute name="contactDescription" optional="YES" attributeType="String"/>
+        <attribute name="contactMethod" optional="YES" attributeType="String"/>
+        <attribute name="name" optional="YES" attributeType="String"/>
+        <relationship name="personalData" optional="YES" maxCount="1" deletionRule="Nullify" destinationEntity="PersonalData" inverseName="contacts" inverseEntity="PersonalData"/>
+    </entity>
+    <entity name="Disease" representedClassName="Disease" syncable="YES" codeGenerationType="class">
+        <attribute name="name" optional="YES" attributeType="String"/>
+        <relationship name="healthProblems" optional="YES" maxCount="1" deletionRule="Nullify" destinationEntity="HealthProblems" inverseName="diseases" inverseEntity="HealthProblems"/>
+        <relationship name="relatedMedications" optional="YES" toMany="YES" deletionRule="Nullify" destinationEntity="Medication" inverseName="disease" inverseEntity="Medication"/>
+        <relationship name="relatedTasks" optional="YES" toMany="YES" deletionRule="Nullify" destinationEntity="Task" inverseName="disease" inverseEntity="Task"/>
+    </entity>
+    <entity name="Dose" representedClassName="Dose" syncable="YES" codeGenerationType="class">
+        <attribute name="completionDate" optional="YES" attributeType="Date" usesScalarValueType="NO"/>
+        <attribute name="idealDate" optional="YES" attributeType="Date" usesScalarValueType="NO"/>
+        <relationship name="medication" optional="YES" maxCount="1" deletionRule="Nullify" destinationEntity="Medication" inverseName="doses" inverseEntity="Medication"/>
+    </entity>
+    <entity name="Event" representedClassName="Event" syncable="YES" codeGenerationType="class">
+        <attribute name="category" optional="YES" attributeType="String"/>
+        <attribute name="endDate" optional="YES" attributeType="Date" usesScalarValueType="NO"/>
+        <attribute name="endTime" optional="YES" attributeType="Date" usesScalarValueType="NO"/>
+        <attribute name="location" optional="YES" attributeType="String"/>
+        <attribute name="name" optional="YES" attributeType="String"/>
+        <attribute name="note" optional="YES" attributeType="String"/>
+        <attribute name="startDate" optional="YES" attributeType="Date" usesScalarValueType="NO"/>
+        <attribute name="startTime" optional="YES" attributeType="Date" usesScalarValueType="NO"/>
+        <relationship name="careRecipient" optional="YES" maxCount="1" deletionRule="Nullify" destinationEntity="CareRecipient" inverseName="events" inverseEntity="CareRecipient"/>
+        <relationship name="task" optional="YES" maxCount="1" deletionRule="Nullify" destinationEntity="Task" inverseName="event" inverseEntity="Task"/>
+    </entity>
+    <entity name="FeedingRecord" representedClassName="FeedingRecord" syncable="YES" codeGenerationType="class">
+        <attribute name="behavior" optional="YES" attributeType="String"/>
+        <attribute name="date" optional="YES" attributeType="Date" usesScalarValueType="NO"/>
+        <attribute name="feedingRecordDescription" optional="YES" attributeType="String"/>
+        <attribute name="period" optional="YES" attributeType="String"/>
+        <attribute name="photo" optional="YES" attributeType="String"/>
+        <relationship name="basicNeeds" optional="YES" maxCount="1" deletionRule="Nullify" destinationEntity="BasicNeeds" inverseName="feeding" inverseEntity="BasicNeeds"/>
+    </entity>
+    <entity name="HealthProblems" representedClassName="HealthProblems" syncable="YES" codeGenerationType="class">
+        <attribute name="allergies" optional="YES" attributeType="Transformable" valueTransformerName="[String]"/>
+        <attribute name="observation" optional="YES" attributeType="String"/>
+        <attribute name="surgery" optional="YES" attributeType="Transformable" valueTransformerName="[String]"/>
+        <relationship name="careRecipient" optional="YES" maxCount="1" deletionRule="Nullify" destinationEntity="CareRecipient" inverseName="healthProblems" inverseEntity="CareRecipient"/>
+        <relationship name="diseases" optional="YES" toMany="YES" deletionRule="Nullify" destinationEntity="Disease" inverseName="healthProblems" inverseEntity="Disease"/>
+    </entity>
+    <entity name="HydrationRecord" representedClassName="HydrationRecord" syncable="YES" codeGenerationType="class">
+        <attribute name="behavior" optional="YES" attributeType="String"/>
+        <attribute name="date" optional="YES" attributeType="Date" usesScalarValueType="NO"/>
+        <attribute name="period" optional="YES" attributeType="String"/>
+        <attribute name="waterQuantity" optional="YES" attributeType="Double" defaultValueString="0.0" usesScalarValueType="YES"/>
+        <relationship name="basicNeeds" optional="YES" maxCount="1" deletionRule="Nullify" destinationEntity="BasicNeeds" inverseName="hydration" inverseEntity="BasicNeeds"/>
+    </entity>
+    <entity name="Measurements" representedClassName="Measurements" syncable="YES" codeGenerationType="class">
+        <attribute name="frequency" optional="YES" attributeType="String"/>
+        <attribute name="name" optional="YES" attributeType="String"/>
+        <attribute name="reminder" optional="YES" attributeType="Boolean" usesScalarValueType="YES"/>
+        <attribute name="status" optional="YES" attributeType="String"/>
+        <attribute name="time" optional="YES" attributeType="Date" usesScalarValueType="NO"/>
+        <attribute name="unit" optional="YES" attributeType="String"/>
+        <attribute name="value" optional="YES" attributeType="Double" defaultValueString="0.0" usesScalarValueType="YES"/>
+        <relationship name="routineActivities" optional="YES" maxCount="1" deletionRule="Nullify" destinationEntity="RoutineActivities" inverseName="measurements" inverseEntity="RoutineActivities"/>
+    </entity>
+    <entity name="Medication" representedClassName="Medication" syncable="YES" codeGenerationType="class">
+        <attribute name="doctor" optional="YES" attributeType="String"/>
+        <attribute name="frequency" optional="YES" attributeType="String"/>
+        <attribute name="name" optional="YES" attributeType="String"/>
+        <attribute name="note" optional="YES" attributeType="String"/>
+        <attribute name="photo" optional="YES" attributeType="String"/>
+        <attribute name="quantity" optional="YES" attributeType="Double" defaultValueString="0.0" usesScalarValueType="YES"/>
+        <attribute name="reminder" optional="YES" attributeType="Boolean" usesScalarValueType="YES"/>
+        <attribute name="time" optional="YES" attributeType="Date" usesScalarValueType="NO"/>
+        <attribute name="unit" optional="YES" attributeType="String"/>
+        <relationship name="disease" optional="YES" maxCount="1" deletionRule="Nullify" destinationEntity="Disease" inverseName="relatedMedications" inverseEntity="Disease"/>
+        <relationship name="doses" optional="YES" toMany="YES" deletionRule="Nullify" destinationEntity="Dose" inverseName="medication" inverseEntity="Dose"/>
+        <relationship name="routineActivities" optional="YES" maxCount="1" deletionRule="Nullify" destinationEntity="RoutineActivities" inverseName="medications" inverseEntity="RoutineActivities"/>
+    </entity>
+    <entity name="MentalState" representedClassName="MentalState" syncable="YES" codeGenerationType="class">
+        <attribute name="cognition" optional="YES" attributeType="String"/>
+        <attribute name="emotionalState" optional="YES" attributeType="String"/>
+        <attribute name="memory" optional="YES" attributeType="String"/>
+        <attribute name="orientation" optional="YES" attributeType="String"/>
+        <relationship name="careRecipient" optional="YES" maxCount="1" deletionRule="Nullify" destinationEntity="CareRecipient" inverseName="mentalState" inverseEntity="CareRecipient"/>
+    </entity>
+    <entity name="PersonalCare" representedClassName="PersonalCare" syncable="YES" codeGenerationType="class">
+        <attribute name="bath" optional="YES" attributeType="String"/>
+        <attribute name="equipment" optional="YES" attributeType="String"/>
+        <attribute name="excretion" optional="YES" attributeType="String"/>
+        <attribute name="feeding" optional="YES" attributeType="String"/>
+        <attribute name="hygiene" optional="YES" attributeType="String"/>
+        <relationship name="careRecipient" optional="YES" maxCount="1" deletionRule="Nullify" destinationEntity="CareRecipient" inverseName="personalCare" inverseEntity="CareRecipient"/>
+    </entity>
+    <entity name="PersonalData" representedClassName="PersonalData" syncable="YES" codeGenerationType="class">
+        <attribute name="address" optional="YES" attributeType="String"/>
+        <attribute name="dateOfBirth" optional="YES" attributeType="Date" usesScalarValueType="NO"/>
+        <attribute name="gender" optional="YES" attributeType="String"/>
+        <attribute name="height" optional="YES" attributeType="Double" defaultValueString="0.0" usesScalarValueType="YES"/>
+        <attribute name="name" optional="YES" attributeType="String"/>
+        <attribute name="weight" optional="YES" attributeType="Double" defaultValueString="0.0" usesScalarValueType="YES"/>
+        <relationship name="careRecipient" optional="YES" maxCount="1" deletionRule="Nullify" destinationEntity="CareRecipient" inverseName="personalData" inverseEntity="CareRecipient"/>
+        <relationship name="contacts" optional="YES" toMany="YES" deletionRule="Nullify" destinationEntity="Contact" inverseName="personalData" inverseEntity="Contact"/>
+    </entity>
+    <entity name="PhysicalState" representedClassName="PhysicalState" syncable="YES" codeGenerationType="class">
+        <attribute name="hearingState" optional="YES" attributeType="String"/>
+        <attribute name="mobilityState" optional="YES" attributeType="String"/>
+        <attribute name="oralHealthState" optional="YES" attributeType="String"/>
+        <attribute name="visionState" optional="YES" attributeType="String"/>
+        <relationship name="careRecipient" optional="YES" maxCount="1" deletionRule="Nullify" destinationEntity="CareRecipient" inverseName="physicalState" inverseEntity="CareRecipient"/>
+    </entity>
+    <entity name="RoutineActivities" representedClassName="RoutineActivities" syncable="YES" codeGenerationType="class">
+        <relationship name="careRecipient" optional="YES" maxCount="1" deletionRule="Nullify" destinationEntity="CareRecipient" inverseName="routineActivities" inverseEntity="CareRecipient"/>
+        <relationship name="measurements" optional="YES" toMany="YES" deletionRule="Nullify" destinationEntity="Measurements" inverseName="routineActivities" inverseEntity="Measurements"/>
+        <relationship name="medications" optional="YES" toMany="YES" deletionRule="Nullify" destinationEntity="Medication" inverseName="routineActivities" inverseEntity="Medication"/>
+        <relationship name="tasks" optional="YES" toMany="YES" deletionRule="Nullify" destinationEntity="Task" inverseName="routineActivities" inverseEntity="Task"/>
+    </entity>
+    <entity name="StoolRecord" representedClassName="StoolRecord" syncable="YES" codeGenerationType="class">
+        <attribute name="color" optional="YES" attributeType="String"/>
+        <attribute name="date" optional="YES" attributeType="Date" usesScalarValueType="NO"/>
+        <attribute name="format" optional="YES" attributeType="String"/>
+        <attribute name="pain" optional="YES" attributeType="Boolean" usesScalarValueType="YES"/>
+        <attribute name="period" optional="YES" attributeType="String"/>
+        <relationship name="basicNeeds" optional="YES" maxCount="1" deletionRule="Nullify" destinationEntity="BasicNeeds" inverseName="stool" inverseEntity="BasicNeeds"/>
+    </entity>
+    <entity name="Symptom" representedClassName="Symptom" syncable="YES" codeGenerationType="class">
+        <attribute name="date" optional="YES" attributeType="Date" usesScalarValueType="NO"/>
+        <attribute name="icon" optional="YES" attributeType="String"/>
+        <attribute name="name" optional="YES" attributeType="String"/>
+        <attribute name="symptomDescription" optional="YES" attributeType="String"/>
+        <relationship name="careRecipient" optional="YES" maxCount="1" deletionRule="Nullify" destinationEntity="CareRecipient" inverseName="symptoms" inverseEntity="CareRecipient"/>
+    </entity>
+    <entity name="Task" representedClassName="Task" syncable="YES" codeGenerationType="class">
+        <attribute name="frequency" optional="YES" attributeType="String"/>
+        <attribute name="name" optional="YES" attributeType="String"/>
+        <attribute name="note" optional="YES" attributeType="String"/>
+        <attribute name="period" optional="YES" attributeType="String"/>
+        <attribute name="reminder" optional="YES" attributeType="Boolean" usesScalarValueType="YES"/>
+        <attribute name="time" optional="YES" attributeType="Date" usesScalarValueType="NO"/>
+        <relationship name="disease" optional="YES" maxCount="1" deletionRule="Nullify" destinationEntity="Disease" inverseName="relatedTasks" inverseEntity="Disease"/>
+        <relationship name="event" optional="YES" maxCount="1" deletionRule="Nullify" destinationEntity="Event" inverseName="task" inverseEntity="Event"/>
+        <relationship name="routineActivities" optional="YES" maxCount="1" deletionRule="Nullify" destinationEntity="RoutineActivities" inverseName="tasks" inverseEntity="RoutineActivities"/>
+    </entity>
+    <entity name="UrineRecord" representedClassName="UrineRecord" syncable="YES" codeGenerationType="class">
+        <attribute name="color" optional="YES" attributeType="String"/>
+        <attribute name="date" optional="YES" attributeType="Date" usesScalarValueType="NO"/>
+        <attribute name="pain" optional="YES" attributeType="Boolean" usesScalarValueType="YES"/>
+        <attribute name="period" optional="YES" attributeType="String"/>
+        <relationship name="basicNeeds" optional="YES" maxCount="1" deletionRule="Nullify" destinationEntity="BasicNeeds" inverseName="urine" inverseEntity="BasicNeeds"/>
+    </entity>
+    <entity name="User" representedClassName="User" syncable="YES" codeGenerationType="class">
+        <attribute name="category" optional="YES" attributeType="String"/>
+        <attribute name="name" optional="YES" attributeType="String"/>
+        <attribute name="preferenceNotification" optional="YES" attributeType="String"/>
+        <relationship name="careRecipient" optional="YES" toMany="YES" deletionRule="Nullify" destinationEntity="CareRecipient" inverseName="user" inverseEntity="CareRecipient"/>
+    </entity>
 </model>
