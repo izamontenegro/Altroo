@@ -5,6 +5,8 @@
 //  Created by Raissa Parente on 23/09/25.
 //
 
+import CoreData
+
 final class CoreDataService {
     private let stack: CoreDataStack
     
@@ -12,7 +14,7 @@ final class CoreDataService {
         self.stack = stack
     }
     
-    func saveContext() {
+    func save() {
         let context = stack.context
         if context.hasChanges {
             do {
@@ -23,8 +25,8 @@ final class CoreDataService {
         }
     }
     
-    func fetchCareRecipient() -> [CareRecipient] {
-        let request: NSFetchRequest<Destination> =  CareRecipient.fetchRequest()
+    func fetchAllCareRecipients() -> [CareRecipient] {
+        let request: NSFetchRequest<CareRecipient> = CareRecipient.fetchRequest()
         do {
             return try stack.context.fetch(request)
         } catch {
@@ -33,8 +35,8 @@ final class CoreDataService {
         }
     }
     
-    func delete(_ destination: Destination) {
-        stack.context.delete(destination)
-        saveContext()
+    func delete(_ careRecipient: CareRecipient) {
+        stack.context.delete(careRecipient)
+        save()
     }
 }
