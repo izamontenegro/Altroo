@@ -42,25 +42,25 @@ final class DefaultAppFactory: AppFactory {
     
     func makeToday() -> UIViewController {
         let vc = TodayViewController()
-        vc.title = "Hoje"
+        vc.title = "Today"
         return vc
     }
 
     func makeHistory() -> UIViewController {
         let vc = HistoryViewController()
-        vc.title = "Histórico"
+        vc.title = "History"
         return vc
     }
 
     func makeAnalysis() -> UIViewController {
         let vc = AnalysisViewController()
-        vc.title = "Análise"
+        vc.title = "Analysis"
         return vc
     }
 
     func makeAddItemSheet(delegate: AddItemsSheetViewControllerDelegate) -> UIViewController {
         let vc = AddItemsSheetViewController()
-        vc.title = "Adicionar"
+        vc.title = "Add"
         vc.delegate = delegate
         return vc
     }

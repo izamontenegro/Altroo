@@ -11,7 +11,7 @@ class AddMedicineViewController: UIViewController {
 
     let viewLabel: UILabel = {
         let label = UILabel()
-        label.text = "Visualizar adicionar remedio"
+        label.text = "Add Medicine View"
         label.textAlignment = .center
         
         label.translatesAutoresizingMaskIntoConstraints = false

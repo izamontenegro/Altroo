@@ -11,7 +11,7 @@ class HistoryViewController: UIViewController {
 
     let viewLabel: UILabel = {
         let label = UILabel()
-        label.text = "Visualizar historico"
+        label.text = "History View"
         label.textAlignment = .center
         
         label.translatesAutoresizingMaskIntoConstraints = false

@@ -11,7 +11,7 @@ class TodayViewController: UIViewController {
 
     let viewLabel: UILabel = {
         let label = UILabel()
-        label.text = "Visualizar hoje"
+        label.text = "Today View"
         label.textAlignment = .center
         
         label.translatesAutoresizingMaskIntoConstraints = false

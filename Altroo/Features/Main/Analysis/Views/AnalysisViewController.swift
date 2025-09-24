@@ -11,7 +11,7 @@ class AnalysisViewController: UIViewController {
 
     let viewLabel: UILabel = {
         let label = UILabel()
-        label.text = "Visualizar analise"
+        label.text = "Analysis View"
         label.textAlignment = .center
         
         label.translatesAutoresizingMaskIntoConstraints = false
