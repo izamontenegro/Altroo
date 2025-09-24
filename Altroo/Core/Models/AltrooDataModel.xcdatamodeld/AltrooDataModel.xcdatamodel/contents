@@ -95,18 +95,18 @@
         <relationship name="routineActivities" optional="YES" maxCount="1" deletionRule="Nullify" destinationEntity="RoutineActivities" inverseName="medications" inverseEntity="RoutineActivities"/>
     </entity>
     <entity name="MentalState" representedClassName="MentalState" syncable="YES" codeGenerationType="class">
-        <attribute name="cognition" optional="YES" attributeType="String"/>
+        <attribute name="cognitionState" optional="YES" attributeType="String"/>
         <attribute name="emotionalState" optional="YES" attributeType="String"/>
-        <attribute name="memory" optional="YES" attributeType="String"/>
-        <attribute name="orientation" optional="YES" attributeType="String"/>
+        <attribute name="memoryState" optional="YES" attributeType="String"/>
+        <attribute name="orientationState" optional="YES" attributeType="String"/>
         <relationship name="careRecipient" optional="YES" maxCount="1" deletionRule="Nullify" destinationEntity="CareRecipient" inverseName="mentalState" inverseEntity="CareRecipient"/>
     </entity>
     <entity name="PersonalCare" representedClassName="PersonalCare" syncable="YES" codeGenerationType="class">
-        <attribute name="bath" optional="YES" attributeType="String"/>
-        <attribute name="equipment" optional="YES" attributeType="String"/>
-        <attribute name="excretion" optional="YES" attributeType="String"/>
-        <attribute name="feeding" optional="YES" attributeType="String"/>
-        <attribute name="hygiene" optional="YES" attributeType="String"/>
+        <attribute name="bathState" optional="YES" attributeType="String"/>
+        <attribute name="equipmentState" optional="YES" attributeType="String"/>
+        <attribute name="excretionState" optional="YES" attributeType="String"/>
+        <attribute name="feedingState" optional="YES" attributeType="String"/>
+        <attribute name="hygieneState" optional="YES" attributeType="String"/>
         <relationship name="careRecipient" optional="YES" maxCount="1" deletionRule="Nullify" destinationEntity="CareRecipient" inverseName="personalCare" inverseEntity="CareRecipient"/>
     </entity>
     <entity name="PersonalData" representedClassName="PersonalData" syncable="YES" codeGenerationType="class">
@@ -142,7 +142,6 @@
     </entity>
     <entity name="Symptom" representedClassName="Symptom" syncable="YES" codeGenerationType="class">
         <attribute name="date" optional="YES" attributeType="Date" usesScalarValueType="NO"/>
-        <attribute name="icon" optional="YES" attributeType="String"/>
         <attribute name="name" optional="YES" attributeType="String"/>
         <attribute name="symptomDescription" optional="YES" attributeType="String"/>
         <relationship name="careRecipient" optional="YES" maxCount="1" deletionRule="Nullify" destinationEntity="CareRecipient" inverseName="symptoms" inverseEntity="CareRecipient"/>
