@@ -8,9 +8,10 @@
 import CoreData
 import CloudKit
 
-final class CoreDataStack: ObservableObject {
+
+class CoreDataStack {
     static let shared = CoreDataStack()
-    private init() {}
+    init() {}
     
     lazy var persistentContainer: NSPersistentCloudKitContainer = {
         let container = NSPersistentCloudKitContainer(name: "AltrooDataModel") //.xcdatamodeld file name

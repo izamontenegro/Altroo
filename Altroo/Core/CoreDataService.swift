@@ -6,9 +6,10 @@
 //
 
 import CoreData
+import CloudKit
 
-final class CoreDataService {
-    private let stack: CoreDataStack
+class CoreDataService {
+    let stack: CoreDataStack
     
     init(stack: CoreDataStack = .shared) {
         self.stack = stack
@@ -40,3 +41,5 @@ final class CoreDataService {
         save()
     }
 }
+
+
