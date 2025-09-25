@@ -21,7 +21,7 @@ class CoreDataStack {
         }
         
         
-        //private store
+        //MARK: Private store
         let storesURL = privateStoreDescription.url?.deletingLastPathComponent()
         privateStoreDescription.url = storesURL?.appendingPathComponent("private.sqlite")
         
@@ -32,7 +32,7 @@ class CoreDataStack {
             return privateStore
         }
         
-        //shared store
+        //MARK: Shared store
         let sharedStoreURL = storesURL?.appendingPathComponent("shared.sqlite")
         guard let sharedStoreDescription = privateStoreDescription.copy() as? NSPersistentStoreDescription else {
             fatalError("Copying the private store description returned an unexpected value.")
@@ -49,7 +49,7 @@ class CoreDataStack {
         
         
         
-        //load stores
+        //MARK: Load stores
         container.loadPersistentStores { loadedStoreDescription, error in
             if let error = error as NSError? {
                 fatalError("Failed to load persistent stores: \(error)")
@@ -69,7 +69,7 @@ class CoreDataStack {
             }
         }
         
-        //context setup
+        //MARK: Context setup
         container.viewContext.mergePolicy = NSMergeByPropertyObjectTrumpMergePolicy
         container.viewContext.automaticallyMergesChangesFromParent = true
         do {
@@ -86,7 +86,7 @@ class CoreDataStack {
     }
     
     
-    //utility vars
+    //MARK: Utility vars
     var ckContainer: CKContainer {
         let storeDescription = persistentContainer.persistentStoreDescriptions.first
         guard let identifier = storeDescription?.cloudKitContainerOptions?.containerIdentifier else {

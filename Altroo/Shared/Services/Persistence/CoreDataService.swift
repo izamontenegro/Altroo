@@ -15,7 +15,7 @@ class CoreDataService {
         self.stack = stack
     }
     
-    func save() {
+    func saveContext() {
         let context = stack.context
         if context.hasChanges {
             do {
@@ -36,9 +36,9 @@ class CoreDataService {
         }
     }
     
-    func delete(_ careRecipient: CareRecipient) {
+    func deleteCareRecipient(_ careRecipient: CareRecipient) {
         stack.context.delete(careRecipient)
-        save()
+        saveContext()
     }
 }
 
