@@ -7,30 +7,22 @@
 
 import XCTest
 import CoreData
-import Altroo
+@testable import Altroo
 
 class CareRecipientTests: XCTestCase {
     
-    var container: NSPersistentContainer!
-    var context: NSManagedObjectContext { container.viewContext }
+    var coreDataStack: CoreDataTestStack!
+    var context: NSManagedObjectContext!
     
     override func setUp() {
         super.setUp()
-        container = NSPersistentContainer(name: "AltrooDataModel")
-        let description = NSPersistentStoreDescription()
-        description.type = NSInMemoryStoreType
-        container.persistentStoreDescriptions = [description]
-        
-        container.loadPersistentStores { _, error in
-            if let error = error {
-                fatalError("Unable to load store into memory: \(error)")
-            }
-        }
+        coreDataStack = CoreDataTestStack()
+        context = coreDataStack.managedObjectContext
     }
     
     override func tearDown() {
+        coreDataStack = nil
         super.tearDown()
-        container = nil
     }
     
     func test_careRecipientHasPersonalData() throws {
@@ -74,6 +66,67 @@ class CareRecipientTests: XCTestCase {
         let fetchedPersonalData = try XCTUnwrap(context.fetch(request).first)
         
         XCTAssertEqual(fetchedPersonalData.contacts?.count, 2)
+    }
+    
+    func testFullCareRecipientLifecycle() throws {
+                
+        let careRecipient = CareRecipient(context: context)
+        let personalData = PersonalData(context: context)
+        let physicalState = PhysicalState(context: context)
+        let healthProblems = HealthProblems(context: context)
+        
+        let calendar = Calendar.current
+        let components = DateComponents(year: -75)
+        let dateOfBirth = calendar.date(byAdding: components, to: Date())!
+        
+        personalData.name = "Steve Jobs"
+        personalData.dateOfBirth = dateOfBirth
+        
+        physicalState.oralHealth = .usesProsthesis
+        physicalState.mobility = .bedriddenWithMovement
+        
+        healthProblems.allergies = ["milk", "gluten"]
+
+        careRecipient.personalData = personalData
+        careRecipient.physicalState = physicalState
+        careRecipient.healthProblems = healthProblems
+        
+        try context.save()
+                
+        let fetchRequest: NSFetchRequest<CareRecipient> = CareRecipient.fetchRequest()
+        let fetchedRecipients = try context.fetch(fetchRequest)
+        
+        XCTAssertEqual(fetchedRecipients.count, 1, "Must have exactly 1 CareRecipient.")
+        
+        guard let savedRecipient = fetchedRecipients.first else {
+            XCTFail("CareRecipient not found after saving.")
+            return
+        }
+        
+        XCTAssertEqual(savedRecipient.personalData?.name, "Steve Jobs")
+        XCTAssertEqual(savedRecipient.personalData?.age, 75)
+        XCTAssertEqual(savedRecipient.physicalState?.oralHealth, .usesProsthesis)
+        XCTAssertEqual(savedRecipient.healthProblems?.allergies, ["milk", "gluten"])
+                
+        savedRecipient.physicalState?.mobility = .bedriddenWithoutMovement
+        
+        try context.save()
+        
+        let updatedRecipients = try context.fetch(fetchRequest)
+        guard let updatedRecipient = updatedRecipients.first else {
+            XCTFail("CareRecipient not found after update.")
+            return
+        }
+        
+        XCTAssertEqual(updatedRecipient.physicalState?.mobility, .bedriddenWithoutMovement)
+        
+        context.delete(updatedRecipient)
+        
+        try context.save()
+        
+        let finalRecipients = try context.fetch(fetchRequest)
+        
+        XCTAssertEqual(finalRecipients.count, 0, "The CareRecipient should have been successfully deleted.")
     }
     
 }
