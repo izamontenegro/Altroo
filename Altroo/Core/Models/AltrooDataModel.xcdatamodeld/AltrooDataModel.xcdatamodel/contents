@@ -57,9 +57,9 @@
         <relationship name="basicNeeds" optional="YES" maxCount="1" deletionRule="Nullify" destinationEntity="BasicNeeds" inverseName="feeding" inverseEntity="BasicNeeds"/>
     </entity>
     <entity name="HealthProblems" representedClassName="HealthProblems" syncable="YES" codeGenerationType="class">
-        <attribute name="allergies" optional="YES" attributeType="Transformable" valueTransformerName="NSSecureUnarchiveFromData"/>
+        <attribute name="allergies" optional="YES" attributeType="Transformable" valueTransformerName="" customClassName="[String]"/>
         <attribute name="observation" optional="YES" attributeType="String"/>
-        <attribute name="surgery" optional="YES" attributeType="Transformable" valueTransformerName="NSSecureUnarchiveFromData"/>
+        <attribute name="surgery" optional="YES" attributeType="Transformable" valueTransformerName="" customClassName="[String]"/>
         <relationship name="careRecipient" optional="YES" maxCount="1" deletionRule="Nullify" destinationEntity="CareRecipient" inverseName="healthProblems" inverseEntity="CareRecipient"/>
         <relationship name="diseases" optional="YES" toMany="YES" deletionRule="Nullify" destinationEntity="Disease" inverseName="healthProblems" inverseEntity="Disease"/>
     </entity>
