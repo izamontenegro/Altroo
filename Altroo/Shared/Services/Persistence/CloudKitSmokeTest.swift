@@ -17,5 +17,5 @@ func smokeTestCloudKit() {
     let recipient = CareRecipient(context: stack.context)
     recipient.personalData = personalData
     
-    service.saveContext()
+    service.save()
 }

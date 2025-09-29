@@ -7,6 +7,6 @@
 
 protocol DataRepository {
     func save()
-    func fetchAllCareRecipients()
+    func fetchAllCareRecipients() -> [CareRecipient]
     func deleteCareRecipient(_ careRecipient: CareRecipient)
 }

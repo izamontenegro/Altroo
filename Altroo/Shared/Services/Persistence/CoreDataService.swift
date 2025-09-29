@@ -9,6 +9,7 @@ import CoreData
 import CloudKit
 
 class CoreDataService: DataRepository {
+    
     let stack: CoreDataStack
     
     init(stack: CoreDataStack = .shared) {
@@ -38,7 +39,7 @@ class CoreDataService: DataRepository {
     
     func deleteCareRecipient(_ careRecipient: CareRecipient) {
         stack.context.delete(careRecipient)
-        saveContext()
+        save()
     }
 }
 
