@@ -8,7 +8,7 @@
 import UIKit
 
 class BasicNeedIcon: UIView {
-    enum BasicNeedType{
+    enum BasicNeedType {
         case feeding
         case hydration
         case stool
@@ -24,7 +24,6 @@ class BasicNeedIcon: UIView {
                 return "toilet.fill"
             case .urine:
                 return "toilet.fill"
-
             }
         }
     }
@@ -33,7 +32,7 @@ class BasicNeedIcon: UIView {
     var color: UIColor
 
     override init(frame: CGRect) {
-        self.basicNeed = .feeding   // default values
+        self.basicNeed = .feeding
         self.color = .systemBlue
         super.init(frame: frame)
         setupBackground()
@@ -94,17 +93,17 @@ class BasicNeedIcon: UIView {
             
             circle2.centerXAnchor.constraint(equalTo: centerXAnchor),
             circle2.centerYAnchor.constraint(equalTo: centerYAnchor),
-            circle2.widthAnchor.constraint(equalTo: circle3.widthAnchor, multiplier: 0.8),
+            circle2.widthAnchor.constraint(equalTo: circle3.widthAnchor, multiplier: 0.85),
             circle2.heightAnchor.constraint(equalTo: circle2.widthAnchor),
             
             circle1.centerXAnchor.constraint(equalTo: centerXAnchor),
             circle1.centerYAnchor.constraint(equalTo: centerYAnchor),
-            circle1.widthAnchor.constraint(equalTo: circle3.widthAnchor, multiplier: 0.6),
+            circle1.widthAnchor.constraint(equalTo: circle3.widthAnchor, multiplier: 0.65),
             circle1.heightAnchor.constraint(equalTo: circle1.widthAnchor),
             
             iconImageView.centerXAnchor.constraint(equalTo: centerXAnchor),
             iconImageView.centerYAnchor.constraint(equalTo: centerYAnchor),
-            iconImageView.widthAnchor.constraint(equalTo: circle1.widthAnchor, multiplier: 0.7),
+            iconImageView.widthAnchor.constraint(equalTo: circle1.widthAnchor, multiplier: 0.75),
             iconImageView.heightAnchor.constraint(equalTo: iconImageView.widthAnchor)
         ])
 
