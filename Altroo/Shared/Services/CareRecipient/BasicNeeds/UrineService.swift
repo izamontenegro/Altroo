@@ -15,14 +15,17 @@ protocol UrineServiceProtocol {
 
 class UrineService: UrineServiceProtocol {
     func addUrineRecord(period: PeriodEnum, date: Date, hadPain: Bool, color: String, in careRecipient: CareRecipient) {
-        let newUrineRecord = UrineRecord()
+        
+        guard let ctx = careRecipient.managedObjectContext else { return }
+        let newUrineRecord = UrineRecord(context: ctx)
+        
         newUrineRecord.color = color
         newUrineRecord.date = date
         newUrineRecord.pain = hadPain
         newUrineRecord.period = period.rawValue
         
         if let basicNeeds = careRecipient.basicNeeds {
-            var mutableUrine = basicNeeds.mutableSetValue(forKey: "urine")
+            let mutableUrine = basicNeeds.mutableSetValue(forKey: "urine")
             mutableUrine.add(newUrineRecord)
         }
     }

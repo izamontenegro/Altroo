@@ -16,7 +16,9 @@ protocol FeedingServiceProtocol {
 class FeedingService: FeedingServiceProtocol {
     func addFeedingRecord(behavior: String, Date: Date, period: PeriodEnum, feedingRecordDescription: String, photo: Data, in careRecipient: CareRecipient) {
         
-        let newFeedingRecord = FeedingRecord()
+        guard let ctx = careRecipient.managedObjectContext else { return }
+        let newFeedingRecord = FeedingRecord(context: ctx)
+        
         newFeedingRecord.feedingRecordDescription = feedingRecordDescription
         newFeedingRecord.behavior = behavior
         newFeedingRecord.date = Date

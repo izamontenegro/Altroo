@@ -15,7 +15,10 @@ protocol HydrationServiceProtocol {
 
 class HydrationService: HydrationServiceProtocol {
     func addHydrationRecord(period: PeriodEnum, date: Date, behavior: String, waterQuantity: Double, in careRecipient: CareRecipient)  {
-        let newHydrationRecord = HydrationRecord()
+        
+        guard let ctx = careRecipient.managedObjectContext else { return }
+        let newHydrationRecord = HydrationRecord(context: ctx)
+        
         newHydrationRecord.behavior = behavior
         newHydrationRecord.date = date
         newHydrationRecord.period = period.rawValue
