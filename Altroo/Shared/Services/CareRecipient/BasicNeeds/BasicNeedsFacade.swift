@@ -15,7 +15,7 @@ class BasicNeedsFacade {
     private let stoolService: StoolServiceProtocol
     private let urineService: UrineServiceProtocol
     
-    init(feedingService: FeedingService, hydrationService: HydrationService, stoolService: StoolService, urineService: UrineService, persistenceService: CoreDataService) {
+    init(feedingService: FeedingServiceProtocol, hydrationService: HydrationServiceProtocol, stoolService: StoolServiceProtocol, urineService: UrineServiceProtocol, persistenceService: CoreDataService) {
         self.feedingService = feedingService
         self.hydrationService = hydrationService
         self.stoolService = stoolService

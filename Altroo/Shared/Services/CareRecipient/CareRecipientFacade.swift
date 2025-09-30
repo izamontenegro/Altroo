@@ -1,5 +1,5 @@
 //
-//  PatientFacade.swift
+//  CareRecipientFacade.swift
 //  Altroo
 //
 //  Created by Izadora de Oliveira Albuquerque Montenegro on 29/09/25.
