@@ -94,16 +94,18 @@ class CircleView: UIView {
         outerPath.usesEvenOddFillRule = true
         
         innerShadowLayer.path = outerPath.cgPath
-        innerShadowRadius = radius * 0.3
+        innerShadowRadius = radius * 0.15
+        let widthOffset = bounds.width * -0.07
+        let heightOffset = bounds.height * -0.03
+        innerShadowOffset = CGSize(width: widthOffset, height: heightOffset)
     }
 }
 
 
 #Preview {
     let circle = CircleView()
-    circle.innerShadowColor = .black
+    circle.innerShadowColor = .blue
     circle.innerShadowOpacity = 0.9
-    circle.innerShadowRadius = 30
     
     return circle
 }
