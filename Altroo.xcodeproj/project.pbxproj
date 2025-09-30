@@ -6,8 +6,29 @@
 	objectVersion = 77;
 	objects = {
 
+/* Begin PBXBuildFile section */
+		B61A785E2E818D7A00BC204C /* Gemfile in Resources */ = {isa = PBXBuildFile; fileRef = B61A785D2E818D7A00BC204C /* Gemfile */; };
+		B61A78732E81C5B600BC204C /* .ruby-version in Resources */ = {isa = PBXBuildFile; fileRef = B61A78722E81C5B600BC204C /* .ruby-version */; };
+/* End PBXBuildFile section */
+
+/* Begin PBXContainerItemProxy section */
+		B61A786A2E81928A00BC204C /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = 367EC4872E7CB1AA008B22D1 /* Project object */;
+			proxyType = 1;
+			remoteGlobalIDString = 367EC48E2E7CB1AA008B22D1;
+			remoteInfo = Altroo;
+		};
+/* End PBXContainerItemProxy section */
+
 /* Begin PBXFileReference section */
 		367EC48F2E7CB1AA008B22D1 /* Altroo.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = Altroo.app; sourceTree = BUILT_PRODUCTS_DIR; };
+		B61A785C2E818C7B00BC204C /* pullRequest.yml */ = {isa = PBXFileReference; lastKnownFileType = text.yaml; path = pullRequest.yml; sourceTree = "<group>"; };
+		B61A785D2E818D7A00BC204C /* Gemfile */ = {isa = PBXFileReference; lastKnownFileType = text; path = Gemfile; sourceTree = "<group>"; };
+		B61A78602E818E9800BC204C /* Fastfile */ = {isa = PBXFileReference; lastKnownFileType = text; path = Fastfile; sourceTree = "<group>"; };
+		B61A78612E818EA300BC204C /* Scanfile */ = {isa = PBXFileReference; lastKnownFileType = text; path = Scanfile; sourceTree = "<group>"; };
+		B61A78662E81928A00BC204C /* AltrooTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = AltrooTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
+		B61A78722E81C5B600BC204C /* .ruby-version */ = {isa = PBXFileReference; lastKnownFileType = text; path = ".ruby-version"; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFileSystemSynchronizedBuildFileExceptionSet section */
@@ -29,10 +50,22 @@
 			path = Altroo;
 			sourceTree = "<group>";
 		};
+		B61A78672E81928A00BC204C /* AltrooTests */ = {
+			isa = PBXFileSystemSynchronizedRootGroup;
+			path = AltrooTests;
+			sourceTree = "<group>";
+		};
 /* End PBXFileSystemSynchronizedRootGroup section */
 
 /* Begin PBXFrameworksBuildPhase section */
 		367EC48C2E7CB1AA008B22D1 /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		B61A78632E81928A00BC204C /* Frameworks */ = {
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
@@ -45,8 +78,13 @@
 		367EC4862E7CB1AA008B22D1 = {
 			isa = PBXGroup;
 			children = (
+				B61A78722E81C5B600BC204C /* .ruby-version */,
+				B61A785F2E818E8E00BC204C /* Fastlane */,
+				B61A785A2E818C5600BC204C /* .github */,
 				367EC4912E7CB1AA008B22D1 /* Altroo */,
+				B61A78672E81928A00BC204C /* AltrooTests */,
 				367EC4902E7CB1AA008B22D1 /* Products */,
+				B61A785D2E818D7A00BC204C /* Gemfile */,
 			);
 			sourceTree = "<group>";
 		};
@@ -54,8 +92,34 @@
 			isa = PBXGroup;
 			children = (
 				367EC48F2E7CB1AA008B22D1 /* Altroo.app */,
+				B61A78662E81928A00BC204C /* AltrooTests.xctest */,
 			);
 			name = Products;
+			sourceTree = "<group>";
+		};
+		B61A785A2E818C5600BC204C /* .github */ = {
+			isa = PBXGroup;
+			children = (
+				B61A785B2E818C6300BC204C /* workflows */,
+			);
+			path = .github;
+			sourceTree = "<group>";
+		};
+		B61A785B2E818C6300BC204C /* workflows */ = {
+			isa = PBXGroup;
+			children = (
+				B61A785C2E818C7B00BC204C /* pullRequest.yml */,
+			);
+			path = workflows;
+			sourceTree = "<group>";
+		};
+		B61A785F2E818E8E00BC204C /* Fastlane */ = {
+			isa = PBXGroup;
+			children = (
+				B61A78612E818EA300BC204C /* Scanfile */,
+				B61A78602E818E9800BC204C /* Fastfile */,
+			);
+			path = Fastlane;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
@@ -83,6 +147,29 @@
 			productReference = 367EC48F2E7CB1AA008B22D1 /* Altroo.app */;
 			productType = "com.apple.product-type.application";
 		};
+		B61A78652E81928A00BC204C /* AltrooTests */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = B61A786C2E81928A00BC204C /* Build configuration list for PBXNativeTarget "AltrooTests" */;
+			buildPhases = (
+				B61A78622E81928A00BC204C /* Sources */,
+				B61A78632E81928A00BC204C /* Frameworks */,
+				B61A78642E81928A00BC204C /* Resources */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+				B61A786B2E81928A00BC204C /* PBXTargetDependency */,
+			);
+			fileSystemSynchronizedGroups = (
+				B61A78672E81928A00BC204C /* AltrooTests */,
+			);
+			name = AltrooTests;
+			packageProductDependencies = (
+			);
+			productName = AltrooTests;
+			productReference = B61A78662E81928A00BC204C /* AltrooTests.xctest */;
+			productType = "com.apple.product-type.bundle.unit-test";
+		};
 /* End PBXNativeTarget section */
 
 /* Begin PBXProject section */
@@ -90,11 +177,15 @@
 			isa = PBXProject;
 			attributes = {
 				BuildIndependentTargetsInParallel = 1;
-				LastSwiftUpdateCheck = 1640;
+				LastSwiftUpdateCheck = 1620;
 				LastUpgradeCheck = 1640;
 				TargetAttributes = {
 					367EC48E2E7CB1AA008B22D1 = {
 						CreatedOnToolsVersion = 16.4;
+					};
+					B61A78652E81928A00BC204C = {
+						CreatedOnToolsVersion = 16.2;
+						TestTargetID = 367EC48E2E7CB1AA008B22D1;
 					};
 				};
 			};
@@ -113,12 +204,22 @@
 			projectRoot = "";
 			targets = (
 				367EC48E2E7CB1AA008B22D1 /* Altroo */,
+				B61A78652E81928A00BC204C /* AltrooTests */,
 			);
 		};
 /* End PBXProject section */
 
 /* Begin PBXResourcesBuildPhase section */
 		367EC48D2E7CB1AA008B22D1 /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				B61A785E2E818D7A00BC204C /* Gemfile in Resources */,
+				B61A78732E81C5B600BC204C /* .ruby-version in Resources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		B61A78642E81928A00BC204C /* Resources */ = {
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
@@ -135,7 +236,22 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
+		B61A78622E81928A00BC204C /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
 /* End PBXSourcesBuildPhase section */
+
+/* Begin PBXTargetDependency section */
+		B61A786B2E81928A00BC204C /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			target = 367EC48E2E7CB1AA008B22D1 /* Altroo */;
+			targetProxy = B61A786A2E81928A00BC204C /* PBXContainerItemProxy */;
+		};
+/* End PBXTargetDependency section */
 
 /* Begin XCBuildConfiguration section */
 		367EC4A62E7CB1AC008B22D1 /* Debug */ = {
@@ -143,16 +259,17 @@
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
+				CODE_SIGN_ENTITLEMENTS = Altroo/Altroo.entitlements;
 				CODE_SIGN_STYLE = Automatic;
 				CURRENT_PROJECT_VERSION = 1;
-				DEVELOPMENT_TEAM = 2BF575N85D;
+				DEVELOPMENT_TEAM = ZFH4AF7HSL;
 				GENERATE_INFOPLIST_FILE = YES;
 				INFOPLIST_FILE = Altroo/Resources/Info.plist;
 				INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents = YES;
 				INFOPLIST_KEY_UILaunchStoryboardName = LaunchScreen;
 				INFOPLIST_KEY_UISupportedInterfaceOrientations = UIInterfaceOrientationPortrait;
 				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPad = "UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight UIInterfaceOrientationPortraitUpsideDown";
-				IPHONEOS_DEPLOYMENT_TARGET = 16.6;
+				IPHONEOS_DEPLOYMENT_TARGET = 17.0;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
 					"@executable_path/Frameworks",
@@ -171,16 +288,17 @@
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
+				CODE_SIGN_ENTITLEMENTS = Altroo/Altroo.entitlements;
 				CODE_SIGN_STYLE = Automatic;
 				CURRENT_PROJECT_VERSION = 1;
-				DEVELOPMENT_TEAM = 2BF575N85D;
+				DEVELOPMENT_TEAM = ZFH4AF7HSL;
 				GENERATE_INFOPLIST_FILE = YES;
 				INFOPLIST_FILE = Altroo/Resources/Info.plist;
 				INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents = YES;
 				INFOPLIST_KEY_UILaunchStoryboardName = LaunchScreen;
 				INFOPLIST_KEY_UISupportedInterfaceOrientations = UIInterfaceOrientationPortrait;
 				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPad = "UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight UIInterfaceOrientationPortraitUpsideDown";
-				IPHONEOS_DEPLOYMENT_TARGET = 16.6;
+				IPHONEOS_DEPLOYMENT_TARGET = 17.0;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
 					"@executable_path/Frameworks",
@@ -315,6 +433,44 @@
 			};
 			name = Release;
 		};
+		B61A786D2E81928A00BC204C /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				BUNDLE_LOADER = "$(TEST_HOST)";
+				CODE_SIGN_STYLE = Automatic;
+				CURRENT_PROJECT_VERSION = 1;
+				DEVELOPMENT_TEAM = R45K4498NN;
+				GENERATE_INFOPLIST_FILE = YES;
+				IPHONEOS_DEPLOYMENT_TARGET = 17.0;
+				MARKETING_VERSION = 1.0;
+				PRODUCT_BUNDLE_IDENTIFIER = RaissaParente.AltrooTests;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SWIFT_EMIT_LOC_STRINGS = NO;
+				SWIFT_VERSION = 5.0;
+				TARGETED_DEVICE_FAMILY = "1,2";
+				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/Altroo.app/$(BUNDLE_EXECUTABLE_FOLDER_PATH)/Altroo";
+			};
+			name = Debug;
+		};
+		B61A786E2E81928A00BC204C /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				BUNDLE_LOADER = "$(TEST_HOST)";
+				CODE_SIGN_STYLE = Automatic;
+				CURRENT_PROJECT_VERSION = 1;
+				DEVELOPMENT_TEAM = R45K4498NN;
+				GENERATE_INFOPLIST_FILE = YES;
+				IPHONEOS_DEPLOYMENT_TARGET = 17.0;
+				MARKETING_VERSION = 1.0;
+				PRODUCT_BUNDLE_IDENTIFIER = RaissaParente.AltrooTests;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SWIFT_EMIT_LOC_STRINGS = NO;
+				SWIFT_VERSION = 5.0;
+				TARGETED_DEVICE_FAMILY = "1,2";
+				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/Altroo.app/$(BUNDLE_EXECUTABLE_FOLDER_PATH)/Altroo";
+			};
+			name = Release;
+		};
 /* End XCBuildConfiguration section */
 
 /* Begin XCConfigurationList section */
@@ -332,6 +488,15 @@
 			buildConfigurations = (
 				367EC4A62E7CB1AC008B22D1 /* Debug */,
 				367EC4A72E7CB1AC008B22D1 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+		B61A786C2E81928A00BC204C /* Build configuration list for PBXNativeTarget "AltrooTests" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				B61A786D2E81928A00BC204C /* Debug */,
+				B61A786E2E81928A00BC204C /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Release;
