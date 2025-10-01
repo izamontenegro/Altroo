@@ -21,36 +21,36 @@ extension CareRecipientFacade: PersonalDataServiceProtocol {
     func addAddress(address: String, in personalData: PersonalData) {
         personalData.address = address
         
-        persistenceService.saveContext()
+        persistenceService.save()
     }
     
     func addDateOfBirth(birthDate: Date, in personalData: PersonalData) {
         personalData.dateOfBirth = birthDate
         
-        persistenceService.saveContext()
+        persistenceService.save()
     }
     
     func addGender(gender: String, in personalData: PersonalData) {
         personalData.gender = gender
         
-        persistenceService.saveContext()
+        persistenceService.save()
     }
     
     func addHeight(height: Double, in personalData: PersonalData) {
         personalData.height = height
         
-        persistenceService.saveContext()
+        persistenceService.save()
     }
     
     func addName(name: String, in personalData: PersonalData) {
         personalData.name = name
         
-        persistenceService.saveContext()
+        persistenceService.save()
     }
     
     func addWeight(weight: Double, in personalData: PersonalData) {
         personalData.weight = weight
         
-        persistenceService.saveContext()
+        persistenceService.save()
     }
 }
