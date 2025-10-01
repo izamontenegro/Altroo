@@ -17,7 +17,7 @@ final class DefaultAppFactory: AppFactory {
 
 // MARK: - OnboardingFactory
 extension DefaultAppFactory {
-    func makeWelcome(delegate: WelcomeViewControllerDelegate) -> UIViewController {
+    func makeWelcomeViewController(delegate: WelcomeViewControllerDelegate) -> UIViewController {
         let vc = WelcomeViewController()
         vc.delegate = delegate
         vc.title = "Welcome!"
@@ -28,7 +28,7 @@ extension DefaultAppFactory {
 // MARK: - AssociatePatientFactory
 extension DefaultAppFactory {
 
-    func makeAssociatePatient(delegate: AssociatePatientViewControllerDelegate) -> UIViewController {
+    func makeAssociatePatientViewController(delegate: AssociatePatientViewControllerDelegate) -> UIViewController {
         let vc = AssociatePatientViewController()
         vc.delegate = delegate
         vc.title = "Associate Patient View"
@@ -40,21 +40,21 @@ extension DefaultAppFactory {
         return vc
     }
     
-    func makePatientForm(delegate: AssociatePatientViewControllerDelegate) -> UIViewController {
+    func makePatientFormViewController(delegate: AssociatePatientViewControllerDelegate) -> UIViewController {
         let vc = PatientFormsViewController()
         vc.delegate = delegate
         vc.title = "Patient Forms"
         return vc
     }
     
-    func makeComorbiditiesForms(delegate: AssociatePatientViewControllerDelegate) -> UIViewController {
+    func makeComorbiditiesFormViewController(delegate: AssociatePatientViewControllerDelegate) -> UIViewController {
         let vc = ComorbiditiesFormsViewController()
         vc.delegate = delegate
         vc.title = "Comorbidities Forms"
         return vc
     }
     
-    func makeShiftForms(delegate: ShiftFormsViewControllerDelegate) -> UIViewController {
+    func makeShiftFormViewController(delegate: ShiftFormsViewControllerDelegate) -> UIViewController {
         let vc = ShiftFormViewController()
         vc.delegate = delegate
         vc.title = "Shift Forms"
@@ -64,26 +64,26 @@ extension DefaultAppFactory {
 
 // MARK: - MainFlowFactory
 extension DefaultAppFactory {
-    func makeSettings() -> UIViewController {
+    func makeSettingsViewController() -> UIViewController {
         let vc = SettingsViewController()
         vc.title = "Settings"
         return vc
     }
     
-    func makeToday(delegate: TodayViewControllerDelegate) -> UIViewController {
+    func makeTodayViewController(delegate: TodayViewControllerDelegate) -> UIViewController {
         let vc = TodayViewController()
         vc.title = "Today"
         vc.delegate = delegate
         return vc
     }
     
-    func makeHistory() -> UIViewController {
+    func makeHistoryViewController() -> UIViewController {
         let vc = HistoryViewController()
         vc.title = "History"
         return vc
     }
     
-    func makeAnalysis() -> UIViewController {
+    func makeAnalysisViewController() -> UIViewController {
         let vc = AnalysisViewController()
         vc.title = "Analysis"
         return vc
@@ -109,22 +109,22 @@ extension DefaultAppFactory {
         return vc
     }
     
-    func makeAddMedication() -> UIViewController {
+    func makeAddMedicationViewController() -> UIViewController {
         let vc = AddMedicationViewController()
         return vc
     }
     
-    func makeAddRoutineActivity() -> UIViewController {
+    func makeAddRoutineActivityViewController() -> UIViewController {
         let vc = AddRoutineActivityViewController()
         return vc
     }
     
-    func makeAddSymptom() -> UIViewController {
+    func makeAddSymptomViewController() -> UIViewController {
         let vc = AddSymptomViewController()
         return vc
     }
     
-    func makeAddEvent() -> UIViewController {
+    func makeAddEventViewController() -> UIViewController {
         let vc = AddEventViewController()
         return vc
     }
@@ -132,7 +132,7 @@ extension DefaultAppFactory {
 
 // MARK: - ProfileFactory
 extension DefaultAppFactory {
-    func makeProfile() -> UIViewController {
+    func makeProfileViewController() -> UIViewController {
         let vc = ProfileViewController()
         return vc
     }
@@ -140,7 +140,7 @@ extension DefaultAppFactory {
 
 // MARK: - EventsFactory
 extension DefaultAppFactory {
-    func makeSeeAllEvents() -> UIViewController { // TODO:
+    func makeAllEventsViewController() -> UIViewController { // TODO:
         let vc = AddBasicNeedsViewController()
         return vc
     }
@@ -164,15 +164,15 @@ extension DefaultAppFactory {
 
 // MARK: - BasicNeedsFactory
 extension DefaultAppFactory {
-    func makeStoolRecord() -> UIViewController { // TODO:
+    func makeStoolRecordViewController() -> UIViewController { // TODO:
         let vc = AddBasicNeedsViewController()
         return vc
     }
-    func makeUrineRecord() -> UIViewController { // TODO:
+    func makeUrineRecordViewController() -> UIViewController { // TODO:
         let vc = AddBasicNeedsViewController()
         return vc
     }
-    func makeMealRecord() -> UIViewController { // TODO:
+    func makeMealRecordViewController() -> UIViewController { // TODO:
         let vc = AddBasicNeedsViewController()
         return vc
     }
@@ -184,7 +184,7 @@ extension DefaultAppFactory {
 
 // MARK: - RoutineActivitiesFactory
 extension DefaultAppFactory {
-    func makeSeeAllRoutineActivities() -> UIViewController { // TODO:
+    func makeAllRoutineActivitiesViewController() -> UIViewController { // TODO:
         let vc = AddBasicNeedsViewController()
         return vc
     }

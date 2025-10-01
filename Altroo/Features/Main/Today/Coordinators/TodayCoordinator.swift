@@ -22,7 +22,7 @@ final class TodayCoordinator: Coordinator {
     }
 
     func start() {
-        let vc = factory.makeToday(delegate: self)
+        let vc = factory.makeTodayViewController(delegate: self)
         navigation.setViewControllers([vc], animated: false)
     }
     
@@ -31,7 +31,7 @@ final class TodayCoordinator: Coordinator {
     private func show(destination: Destination) {
         switch destination {
         case .profile:
-            let vc = factory.makeProfile()
+            let vc = factory.makeProfileViewController()
             navigation.pushViewController(vc, animated: true)
         }
     }

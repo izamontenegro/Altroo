@@ -20,7 +20,7 @@ final class SettingsCoordinator: Coordinator {
     }
     
     func start() {
-        let vc = factory.makeSettings()
+        let vc = factory.makeSettingsViewController()
         navigation.setViewControllers([vc], animated: false)
     }
     

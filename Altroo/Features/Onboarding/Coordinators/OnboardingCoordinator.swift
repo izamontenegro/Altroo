@@ -23,7 +23,7 @@ final class OnboardingCoordinator: Coordinator {
     }
 
     func start() {
-        let vc = factory.makeWelcome(delegate: self)
+        let vc = factory.makeWelcomeViewController(delegate: self)
         navigation.setViewControllers([vc], animated: false)
         navigation.setNavigationBarHidden(true, animated: false)
     }

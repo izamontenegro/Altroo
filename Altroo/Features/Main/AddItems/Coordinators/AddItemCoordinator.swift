@@ -38,16 +38,16 @@ extension AddItemCoordinator: AddItemsSheetViewControllerDelegate {
             let vc = factory.makeAddMeasurementSheet()
             navigation.pushViewController(vc, animated: true)
         case .medication:
-            let vc = factory.makeAddMedication()
+            let vc = factory.makeAddMedicationViewController()
             navigation.pushViewController(vc, animated: true)
         case .routineActivity:
-            let vc = factory.makeAddRoutineActivity()
+            let vc = factory.makeAddRoutineActivityViewController()
             navigation.pushViewController(vc, animated: true)
         case .event:
-            let vc = factory.makeAddEvent()
+            let vc = factory.makeAddEventViewController()
             navigation.pushViewController(vc, animated: true)
         case .symptom:
-            let vc = factory.makeAddSymptom()
+            let vc = factory.makeAddSymptomViewController()
             navigation.pushViewController(vc, animated: true)
         case .close:
             navigation.presentingViewController?.dismiss(animated: true)

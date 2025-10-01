@@ -16,7 +16,7 @@ final class AnalysisCoordinator: Coordinator {
         self.navigation = navigation; self.patientService = patientService; self.factory = factory
     }
     func start() {
-        let vc = factory.makeAnalysis()
+        let vc = factory.makeAnalysisViewController()
         navigation.setViewControllers([vc], animated: false)
     }
 }

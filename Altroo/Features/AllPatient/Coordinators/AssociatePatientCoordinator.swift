@@ -23,7 +23,7 @@ final class AssociatePatientCoordinator: Coordinator {
     }
 
     func start() {
-        let vc = factory.makeAssociatePatient(delegate: self)
+        let vc = factory.makeAssociatePatientViewController(delegate: self)
         navigation.setViewControllers([vc], animated: false)
         navigation.setNavigationBarHidden(false, animated: false)
     }
@@ -33,15 +33,15 @@ final class AssociatePatientCoordinator: Coordinator {
     private func show(destination: Destination) {
         switch destination {
         case .patientForms:
-            let vc = factory.makePatientForm(delegate: self)
+            let vc = factory.makePatientFormViewController(delegate: self)
             navigation.pushViewController(vc, animated: true)
             
         case .comorbiditiesForms:
-            let vc = factory.makeComorbiditiesForms(delegate: self)
+            let vc = factory.makeComorbiditiesFormViewController(delegate: self)
             navigation.pushViewController(vc, animated: true)
             
         case .shiftForms:
-            let vc = factory.makeShiftForms(delegate: self)
+            let vc = factory.makeShiftFormViewController(delegate: self)
             navigation.pushViewController(vc, animated: true)
             
         case .tutorialAdd:
