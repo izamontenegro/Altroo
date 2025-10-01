@@ -8,7 +8,7 @@
 import CoreData
 import CloudKit
 
-class CoreDataService: DataRepository {
+class CoreDataService: PersistenceServicePrococol {
     
     let stack: CoreDataStack
     
