@@ -11,7 +11,7 @@ import XCTest
 // MARK: - CoreDataService Spy
 final class CoreDataServiceSpy: CoreDataService {
     private(set) var saveContextCalled = 0
-    override func saveContext() {
+    override func save() {
         saveContextCalled += 1
     }
 }
