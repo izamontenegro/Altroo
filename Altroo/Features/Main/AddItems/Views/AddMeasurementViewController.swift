@@ -1,23 +1,22 @@
 //
-//  AddBasicNeedsViewController.swift
+//  AddMeasurementViewController.swift
 //  Altroo
 //
-//  Created by Izadora de Oliveira Albuquerque Montenegro on 22/09/25.
+//  Created by Layza Maria Rodrigues Carneiro on 29/09/25.
 //
 
 import UIKit
 
-class AddBasicNeedsViewController: UIViewController {
+class AddMeasurementViewController: UIViewController {
 
     let viewLabel: UILabel = {
         let label = UILabel()
-        label.text = "Add Basic Needs View"
+        label.text = "Add Measurement View"
         label.textAlignment = .center
         
         label.translatesAutoresizingMaskIntoConstraints = false
         return label
     }()
-    
     override func viewDidLoad() {
         super.viewDidLoad()
 

@@ -28,6 +28,15 @@ final class MainCoordinator: Coordinator {
         let tabBar = AppTabBarController()
         self.tabBar = tabBar
         
+        // MARK: - SETTINGS
+        let settingsNav = UINavigationController()
+        let settingsCoord = SettingsCoordinator(
+            navigation: settingsNav, patientService: patientService, factory: factory
+        )
+        add(child: settingsCoord)
+        settingsCoord.start()
+        settingsNav.tabBarItem = UITabBarItem(title: "Settings", image: UIImage(systemName: "gear"), tag: 0)
+               
         // MARK: - TODAY
         let todayNav = UINavigationController()
         let todayCoord = TodayCoordinator(
@@ -56,7 +65,7 @@ final class MainCoordinator: Coordinator {
         
         // MARK: - TAB BAR CONFIGURATION
         
-        tabBar.viewControllers = [analysisNav, histNav, todayNav]
+        tabBar.viewControllers = [settingsNav, todayNav, histNav, analysisNav]
         
         tabBar.onPlusTapped = { [weak self] in
             self?.presentAddFlow()
@@ -76,7 +85,7 @@ final class MainCoordinator: Coordinator {
         
         addNav.modalPresentationStyle = .pageSheet
         if let sheet = addNav.sheetPresentationController {
-            sheet.detents = [.medium(), .large()]
+            sheet.detents = [.large()]
             sheet.prefersGrabberVisible = true
             sheet.preferredCornerRadius = 16
         }

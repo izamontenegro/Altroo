@@ -1,17 +1,17 @@
 //
-//  AddBasicNeedsViewController.swift
+//  SettingsViewController.swift
 //  Altroo
 //
-//  Created by Izadora de Oliveira Albuquerque Montenegro on 22/09/25.
+//  Created by Layza Maria Rodrigues Carneiro on 25/09/25.
 //
 
 import UIKit
 
-class AddBasicNeedsViewController: UIViewController {
-
+class SettingsViewController: UIViewController {
+    
     let viewLabel: UILabel = {
         let label = UILabel()
-        label.text = "Add Basic Needs View"
+        label.text = "Settings View"
         label.textAlignment = .center
         
         label.translatesAutoresizingMaskIntoConstraints = false
@@ -21,7 +21,7 @@ class AddBasicNeedsViewController: UIViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
 
-        view.backgroundColor = .systemIndigo
+        view.backgroundColor = .systemTeal
         
         view.addSubview(viewLabel)
         
@@ -30,4 +30,5 @@ class AddBasicNeedsViewController: UIViewController {
             viewLabel.centerYAnchor.constraint(equalTo: view.centerYAnchor)
         ])
     }
+    
 }

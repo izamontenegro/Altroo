@@ -7,7 +7,13 @@
 
 import UIKit
 
+protocol TodayViewControllerDelegate: AnyObject {
+    func GoToProfileView()
+}
+
 class TodayViewController: UIViewController {
+    
+    weak var delegate: TodayViewControllerDelegate?
 
     let viewLabel: UILabel = {
         let label = UILabel()
@@ -17,16 +23,43 @@ class TodayViewController: UIViewController {
         label.translatesAutoresizingMaskIntoConstraints = false
         return label
     }()
+    
+    let profileButton: UIButton = {
+        let button = UIButton(type: .system)
+        button.setTitle("Profile View", for: .normal)
+        button.translatesAutoresizingMaskIntoConstraints = false
+        return button
+    }()
+    
+    let vStack: UIStackView = {
+        let stackView = UIStackView(arrangedSubviews: [])
+        stackView.axis = .vertical
+        stackView.distribution = .fillEqually
+        stackView.spacing = 20
+        
+        stackView.translatesAutoresizingMaskIntoConstraints = false
+        return stackView
+    }()
+    
     override func viewDidLoad() {
         super.viewDidLoad()
 
-        view.backgroundColor = .systemPink
+        view.backgroundColor = .systemTeal
         
-        view.addSubview(viewLabel)
+        view.addSubview(vStack)
+        
+        vStack.addArrangedSubview(profileButton)
+        vStack.addArrangedSubview(viewLabel)
         
         NSLayoutConstraint.activate([
-            viewLabel.centerXAnchor.constraint(equalTo: view.centerXAnchor),
-            viewLabel.centerYAnchor.constraint(equalTo: view.centerYAnchor)
+            vStack.centerXAnchor.constraint(equalTo: view.centerXAnchor),
+            vStack.centerYAnchor.constraint(equalTo: view.centerYAnchor)
         ])
+        
+        profileButton.addTarget(self, action: #selector(didTapProfileView), for: .touchUpInside)
+    }
+    
+    @objc private func didTapProfileView() {
+        delegate?.GoToProfileView()
     }
 }

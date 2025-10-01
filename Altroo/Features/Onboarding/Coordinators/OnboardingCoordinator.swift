@@ -8,7 +8,7 @@
 import UIKit
 
 final class OnboardingCoordinator: Coordinator {
-
+    
     var childCoordinators: [Coordinator] = []
     private let navigation: UINavigationController
     private let patientService: PatientService
@@ -23,38 +23,15 @@ final class OnboardingCoordinator: Coordinator {
     }
 
     func start() {
-        let vc = factory.makeWelcome(delegate: self)
+        let vc = factory.makeWelcomeViewController(delegate: self)
         navigation.setViewControllers([vc], animated: false)
         navigation.setNavigationBarHidden(true, animated: false)
     }
-    
-    enum Destination { case patientForms, comorbiditiesForms }
-    
-    private func show(destination: Destination) {
-        switch destination {
-        case .patientForms:
-            let vc = factory.makePatientForm(delegate: self)
-            navigation.pushViewController(vc, animated: true)
-            
-        case .comorbiditiesForms:
-            let vc = factory.makeComorbiditiesForms(delegate: self)
-            navigation.pushViewController(vc, animated: true)
-        }
-    }
+
 }
 
 extension OnboardingCoordinator: WelcomeViewControllerDelegate {
-    func goToPatientForms() {
-        show(destination: .patientForms)
-    }
-    
-    func goToComorbiditiesForms() {
-        show(destination: .comorbiditiesForms)
-    }
-}
-
-extension OnboardingCoordinator: ComorbiditiesFormsViewControllerDelegate {
-    func comorbiditiesFormsDidFinish() {
+    func goToAllPatient() {
         onFinish?()
     }
 }

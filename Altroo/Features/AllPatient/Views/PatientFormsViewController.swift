@@ -1,5 +1,5 @@
 //
-//  WelcomeViewController.swift
+//  PatientFormsViewController.swift
 //  Altroo
 //
 //  Created by Izadora de Oliveira Albuquerque Montenegro on 22/09/25.
@@ -7,16 +7,13 @@
 
 import UIKit
 
-protocol WelcomeViewControllerDelegate: AnyObject {
-    func goToAllPatient()
-}
-
-class WelcomeViewController: UIViewController {
-    weak var delegate: WelcomeViewControllerDelegate?
-
+class PatientFormsViewController: UIViewController {
+    
+    weak var delegate: AssociatePatientViewControllerDelegate?
+    
     let viewLabel: UILabel = {
         let label = UILabel()
-        label.text = "Welcome to our app!"
+        label.text = "Insert the patient information here"
         label.textAlignment = .center
         
         label.translatesAutoresizingMaskIntoConstraints = false
@@ -25,9 +22,8 @@ class WelcomeViewController: UIViewController {
     
     let nextStepButton: UIButton = {
         let button = UIButton(type: .custom)
-        button.setTitle("Start", for: .normal)
-        button.tintColor = .black
-        button.backgroundColor = .white
+        button.setTitle("Next Step", for: .normal)
+        button.backgroundColor = .black
         button.layer.cornerRadius = 8
         
         button.translatesAutoresizingMaskIntoConstraints = false
@@ -37,7 +33,7 @@ class WelcomeViewController: UIViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
 
-        view.backgroundColor = .systemBlue
+        view.backgroundColor = .systemPink
         
         view.addSubview(viewLabel)
         view.addSubview(nextStepButton)
@@ -55,6 +51,6 @@ class WelcomeViewController: UIViewController {
     
     @objc
     func didTapNextStepButton() {
-        delegate?.goToAllPatient()
+        delegate?.goToComorbiditiesForms()
     }
 }

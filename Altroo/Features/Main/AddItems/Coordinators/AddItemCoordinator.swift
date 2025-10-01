@@ -8,10 +8,11 @@
 import UIKit
 
 final class AddItemCoordinator: Coordinator {
+    
     var childCoordinators: [Coordinator] = []
     private let navigation: UINavigationController
     private let patientService: PatientService
-    private let factory: AppFactory
+    private let factory: AddItemFactory
 
     init(navigation: UINavigationController, patientService: PatientService, factory: AppFactory) {
         self.navigation = navigation
@@ -24,26 +25,33 @@ final class AddItemCoordinator: Coordinator {
         navigation.setViewControllers([vc], animated: false)
     }
 
-    enum Destination { case nextStep, end }
-    
-    private func show(destination: Destination) {
-        switch destination {
-        case .nextStep:
-            let vc = factory.makeAddMedicine()
-            navigation.pushViewController(vc, animated: true)
-            
-        case .end:
-            navigation.presentingViewController?.dismiss(animated: true)
-        }
-    }
 }
 
 extension AddItemCoordinator: AddItemsSheetViewControllerDelegate {
-    func AddItemsSheetGoToNext() {
-        show(destination: .nextStep)
+    
+    func addItemsSheet(_ controller: AddItemsSheetViewController, didSelect destination: AddItemDestination) {
+        switch destination {
+        case .basicNeeds:
+            let vc = factory.makeAddBasicNeedsSheet()
+            navigation.pushViewController(vc, animated: true)
+        case .measurement:
+            let vc = factory.makeAddMeasurementSheet()
+            navigation.pushViewController(vc, animated: true)
+        case .medication:
+            let vc = factory.makeAddMedicationViewController()
+            navigation.pushViewController(vc, animated: true)
+        case .routineActivity:
+            let vc = factory.makeAddRoutineActivityViewController()
+            navigation.pushViewController(vc, animated: true)
+        case .event:
+            let vc = factory.makeAddEventViewController()
+            navigation.pushViewController(vc, animated: true)
+        case .symptom:
+            let vc = factory.makeAddSymptomViewController()
+            navigation.pushViewController(vc, animated: true)
+        case .close:
+            navigation.presentingViewController?.dismiss(animated: true)
+        }
     }
     
-    func AddItemsSheetGoBack() {
-        show(destination: .end)
-    }
 }

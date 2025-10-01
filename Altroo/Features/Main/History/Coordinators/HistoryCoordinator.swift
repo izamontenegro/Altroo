@@ -15,7 +15,7 @@ final class HistoryCoordinator: Coordinator {
         self.navigation = navigation; self.patientService = patientService; self.factory = factory
     }
     func start() {
-        let vc = factory.makeHistory()
+        let vc = factory.makeHistoryViewController()
         navigation.setViewControllers([vc], animated: false)
     }
 }

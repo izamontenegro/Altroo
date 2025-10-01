@@ -22,7 +22,23 @@ final class TodayCoordinator: Coordinator {
     }
 
     func start() {
-        let vc = factory.makeToday()
+        let vc = factory.makeTodayViewController(delegate: self)
         navigation.setViewControllers([vc], animated: false)
+    }
+    
+    enum Destination { case profile }
+    
+    private func show(destination: Destination) {
+        switch destination {
+        case .profile:
+            let vc = factory.makeProfileViewController()
+            navigation.pushViewController(vc, animated: true)
+        }
+    }
+}
+
+extension TodayCoordinator: TodayViewControllerDelegate {
+    func GoToProfileView() {
+        show(destination: .profile)
     }
 }

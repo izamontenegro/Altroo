@@ -17,30 +17,30 @@ extension CareRecipientFacade: PersonalCareProtocol {
     func addHygieneState(hygieneState: HygieneEnum, personalCare: PersonalCare) {
         personalCare.hygieneState = hygieneState.rawValue
         
-        persistenceService.saveContext()
+        persistenceService.save()
     }
     
     func addFeedingState(feedingState: FeedingEnum, personalCare: PersonalCare) {
         personalCare.feedingState = feedingState.rawValue
         
-        persistenceService.saveContext()
+        persistenceService.save()
     }
     
     func addExcretionState(excretionState: ExcretionEnum, personalCare: PersonalCare) {
         personalCare.excretionState = excretionState.rawValue
         
-        persistenceService.saveContext()
+        persistenceService.save()
     }
     
     func addEquipmentState(equipmentState: EquipmentEnum, personalCare: PersonalCare) {
         personalCare.equipmentState = equipmentState.rawValue
         
-        persistenceService.saveContext()
+        persistenceService.save()
     }
     
     func addBathState(bathState: BathEnum, personalCare: PersonalCare) {
         personalCare.bathState = bathState.rawValue
         
-        persistenceService.saveContext()
+        persistenceService.save()
     }
 }

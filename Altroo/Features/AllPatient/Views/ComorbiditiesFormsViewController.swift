@@ -1,5 +1,5 @@
 //
-//  PatientFormsViewController.swift
+//  ComorbitiesFormsViewController.swift
 //  Altroo
 //
 //  Created by Izadora de Oliveira Albuquerque Montenegro on 22/09/25.
@@ -7,24 +7,23 @@
 
 import UIKit
 
-class PatientFormsViewController: UIViewController {
+class ComorbiditiesFormsViewController: UIViewController {
     
-    weak var delegate: WelcomeViewControllerDelegate?
+    weak var delegate: AssociatePatientViewControllerDelegate?
     
     let viewLabel: UILabel = {
         let label = UILabel()
-        label.text = "Insert the patient information here"
+        label.text = "Insert the comorbidities here"
         label.textAlignment = .center
         
         label.translatesAutoresizingMaskIntoConstraints = false
         return label
     }()
     
-    let nextStepButton: UIButton = {
+    let doneButton: UIButton = {
         let button = UIButton(type: .custom)
         button.setTitle("Next Step", for: .normal)
-        button.tintColor = .black
-        button.backgroundColor = .white
+        button.backgroundColor = .black
         button.layer.cornerRadius = 8
         
         button.translatesAutoresizingMaskIntoConstraints = false
@@ -34,24 +33,24 @@ class PatientFormsViewController: UIViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
 
-        view.backgroundColor = .systemPink
+        view.backgroundColor = .systemOrange
         
         view.addSubview(viewLabel)
-        view.addSubview(nextStepButton)
+        view.addSubview(doneButton)
         
         NSLayoutConstraint.activate([
             viewLabel.centerXAnchor.constraint(equalTo: view.centerXAnchor),
             viewLabel.centerYAnchor.constraint(equalTo: view.centerYAnchor),
             
-            nextStepButton.centerXAnchor.constraint(equalTo: view.centerXAnchor),
-            nextStepButton.topAnchor.constraint(equalTo: viewLabel.bottomAnchor, constant: 32)
+            doneButton.centerXAnchor.constraint(equalTo: view.centerXAnchor),
+            doneButton.topAnchor.constraint(equalTo: viewLabel.bottomAnchor, constant: 32)
         ])
         
-        nextStepButton.addTarget(self, action: #selector(didTapNextStepButton), for: .touchUpInside)
+        doneButton.addTarget(self, action: #selector(didTapDoneButton), for: .touchUpInside)
     }
     
     @objc
-    func didTapNextStepButton() {
-        delegate?.goToComorbiditiesForms()
+    func didTapDoneButton() {
+        delegate?.goToShiftForms()
     }
 }
