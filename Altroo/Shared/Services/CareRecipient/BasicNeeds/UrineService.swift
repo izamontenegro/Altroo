@@ -16,8 +16,8 @@ protocol UrineServiceProtocol {
 class UrineService: UrineServiceProtocol {
     func addUrineRecord(period: PeriodEnum, date: Date, hadPain: Bool, color: String, in careRecipient: CareRecipient) {
         
-        guard let ctx = careRecipient.managedObjectContext else { return }
-        let newUrineRecord = UrineRecord(context: ctx)
+        guard let context = careRecipient.managedObjectContext else { return }
+        let newUrineRecord = UrineRecord(context: context)
         
         newUrineRecord.color = color
         newUrineRecord.date = date

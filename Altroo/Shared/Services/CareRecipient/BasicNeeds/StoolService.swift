@@ -16,8 +16,8 @@ protocol StoolServiceProtocol {
 class StoolService: StoolServiceProtocol {
     func addStoolRecord(period: PeriodEnum, date: Date, format: String, hadPain: Bool, color: String, in careRecipient: CareRecipient) {
         
-        guard let ctx = careRecipient.managedObjectContext else { return }
-        let newStoolRecord = StoolRecord(context: ctx)
+        guard let context = careRecipient.managedObjectContext else { return }
+        let newStoolRecord = StoolRecord(context: context)
         
         newStoolRecord.color = color
         newStoolRecord.date = date
