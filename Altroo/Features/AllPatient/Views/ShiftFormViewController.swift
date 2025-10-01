@@ -1,5 +1,5 @@
 //
-//  ShiftForm.swift
+//  ShiftFormViewController.swift
 //  Altroo
 //
 //  Created by Layza Maria Rodrigues Carneiro on 30/09/25.
@@ -11,14 +11,13 @@ protocol ShiftFormsViewControllerDelegate: AnyObject {
     func shiftFormsDidFinish()
 }
 
-class ShiftForm: UIViewController {
+class ShiftFormViewController: UIViewController {
     weak var delegate: ShiftFormsViewControllerDelegate?
     
     let doneButton: UIButton = {
         let button = UIButton(type: .custom)
-        button.setTitle("Next Step", for: .normal)
-        button.tintColor = .black
-        button.backgroundColor = .white
+        button.setTitle("Create", for: .normal)
+        button.backgroundColor = .black
         button.layer.cornerRadius = 8
         
         button.translatesAutoresizingMaskIntoConstraints = false

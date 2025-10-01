@@ -23,10 +23,12 @@ final class AppCoordinator: Coordinator {
     }
 
     func start() {
-        if patientService.hasPatient {
-            showMainFlow()
-        } else {
+        if UserDefaults.standard.isFirstLaunch {
             showOnboardingFlow()
+        } else if !patientService.hasPatient {
+            showAllPatientsFlow()
+        } else {
+            showMainFlow()
         }
     }
 
@@ -37,7 +39,7 @@ final class AppCoordinator: Coordinator {
         onboardingCoordinator.onFinish = { [weak self, weak onboardingCoordinator] in
             guard let self, let onboardingCoordinator else { return }
             self.remove(child: onboardingCoordinator)
-            self.showMainFlow()
+            self.showAllPatientsFlow()
         }
         add(child: onboardingCoordinator)
         onboardingCoordinator.start()
@@ -56,5 +58,18 @@ final class AppCoordinator: Coordinator {
         }
         add(child: mainCoordinator)
         mainCoordinator.start()
+    }
+
+    private func showAllPatientsFlow() {
+        let associatePatientCoordinator = AssociatePatientCoordinator(navigation: rootNavigation,
+                                              patientService: patientService,
+                                              factory: factory)
+        associatePatientCoordinator.onFinish = { [weak self, weak associatePatientCoordinator] in
+            guard let self, let associatePatientCoordinator else { return }
+            self.remove(child: associatePatientCoordinator)
+            self.showMainFlow()
+        }
+        add(child: associatePatientCoordinator)
+        associatePatientCoordinator.start()
     }
 }

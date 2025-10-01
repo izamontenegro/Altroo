@@ -1,5 +1,5 @@
 //
-//  AssociateAssistedViewController.swift
+//  AssociatePatientViewController.swift
 //  Altroo
 //
 //  Created by Layza Maria Rodrigues Carneiro on 30/09/25.
@@ -7,7 +7,7 @@
 
 import UIKit
 
-protocol AssociateAssistedViewControllerDelegate: AnyObject {
+protocol AssociatePatientViewControllerDelegate: AnyObject {
     func goToPatientForms()
     func goToComorbiditiesForms()
     func goToShiftForms()
@@ -15,8 +15,8 @@ protocol AssociateAssistedViewControllerDelegate: AnyObject {
     func goToTutorialAddSheet()
 }
 
-class AssociateAssistedViewController: UIViewController {
-    weak var delegate: AssociateAssistedViewControllerDelegate?
+class AssociatePatientViewController: UIViewController {
+    weak var delegate: AssociatePatientViewControllerDelegate?
 
     let viewLabel: UILabel = {
         let label = UILabel()

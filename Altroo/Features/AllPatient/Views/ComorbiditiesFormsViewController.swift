@@ -7,23 +7,9 @@
 
 import UIKit
 
-protocol ComorbiditiesFormsViewControllerDelegate: AnyObject {
-    func comorbiditiesFormsDidFinish()
-}
-
 class ComorbiditiesFormsViewController: UIViewController {
-    weak var delegate: ComorbiditiesFormsViewControllerDelegate?
     
-    let doneButton: UIButton = {
-        let button = UIButton(type: .custom)
-        button.setTitle("Next Step", for: .normal)
-        button.tintColor = .black
-        button.backgroundColor = .white
-        button.layer.cornerRadius = 8
-        
-        button.translatesAutoresizingMaskIntoConstraints = false
-        return button
-    }()
+    weak var delegate: AssociatePatientViewControllerDelegate?
     
     let viewLabel: UILabel = {
         let label = UILabel()
@@ -32,6 +18,16 @@ class ComorbiditiesFormsViewController: UIViewController {
         
         label.translatesAutoresizingMaskIntoConstraints = false
         return label
+    }()
+    
+    let doneButton: UIButton = {
+        let button = UIButton(type: .custom)
+        button.setTitle("Next Step", for: .normal)
+        button.backgroundColor = .black
+        button.layer.cornerRadius = 8
+        
+        button.translatesAutoresizingMaskIntoConstraints = false
+        return button
     }()
     
     override func viewDidLoad() {
@@ -55,6 +51,6 @@ class ComorbiditiesFormsViewController: UIViewController {
     
     @objc
     func didTapDoneButton() {
-        delegate?.comorbiditiesFormsDidFinish()
+        delegate?.goToShiftForms()
     }
 }

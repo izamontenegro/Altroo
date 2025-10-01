@@ -1,5 +1,5 @@
 //
-//  AddExistentPatientSheet.swift
+//  TutorialAddSheet.swift
 //  Altroo
 //
 //  Created by Layza Maria Rodrigues Carneiro on 30/09/25.
@@ -7,11 +7,11 @@
 
 import UIKit
 
-class AddExistentPatientSheet: UIViewController {
+class TutorialAddSheet: UIViewController {
 
     let viewLabel: UILabel = {
         let label = UILabel()
-        label.text = "Add Existent Patient Sheet"
+        label.text = "Tutorial Add Sheet"
         label.textAlignment = .center
         
         label.translatesAutoresizingMaskIntoConstraints = false

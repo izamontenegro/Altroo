@@ -1,5 +1,5 @@
 //
-//  AssociateAssistedCoordinator.swift
+//  AssociatePatientCoordinator.swift
 //  Altroo
 //
 //  Created by Layza Maria Rodrigues Carneiro on 30/09/25.
@@ -12,18 +12,18 @@ final class AssociatePatientCoordinator: Coordinator {
     var childCoordinators: [Coordinator] = []
     private let navigation: UINavigationController
     private let patientService: PatientService
-    private let factory: AssociateAssistedFactory
+    private let factory: AssociatePatientFactory
 
     var onFinish: (() -> Void)?
 
-    init(navigation: UINavigationController, patientService: PatientService, factory: AssociateAssistedFactory) {
+    init(navigation: UINavigationController, patientService: PatientService, factory: AssociatePatientFactory) {
         self.navigation = navigation
         self.patientService = patientService
         self.factory = factory
     }
 
     func start() {
-        let vc = factory.makeAssociateAssisted(delegate: self)
+        let vc = factory.makeAssociatePatient(delegate: self)
         navigation.setViewControllers([vc], animated: false)
         navigation.setNavigationBarHidden(false, animated: false)
     }
@@ -58,7 +58,7 @@ final class AssociatePatientCoordinator: Coordinator {
     }
 }
 
-extension AssociateAssistedCoordinator: AssociateAssistedViewControllerDelegate {
+extension AssociatePatientCoordinator: AssociatePatientViewControllerDelegate {
     func goToPatientForms() {
         show(destination: .patientForms)
     }
@@ -76,7 +76,7 @@ extension AssociateAssistedCoordinator: AssociateAssistedViewControllerDelegate 
     }
 }
 
-extension AssociateAssistedCoordinator: ShiftFormsViewControllerDelegate {
+extension AssociatePatientCoordinator: ShiftFormsViewControllerDelegate {
     func shiftFormsDidFinish() {
         onFinish?()
     }

@@ -9,7 +9,7 @@ import UIKit
 
 class PatientFormsViewController: UIViewController {
     
-    weak var delegate: WelcomeViewControllerDelegate?
+    weak var delegate: AssociatePatientViewControllerDelegate?
     
     let viewLabel: UILabel = {
         let label = UILabel()
@@ -23,8 +23,7 @@ class PatientFormsViewController: UIViewController {
     let nextStepButton: UIButton = {
         let button = UIButton(type: .custom)
         button.setTitle("Next Step", for: .normal)
-        button.tintColor = .black
-        button.backgroundColor = .white
+        button.backgroundColor = .black
         button.layer.cornerRadius = 8
         
         button.translatesAutoresizingMaskIntoConstraints = false

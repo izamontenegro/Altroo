@@ -8,9 +8,7 @@
 import UIKit
 
 protocol WelcomeViewControllerDelegate: AnyObject {
-    func goToPatientForms()
-   
-    func goToComorbiditiesForms()
+    func goToAllPatient()
 }
 
 class WelcomeViewController: UIViewController {
@@ -27,7 +25,7 @@ class WelcomeViewController: UIViewController {
     
     let nextStepButton: UIButton = {
         let button = UIButton(type: .custom)
-        button.setTitle("Next Step", for: .normal)
+        button.setTitle("Start", for: .normal)
         button.tintColor = .black
         button.backgroundColor = .white
         button.layer.cornerRadius = 8
@@ -57,6 +55,6 @@ class WelcomeViewController: UIViewController {
     
     @objc
     func didTapNextStepButton() {
-        delegate?.goToPatientForms()
+        delegate?.goToAllPatient()
     }
 }
