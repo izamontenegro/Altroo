@@ -1,5 +1,5 @@
 //
-//  ConfigurationViewController.swift
+//  SettingsViewController.swift
 //  Altroo
 //
 //  Created by Layza Maria Rodrigues Carneiro on 25/09/25.
@@ -21,7 +21,7 @@ class SettingsViewController: UIViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
 
-        view.backgroundColor = .systemBlue
+        view.backgroundColor = .systemTeal
         
         view.addSubview(viewLabel)
         

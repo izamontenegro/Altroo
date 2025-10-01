@@ -1,5 +1,5 @@
 //
-//  AddSymptomViewController.swift
+//  AddEventViewController.swift
 //  Altroo
 //
 //  Created by Layza Maria Rodrigues Carneiro on 29/09/25.
@@ -7,11 +7,11 @@
 
 import UIKit
 
-class AddSymptomViewController: UIViewController {
+class AddEventViewController: UIViewController {
 
     let viewLabel: UILabel = {
         let label = UILabel()
-        label.text = "Add Symptom View"
+        label.text = "Add Event View"
         label.textAlignment = .center
         
         label.translatesAutoresizingMaskIntoConstraints = false
@@ -20,7 +20,7 @@ class AddSymptomViewController: UIViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
 
-        view.backgroundColor = .systemIndigo
+        view.backgroundColor = .white
         
         view.addSubview(viewLabel)
         

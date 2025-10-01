@@ -1,5 +1,5 @@
 //
-//  AddSymptomViewController.swift
+//  AddMeasurementViewController.swift
 //  Altroo
 //
 //  Created by Layza Maria Rodrigues Carneiro on 29/09/25.
@@ -7,11 +7,11 @@
 
 import UIKit
 
-class AddSymptomViewController: UIViewController {
+class AddMeasurementViewController: UIViewController {
 
     let viewLabel: UILabel = {
         let label = UILabel()
-        label.text = "Add Symptom View"
+        label.text = "Add Measurement View"
         label.textAlignment = .center
         
         label.translatesAutoresizingMaskIntoConstraints = false
