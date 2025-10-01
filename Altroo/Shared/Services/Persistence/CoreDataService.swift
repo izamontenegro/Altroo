@@ -8,14 +8,15 @@
 import CoreData
 import CloudKit
 
-class CoreDataService {
+class CoreDataService: PersistenceServicePrococol {
+    
     let stack: CoreDataStack
     
     init(stack: CoreDataStack = .shared) {
         self.stack = stack
     }
     
-    func saveContext() {
+    func save() {
         let context = stack.context
         if context.hasChanges {
             do {
@@ -38,7 +39,7 @@ class CoreDataService {
     
     func deleteCareRecipient(_ careRecipient: CareRecipient) {
         stack.context.delete(careRecipient)
-        saveContext()
+        save()
     }
 }
 
