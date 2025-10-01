@@ -106,9 +106,30 @@ class RecordCard: InnerShadowView {
     }
 }
 
-
-#Preview {
+class RecordCardPreview: UIViewController {
     let card = RecordCard(title: "Hidratação", iconName: "waterbottle.fill")
     
-    return card
+    
+    override func viewDidLoad() {
+        view.backgroundColor = .blue80
+        
+        view.addSubview(card)
+        
+        card.translatesAutoresizingMaskIntoConstraints = false
+        
+        NSLayoutConstraint.activate([
+            card.centerXAnchor.constraint(equalTo: view.centerXAnchor),
+            card.centerYAnchor.constraint(equalTo: view.centerYAnchor),
+            card.widthAnchor.constraint(equalToConstant: 370)
+        ])
+
+    }
+}
+
+#Preview {
+//    let card = RecordCard(title: "Hidratação", iconName: "waterbottle.fill")
+//    
+//    return card
+    
+    RecordCardPreview()
 }

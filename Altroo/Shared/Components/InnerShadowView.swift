@@ -9,11 +9,12 @@ import UIKit
 class InnerShadowView: UIView {
 
     lazy var innerShadowLayer: CAShapeLayer = {
+        // receber outras cores
         let shadowLayer = CAShapeLayer()
-        shadowLayer.shadowColor = UIColor.black.cgColor
-        shadowLayer.shadowOffset = CGSize(width: 10.0, height: 10.0)
-        shadowLayer.shadowOpacity = 0.1
-        shadowLayer.shadowRadius = 14
+        shadowLayer.shadowColor = UIColor.blue70.cgColor
+        shadowLayer.shadowOffset = CGSize(width: 0, height: 4)
+        shadowLayer.shadowOpacity = 0.25
+        shadowLayer.shadowRadius = 7
         shadowLayer.fillRule = .evenOdd
         return shadowLayer
     }()
@@ -22,7 +23,7 @@ class InnerShadowView: UIView {
         super.init(frame: frame)
         self.configure()
     }
-
+    
     required init?(coder aDecoder: NSCoder) {
         super.init(coder: aDecoder)
         self.configure()
@@ -36,12 +37,17 @@ class InnerShadowView: UIView {
 
     override func layoutSubviews() {
         super.layoutSubviews()
-
+        
         let shadowPath = CGMutablePath()
+        
         let inset = -self.innerShadowLayer.shadowRadius * 2.0
         shadowPath.addRect(self.bounds.insetBy(dx: inset, dy: inset))
+        
         shadowPath.addRect(self.bounds)
-        self.innerShadowLayer.path = shadowPath
+        
+        innerShadowLayer.path = shadowPath
+        
+        innerShadowLayer.shadowPath = CGPath(rect: CGRect(x: 0, y: bounds.height - 12, width: bounds.width, height: 10 + innerShadowLayer.shadowRadius * 2), transform: nil)
     }
 
 }
