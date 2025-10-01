@@ -142,6 +142,6 @@ class CapsuleView: UIView {
 }
 
 #Preview {
-    let button = CapsuleView(iconName: "plus", text: "250ml", mainColor: UIColor(resource: .black0), accentColor: UIColor(resource: .teal20), height: 50, leadingIconName: "drop.fill")
+    let button = CapsuleView(iconName: "plus", text: "250ml", mainColor: UIColor(resource: .black0), accentColor: UIColor(resource: .teal20), height: 50)
      return button
 }
