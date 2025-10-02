@@ -4,17 +4,21 @@
 //
 //  Created by Izadora de Oliveira Albuquerque Montenegro on 02/10/25.
 //
-
 import UIKit
+import CoreData
 
 class EventCard: InnerShadowView {
     let date: Date
+    var dayEvents: [CareRecipientEvents]
     
-    private let dayLabel = UILabel()
-    private let numberLabel = UILabel()
     
-    init(frame: CGRect = .zero, date: Date) {
+    private var dayLabel: StandardLabel!
+    private var numberLabel: StandardLabel!
+    
+    init(frame: CGRect = .zero, date: Date, dayEvents: [CareRecipientEvents]) {
         self.date = date
+        self.dayEvents = dayEvents
+
         super.init(frame: frame, color: .blue70)
         
         setupDate()
@@ -33,16 +37,22 @@ class EventCard: InnerShadowView {
         dayFormatter.locale = Locale(identifier: "pt_BR")
         dayFormatter.dateFormat = "d"
         
-        dayLabel.font = .systemFont(ofSize: 14, weight: .semibold)
-        dayLabel.textColor = .systemGray
-        dayLabel.text = weekdayFormatter.string(from: date).uppercased()
+        dayLabel = StandardLabel(
+            labelText: weekdayFormatter.string(from: date).uppercased(),
+            labelFont: .sfPro,
+            labelType: .footnote,
+            labelColor: .black40,
+            labelWeight: .medium
+        )
         
-       
-        numberLabel.font = .systemFont(ofSize: 36, weight: .bold)
-        numberLabel.textColor = .darkGray
-        numberLabel.text = dayFormatter.string(from: date)
+        numberLabel = StandardLabel(
+            labelText: dayFormatter.string(from: date),
+            labelFont: .sfPro,
+            labelType: .largeTitle,
+            labelColor: .black20,
+            labelWeight: .bold
+        )
         
-        // Stack vertical
         let stack = UIStackView(arrangedSubviews: [dayLabel, numberLabel])
         stack.axis = .vertical
         stack.alignment = .leading
@@ -56,8 +66,12 @@ class EventCard: InnerShadowView {
             stack.leadingAnchor.constraint(equalTo: leadingAnchor, constant: 8)
         ])
     }
+    
 }
 
 #Preview {
-    EventCard(date: Date())
+    EventCard(
+        date: Date(),
+        dayEvents: []
+    )
 }
