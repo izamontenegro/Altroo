@@ -9,16 +9,18 @@ import UIKit
 
 class StandardLabel: UILabel {
     enum LabelType {
-        case h1
-        case h2
-        case h3
-    }
-    
-    enum ColorStyle {
-        case black
-        case white
-        case blue
-        case teal
+        case largeTitle
+        case title1
+        case title2
+        case title3
+        case headline
+        case body
+        case callOut
+        case subHeadline
+        case footnote
+        case caption1
+        case caption2
+        
     }
     
     enum FontStyle {
@@ -35,11 +37,11 @@ class StandardLabel: UILabel {
     public private(set) var labelText: String
     public private(set) var labelFont: FontStyle
     public private(set) var labelType: LabelType
-    public private(set) var labelColor: ColorStyle
+    public private(set) var labelColor: UIColor
     public private(set) var labelWeight: FontWeight
     
     
-    init(labelText: String, labelFont: FontStyle, labelType: LabelType, labelColor: ColorStyle, labelWeight: FontWeight = .regular) {
+    init(labelText: String, labelFont: FontStyle, labelType: LabelType, labelColor: UIColor, labelWeight: FontWeight = .regular) {
         self.labelText = labelText
         self.labelFont = labelFont
         self.labelType = labelType
@@ -60,29 +62,24 @@ class StandardLabel: UILabel {
     }
     
     private func configureLabelColor() {
-        var colorName: String
-        
-        switch labelColor {
-        case .black:
-            colorName = "black10"
-        case .blue:
-            colorName = "blue40"
-        case .white:
-            colorName = "white80"
-        case .teal:
-            colorName = "teal20"
-        }
-        
-        self.textColor = UIColor(named: colorName)
+        self.textColor = labelColor
         
     }
     
     private func configureLabelStyle() {
         let size: CGFloat
         switch labelType {
-        case .h1: size = 24
-        case .h2: size = 16
-        case .h3: size = 12
+        case .largeTitle: size = 34
+        case .title1: size = 28
+        case .title2: size = 22
+        case .title3: size = 20
+        case .headline: size = 17
+        case .body: size = 17
+        case .callOut: size = 16
+        case .subHeadline: size = 15
+        case .footnote: size = 13
+        case .caption1: size = 12
+        case .caption2: size = 11
         }
         
         let weight: UIFont.Weight
@@ -118,6 +115,6 @@ class StandardLabel: UILabel {
 }
 
 #Preview {
-    let label = StandardLabel(labelText: "Maria Clara", labelFont: .sfPro, labelType: .h1, labelColor: .teal, labelWeight: .bold)
+    let label = StandardLabel(labelText: "Maria Clara", labelFont: .sfPro, labelType: .title3, labelColor: UIColor.black40, labelWeight: .bold)
     return label
 }

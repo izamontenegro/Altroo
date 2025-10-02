@@ -70,7 +70,7 @@ class CapsuleView: UIView {
         capsule.translatesAutoresizingMaskIntoConstraints = false
         
         let icon = makeIcon()
-        let label = StandardLabel(labelText: text, labelFont: .sfPro, labelType: .h2, labelColor: .teal, labelWeight: .bold)
+        let label = StandardLabel(labelText: text, labelFont: .sfPro, labelType: .subHeadline, labelColor: UIColor.teal20, labelWeight: .bold)
         label.translatesAutoresizingMaskIntoConstraints = false
         
         addSubview(capsule)
