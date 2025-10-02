@@ -5,31 +5,44 @@
 //  Created by Izadora de Oliveira Albuquerque Montenegro on 02/10/25.
 //
 import UIKit
-import CoreData
+
+class mockEvents {
+    var name: String
+    var startTime: Date?
+    var endTime: Date?
+    var startDate: Date
+    var endDate: Date?
+    
+    init(name: String, startTime: Date?, endTime: Date?, startDate: Date, endDate: Date?) {
+        self.name = name
+        self.startTime = startTime
+        self.endTime = endTime
+        self.startDate = startDate
+        self.endDate = endDate
+    }
+}
 
 class EventCard: InnerShadowView {
     let date: Date
-    var dayEvents: [CareRecipientEvents]
-    
+    var dayEvents: [mockEvents]
     
     private var dayLabel: StandardLabel!
     private var numberLabel: StandardLabel!
+    private var eventsStack: UIStackView!
     
-    init(frame: CGRect = .zero, date: Date, dayEvents: [CareRecipientEvents]) {
+    init(frame: CGRect = .zero, date: Date, dayEvents: [mockEvents]) {
         self.date = date
         self.dayEvents = dayEvents
-
-        super.init(frame: frame, color: .blue70)
+        super.init(frame: frame, color: .white)
         
-        setupDateStack()
+        setupLayout()
     }
     
     required init?(coder: NSCoder) {
         fatalError("init(coder:) has not been implemented")
     }
     
-    private func setupDateStack() {
-        
+    private func setupLayout() {
         dayLabel = StandardLabel(
             labelText: DateFormartterHelper.weekDayFormatter(date: date),
             labelFont: .sfPro,
@@ -46,25 +59,106 @@ class EventCard: InnerShadowView {
             labelWeight: .bold
         )
         
-        let stack = UIStackView(arrangedSubviews: [dayLabel, numberLabel])
-        stack.axis = .vertical
-        stack.alignment = .leading
-        stack.spacing = 0
-        stack.translatesAutoresizingMaskIntoConstraints = false
+        let dateStack = UIStackView(arrangedSubviews: [dayLabel, numberLabel])
+        dateStack.axis = .vertical
+        dateStack.alignment = .leading
+        dateStack.spacing = 0
         
-        addSubview(stack)
+        eventsStack = UIStackView()
+        eventsStack.axis = .vertical
+        eventsStack.spacing = 3
+        eventsStack.distribution = .fillEqually
+        
+        
+        for event in dayEvents {
+            let eventView = makeEventView(event: event)
+            eventsStack.addArrangedSubview(eventView)
+        }
+        
+        let mainStack = UIStackView(arrangedSubviews: [dateStack, eventsStack])
+        mainStack.axis = .horizontal
+        mainStack.alignment = .top
+        mainStack.spacing = 88
+        mainStack.translatesAutoresizingMaskIntoConstraints = false
+        
+        addSubview(mainStack)
         
         NSLayoutConstraint.activate([
-            stack.topAnchor.constraint(equalTo: topAnchor, constant: 8),
-            stack.leadingAnchor.constraint(equalTo: leadingAnchor, constant: 8)
+            mainStack.topAnchor.constraint(equalTo: topAnchor, constant: 12),
+            mainStack.leadingAnchor.constraint(equalTo: leadingAnchor, constant: 12),
+            mainStack.trailingAnchor.constraint(equalTo: trailingAnchor, constant: -12),
+            mainStack.bottomAnchor.constraint(equalTo: bottomAnchor, constant: -12)
         ])
+        
+        backgroundColor = .systemRed
     }
     
+    private func makeEventView(event: mockEvents) -> UIView {
+        let container = UIView()
+        container.layer.cornerRadius = 8
+        container.backgroundColor = .systemBlue
+        container.translatesAutoresizingMaskIntoConstraints = false
+
+        let titleLabel = StandardLabel(labelText: event.name, labelFont: .sfPro, labelType: .subHeadline, labelColor: .pureWhite, labelWeight: .semibold)
+        titleLabel.numberOfLines = 1
+
+        let stack = UIStackView()
+        stack.axis = .vertical
+        stack.spacing = 0
+        stack.translatesAutoresizingMaskIntoConstraints = false
+        stack.addArrangedSubview(titleLabel)
+        
+        stack.addArrangedSubview(makeTimeLabel(event: event))
+
+        container.addSubview(stack)
+        NSLayoutConstraint.activate([
+            stack.topAnchor.constraint(equalTo: container.topAnchor, constant: 4),
+            stack.leadingAnchor.constraint(equalTo: container.leadingAnchor, constant: 8),
+            stack.trailingAnchor.constraint(equalTo: container.trailingAnchor, constant: -8),
+            stack.bottomAnchor.constraint(equalTo: container.bottomAnchor, constant: -8)
+        ])
+
+        return container
+    }
+    
+    private func makeTimeLabel(event: mockEvents) -> UIView {
+        if let start = event.startTime, let end = event.endTime {
+            let timeLabelText = "\(DateFormartterHelper.hourFormatter(date: start)) - \(DateFormartterHelper.hourFormatter(date: end))"
+            
+            let timeLabel = StandardLabel(labelText: timeLabelText, labelFont: .sfPro, labelType: .subHeadline, labelColor: .pureWhite, labelWeight: .regular)
+        
+            return timeLabel
+            
+        } else if let start = event.startTime {
+            
+            let timeLabelText = DateFormartterHelper.hourFormatter(date: start)
+            
+            let timeLabel = StandardLabel(labelText: timeLabelText, labelFont: .sfPro, labelType: .subHeadline, labelColor: .pureWhite, labelWeight: .regular)
+        
+            return timeLabel
+        } else if let end = event.endTime {
+            let timeLabelText = "até \(DateFormartterHelper.hourFormatter(date: end))"
+            
+            let timeLabel = StandardLabel(labelText: timeLabelText, labelFont: .sfPro, labelType: .subHeadline, labelColor: .pureWhite, labelWeight: .regular)
+            
+            return timeLabel
+        } else {
+            let emptyLabel = UILabel()
+            emptyLabel.text = ""
+            
+            return emptyLabel
+        }
+    }
+
 }
 
 #Preview {
     EventCard(
         date: Date(),
-        dayEvents: []
+        dayEvents: [
+            mockEvents(name: "Ortopedista", startTime: nil, endTime: nil, startDate: Date(), endDate: nil),
+            mockEvents(name: "Eat some burguers", startTime: nil, endTime: Date(), startDate: Date(), endDate: nil),
+            mockEvents(name: "Eat some burguers", startTime: Date(), endTime: Date(), startDate: Date(), endDate: nil)
+        ]
     )
 }
