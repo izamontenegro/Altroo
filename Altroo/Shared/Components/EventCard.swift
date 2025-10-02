@@ -70,10 +70,11 @@ class EventCard: InnerShadowView {
         eventsStack.distribution = .fillEqually
         
         
-        for event in dayEvents {
-            let eventView = makeEventView(event: event)
+        for (index, event) in dayEvents.enumerated() {
+            let eventView = makeEventView(event: event, index: index)
             eventsStack.addArrangedSubview(eventView)
         }
+
         
         let mainStack = UIStackView(arrangedSubviews: [dateStack, eventsStack])
         mainStack.axis = .horizontal
@@ -93,10 +94,11 @@ class EventCard: InnerShadowView {
         backgroundColor = .systemRed
     }
     
-    private func makeEventView(event: mockEvents) -> UIView {
+    private func makeEventView(event: mockEvents, index: Int) -> UIView {
         let container = UIView()
         container.layer.cornerRadius = 8
-        container.backgroundColor = .systemBlue
+
+        container.backgroundColor = getEventColor(forIndex: index)
         container.translatesAutoresizingMaskIntoConstraints = false
 
         let titleLabel = StandardLabel(labelText: event.name, labelFont: .sfPro, labelType: .subHeadline, labelColor: .pureWhite, labelWeight: .semibold)
@@ -120,6 +122,20 @@ class EventCard: InnerShadowView {
 
         return container
     }
+
+    private func getEventColor(forIndex index: Int) -> UIColor {
+        switch index {
+        case 0:
+            return .blue40
+        case 1:
+            return .teal20
+        case 2:
+            return .purple20
+        default:
+            return .blue80
+        }
+    }
+
     
     private func makeTimeLabel(event: mockEvents) -> UIView {
         if let start = event.startTime, let end = event.endTime {
