@@ -92,28 +92,6 @@ extension DefaultAppFactory {
     }
 }
 
-// MARK: - AddItemFactory
-extension DefaultAppFactory {
-    func makeAddItemSheet(delegate: AddItemsSheetViewControllerDelegate) -> UIViewController { //DELETE
-        let vc = AddItemsSheetViewController()
-        vc.title = "Add"
-        vc.delegate = delegate
-        return vc
-    }
-    
-//    func makeAddBasicNeedsSheet() -> UIViewController { //DELETE
-//        let vc = AddBasicNeedsViewController()
-//        return vc
-//    }
-//    
-//    func makeAddMeasurementSheet() -> UIViewController { //DELETE
-//        let vc = AddMeasurementViewController()
-//        return vc
-//    }
-    
-
-}
-
 // MARK: - TodayFactory
 extension DefaultAppFactory {    
     func makeEditSectionsViewController() -> UIViewController {

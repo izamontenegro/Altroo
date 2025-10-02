@@ -11,7 +11,6 @@ protocol AppFactory:
     OnboardingFactory,
     AssociatePatientFactory,
     MainFlowFactory,
-    AddItemFactory,
     TodayFactory,
     ProfileFactory,
     EventsFactory,
@@ -44,11 +43,6 @@ protocol MainFlowFactory {
     func makeTodayViewController(delegate: TodayViewControllerDelegate) -> UIViewController
     func makeHistoryViewController(delegate: HistoryViewControllerDelegate) -> UIViewController
     func makeAnalysisViewController() -> UIViewController
-}
-
-// MARK: - ADD ITEM FLOW
-protocol AddItemFactory {
-    func makeAddItemSheet(delegate: AddItemsSheetViewControllerDelegate) -> UIViewController
 }
 
 // MARK: - TODAY FLOW
