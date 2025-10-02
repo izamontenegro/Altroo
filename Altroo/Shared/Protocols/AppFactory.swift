@@ -13,6 +13,7 @@ protocol AppFactory:
     MainFlowFactory,
     AddItemFactory,
     TodayFactory,
+    ProfileFactory,
     EventsFactory,
     MedicationFactory,
     BasicNeedsFactory,
@@ -53,8 +54,14 @@ protocol AddItemFactory {
 
 // MARK: - TODAY FLOW
 protocol TodayFactory {
-    func makeProfileViewController() -> UIViewController
     func makeEditSectionsViewController() -> UIViewController
+}
+
+// MARK: - PROFILE FLOW
+protocol ProfileFactory {
+    func makeProfileViewController(delegate: ProfileViewControllerDelegate) -> UIViewController
+    func makeChangeCaregiverViewController() -> UIViewController
+    func makeEditCaregiverViewController() -> UIViewController
 }
 
 // MARK: - EVENTS FLOW

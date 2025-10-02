@@ -8,10 +8,12 @@
 import UIKit
 
 protocol ProfileViewControllerDelegate: AnyObject {
-    func Show()
+    func openChangeCaregiversSheet()
+    func openEditCaregiversSheet()
 }
 
 class ProfileViewController: UIViewController {
+    weak var delegate: ProfileViewControllerDelegate?
 
     let viewLabel: UILabel = {
         let label = UILabel()
@@ -74,12 +76,23 @@ class ProfileViewController: UIViewController {
         vStack.addArrangedSubview(changeCareRecipientButton)
         vStack.addArrangedSubview(editCaregiverButton)
         vStack.addArrangedSubview(exportButton)
+        
+        changeCareRecipientButton.addTarget(self, action: #selector(didTapChangeCareRecipientButton), for: .touchUpInside)
+        editCaregiverButton.addTarget(self, action: #selector(didTapEditCaregiverButton), for: .touchUpInside)
 
         NSLayoutConstraint.activate([
             vStack.centerXAnchor.constraint(equalTo: view.centerXAnchor),
             vStack.centerYAnchor.constraint(equalTo: view.centerYAnchor)
         ])
         
+    }
+    
+    @objc func didTapChangeCareRecipientButton() {
+        delegate?.openChangeCaregiversSheet()
+    }
+    
+    @objc func didTapEditCaregiverButton() {
+        delegate?.openEditCaregiversSheet()
     }
 
 }

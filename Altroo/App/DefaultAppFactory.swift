@@ -8,7 +8,6 @@ import UIKit
 
 // MARK: - DefaultAppFactory
 final class DefaultAppFactory: AppFactory {
-    
     private let patientService: PatientService
     
     init(patientService: PatientService) {
@@ -119,14 +118,28 @@ extension DefaultAppFactory {
 }
 
 // MARK: - TodayFactory
+extension DefaultAppFactory {    
+    func makeEditSectionsViewController() -> UIViewController {
+        let vc = EditSectionViewController()
+        return vc
+    }
+}
+
+//MARK: - ProfileFactory
 extension DefaultAppFactory {
-    func makeProfileViewController() -> UIViewController {
+    func makeProfileViewController(delegate: ProfileViewControllerDelegate) -> UIViewController {
         let vc = ProfileViewController()
+        vc.delegate = delegate
         return vc
     }
     
-    func makeEditSectionsViewController() -> UIViewController {
-        let vc = EditSectionViewController()
+    func makeChangeCaregiverViewController() -> UIViewController {
+        let vc = ChangeCareRecipientViewController()
+        return vc
+    }
+    
+    func makeEditCaregiverViewController() -> UIViewController {
+        let vc = EditCaregiverViewController()
         return vc
     }
 }

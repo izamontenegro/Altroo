@@ -124,12 +124,15 @@ final class TodayCoordinator: Coordinator {
             let vc = factory.makeAddEventViewController()
             navigation.pushViewController(vc, animated: true)
             
-        case .careRecipientProfile:
-            let vc = factory.makeProfileViewController()
-            navigation.pushViewController(vc, animated: true)
         case .editSection:
             let vc = factory.makeEditSectionsViewController()
             navigation.pushViewController(vc, animated: true)
+            
+        case .careRecipientProfile:
+            let profileCoord = ProfileCoordinator(
+                navigation: navigation, patientService: patientService, factory: factory
+            )
+            add(child: profileCoord); profileCoord.start()
         }
     }
 }
@@ -186,7 +189,6 @@ extension TodayCoordinator: TodayViewControllerDelegate {
     func goToAddNewTask() {
         show(destination: .addNewTask)
     }
-
     
     func goToSeeAllMedication() {
         show(destination: .seeAllMedication)
@@ -211,7 +213,9 @@ extension TodayCoordinator: TodayViewControllerDelegate {
 
 
 enum TodayDestination {
-    case careRecipientProfile, editSection
+    case careRecipientProfile
+    
+    case editSection
     
     case recordFeeding, recordHydration, recordStool, recordUrine
     
