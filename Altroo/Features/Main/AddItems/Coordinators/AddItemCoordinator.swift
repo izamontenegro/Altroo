@@ -32,20 +32,29 @@ extension AddItemCoordinator: AddItemsSheetViewControllerDelegate {
     func addItemsSheet(_ controller: AddItemsSheetViewController, didSelect destination: AddItemDestination) {
         switch destination {
         case .basicNeeds:
-            let vc = factory.makeAddBasicNeedsSheet()
-            navigation.pushViewController(vc, animated: true)
+            print("lol")
+//            let vc = factory.makeAddBasicNeedsSheet()
+//            navigation.pushViewController(vc, animated: true)
         case .measurement:
-            let vc = factory.makeAddMeasurementSheet()
-            navigation.pushViewController(vc, animated: true)
+            print("lol")
+
+//            let vc = factory.makeAddMeasurementSheet()
+//            navigation.pushViewController(vc, animated: true)
         case .medication:
-            let vc = factory.makeAddMedicationViewController()
-            navigation.pushViewController(vc, animated: true)
+            print("lol")
+
+//            let vc = factory.makeAddMedicationViewController()
+//            navigation.pushViewController(vc, animated: true)
         case .routineActivity:
-            let vc = factory.makeAddRoutineActivityViewController()
-            navigation.pushViewController(vc, animated: true)
+            print("lol")
+
+//            let vc = factory.makeAddTaskViewController()
+//            navigation.pushViewController(vc, animated: true)
         case .event:
-            let vc = factory.makeAddEventViewController()
-            navigation.pushViewController(vc, animated: true)
+            print("lol")
+
+//            let vc = factory.makeAddEventViewController()
+//            navigation.pushViewController(vc, animated: true)
         case .symptom:
             let vc = factory.makeAddSymptomViewController()
             navigation.pushViewController(vc, animated: true)

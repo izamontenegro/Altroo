@@ -7,7 +7,7 @@
 
 import UIKit
 
-class AddRoutineActivityViewController: UIViewController {
+class AddTaskViewController: UIViewController {
 
     let viewLabel: UILabel = {
         let label = UILabel()

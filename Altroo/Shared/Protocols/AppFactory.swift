@@ -12,7 +12,7 @@ protocol AppFactory:
     AssociatePatientFactory,
     MainFlowFactory,
     AddItemFactory,
-    ProfileFactory,
+    TodayFactory,
     EventsFactory,
     MedicationFactory,
     BasicNeedsFactory,
@@ -47,28 +47,27 @@ protocol MainFlowFactory {
 // MARK: - ADD ITEM FLOW
 protocol AddItemFactory {
     func makeAddItemSheet(delegate: AddItemsSheetViewControllerDelegate) -> UIViewController
-    func makeAddBasicNeedsSheet() -> UIViewController
-    func makeAddMeasurementSheet() -> UIViewController
-    func makeAddMedicationViewController() -> UIViewController
-    func makeAddRoutineActivityViewController() -> UIViewController
     func makeAddSymptomViewController() -> UIViewController
-    func makeAddEventViewController() -> UIViewController
 }
 
-// MARK: - PROFILE FLOW
-protocol ProfileFactory {
+// MARK: - TODAY FLOW
+protocol TodayFactory {
     func makeProfileViewController() -> UIViewController
+    func makeEditSectionsViewController() -> UIViewController
 }
 
 // MARK: - EVENTS FLOW
 protocol EventsFactory {
     func makeAllEventsViewController() -> UIViewController
     func makeEventDetailSheet() -> UIViewController
+    func makeAddEventViewController() -> UIViewController
 }
 
 // MARK: - MEDICATION FLOW
 protocol MedicationFactory {
     func makeMedicationDetailSheet() -> UIViewController
+    func makeAllMedicationViewController() -> UIViewController
+    func makeAddMedicationViewController() -> UIViewController
     func makeMedicationTimeSheet() -> UIViewController
 }
 
@@ -82,12 +81,17 @@ protocol BasicNeedsFactory {
 
 // MARK: - ROUTINE ACTIVITIES FLOW
 protocol RoutineActivitiesFactory {
-    func makeAllRoutineActivitiesViewController() -> UIViewController
+    func makeAllTasksViewController() -> UIViewController
+    func makeAddTaskViewController() -> UIViewController
 }
 
 // MARK: - MEASUREMENT FLOW
 protocol MeasurementFactory {
-    func makeRecordMeasurementSheet() -> UIViewController
+    func makeRecordHeartRateSheet() -> UIViewController
+    func makerRecordGlycemiaSheet() -> UIViewController
+    func makeRecordBloodPressureSheet() -> UIViewController
+    func makeRecordTemperatureSheet() -> UIViewController
+    func makeRecordSaturationSheet() -> UIViewController
 }
 
 // MARK: - GENERAL FLOW
