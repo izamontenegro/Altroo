@@ -65,9 +65,10 @@ extension DefaultAppFactory {
 
 // MARK: - MainFlowFactory
 extension DefaultAppFactory {
-    func makeSettingsViewController() -> UIViewController {
+    func makeSettingsViewController(delegate: SettingsViewControllerDelegate) -> UIViewController {
         let vc = SettingsViewController()
         vc.title = "Settings"
+        vc.delegate = delegate
         return vc
     }
     
@@ -129,7 +130,6 @@ extension DefaultAppFactory {
         return vc
     }
 }
-
 
 // MARK: - EventsFactory
 extension DefaultAppFactory {
@@ -240,6 +240,22 @@ extension DefaultAppFactory {
 extension DefaultAppFactory {
     func makeSeeHistoryDetailSheet() -> UIViewController {
         let vc = HistoryDetailViewController()
+        return vc
+    }
+}
+
+//MARK: - SettingsFactory
+extension DefaultAppFactory {
+    func makeUserProfileViewController() -> UIViewController {
+        let vc = UserProfileViewController()
+        return vc
+    }
+    func makePrivacySecurityViewController() -> UIViewController {
+        let vc = PrivacySecurityViewController()
+        return vc
+    }
+    func makeDevelopersViewController() -> UIViewController{
+        let vc = DevelopersViewController()
         return vc
     }
 }

@@ -52,13 +52,6 @@ class TodayViewController: UIViewController {
         return label
     }()
     
-    //    let profileButton: UIButton = {
-    //        let button = UIButton(type: .system)
-    //        button.setTitle("Profile View", for: .normal)
-    //        button.translatesAutoresizingMaskIntoConstraints = false
-    //        return button
-    //    }()
-    
     let vStack: UIStackView = {
         let stackView = UIStackView(arrangedSubviews: [])
         stackView.axis = .vertical

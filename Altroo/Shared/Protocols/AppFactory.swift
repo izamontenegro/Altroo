@@ -19,7 +19,8 @@ protocol AppFactory:
     RoutineActivitiesFactory,
     MeasurementFactory,
     GeneralFactory,
-    HistoryFactory {
+    HistoryFactory,
+    SettingsFactory {
 }
 
 // MARK: - ONBOARDING FLOW
@@ -38,7 +39,7 @@ protocol AssociatePatientFactory {
 
 // MARK: - MAIN FLOW
 protocol MainFlowFactory {
-    func makeSettingsViewController() -> UIViewController
+    func makeSettingsViewController(delegate: SettingsViewControllerDelegate) -> UIViewController
     func makeTodayViewController(delegate: TodayViewControllerDelegate) -> UIViewController
     func makeHistoryViewController(delegate: HistoryViewControllerDelegate) -> UIViewController
     func makeAnalysisViewController() -> UIViewController
@@ -104,6 +105,9 @@ protocol HistoryFactory {
     func makeSeeHistoryDetailSheet() -> UIViewController
 }
 
+// MARK: - SETTINGS FLOW
 protocol SettingsFactory {
-    // TODO: - SETTINGS FLOW
+    func makeUserProfileViewController() -> UIViewController
+    func makePrivacySecurityViewController() -> UIViewController
+    func makeDevelopersViewController() -> UIViewController
 }
