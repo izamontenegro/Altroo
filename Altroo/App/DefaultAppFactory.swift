@@ -111,16 +111,18 @@ extension DefaultAppFactory {
 //        return vc
 //    }
     
-    func makeAddSymptomViewController() -> UIViewController { //TRANSFER
-        let vc = AddSymptomViewController()
-        return vc
-    }
+
 }
 
 // MARK: - TodayFactory
 extension DefaultAppFactory {    
     func makeEditSectionsViewController() -> UIViewController {
         let vc = EditSectionViewController()
+        return vc
+    }
+    
+    func makeAddSymptomViewController() -> UIViewController {
+        let vc = AddSymptomViewController()
         return vc
     }
 }

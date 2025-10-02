@@ -133,6 +133,10 @@ final class TodayCoordinator: Coordinator {
                 navigation: navigation, patientService: patientService, factory: factory
             )
             add(child: profileCoord); profileCoord.start()
+            
+        case .addSymptom:
+            let vc = factory.makeAddSymptomViewController()
+            navigation.pushViewController(vc, animated: true)
         }
     }
 }
@@ -209,6 +213,10 @@ extension TodayCoordinator: TodayViewControllerDelegate {
     func goToAddNewEvent() {
         show(destination: .addNewEvent)
     }
+    
+    func goToAddNewSymptom() {
+        show(destination: .addSymptom)
+    }
 }
 
 
@@ -226,4 +234,6 @@ enum TodayDestination {
     case seeAllMedication, addNewMedication, checkMedicationDone
     
     case seeAllEvents, addNewEvent
+    
+    case addSymptom
 }

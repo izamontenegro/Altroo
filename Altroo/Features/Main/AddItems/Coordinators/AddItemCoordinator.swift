@@ -56,8 +56,10 @@ extension AddItemCoordinator: AddItemsSheetViewControllerDelegate {
 //            let vc = factory.makeAddEventViewController()
 //            navigation.pushViewController(vc, animated: true)
         case .symptom:
-            let vc = factory.makeAddSymptomViewController()
-            navigation.pushViewController(vc, animated: true)
+            print("lol")
+
+//            let vc = factory.makeAddSymptomViewController()
+//            navigation.pushViewController(vc, animated: true)
         case .close:
             navigation.presentingViewController?.dismiss(animated: true)
         }

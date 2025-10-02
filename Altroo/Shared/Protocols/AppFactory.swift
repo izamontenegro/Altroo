@@ -49,12 +49,12 @@ protocol MainFlowFactory {
 // MARK: - ADD ITEM FLOW
 protocol AddItemFactory {
     func makeAddItemSheet(delegate: AddItemsSheetViewControllerDelegate) -> UIViewController
-    func makeAddSymptomViewController() -> UIViewController
 }
 
 // MARK: - TODAY FLOW
 protocol TodayFactory {
     func makeEditSectionsViewController() -> UIViewController
+    func makeAddSymptomViewController() -> UIViewController
 }
 
 // MARK: - PROFILE FLOW

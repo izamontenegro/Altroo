@@ -31,6 +31,8 @@ protocol TodayViewControllerDelegate: AnyObject {
     
     func goToSeeAllEvents()
     func goToAddNewEvent()
+    
+    func goToAddNewSymptom()
 }
 
 class TodayViewController: UIViewController {
@@ -112,6 +114,9 @@ class TodayViewController: UIViewController {
         
         createButton(title: "See All Events", action: #selector(didTapSeeAllEvents))
         createButton(title: "Add New Event", action: #selector(didTapAddNewEvent))
+        
+        createButton(title: "Add New Symptom", action: #selector(didTapAddNewSymptom))
+
     }
     
     //MARK: - BUTTON ACTIONS
@@ -185,6 +190,10 @@ class TodayViewController: UIViewController {
     
     @objc private func didTapAddNewEvent() {
         delegate?.goToAddNewEvent()
+    }
+    
+    @objc private func didTapAddNewSymptom() {
+        delegate?.goToAddNewSymptom()
     }
     
     
