@@ -8,6 +8,7 @@ import UIKit
 
 // MARK: - DefaultAppFactory
 final class DefaultAppFactory: AppFactory {
+    
     private let patientService: PatientService
     
     init(patientService: PatientService) {
@@ -77,8 +78,9 @@ extension DefaultAppFactory {
         return vc
     }
     
-    func makeHistoryViewController() -> UIViewController {
+    func makeHistoryViewController(delegate: HistoryViewControllerDelegate) -> UIViewController {
         let vc = HistoryViewController()
+        vc.delegate = delegate
         vc.title = "History"
         return vc
     }
@@ -122,8 +124,8 @@ extension DefaultAppFactory {
         return vc
     }
     
-    func makeEditSectionsViewController() -> UIViewController { //TODO
-        let vc = ProfileViewController()
+    func makeEditSectionsViewController() -> UIViewController {
+        let vc = EditSectionViewController()
         return vc
     }
 }
@@ -135,7 +137,7 @@ extension DefaultAppFactory {
         let vc = AllEventViewController()
         return vc
     }
-    func makeEventDetailSheet() -> UIViewController { // TODO: Conform to sheet
+    func makeEventDetailSheet() -> UIViewController {
         let vc = EventDetailViewController()
         return vc
     }
@@ -147,7 +149,7 @@ extension DefaultAppFactory {
 
 // MARK: - MedicationFactory
 extension DefaultAppFactory {
-    func makeMedicationDetailSheet() -> UIViewController { // TODO: Make sheet
+    func makeMedicationDetailSheet() -> UIViewController {
         let vc = MedicationDetailViewController()
         return vc
     }
@@ -168,15 +170,15 @@ extension DefaultAppFactory {
 
 // MARK: - BasicNeedsFactory
 extension DefaultAppFactory {
-    func makeStoolRecordViewController() -> UIViewController { // TODO: make sheet
+    func makeStoolRecordViewController() -> UIViewController {
         let vc = StoolRecordViewController()
         return vc
     }
-    func makeUrineRecordViewController() -> UIViewController { // TODO: make sheet
+    func makeUrineRecordViewController() -> UIViewController {
         let vc = UrineRecordViewController()
         return vc
     }
-    func makeMealRecordViewController() -> UIViewController { // TODO: make sheet
+    func makeMealRecordViewController() -> UIViewController {
         let vc = MealRecordViewController()
         return vc
     }
@@ -229,15 +231,15 @@ extension DefaultAppFactory {
 // MARK: - GeneralFactory
 extension DefaultAppFactory {
     func makeAddIntervalSheet() -> UIViewController { // TODO:
-        let vc = AddBasicNeedsViewController()
+        let vc = HistoryDetailViewController()
         return vc
     }
 }
 
 // MARK: - HistoryFactory
 extension DefaultAppFactory {
-    func makeSeeHistoryDetailSheet() -> UIViewController { // TODO:
-        let vc = AddBasicNeedsViewController()
+    func makeSeeHistoryDetailSheet() -> UIViewController {
+        let vc = HistoryDetailViewController()
         return vc
     }
 }

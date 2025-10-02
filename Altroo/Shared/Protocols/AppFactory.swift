@@ -40,7 +40,7 @@ protocol AssociatePatientFactory {
 protocol MainFlowFactory {
     func makeSettingsViewController() -> UIViewController
     func makeTodayViewController(delegate: TodayViewControllerDelegate) -> UIViewController
-    func makeHistoryViewController() -> UIViewController
+    func makeHistoryViewController(delegate: HistoryViewControllerDelegate) -> UIViewController
     func makeAnalysisViewController() -> UIViewController
 }
 

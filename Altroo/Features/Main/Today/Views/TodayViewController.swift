@@ -9,6 +9,7 @@ import UIKit
 
 protocol TodayViewControllerDelegate: AnyObject {
     func goToCareRecipientProfileView()
+    func goToEditSectionView()
     
     func goToRecordFeeding()
     func goToRecordHydration()
@@ -96,7 +97,8 @@ class TodayViewController: UIViewController {
     
     private func addDelegateButtons() {
         createButton(title: "Profile", action: #selector(didTapProfileView))
-        
+        createButton(title: "Edit sections", action: #selector(didTapEditSectionView))
+
         createButton(title: "Record Feeding", action: #selector(didTapRecordFeeding))
         createButton(title: "Record Hydration", action: #selector(didTapRecordHydration))
         createButton(title: "Record Stool", action: #selector(didTapRecordStool))
@@ -122,6 +124,10 @@ class TodayViewController: UIViewController {
     //MARK: - BUTTON ACTIONS
     @objc private func didTapProfileView() {
         delegate?.goToCareRecipientProfileView()
+    }
+    
+    @objc private func didTapEditSectionView() {
+        delegate?.goToEditSectionView()
     }
     
     @objc private func didTapRecordFeeding() {

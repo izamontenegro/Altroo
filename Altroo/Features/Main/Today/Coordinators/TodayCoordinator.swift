@@ -34,7 +34,13 @@ final class TodayCoordinator: Coordinator {
             navigation.pushViewController(vc, animated: true)
         case .recordHydration:
             let vc = factory.makeHydrationRecordSheet()
-            navigation.pushViewController(vc, animated: true)
+            vc.modalPresentationStyle = .pageSheet
+            
+            if let sheet = vc.sheetPresentationController {
+                sheet.detents = [.medium()]
+                sheet.prefersGrabberVisible = true
+            }
+            navigation.present(vc, animated: true)
         case .recordStool:
             let vc = factory.makeStoolRecordViewController()
             navigation.pushViewController(vc, animated: true)
@@ -44,19 +50,49 @@ final class TodayCoordinator: Coordinator {
             
         case .recordHeartRate:
             let vc = factory.makeRecordHeartRateSheet()
-            navigation.pushViewController(vc, animated: true)
+            vc.modalPresentationStyle = .pageSheet
+            
+            if let sheet = vc.sheetPresentationController {
+                sheet.detents = [.medium()]
+                sheet.prefersGrabberVisible = true
+            }
+            navigation.present(vc, animated: true)
         case .recordGlycemia:
             let vc = factory.makerRecordGlycemiaSheet()
-            navigation.pushViewController(vc, animated: true)
+            vc.modalPresentationStyle = .pageSheet
+            
+            if let sheet = vc.sheetPresentationController {
+                sheet.detents = [.medium()]
+                sheet.prefersGrabberVisible = true
+            }
+            navigation.present(vc, animated: true)
         case .recordBloodPressure:
             let vc = factory.makeRecordBloodPressureSheet()
-            navigation.pushViewController(vc, animated: true)
+            vc.modalPresentationStyle = .pageSheet
+            
+            if let sheet = vc.sheetPresentationController {
+                sheet.detents = [.medium()]
+                sheet.prefersGrabberVisible = true
+            }
+            navigation.present(vc, animated: true)
         case .recordTemperature:
             let vc = factory.makeRecordTemperatureSheet()
-            navigation.pushViewController(vc, animated: true)
+            vc.modalPresentationStyle = .pageSheet
+            
+            if let sheet = vc.sheetPresentationController {
+                sheet.detents = [.medium()]
+                sheet.prefersGrabberVisible = true
+            }
+            navigation.present(vc, animated: true)
         case .recordSaturation:
             let vc = factory.makeRecordSaturationSheet()
-            navigation.pushViewController(vc, animated: true)
+            vc.modalPresentationStyle = .pageSheet
+            
+            if let sheet = vc.sheetPresentationController {
+                sheet.detents = [.medium()]
+                sheet.prefersGrabberVisible = true
+            }
+            navigation.present(vc, animated: true)
             
         case .seeAllTasks:
             let vc = factory.makeAllTasksViewController()
@@ -73,7 +109,13 @@ final class TodayCoordinator: Coordinator {
             navigation.pushViewController(vc, animated: true)
         case .checkMedicationDone:
             let vc = factory.makeMedicationTimeSheet()
-            navigation.pushViewController(vc, animated: true)
+            vc.modalPresentationStyle = .pageSheet
+            
+            if let sheet = vc.sheetPresentationController {
+                sheet.detents = [.medium()]
+                sheet.prefersGrabberVisible = true
+            }
+            navigation.present(vc, animated: true)
             
         case .seeAllEvents:
             let vc = factory.makeAllEventsViewController()
@@ -85,6 +127,9 @@ final class TodayCoordinator: Coordinator {
         case .careRecipientProfile:
             let vc = factory.makeProfileViewController()
             navigation.pushViewController(vc, animated: true)
+        case .editSection:
+            let vc = factory.makeEditSectionsViewController()
+            navigation.pushViewController(vc, animated: true)
         }
     }
 }
@@ -92,6 +137,10 @@ final class TodayCoordinator: Coordinator {
 extension TodayCoordinator: TodayViewControllerDelegate {
     func goToCareRecipientProfileView() {
         show(destination: .careRecipientProfile)
+    }
+    
+    func goToEditSectionView() {
+        show(destination: .editSection)
     }
     
     func goToRecordFeeding() {
@@ -162,7 +211,7 @@ extension TodayCoordinator: TodayViewControllerDelegate {
 
 
 enum TodayDestination {
-    case careRecipientProfile
+    case careRecipientProfile, editSection
     
     case recordFeeding, recordHydration, recordStool, recordUrine
     
