@@ -21,24 +21,17 @@ class EventCard: InnerShadowView {
 
         super.init(frame: frame, color: .blue70)
         
-        setupDate()
+        setupDateStack()
     }
     
     required init?(coder: NSCoder) {
         fatalError("init(coder:) has not been implemented")
     }
     
-    private func setupDate() {
-        let weekdayFormatter = DateFormatter()
-        weekdayFormatter.locale = Locale(identifier: "pt_BR")
-        weekdayFormatter.dateFormat = "EEE"
-        
-        let dayFormatter = DateFormatter()
-        dayFormatter.locale = Locale(identifier: "pt_BR")
-        dayFormatter.dateFormat = "d"
+    private func setupDateStack() {
         
         dayLabel = StandardLabel(
-            labelText: weekdayFormatter.string(from: date).uppercased(),
+            labelText: DateFormartterHelper.weekDayFormatter(date: date),
             labelFont: .sfPro,
             labelType: .footnote,
             labelColor: .black40,
@@ -46,7 +39,7 @@ class EventCard: InnerShadowView {
         )
         
         numberLabel = StandardLabel(
-            labelText: dayFormatter.string(from: date),
+            labelText: DateFormartterHelper.dayFormatter(date: date),
             labelFont: .sfPro,
             labelType: .largeTitle,
             labelColor: .black20,
