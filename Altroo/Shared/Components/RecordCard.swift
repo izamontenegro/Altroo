@@ -21,14 +21,14 @@ class RecordCard: InnerShadowView {
         self.title = title
         self.iconName = iconName
         
-        super.init(frame: frame)
+        super.init(frame: frame, color: .blue70)
         
         setupBackground()
         setupShadows()
         setupPlusButton()
     }
 
-    convenience override init(frame: CGRect) {
+    convenience init(frame: CGRect) {
         self.init(frame: frame,
                   title: "",
                   iconName: "questionmark.circle")

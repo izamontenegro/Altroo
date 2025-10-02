@@ -7,24 +7,19 @@
 import UIKit
 
 class InnerShadowView: UIView {
+    
+    private let shadowColor: UIColor
 
-    lazy var innerShadowLayer: CAShapeLayer = {
-        // receber outras cores
-        let shadowLayer = CAShapeLayer()
-        shadowLayer.shadowColor = UIColor.blue70.cgColor
-        shadowLayer.shadowOffset = CGSize(width: 0, height: 4)
-        shadowLayer.shadowOpacity = 0.25
-        shadowLayer.shadowRadius = 7
-        shadowLayer.fillRule = .evenOdd
-        return shadowLayer
-    }()
+    lazy var innerShadowLayer = CAShapeLayer()
 
-    override init(frame: CGRect) {
+    init(frame: CGRect, color: UIColor) {
+        self.shadowColor = color
         super.init(frame: frame)
         self.configure()
     }
     
     required init?(coder aDecoder: NSCoder) {
+        self.shadowColor = .black
         super.init(coder: aDecoder)
         self.configure()
     }
@@ -32,6 +27,13 @@ class InnerShadowView: UIView {
     private func configure() {
         self.layer.masksToBounds = true
         self.layer.cornerRadius = 6
+        
+        innerShadowLayer.shadowColor = shadowColor.cgColor
+        innerShadowLayer.shadowOffset = CGSize(width: 0, height: 4)
+        innerShadowLayer.shadowOpacity = 0.25
+        innerShadowLayer.shadowRadius = 7
+        innerShadowLayer.fillRule = .evenOdd
+        
         self.layer.addSublayer(self.innerShadowLayer)
     }
 
