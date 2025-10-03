@@ -26,9 +26,6 @@ class EventCard: InnerShadowView {
     let date: Date
     var dayEvents: [mockEvents]
     
-    private var dayLabel: StandardLabel!
-    private var numberLabel: StandardLabel!
-    
     init(frame: CGRect = .zero, date: Date, dayEvents: [mockEvents]) {
         self.date = date
         self.dayEvents = dayEvents
@@ -42,7 +39,7 @@ class EventCard: InnerShadowView {
     }
     
     private func makeDateStack() -> UIStackView {
-        dayLabel = StandardLabel(
+        let dayLabel = StandardLabel(
             labelText: DateFormartterHelper.weekDayFormatter(date: date),
             labelFont: .sfPro,
             labelType: .footnote,
@@ -50,7 +47,7 @@ class EventCard: InnerShadowView {
             labelWeight: .medium
         )
         
-        numberLabel = StandardLabel(
+        let numberLabel = StandardLabel(
             labelText: DateFormartterHelper.dayFormatter(date: date),
             labelFont: .sfPro,
             labelType: .largeTitle,
@@ -81,25 +78,26 @@ class EventCard: InnerShadowView {
         return eventsStack
     }
     
-     private func setupCardLayout() {
-        let mainStack = UIStackView(arrangedSubviews: [makeDateStack(), makeEventStack()])
-        mainStack.axis = .horizontal
-        mainStack.alignment = .top
-        mainStack.spacing = 88
-        mainStack.translatesAutoresizingMaskIntoConstraints = false
-        
-        addSubview(mainStack)
-        
-        NSLayoutConstraint.activate([
-            mainStack.topAnchor.constraint(equalTo: topAnchor, constant: 12),
-            mainStack.leadingAnchor.constraint(equalTo: leadingAnchor, constant: 12),
-            mainStack.trailingAnchor.constraint(equalTo: trailingAnchor, constant: -12),
-            mainStack.bottomAnchor.constraint(equalTo: bottomAnchor, constant: -12)
-        ])
-        
-        
-        backgroundColor = .systemRed
-    }
+    private func setupCardLayout() {
+    let mainStack = UIStackView(arrangedSubviews: [makeDateStack(), makeEventStack()])
+    mainStack.axis = .horizontal
+    mainStack.alignment = .top
+    mainStack.spacing = 88
+    mainStack.translatesAutoresizingMaskIntoConstraints = false
+    mainStack.distribution = .fillProportionally
+    
+    addSubview(mainStack)
+    
+    NSLayoutConstraint.activate([
+        mainStack.topAnchor.constraint(equalTo: topAnchor, constant: 12),
+        mainStack.leadingAnchor.constraint(equalTo: leadingAnchor, constant: 12),
+        mainStack.trailingAnchor.constraint(equalTo: trailingAnchor, constant: -12),
+        mainStack.bottomAnchor.constraint(equalTo: bottomAnchor, constant: -12)
+    ])
+    
+    
+    backgroundColor = .pureWhite
+}
     
     private func makeEventView(event: mockEvents, index: Int) -> UIView {
         let eventView = UIView()
@@ -202,7 +200,10 @@ class EventCardPreview: UIViewController {
 
 #Preview {
     
+// MARK: - APPLICATION IN VC
     EventCardPreview()
+    
+// MARK: - CARD ONLY
 //    EventCard(
 //        date: Date(),
 //        dayEvents: [
@@ -211,4 +212,5 @@ class EventCardPreview: UIViewController {
 //            mockEvents(name: "Eat some burguers", startTime: Date(), endTime: Date(), startDate: Date(), endDate: nil)
 //        ]
 //    )
+    
 }
