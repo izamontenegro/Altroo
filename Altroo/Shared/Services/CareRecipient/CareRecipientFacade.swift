@@ -7,12 +7,19 @@
 
 import Foundation
 
+protocol BasicNeedsFacadeProtocol {}
+protocol RoutineActivitiesFacadeProtocol {}
+
 class CareRecipientFacade {
     let persistenceService: CoreDataService
-    let basicNeedsFacade: BasicNeedsFacade
+    let basicNeedsFacade: BasicNeedsFacadeProtocol
+    let routineActivitiesFacade: RoutineActivitiesFacadeProtocol
     
-    init(basicNeedsFacade: BasicNeedsFacade, persistenceService: CoreDataService) {
+    init(basicNeedsFacade: BasicNeedsFacadeProtocol,
+         routineActivitiesFacade: RoutineActivitiesFacadeProtocol,
+         persistenceService: CoreDataService) {
         self.basicNeedsFacade = basicNeedsFacade
+        self.routineActivitiesFacade = routineActivitiesFacade
         self.persistenceService = persistenceService
     }
 }
