@@ -67,7 +67,7 @@ protocol EventsFactory {
 
 // MARK: - MEDICATION FLOW
 protocol MedicationFactory {
-    func makeMedicationDetailSheet() -> UIViewController
+    func makeMedicationDetailSheet(delegate: MedicationDetailViewControllerDelegate) -> UIViewController
     func makeAllMedicationViewController() -> UIViewController
     func makeAddMedicationViewController() -> UIViewController
     func makeMedicationTimeSheet() -> UIViewController

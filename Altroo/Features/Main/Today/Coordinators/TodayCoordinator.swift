@@ -11,7 +11,7 @@ final class TodayCoordinator: Coordinator {
     var childCoordinators: [Coordinator] = []
     private let navigation: UINavigationController
     private let patientService: PatientService
-    private let factory: AppFactory // <- NOVO
+    private let factory: AppFactory
     
     var onRequestLogout: (() -> Void)?
     
@@ -108,14 +108,21 @@ final class TodayCoordinator: Coordinator {
             let vc = factory.makeAddMedicationViewController()
             navigation.pushViewController(vc, animated: true)
         case .checkMedicationDone:
-            let vc = factory.makeMedicationTimeSheet()
-            vc.modalPresentationStyle = .pageSheet
+            let nav = UINavigationController()
+
+            let medicationDetailCood = MedicationDetailCoordinator(
+                navigation: nav, patientService: patientService, factory: factory
+            )
+            add(child: medicationDetailCood)
             
-            if let sheet = vc.sheetPresentationController {
-                sheet.detents = [.medium()]
-                sheet.prefersGrabberVisible = true
-            }
-            navigation.present(vc, animated: true)
+            nav.modalPresentationStyle = .pageSheet
+                if let sheet = nav.sheetPresentationController {
+                    sheet.detents = [.medium()]
+                    sheet.prefersGrabberVisible = true
+                }
+
+                navigation.present(nav, animated: true)
+                medicationDetailCood.start()
             
         case .seeAllEvents:
             let vc = factory.makeAllEventsViewController()
@@ -218,6 +225,7 @@ extension TodayCoordinator: TodayViewControllerDelegate {
         show(destination: .addSymptom)
     }
 }
+
 
 
 enum TodayDestination {

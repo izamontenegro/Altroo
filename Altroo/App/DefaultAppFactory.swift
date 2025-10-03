@@ -142,10 +142,6 @@ extension DefaultAppFactory {
 
 // MARK: - MedicationFactory
 extension DefaultAppFactory {
-    func makeMedicationDetailSheet() -> UIViewController {
-        let vc = MedicationDetailViewController()
-        return vc
-    }
     func makeAllMedicationViewController() -> UIViewController {
         let vc = AllMedicationViewController()
         return vc
@@ -154,8 +150,13 @@ extension DefaultAppFactory {
         let vc = AddMedicationViewController()
         return vc
     }
-    func makeMedicationTimeSheet() -> UIViewController { //TODO
-        let vc = AddMedicationViewController()
+    func makeMedicationDetailSheet(delegate: MedicationDetailViewControllerDelegate) -> UIViewController {
+        let vc = MedicationDetailViewController()
+        vc.delegate = delegate
+        return vc
+    }
+    func makeMedicationTimeSheet() -> UIViewController {
+        let vc = MedicationTimeSheetViewController()
         return vc
     }
     

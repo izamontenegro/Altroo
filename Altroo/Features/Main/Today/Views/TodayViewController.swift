@@ -116,7 +116,6 @@ class TodayViewController: UIViewController {
         createButton(title: "Add New Event", action: #selector(didTapAddNewEvent))
         
         createButton(title: "Add New Symptom", action: #selector(didTapAddNewSymptom))
-
     }
     
     //MARK: - BUTTON ACTIONS
