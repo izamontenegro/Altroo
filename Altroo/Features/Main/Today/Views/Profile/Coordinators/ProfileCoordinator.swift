@@ -5,13 +5,16 @@
 //  Created by Raissa Parente on 02/10/25.
 //
 import UIKit
+import CloudKit
 
 final class ProfileCoordinator: Coordinator {
     var childCoordinators: [Coordinator] = []
     private let navigation: UINavigationController
     private let patientService: PatientService
     private let factory: AppFactory
-
+    
+    private var cloudSharingCoordinator: CloudSharingCoordinator?
+    
     init(navigation: UINavigationController, patientService: PatientService, factory: AppFactory) {
         self.factory = factory
         self.patientService = patientService
@@ -25,6 +28,20 @@ final class ProfileCoordinator: Coordinator {
 }
 
 extension ProfileCoordinator: ProfileViewControllerDelegate {
+    func openShareCareRecipientSheet(_ careRecipient: CareRecipient) {
+        guard let topViewController = navigation.topViewController else { return }
+        
+        let sharingCoordinator = CloudSharingCoordinator(
+            presentingViewController: topViewController,
+            careRecipient: careRecipient,
+            coreDataService: CoreDataService() //get from injection?
+        )
+        
+        self.cloudSharingCoordinator = sharingCoordinator
+        
+        sharingCoordinator.presentSharingSheet()
+    }
+    
     func openChangeCaregiversSheet() {
         let vc = factory.makeChangeCaregiverViewController()
         vc.modalPresentationStyle = .pageSheet
