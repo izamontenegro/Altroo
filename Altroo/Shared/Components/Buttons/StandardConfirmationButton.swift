@@ -8,35 +8,35 @@
 import UIKit
 
 
-final class StandardConfirmationButton: UIButton {
-    init(title: String, color: UIColor) {
-        super.init(frame: .zero)
+final class StandardConfirmationButton: PrimaryStyleButton {
+    var title: String
+    
+    init(title: String) {
+        self.title = title
+        super.init()
         
-        setupButton(title: title, color: color)
+        setupButton()
     }
-
+    
     required init?(coder: NSCoder) {
-        super.init(coder: coder)
-        setupButton(title: "Default Button", color: .systemBlue) // Fallback setup
+        fatalError("init(coder:) has not been implemented")
     }
-
-
-    private func setupButton(title: String, color: UIColor) {
-        backgroundColor = color
-
+    
+    
+    private func setupButton() {
         setTitle(title, for: .normal)
         
         setTitleColor(.white, for: .normal)
         
-        layer.cornerRadius = 12
-        layer.masksToBounds = true
-        
-            titleLabel?.font = UIFont.systemFont(ofSize: 18, weight: .bold)
+        layer.cornerRadius = 26
         
         contentEdgeInsets = UIEdgeInsets(top: 16, left: 24, bottom: 16, right: 24)
+        
+        titleLabel?.font = UIFont.systemFont(ofSize: 18, weight: .bold)
+        self.translatesAutoresizingMaskIntoConstraints = false
     }
 }
 
 #Preview {
-    StandardConfirmationButton(title: "Adicionar", color: UIColor(resource: .teal40))
+    StandardConfirmationButton(title: "Adicionar")
 }

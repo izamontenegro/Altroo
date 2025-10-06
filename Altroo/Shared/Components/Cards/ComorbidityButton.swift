@@ -6,7 +6,7 @@
 //
 import UIKit
 
-class ComorbidityCard: UIButton {
+class ComorbidityButton: UIButton {
     var comorbidity: Comorbidity
     
     init(frame: CGRect = .zero, comorbidity: Comorbidity) {
@@ -55,6 +55,7 @@ class ComorbidityCard: UIButton {
         return stack
     }
     
+    //TODO: Take this to the viewmodel
     enum Comorbidity {
         case heartFailure, diabetes, hypertension
         
@@ -86,17 +87,17 @@ class ComorbidityCard: UIButton {
 
 import SwiftUI
 private struct ComorbidityCardPreview: UIViewRepresentable {
-    let card: ComorbidityCard
+    let card: ComorbidityButton
     
-    func makeUIView(context: Context) -> ComorbidityCard {
+    func makeUIView(context: Context) -> ComorbidityButton {
         return card
     }
-    func updateUIView(_ uiView: ComorbidityCard, context: Context) {
+    func updateUIView(_ uiView: ComorbidityButton, context: Context) {
     }
 }
 
 #Preview {
-    let card = ComorbidityCard(comorbidity: .hypertension)
+    let card = ComorbidityButton(comorbidity: .hypertension)
     
     return ComorbidityCardPreview(card: card)
         .frame(width: 120, height: 190)
