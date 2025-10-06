@@ -1,26 +1,27 @@
 //
-//  AddRoutineActivityViewController.swift
+//  ChangeCareRecipientViewController.swift
 //  Altroo
 //
-//  Created by Layza Maria Rodrigues Carneiro on 29/09/25.
+//  Created by Raissa Parente on 02/10/25.
 //
 
 import UIKit
 
-class AddRoutineActivityViewController: UIViewController {
+class ChangeCareRecipientViewController: UIViewController {
 
     let viewLabel: UILabel = {
         let label = UILabel()
-        label.text = "Add Routine Activity View"
+        label.text = "Change Care Recipient View"
         label.textAlignment = .center
         
         label.translatesAutoresizingMaskIntoConstraints = false
         return label
     }()
+    
     override func viewDidLoad() {
         super.viewDidLoad()
 
-        view.backgroundColor = .systemIndigo
+        view.backgroundColor = .systemGray
         
         view.addSubview(viewLabel)
         

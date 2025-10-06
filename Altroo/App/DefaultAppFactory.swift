@@ -64,9 +64,10 @@ extension DefaultAppFactory {
 
 // MARK: - MainFlowFactory
 extension DefaultAppFactory {
-    func makeSettingsViewController() -> UIViewController {
+    func makeSettingsViewController(delegate: SettingsViewControllerDelegate) -> UIViewController {
         let vc = SettingsViewController()
         vc.title = "Settings"
+        vc.delegate = delegate
         return vc
     }
     
@@ -77,8 +78,9 @@ extension DefaultAppFactory {
         return vc
     }
     
-    func makeHistoryViewController() -> UIViewController {
+    func makeHistoryViewController(delegate: HistoryViewControllerDelegate) -> UIViewController {
         let vc = HistoryViewController()
+        vc.delegate = delegate
         vc.title = "History"
         return vc
     }
@@ -90,32 +92,10 @@ extension DefaultAppFactory {
     }
 }
 
-// MARK: - AddItemFactory
-extension DefaultAppFactory {
-    func makeAddItemSheet(delegate: AddItemsSheetViewControllerDelegate) -> UIViewController {
-        let vc = AddItemsSheetViewController()
-        vc.title = "Add"
-        vc.delegate = delegate
-        return vc
-    }
-    
-    func makeAddBasicNeedsSheet() -> UIViewController {
-        let vc = AddBasicNeedsViewController()
-        return vc
-    }
-    
-    func makeAddMeasurementSheet() -> UIViewController {
-        let vc = AddMeasurementViewController()
-        return vc
-    }
-    
-    func makeAddMedicationViewController() -> UIViewController {
-        let vc = AddMedicationViewController()
-        return vc
-    }
-    
-    func makeAddRoutineActivityViewController() -> UIViewController {
-        let vc = AddRoutineActivityViewController()
+// MARK: - TodayFactory
+extension DefaultAppFactory {    
+    func makeEditSectionsViewController() -> UIViewController {
+        let vc = EditSectionViewController()
         return vc
     }
     
@@ -123,77 +103,121 @@ extension DefaultAppFactory {
         let vc = AddSymptomViewController()
         return vc
     }
-    
-    func makeAddEventViewController() -> UIViewController {
-        let vc = AddEventViewController()
-        return vc
-    }
 }
 
-// MARK: - ProfileFactory
+//MARK: - ProfileFactory
 extension DefaultAppFactory {
-    func makeProfileViewController() -> UIViewController {
+    func makeProfileViewController(delegate: ProfileViewControllerDelegate) -> UIViewController {
         let vc = ProfileViewController()
+        vc.delegate = delegate
+        return vc
+    }
+    
+    func makeChangeCaregiverViewController() -> UIViewController {
+        let vc = ChangeCareRecipientViewController()
+        return vc
+    }
+    
+    func makeEditCaregiverViewController() -> UIViewController {
+        let vc = EditCaregiverViewController()
         return vc
     }
 }
 
 // MARK: - EventsFactory
 extension DefaultAppFactory {
-    func makeAllEventsViewController() -> UIViewController { // TODO:
-        let vc = AddBasicNeedsViewController()
+    func makeAllEventsViewController() -> UIViewController {
+        let vc = AllEventViewController()
         return vc
     }
-    func makeEventDetailSheet() -> UIViewController { // TODO:
-        let vc = AddBasicNeedsViewController()
+    func makeEventDetailSheet() -> UIViewController {
+        let vc = EventDetailViewController()
+        return vc
+    }
+    func makeAddEventViewController() -> UIViewController {
+        let vc = AddEventViewController()
         return vc
     }
 }
 
 // MARK: - MedicationFactory
 extension DefaultAppFactory {
-    func makeMedicationDetailSheet() -> UIViewController { // TODO:
-        let vc = AddBasicNeedsViewController()
+    func makeAllMedicationViewController() -> UIViewController {
+        let vc = AllMedicationViewController()
         return vc
     }
-    func makeMedicationTimeSheet() -> UIViewController { // TODO:
-        let vc = AddBasicNeedsViewController()
+    func makeAddMedicationViewController() -> UIViewController {
+        let vc = AddMedicationViewController()
         return vc
     }
+    func makeMedicationDetailSheet(delegate: MedicationDetailViewControllerDelegate) -> UIViewController {
+        let vc = MedicationDetailViewController()
+        vc.delegate = delegate
+        return vc
+    }
+    func makeMedicationTimeSheet() -> UIViewController {
+        let vc = MedicationTimeSheetViewController()
+        return vc
+    }
+    
 }
 
 // MARK: - BasicNeedsFactory
 extension DefaultAppFactory {
-    func makeStoolRecordViewController() -> UIViewController { // TODO:
-        let vc = AddBasicNeedsViewController()
+    func makeStoolRecordViewController() -> UIViewController {
+        let vc = StoolRecordViewController()
         return vc
     }
-    func makeUrineRecordViewController() -> UIViewController { // TODO:
-        let vc = AddBasicNeedsViewController()
+    func makeUrineRecordViewController() -> UIViewController {
+        let vc = UrineRecordViewController()
         return vc
     }
-    func makeMealRecordViewController() -> UIViewController { // TODO:
-        let vc = AddBasicNeedsViewController()
+    func makeMealRecordViewController() -> UIViewController {
+        let vc = MealRecordViewController()
         return vc
     }
-    func makeHydrationRecordSheet() -> UIViewController { // TODO:
-        let vc = AddBasicNeedsViewController()
+    func makeHydrationRecordSheet() -> UIViewController {
+        let vc = HydrationRecordViewController()
         return vc
     }
 }
 
-// MARK: - RoutineActivitiesFactory
+// MARK: - TaskFactory
 extension DefaultAppFactory {
-    func makeAllRoutineActivitiesViewController() -> UIViewController { // TODO:
-        let vc = AddBasicNeedsViewController()
+    func makeAllTasksViewController() -> UIViewController {
+        let vc = AllTasksViewController()
+        return vc
+    }
+    func makeAddTaskViewController() -> UIViewController {
+        let vc = AddTaskViewController()
         return vc
     }
 }
 
 // MARK: - MeasurementFactory
 extension DefaultAppFactory {
-    func makeRecordMeasurementSheet() -> UIViewController { // TODO:
-        let vc = AddBasicNeedsViewController()
+    func makeRecordHeartRateSheet() -> UIViewController {
+        let vc = RecordMeasurementViewController(measurementType: .heartRate)
+        return vc
+    }
+    
+    func makerRecordGlycemiaSheet() -> UIViewController {
+        let vc = RecordMeasurementViewController(measurementType: .glycemia)
+        return vc
+    }
+    
+    func makeRecordBloodPressureSheet() -> UIViewController {
+        let vc = RecordMeasurementViewController(measurementType: .bloodPressure)
+        return vc
+    }
+    
+    func makeRecordTemperatureSheet() -> UIViewController {
+        let vc = RecordMeasurementViewController(measurementType: .temperature)
+        return vc
+    }
+    
+    func makeRecordSaturationSheet() -> UIViewController {
+        let vc = RecordMeasurementViewController(measurementType: .saturation)
         return vc
     }
 }
@@ -201,15 +225,31 @@ extension DefaultAppFactory {
 // MARK: - GeneralFactory
 extension DefaultAppFactory {
     func makeAddIntervalSheet() -> UIViewController { // TODO:
-        let vc = AddBasicNeedsViewController()
+        let vc = HistoryDetailViewController()
         return vc
     }
 }
 
 // MARK: - HistoryFactory
 extension DefaultAppFactory {
-    func makeSeeHistoryDetailSheet() -> UIViewController { // TODO:
-        let vc = AddBasicNeedsViewController()
+    func makeSeeHistoryDetailSheet() -> UIViewController {
+        let vc = HistoryDetailViewController()
+        return vc
+    }
+}
+
+//MARK: - SettingsFactory
+extension DefaultAppFactory {
+    func makeUserProfileViewController() -> UIViewController {
+        let vc = UserProfileViewController()
+        return vc
+    }
+    func makePrivacySecurityViewController() -> UIViewController {
+        let vc = PrivacySecurityViewController()
+        return vc
+    }
+    func makeDevelopersViewController() -> UIViewController{
+        let vc = DevelopersViewController()
         return vc
     }
 }
