@@ -16,7 +16,7 @@ final class CloudSharingCoordinator: NSObject, UICloudSharingControllerDelegate 
     private let presentingViewController: UIViewController
     private let careRecipient: CareRecipient
     
-    init(presentingViewController: UIViewController, careRecipient: CareRecipient, coreDataService: CoreDataService) {
+    init(presentingViewController: UIViewController, careRecipient: CareRecipient, coreDataService: CoreDataService = CoreDataService()) {
         self.presentingViewController = presentingViewController
         self.careRecipient = careRecipient
         self.coreDataService = coreDataService

@@ -33,9 +33,7 @@ extension ProfileCoordinator: ProfileViewControllerDelegate {
         
         let sharingCoordinator = CloudSharingCoordinator(
             presentingViewController: topViewController,
-            careRecipient: careRecipient,
-            coreDataService: CoreDataService() //get from injection?
-        )
+            careRecipient: careRecipient)
         
         self.cloudSharingCoordinator = sharingCoordinator
         
