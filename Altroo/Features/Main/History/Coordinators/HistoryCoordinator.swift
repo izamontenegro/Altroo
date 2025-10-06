@@ -7,6 +7,7 @@
 import UIKit
 
 final class HistoryCoordinator: Coordinator {
+    
     var childCoordinators: [Coordinator] = []
     private let navigation: UINavigationController
     private let patientService: PatientService
@@ -15,7 +16,20 @@ final class HistoryCoordinator: Coordinator {
         self.navigation = navigation; self.patientService = patientService; self.factory = factory
     }
     func start() {
-        let vc = factory.makeHistoryViewController()
+        let vc = factory.makeHistoryViewController(delegate: self)
         navigation.setViewControllers([vc], animated: false)
+    }
+}
+
+extension HistoryCoordinator: HistoryViewControllerDelegate {
+    func openDetailSheet(_ controller: HistoryViewController) {
+        let vc = factory.makeSeeHistoryDetailSheet()
+        vc.modalPresentationStyle = .pageSheet
+        
+        if let sheet = vc.sheetPresentationController {
+            sheet.detents = [.medium()]
+            sheet.prefersGrabberVisible = true
+        }
+        navigation.present(vc, animated: true)
     }
 }

@@ -1,17 +1,16 @@
 //
-//  AddMeasurementViewController.swift
+//  HydrationRecordViewController.swift
 //  Altroo
 //
-//  Created by Layza Maria Rodrigues Carneiro on 29/09/25.
+//  Created by Raissa Parente on 02/10/25.
 //
-
 import UIKit
 
-class AddMeasurementViewController: UIViewController {
+class HydrationRecordViewController: UIViewController {
 
     let viewLabel: UILabel = {
         let label = UILabel()
-        label.text = "Add Measurement View"
+        label.text = "Record Hydration View"
         label.textAlignment = .center
         
         label.translatesAutoresizingMaskIntoConstraints = false
@@ -20,7 +19,7 @@ class AddMeasurementViewController: UIViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
 
-        view.backgroundColor = .systemIndigo
+        view.backgroundColor = .blue
         
         view.addSubview(viewLabel)
         

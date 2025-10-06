@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
-<model type="com.apple.IDECoreDataModeler.DataModel" documentVersion="1.0" lastSavedToolsVersion="23788.4" systemVersion="25A5351b" minimumToolsVersion="Automatic" sourceLanguage="Swift" userDefinedModelVersionIdentifier="">
+<model type="com.apple.IDECoreDataModeler.DataModel" documentVersion="1.0" lastSavedToolsVersion="23605" systemVersion="24D70" minimumToolsVersion="Automatic" sourceLanguage="Swift" userDefinedModelVersionIdentifier="">
     <entity name="BasicNeeds" representedClassName="BasicNeeds" syncable="YES" codeGenerationType="class">
         <relationship name="careRecipient" optional="YES" maxCount="1" deletionRule="Nullify" destinationEntity="CareRecipient" inverseName="basicNeeds" inverseEntity="CareRecipient"/>
         <relationship name="feeding" optional="YES" toMany="YES" deletionRule="Nullify" destinationEntity="FeedingRecord" inverseName="basicNeeds" inverseEntity="FeedingRecord"/>
@@ -13,7 +13,7 @@
         <relationship name="healthProblems" optional="YES" maxCount="1" deletionRule="Nullify" destinationEntity="HealthProblems" inverseName="careRecipient" inverseEntity="HealthProblems"/>
         <relationship name="mentalState" optional="YES" maxCount="1" deletionRule="Nullify" destinationEntity="MentalState" inverseName="careRecipient" inverseEntity="MentalState"/>
         <relationship name="personalCare" optional="YES" maxCount="1" deletionRule="Nullify" destinationEntity="PersonalCare" inverseName="careRecipient" inverseEntity="PersonalCare"/>
-        <relationship name="personalData" maxCount="1" deletionRule="Nullify" destinationEntity="PersonalData" inverseName="careRecipient" inverseEntity="PersonalData"/>
+        <relationship name="personalData" optional="YES" maxCount="1" deletionRule="Nullify" destinationEntity="PersonalData" inverseName="careRecipient" inverseEntity="PersonalData"/>
         <relationship name="physicalState" optional="YES" maxCount="1" deletionRule="Nullify" destinationEntity="PhysicalState" inverseName="careRecipient" inverseEntity="PhysicalState"/>
         <relationship name="routineActivities" optional="YES" maxCount="1" deletionRule="Nullify" destinationEntity="RoutineActivities" inverseName="careRecipient" inverseEntity="RoutineActivities"/>
         <relationship name="symptoms" optional="YES" toMany="YES" deletionRule="Nullify" destinationEntity="Symptom" inverseName="careRecipient" inverseEntity="Symptom"/>
