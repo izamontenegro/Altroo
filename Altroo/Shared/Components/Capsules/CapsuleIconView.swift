@@ -73,7 +73,7 @@ class CapsuleIconView: UIView {
         ])
         
         //label
-        let label = StandardLabel(labelText: text, labelFont: .sfPro, labelType: .h2, labelColor: .teal, labelWeight: .bold)
+        let label = StandardLabel(labelText: text, labelFont: .sfPro, labelType: .callOut, labelColor: UIColor.teal20, labelWeight: .bold)
         label.textColor = accentColor
         stackView.addArrangedSubview(label)
         

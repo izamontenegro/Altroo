@@ -41,7 +41,7 @@ class ComorbidityButton: UIButton {
     }
     
     func makeContent() -> UIStackView {
-        let label = StandardLabel(labelText: comorbidity.name, labelFont: .sfPro, labelType: .h2, labelColor: .blue, labelWeight: .medium)
+        let label = StandardLabel(labelText: comorbidity.name, labelFont: .sfPro, labelType: .callOut, labelColor: .blue40, labelWeight: .medium)
         
         let icon = PulseIcon(iconName: comorbidity.iconName, color: UIColor(resource: .blue30), shadowColor: UIColor(resource: .blue60))
         

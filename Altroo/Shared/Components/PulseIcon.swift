@@ -102,7 +102,7 @@ class PulseIcon: UIView {
         
         //text
         if let text {
-            let label = StandardLabel(labelText: text, labelFont: .sfPro, labelType: .h1, labelColor: .white)
+            let label = StandardLabel(labelText: text, labelFont: .sfPro, labelType: .title2, labelColor: .white)
             addSubview(label)
             
             NSLayoutConstraint.activate([
