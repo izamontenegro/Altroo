@@ -86,6 +86,9 @@ class ComponentPreviewViewController: UIViewController {
         let capsule1 = CapsuleWithCircleView(iconName: "pencil", text: "Editar Seções", mainColor: UIColor(resource: .teal80), accentColor: UIColor(resource: .teal20))
         let capsule2 = CapsuleIconView(iconName: "drop.fill", text: "250ml")
         
+        //CARD
+        let card = TaskCard()
+        
         stackView.addArrangedSubview(textField)
         stackView.addArrangedSubview(segmentedControl)
         stackView.addArrangedSubview(toggleSwitch)
@@ -97,6 +100,8 @@ class ComponentPreviewViewController: UIViewController {
         stackView.addArrangedSubview(button6)
         stackView.addArrangedSubview(capsule1)
         stackView.addArrangedSubview(capsule2)
+        stackView.addArrangedSubview(card)
+
     }
 }
 

@@ -185,7 +185,8 @@ extension DefaultAppFactory {
 // MARK: - TaskFactory
 extension DefaultAppFactory {
     func makeAllTasksViewController() -> UIViewController {
-        let vc = AllTasksViewController()
+        let vm = AllTasksViewModel()
+        let vc = AllTasksViewController(viewModel: vm)
         return vc
     }
     func makeAddTaskViewController() -> UIViewController {
