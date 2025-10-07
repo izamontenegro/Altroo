@@ -95,11 +95,15 @@ final class TodayCoordinator: Coordinator {
             navigation.present(vc, animated: true)
             
         case .seeAllTasks:
-            let vc = factory.makeAllTasksViewController()
+            let vc = factory.makeAllTasksViewController { [weak self] task in
+                self?.goToTaskDetail(with: task)
+            }
             navigation.pushViewController(vc, animated: true)
         case .addNewTask:
             let vc = factory.makeAddTaskViewController()
             navigation.pushViewController(vc, animated: true)
+        case .taskDetail:
+            print("ok")
             
         case .seeAllMedication:
             let vc = factory.makeAllMedicationViewController()
@@ -201,6 +205,17 @@ extension TodayCoordinator: TodayViewControllerDelegate {
         show(destination: .addNewTask)
     }
     
+    func goToTaskDetail(with task: MockTask) {
+        let vc = factory.makeTaskDetailViewController(task: task)
+        vc.modalPresentationStyle = .pageSheet
+        
+        if let sheet = vc.sheetPresentationController {
+            sheet.detents = [.medium()]
+            sheet.prefersGrabberVisible = true
+        }
+        navigation.present(vc, animated: true)
+    }
+    
     func goToSeeAllMedication() {
         show(destination: .seeAllMedication)
     }
@@ -227,7 +242,6 @@ extension TodayCoordinator: TodayViewControllerDelegate {
 }
 
 
-
 enum TodayDestination {
     case careRecipientProfile
     
@@ -237,7 +251,7 @@ enum TodayDestination {
     
     case recordHeartRate, recordGlycemia, recordBloodPressure, recordTemperature, recordSaturation
     
-    case seeAllTasks, addNewTask
+    case seeAllTasks, addNewTask, taskDetail
     
     case seeAllMedication, addNewMedication, checkMedicationDone
     

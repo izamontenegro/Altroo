@@ -23,11 +23,20 @@ enum BehaviorEnum: String {
     case cooperative
 }
 
-enum PeriodEnum: String {
+enum PeriodEnum: String, CaseIterable {
     case morning
     case afternoon
     case evening
     case night
+    
+    var iconName: String {
+        switch self {
+        case .morning: "sun.min.fill"
+        case .afternoon: "cloud.sun.fill"
+        case .evening: "moon.stars.fill"
+        case .night: "cloud.moon.fill"
+        }
+    }
 }
 
 enum FrequencyEnum: String {

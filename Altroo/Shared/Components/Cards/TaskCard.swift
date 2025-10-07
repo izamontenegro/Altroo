@@ -7,13 +7,12 @@
 
 import UIKit
 
-class TaskCard: UIView {
+class TaskCard: InnerShadowView {
     let task: MockTask
     
     var cardTapAction: (() -> Void)?
-    let cardTapGesture = UITapGestureRecognizer(target: self, action: #selector(didTapCard))
 
-    let titleLabel = StandardLabel(labelText: "", labelFont: .sfPro, labelType: .h2, labelColor: .black, labelWeight: .medium)
+    let titleLabel = StandardLabel(labelText: "", labelFont: .sfPro, labelType: .callOut, labelColor: .black, labelWeight: .medium)
     
     var wasChecked = false
     
@@ -34,12 +33,9 @@ class TaskCard: UIView {
         return icon
     }()
     
-    init(frame: CGRect = .zero, task: MockTask) {
-        
+    init(task: MockTask) {
         self.task = task
-        
-        super.init(frame: frame)
-        
+        super.init(frame: .zero, color: .blue80)
         setupUI()
 
     }
@@ -47,9 +43,10 @@ class TaskCard: UIView {
     required init?(coder: NSCoder) {
         fatalError("init(coder:) has not been implemented")
     }
+
     
     func setupUI() {
-        backgroundColor = UIColor(resource: .white70)
+        backgroundColor = .white
         layer.cornerRadius = 10
         
         loadData()
@@ -61,8 +58,7 @@ class TaskCard: UIView {
         addSubview(timetag)
         
         checkButton.addTarget(self, action: #selector(didTapCheckButton), for: .touchUpInside)
-        self.addGestureRecognizer(cardTapGesture)
-                self.isUserInteractionEnabled = true
+        setupTapGesture()
         
         NSLayoutConstraint.activate([
             titleLabel.leadingAnchor.constraint(equalTo: leadingAnchor, constant: 12),
@@ -81,7 +77,7 @@ class TaskCard: UIView {
     }
     
     func makeTimeTag() -> UIView {
-        let timeLabel = StandardLabel(labelText: "\(task.time.formatted(date: .omitted, time: .shortened))", labelFont: .sfPro, labelType: .h2, labelColor: .teal, labelWeight: .medium)
+        let timeLabel = StandardLabel(labelText: "\(task.time.formatted(date: .omitted, time: .shortened))", labelFont: .sfPro, labelType: .subHeadline, labelColor: .teal0, labelWeight: .regular)
         let icon = UIImageView(image: UIImage(systemName: "alarm.fill"))
         icon.tintColor = UIColor(resource: .teal10)
         icon.translatesAutoresizingMaskIntoConstraints = false
@@ -130,6 +126,12 @@ class TaskCard: UIView {
         titleLabel.text = task.name
     }
     
+    func setupTapGesture() {
+        let cardTapGesture = UITapGestureRecognizer(target: self, action: #selector(didTapCard))
+                self.addGestureRecognizer(cardTapGesture)
+                self.isUserInteractionEnabled = true
+    }
+    
     @objc func didTapCheckButton() {
         reloadButton()
     }
@@ -141,6 +143,6 @@ class TaskCard: UIView {
 
 
 #Preview {
-    let task = MockTask(name: "Banho", note: "", period: "Manha", frequency: "", reminder: false, time: .now, daysOfTheWeek: "")
+    let task = MockTask(name: "Banho", note: "", period: .afternoon, frequency: "", reminder: false, time: .now, daysOfTheWeek: [.friday])
     TaskCard(task: task)
 }

@@ -184,13 +184,17 @@ extension DefaultAppFactory {
 
 // MARK: - TaskFactory
 extension DefaultAppFactory {
-    func makeAllTasksViewController() -> UIViewController {
+    func makeAllTasksViewController(onTaskSelected: ((MockTask) -> Void)? = nil) -> UIViewController {
         let vm = AllTasksViewModel()
-        let vc = AllTasksViewController(viewModel: vm)
+        let vc = AllTasksViewController(viewModel: vm, onTaskSelected: onTaskSelected)
         return vc
     }
     func makeAddTaskViewController() -> UIViewController {
         let vc = AddTaskViewController()
+        return vc
+    }
+    func makeTaskDetailViewController(task: MockTask) -> UIViewController {
+        let vc = TaskDetailViewController(task: task)
         return vc
     }
 }
