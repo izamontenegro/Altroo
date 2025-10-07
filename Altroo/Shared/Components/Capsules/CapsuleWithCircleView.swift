@@ -54,6 +54,9 @@ class CapsuleWithCircleView: UIView {
         stackView.spacing = 12
         stackView.translatesAutoresizingMaskIntoConstraints = false
         
+        let icon = makeIcon()
+        let label = StandardLabel(labelText: text, labelFont: .sfPro, labelType: .subHeadline, labelColor: UIColor.teal20, labelWeight: .bold)
+        label.translatesAutoresizingMaskIntoConstraints = false
         addSubview(stackView)
         
         NSLayoutConstraint.activate([
@@ -62,16 +65,6 @@ class CapsuleWithCircleView: UIView {
             stackView.leadingAnchor.constraint(equalTo: self.leadingAnchor, constant: 16),
             stackView.trailingAnchor.constraint(equalTo: self.trailingAnchor, constant: -6)
         ])
-        
-        
-        //label
-        let label = StandardLabel(labelText: text, labelFont: .sfPro, labelType: .h2, labelColor: .teal, labelWeight: .bold)
-        label.textColor = accentColor
-        stackView.addArrangedSubview(label)
-        
-        //circle icon
-        let icon = makeIcon()
-        stackView.addArrangedSubview(icon)
         
         NSLayoutConstraint.activate([
             icon.heightAnchor.constraint(equalTo: label.heightAnchor, multiplier: 1.5),

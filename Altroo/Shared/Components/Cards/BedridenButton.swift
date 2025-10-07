@@ -42,7 +42,7 @@ class BedriddenButton: UIButton {
     }
     
     func makeContent() -> UIStackView {
-        let label = StandardLabel(labelText: "Bedridden", labelFont: .sfPro, labelType: .h2, labelColor: .blue, labelWeight: .medium)
+        let label = StandardLabel(labelText: "Bedridden", labelFont: .sfPro, labelType: .callOut, labelColor: .blue40, labelWeight: .medium)
         
         let icon = PulseIcon(iconName: bedriddenState.iconName, color: UIColor(resource: .blue30), shadowColor: UIColor(resource: .blue60))
         
