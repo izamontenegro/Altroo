@@ -6,7 +6,7 @@
 //
 import UIKit
 
-final class WideRectangleButton: PrimaryStyleButton {
+class WideRectangleButton: PrimaryStyleButton {
     var title: String
 
     init(title: String) {

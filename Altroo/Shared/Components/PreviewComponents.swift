@@ -75,7 +75,9 @@ class ComponentPreviewViewController: UIViewController {
         let button2 = StandardConfirmationButton(title: "Continuar")
         let button3 = WideRectangleButton(title: "O dia todo")
         let button4 = PopupMenuButton(title: "Selecione")
-        let button5 = PlusButton()
+        let button5 = ArrowWideRectangleButton(title: "Meu perfil")
+
+        let button6 = PlusButton()
 
         
         //CAPSULES
@@ -92,6 +94,7 @@ class ComponentPreviewViewController: UIViewController {
         stackView.addArrangedSubview(button3)
         stackView.addArrangedSubview(button4)
         stackView.addArrangedSubview(button5)
+        stackView.addArrangedSubview(button6)
         stackView.addArrangedSubview(capsule1)
         stackView.addArrangedSubview(capsule2)
     }
