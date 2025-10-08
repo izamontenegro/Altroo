@@ -10,26 +10,26 @@ import Foundation
 class RoutineActivitiesFacade: RoutineActivitiesFacadeProtocol {
     private let persistenceService: CoreDataService
     
-    private let taskService: TaskServiceProtocol
+    private let routineTaskService: RoutineTaskServiceProtocol
     private let medicationService: MedicationServiceProtocol
     private let measurementService: MeasurementServiceProtocol
     
-    init(taskService: TaskServiceProtocol, medicationService: MedicationServiceProtocol, measurementService: MeasurementServiceProtocol, persistenceService: CoreDataService) {
-        self.taskService = taskService
+    init(routineTaskService: RoutineTaskServiceProtocol, medicationService: MedicationServiceProtocol, measurementService: MeasurementServiceProtocol, persistenceService: CoreDataService) {
+        self.routineTaskService = routineTaskService
         self.medicationService = medicationService
         self.measurementService = measurementService
         self.persistenceService = persistenceService
     }
     
     // MARK: - TASK ACTIONS
-    func addTask(name: String, period: PeriodEnum, time: Date, frequency: FrequencyEnum, reminder: Bool, note: String, in careRecipient: CareRecipient) {
-        taskService.addTask(name: name, period: period, time: time, frequency: frequency, reminder: reminder, note: note, in: careRecipient)
+    func addRoutineTask(name: String, period: PeriodEnum, time: Date, frequency: FrequencyEnum, reminder: Bool, note: String, in careRecipient: CareRecipient) {
+        routineTaskService.addRoutineTask(name: name, period: period, time: time, frequency: frequency, reminder: reminder, note: note, in: careRecipient)
         
         persistenceService.save()
     }
 
-    func deleteTask(task: Task, from careRecipient: CareRecipient) {
-        taskService.deleteTask(task: task, from: careRecipient)
+    func deleteRoutineTask(routineTask: RoutineTask, from careRecipient: CareRecipient) {
+        routineTaskService.deleteRoutineTask(routineTask: routineTask, from: careRecipient)
         
         persistenceService.save()
     }
