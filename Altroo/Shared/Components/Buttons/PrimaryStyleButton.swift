@@ -9,12 +9,15 @@ import UIKit
 
 //Mother class to setup basic button style - color, shadow, cornerradius etc
 class PrimaryStyleButton: UIButton {
-    let color = UIColor(resource: .teal30)
+    let color = UIColor(resource: .teal20)
+    
+    private var innerShadowView: InnerShadowView?
     
     init() {
         super.init(frame: .zero)
         setupBackground()
         setupLabel()
+        addInnerShadow()
     }
     
     convenience init(title: String) {
@@ -28,11 +31,15 @@ class PrimaryStyleButton: UIButton {
         setupLabel()
     }
 
+    override func layoutSubviews() {
+        super.layoutSubviews()
+        innerShadowView?.frame = bounds
+    }
 
     private func setupBackground() {
         backgroundColor = color
         
-        layer.cornerRadius = 12
+        layer.cornerRadius = 8
         layer.masksToBounds = true
         
         contentEdgeInsets = UIEdgeInsets(top: 8, left: 16, bottom: 8, right: 16)
@@ -42,6 +49,13 @@ class PrimaryStyleButton: UIButton {
     
     private func setupLabel() {
         setTitleColor(.white, for: .normal)
+    }
+    
+    private func addInnerShadow() {
+        let shadowView = InnerShadowView(frame: bounds, color: .black)
+        shadowView.isUserInteractionEnabled = false
+        addSubview(shadowView)
+        innerShadowView = shadowView
     }
 }
 
