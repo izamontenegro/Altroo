@@ -5,15 +5,25 @@
 //  Created by Izadora de Oliveira Albuquerque Montenegro on 08/10/25.
 //
 
+import CoreData
 import UIKit
+import SwiftUI
 
 final class ProfileCardView: InnerShadowView {
-    init() {
+    var careRecipient: CareRecipient
+    
+    init(careRecipient: CareRecipient) {
+        self.careRecipient = careRecipient
         super.init(frame: .zero, color: UIColor.blue70)
         setupUI()
     }
-    
-    required init?(coder: NSCoder) {
+
+    @MainActor required init?(coder aDecoder: NSCoder) {
+        fatalError("init(coder:) has not been implemented")
+    }
+
+    required init?(coder: NSCoder, careRecipient: CareRecipient) {
+        self.careRecipient = careRecipient
         super.init(coder: coder)
     }
 }
@@ -23,6 +33,38 @@ private extension ProfileCardView {
         backgroundColor = .white70
         layer.cornerRadius = 8
 
+        let headerStack = setupHeaderSection()
+        addSubview(headerStack)
+
+        let medicalRecordCard = setupMedicalRecordCard()
+        addSubview(medicalRecordCard)
+
+        NSLayoutConstraint.activate([
+            headerStack.topAnchor.constraint(equalTo: topAnchor, constant: 12),
+            headerStack.leadingAnchor.constraint(equalTo: leadingAnchor, constant: 12),
+            headerStack.trailingAnchor.constraint(equalTo: trailingAnchor, constant: -12),
+
+            medicalRecordCard.topAnchor.constraint(equalTo: headerStack.bottomAnchor, constant: 10),
+            medicalRecordCard.leadingAnchor.constraint(equalTo: leadingAnchor),
+            medicalRecordCard.trailingAnchor.constraint(equalTo: trailingAnchor),
+            medicalRecordCard.bottomAnchor.constraint(equalTo: bottomAnchor)
+        ])
+    }
+
+    func setupHeaderSection() -> UIStackView {
+        let avatar = setupAvatarView()
+        let infoStack = setupInfoStack()
+
+        let horizontalStack = UIStackView(arrangedSubviews: [avatar, infoStack])
+        horizontalStack.axis = .horizontal
+        horizontalStack.alignment = .center
+        horizontalStack.spacing = 15
+        horizontalStack.translatesAutoresizingMaskIntoConstraints = false
+
+        return horizontalStack
+    }
+
+    func setupAvatarView() -> UIView {
         let avatar = UIView()
         avatar.translatesAutoresizingMaskIntoConstraints = false
         avatar.backgroundColor = .blue30
@@ -31,83 +73,89 @@ private extension ProfileCardView {
         avatar.layer.borderColor = UIColor.pureWhite.cgColor
         avatar.layer.borderWidth = 4
 
-        let initialsLabel = StandardLabel(labelText: "KO", labelFont: .sfPro, labelType: .title1, labelColor: .pureWhite, labelWeight: .regular)
+        let initials = initialsFromName(careRecipient.personalData?.name ?? "??")
+
+        let initialsLabel = StandardLabel(
+            labelText: initials,
+            labelFont: .sfPro,
+            labelType: .title1,
+            labelColor: .pureWhite,
+            labelWeight: .regular
+        )
         initialsLabel.translatesAutoresizingMaskIntoConstraints = false
-        
+
         avatar.addSubview(initialsLabel)
 
-        let nameLabel = StandardLabel(labelText: "Karlison Oliveira", labelFont: .sfPro, labelType: .title2, labelColor: .blue20, labelWeight: .semibold)
+        NSLayoutConstraint.activate([
+            avatar.widthAnchor.constraint(equalToConstant: 70),
+            avatar.heightAnchor.constraint(equalToConstant: 70),
+            initialsLabel.centerXAnchor.constraint(equalTo: avatar.centerXAnchor),
+            initialsLabel.centerYAnchor.constraint(equalTo: avatar.centerYAnchor)
+        ])
+
+        return avatar
+    }
+
+    func setupInfoStack() -> UIStackView {
+        let data = careRecipient.personalData
+
+        let nameText = data?.name ?? "Nome não informado"
+        let birthText = DateFormartterHelper.birthDateFormatter(from: data?.dateOfBirth)
+        let weightText = formattedWeight(from: data?.weight)
+        let heightText = formattedHeight(from: data?.height)
+
+        let nameLabel = StandardLabel(
+            labelText: nameText,
+            labelFont: .sfPro,
+            labelType: .title2,
+            labelColor: .blue20,
+            labelWeight: .semibold
+        )
         nameLabel.translatesAutoresizingMaskIntoConstraints = false
 
-        func title(_ text: String) -> UILabel {
-            let l = UILabel()
-            l.translatesAutoresizingMaskIntoConstraints = false
-            l.font = .systemFont(ofSize: 18, weight: .semibold)
-            l.textColor = .label
-            l.text = text
-            return l
-        }
-        func value() -> UILabel {
-            let l = UILabel()
-            l.translatesAutoresizingMaskIntoConstraints = false
-            l.font = .systemFont(ofSize: 18, weight: .regular)
-            l.textColor = .label
-            return l
-        }
+        let birthTitle = StandardLabel(labelText: "Nascimento", labelFont: .sfPro, labelType: .subHeadline, labelColor: .black20, labelWeight: .semibold)
+        let birthValue = StandardLabel(labelText: birthText, labelFont: .sfPro, labelType: .subHeadline, labelColor: .black20, labelWeight: .regular)
+        let birthRow = horizontalRow([birthTitle, birthValue])
 
-        let nascimentoTitle = StandardLabel(labelText: "Nascimento", labelFont: .sfPro, labelType: .subHeadline, labelColor: .black20, labelWeight: .semibold)
-        
-        let nascimentoValue = StandardLabel(labelText: "03/03/1993 (86 anos)", labelFont: .sfPro, labelType: .subHeadline, labelColor: .black20, labelWeight: .regular)
-        
-        let pesoTitle = StandardLabel(labelText: "Peso", labelFont: .sfPro, labelType: .subHeadline, labelColor: .black20, labelWeight: .semibold)
-        
-        let pesoValue = StandardLabel(labelText: "45kg", labelFont: .sfPro, labelType: .subHeadline, labelColor: .black20, labelWeight: .regular)
-        
-        let alturaTitle = StandardLabel(labelText: "Altura", labelFont: .sfPro, labelType: .subHeadline, labelColor: .black20, labelWeight: .semibold)
-        
-        let alturaValue = StandardLabel(labelText: "1,98m", labelFont: .sfPro, labelType: .subHeadline, labelColor: .black20, labelWeight: .regular)
+        let weightTitle = StandardLabel(labelText: "Peso", labelFont: .sfPro, labelType: .subHeadline, labelColor: .black20, labelWeight: .semibold)
+        let weightValue = StandardLabel(labelText: weightText, labelFont: .sfPro, labelType: .subHeadline, labelColor: .black20, labelWeight: .regular)
+        let weightRow = horizontalRow([weightTitle, weightValue])
 
-        let nascimentoRow = UIStackView(arrangedSubviews: [nascimentoTitle, nascimentoValue])
-        nascimentoRow.axis = .horizontal
-        nascimentoRow.alignment = .firstBaseline
-        nascimentoRow.spacing = 4
+        let heightTitle = StandardLabel(labelText: "Altura", labelFont: .sfPro, labelType: .subHeadline, labelColor: .black20, labelWeight: .semibold)
+        let heightValue = StandardLabel(labelText: heightText, labelFont: .sfPro, labelType: .subHeadline, labelColor: .black20, labelWeight: .regular)
+        let heightRow = horizontalRow([heightTitle, heightValue])
 
-        let pesoRow = UIStackView(arrangedSubviews: [pesoTitle, pesoValue])
-        pesoRow.axis = .horizontal
-        pesoRow.alignment = .firstBaseline
-        pesoRow.spacing = 4
-
-        let alturaRow = UIStackView(arrangedSubviews: [alturaTitle, alturaValue])
-        alturaRow.axis = .horizontal
-        alturaRow.alignment = .firstBaseline
-        alturaRow.spacing = 4
-
-        let bottomRow = UIStackView(arrangedSubviews: [pesoRow, UIView(), alturaRow])
+        let bottomRow = UIStackView(arrangedSubviews: [weightRow, UIView(), heightRow])
         bottomRow.axis = .horizontal
         bottomRow.alignment = .firstBaseline
         bottomRow.spacing = 12
         bottomRow.translatesAutoresizingMaskIntoConstraints = false
 
-        let vStack = UIStackView(arrangedSubviews: [nameLabel, nascimentoRow, bottomRow])
-        vStack.axis = .vertical
-        vStack.alignment = .leading
-        vStack.spacing = 3
-        vStack.translatesAutoresizingMaskIntoConstraints = false
+        let verticalStack = UIStackView(arrangedSubviews: [nameLabel, birthRow, bottomRow])
+        verticalStack.axis = .vertical
+        verticalStack.alignment = .leading
+        verticalStack.spacing = 3
+        verticalStack.translatesAutoresizingMaskIntoConstraints = false
 
-        let hStack = UIStackView(arrangedSubviews: [avatar, vStack])
-        hStack.axis = .horizontal
-        hStack.alignment = .center
-        hStack.spacing = 15
-        hStack.translatesAutoresizingMaskIntoConstraints = false
+        return verticalStack
+    }
 
-        addSubview(hStack)
+    func horizontalRow(_ views: [UIView]) -> UIStackView {
+        let row = UIStackView(arrangedSubviews: views)
+        row.axis = .horizontal
+        row.alignment = .firstBaseline
+        row.spacing = 4
+        row.translatesAutoresizingMaskIntoConstraints = false
+        return row
+    }
 
-        let medicalRecordProgressCard = UIView()
-        medicalRecordProgressCard.translatesAutoresizingMaskIntoConstraints = false
-        medicalRecordProgressCard.backgroundColor = .blue20
-        medicalRecordProgressCard.layer.cornerRadius = 8
+    func setupMedicalRecordCard() -> UIView {
+        let card = UIView()
+        card.translatesAutoresizingMaskIntoConstraints = false
+        card.backgroundColor = .blue20
+        card.layer.cornerRadius = 8
 
-        let medicalRecordLabel = StandardLabel(
+        let label = StandardLabel(
             labelText: "Ficha médica",
             labelFont: .sfPro,
             labelType: .callOut,
@@ -115,17 +163,16 @@ private extension ProfileCardView {
             labelWeight: .medium
         )
 
-        let progressTrack = UIView()
-        progressTrack.translatesAutoresizingMaskIntoConstraints = false
-        progressTrack.backgroundColor = .blue60
-        progressTrack.layer.cornerRadius = 5
+        let track = UIView()
+        track.translatesAutoresizingMaskIntoConstraints = false
+        track.backgroundColor = .blue60
+        track.layer.cornerRadius = 5
 
-        let progressFill = UIView()
-        progressFill.translatesAutoresizingMaskIntoConstraints = false
-        progressFill.backgroundColor = .pureWhite
-        progressFill.layer.cornerRadius = 5
-
-        progressTrack.addSubview(progressFill)
+        let fill = UIView()
+        fill.translatesAutoresizingMaskIntoConstraints = false
+        fill.backgroundColor = .pureWhite
+        fill.layer.cornerRadius = 5
+        track.addSubview(fill)
 
         let percentageLabel = StandardLabel(
             labelText: "80%",
@@ -139,68 +186,93 @@ private extension ProfileCardView {
         chevron.translatesAutoresizingMaskIntoConstraints = false
         chevron.tintColor = .pureWhite
 
-        let medicalRecordHStack = UIStackView(arrangedSubviews: [medicalRecordLabel, progressTrack, percentageLabel, chevron])
-        medicalRecordHStack.translatesAutoresizingMaskIntoConstraints = false
-        medicalRecordHStack.axis = .horizontal
-        medicalRecordHStack.alignment = .center
-        medicalRecordHStack.spacing = 12
-        medicalRecordHStack.distribution = .fill
+        let stack = UIStackView(arrangedSubviews: [label, track, percentageLabel, chevron])
+        stack.axis = .horizontal
+        stack.alignment = .center
+        stack.spacing = 12
+        stack.translatesAutoresizingMaskIntoConstraints = false
 
-        medicalRecordProgressCard.addSubview(medicalRecordHStack)
-        addSubview(medicalRecordProgressCard)
+        card.addSubview(stack)
 
         NSLayoutConstraint.activate([
-            avatar.widthAnchor.constraint(equalToConstant: 70),
-            avatar.heightAnchor.constraint(equalToConstant: 70),
-            initialsLabel.centerXAnchor.constraint(equalTo: avatar.centerXAnchor),
-            initialsLabel.centerYAnchor.constraint(equalTo: avatar.centerYAnchor),
+            stack.topAnchor.constraint(equalTo: card.topAnchor, constant: 16),
+            stack.leadingAnchor.constraint(equalTo: card.leadingAnchor, constant: 16),
+            stack.trailingAnchor.constraint(equalTo: card.trailingAnchor, constant: -16),
+            stack.bottomAnchor.constraint(equalTo: card.bottomAnchor, constant: -16),
 
-            hStack.topAnchor.constraint(equalTo: topAnchor, constant: 12),
-            hStack.leadingAnchor.constraint(equalTo: leadingAnchor, constant: 12),
-            hStack.trailingAnchor.constraint(equalTo: trailingAnchor, constant: -12),
-
-            medicalRecordProgressCard.topAnchor.constraint(equalTo: hStack.bottomAnchor, constant: 10),
-            medicalRecordProgressCard.leadingAnchor.constraint(equalTo: leadingAnchor, constant: 0),
-            medicalRecordProgressCard.trailingAnchor.constraint(equalTo: trailingAnchor, constant: 0),
-            medicalRecordProgressCard.bottomAnchor.constraint(equalTo: bottomAnchor, constant: 0),
-
-            medicalRecordHStack.topAnchor.constraint(equalTo: medicalRecordProgressCard.topAnchor, constant: 16),
-            medicalRecordHStack.leadingAnchor.constraint(equalTo: medicalRecordProgressCard.leadingAnchor, constant: 16),
-            medicalRecordHStack.trailingAnchor.constraint(equalTo: medicalRecordProgressCard.trailingAnchor, constant: -16),
-            medicalRecordHStack.bottomAnchor.constraint(equalTo: medicalRecordProgressCard.bottomAnchor, constant: -16),
-
-            progressTrack.heightAnchor.constraint(equalToConstant: 8),
-            progressTrack.widthAnchor.constraint(greaterThanOrEqualToConstant: 110),
-
-            progressFill.leadingAnchor.constraint(equalTo: progressTrack.leadingAnchor),
-            progressFill.centerYAnchor.constraint(equalTo: progressTrack.centerYAnchor),
-            progressFill.heightAnchor.constraint(equalTo: progressTrack.heightAnchor),
-            progressFill.widthAnchor.constraint(equalTo: progressTrack.widthAnchor, multiplier: 0.70),
+            track.heightAnchor.constraint(equalToConstant: 8),
+            track.widthAnchor.constraint(greaterThanOrEqualToConstant: 110),
+            fill.leadingAnchor.constraint(equalTo: track.leadingAnchor),
+            fill.centerYAnchor.constraint(equalTo: track.centerYAnchor),
+            fill.heightAnchor.constraint(equalTo: track.heightAnchor),
+            fill.widthAnchor.constraint(equalTo: track.widthAnchor, multiplier: 0.70),
 
             chevron.widthAnchor.constraint(equalToConstant: 10),
             chevron.heightAnchor.constraint(equalToConstant: 16)
         ])
+
+        return card
     }
 }
 
-//private func previewContextViaContainer() -> NSManagedObjectContext {
-//    let container = NSPersistentContainer(name: "AltrooDataModel")
-//    let desc = NSPersistentStoreDescription()
-//    desc.type = NSInMemoryStoreType
-//    container.persistentStoreDescriptions = [desc]
-//    container.loadPersistentStores { _, error in
-//        if let error { assertionFailure("Preview Core Data error: \(error)") }
-//    }
-//    return container.viewContext
-//}
-//
-//#Preview {
-//    let ctx = previewContextViaContainer()
-//    let recipient = CareRecipient(context: ctx)
-//
-//    ProfileHeader(careRecipient: recipient)
-//}
+// MARK: - Helpers
+private extension ProfileCardView {
+    func initialsFromName(_ name: String) -> String {
+        let comps = name.split(separator: " ")
+        let initials = comps.prefix(2).compactMap { $0.first?.uppercased() }.joined()
+        return initials.isEmpty ? "?" : initials
+    }
 
-#Preview {
-    ProfileCardView()
+    func formattedWeight(from weight: Double?) -> String {
+        guard let weight else { return "—" }
+        return String(format: "%.1f kg", weight)
+    }
+
+    func formattedHeight(from height: Double?) -> String {
+        guard let height else { return "—" }
+        return String(format: "%.2f m", height)
+    }
+}
+
+// MARK: - PREVIEW
+private struct ProfileCardWrapper: UIViewRepresentable {
+    let recipient: CareRecipient
+    func makeUIView(context: Context) -> ProfileCardView { ProfileCardView(careRecipient: recipient) }
+    func updateUIView(_ uiView: ProfileCardView, context: Context) {}
+}
+
+private func makePreviewRecipient() -> CareRecipient {
+    let ctx = previewContextViaContainer()
+
+    let recipient = CareRecipient(context: ctx)
+    let personal = PersonalData(context: ctx)
+
+    personal.name = "Karlison Oliveira"
+    personal.dateOfBirth = Calendar.current.date(byAdding: .year, value: -86, to: Date())
+    personal.height = 1.98
+    personal.weight = 45
+
+    recipient.personalData = personal
+    personal.careRecipient = recipient
+    
+    try? ctx.save()
+    ctx.processPendingChanges()
+
+    return recipient
+}
+
+#Preview() {
+    ProfileCardWrapper(recipient: makePreviewRecipient())
+        .padding()
+}
+
+private func previewContextViaContainer() -> NSManagedObjectContext {
+    let container = NSPersistentContainer(name: "AltrooDataModel")
+    let desc = NSPersistentStoreDescription()
+    desc.type = NSInMemoryStoreType
+    container.persistentStoreDescriptions = [desc]
+    container.loadPersistentStores { _, error in
+        if let error { assertionFailure("Preview Core Data error: \(error)") }
+    }
+    return container.viewContext
 }
