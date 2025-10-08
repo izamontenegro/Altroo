@@ -26,7 +26,7 @@ final class PopupMenuButton: PrimaryStyleButton {
     }
     
     override func layoutSubviews() {
-         super.layoutSubviews()
+        super.layoutSubviews()
         innerShadowView?.frame = bounds
         
          if let icon = icon, let titleLabel = self.titleLabel {

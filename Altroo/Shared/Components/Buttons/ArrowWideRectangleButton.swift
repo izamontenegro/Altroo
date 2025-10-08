@@ -10,7 +10,6 @@ import UIKit
 class ArrowWideRectangleButton: WideRectangleButton {
     let icon = UIImage(systemName: "chevron.right")
     
-    
     override init(title: String) {
         super.init(title: title)
         
@@ -24,21 +23,49 @@ class ArrowWideRectangleButton: WideRectangleButton {
     override func layoutSubviews() {
         super.layoutSubviews()
         
-        if let icon {
-            self.imageEdgeInsets = UIEdgeInsets(top: 0, left: bounds.width - icon.size.width - 24, bottom: 0, right: 0)
-        }
+        guard let titleLabel = titleLabel, let imageView = imageView else { return }
+        
+        let horizontalPadding: CGFloat = 16
+        let spacingBetweenTitleAndIcon: CGFloat = 8
+        
+        let imageWidth = imageView.intrinsicContentSize.width
+        let titleWidth = titleLabel.intrinsicContentSize.width
+        
+        // Título à esquerda
+        titleLabel.frame.origin.x = horizontalPadding
+        titleLabel.frame.origin.y = (bounds.height - titleLabel.frame.height) / 2
+        
+        // Ícone à direita
+        imageView.frame.origin.x = bounds.width - imageWidth - horizontalPadding
+        imageView.frame.origin.y = (bounds.height - imageView.frame.height) / 2
+        
+        // Evita sobreposição do texto com o ícone
+        let maxTitleWidth = bounds.width - imageWidth - spacingBetweenTitleAndIcon - horizontalPadding * 2
+        titleLabel.frame.size.width = min(titleWidth, maxTitleWidth)
     }
     
-    func setupButton() {
-        guard let icon else { return }
+    private func setupButton() {
+        guard let icon = icon?.withRenderingMode(.alwaysTemplate) else { return }
         
+        // Configura aparência do botão
         setImage(icon, for: .normal)
+        tintColor = .pureWhite
+        setTitleColor(.pureWhite, for: .normal)
+        titleLabel?.font = UIFont.systemFont(ofSize: 17, weight: .medium)
         
-        self.imageEdgeInsets = UIEdgeInsets(top: 0, left: bounds.width - icon.size.width - 24, bottom: 0, right: 0)
-        self.titleEdgeInsets = UIEdgeInsets(top: 0, left: -icon.size.width, bottom: 0, right: 0)
+        // Alinhamento e espaçamento base
+        contentHorizontalAlignment = .left
+        contentEdgeInsets = UIEdgeInsets(top: 10,
+                                         left: 16,
+                                         bottom: 10,
+                                         right: 16)
+        
+        // Reseta insets de imagem/título (layoutSubviews vai reposicionar)
+        titleEdgeInsets = .zero
+        imageEdgeInsets = .zero
     }
 }
 
 #Preview {
-    ArrowWideRectangleButton(title: "Meu perfil")
+    ArrowWideRectangleButton(title: "default")
 }
