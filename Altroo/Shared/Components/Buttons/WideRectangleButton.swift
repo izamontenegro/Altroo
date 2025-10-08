@@ -8,26 +8,35 @@ import UIKit
 
 class WideRectangleButton: PrimaryStyleButton {
     var title: String
+    private var innerShadowView: InnerShadowView?
 
     init(title: String) {
         self.title = title
         super.init()
         
         setupButton()
+        addInnerShadow()
     }
 
     required init?(coder: NSCoder) {
         fatalError("init(coder:) has not been implemented")
     }
 
+    override func layoutSubviews() {
+        super.layoutSubviews()
+        innerShadowView?.frame = bounds
+    }
+    
     override func didMoveToSuperview() {
         super.didMoveToSuperview()
         
         guard let superview = self.superview else { return }
 
         NSLayoutConstraint.activate([
-            self.leadingAnchor.constraint(equalTo: superview.leadingAnchor, constant: 20),
-            self.trailingAnchor.constraint(equalTo: superview.trailingAnchor, constant: -20)
+            self.leadingAnchor.constraint(equalTo: superview.leadingAnchor,
+                                          constant: 16),
+            self.trailingAnchor.constraint(equalTo: superview.trailingAnchor,
+                                           constant: -16)
         ])
     }
 
@@ -38,8 +47,15 @@ class WideRectangleButton: PrimaryStyleButton {
         
         setTitleColor(.white, for: .normal)
                 
-        titleLabel?.font = UIFont.systemFont(ofSize: 18, weight: .bold)
+        titleLabel?.font = UIFont.systemFont(ofSize: 17, weight: .semibold)
 
+    }
+    
+    private func addInnerShadow() {
+        let shadowView = InnerShadowView(frame: bounds, color: .black)
+        shadowView.isUserInteractionEnabled = false
+        addSubview(shadowView)
+        innerShadowView = shadowView
     }
 }
 
