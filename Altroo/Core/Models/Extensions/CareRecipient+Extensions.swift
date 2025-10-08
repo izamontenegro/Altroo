@@ -18,7 +18,7 @@ extension CareRecipient {
         personalCare: PersonalCare,
         basicNeeds: BasicNeeds,
         routineActivities: RoutineActivities,
-        events: [CareRecipientEvents],
+        events: [CareRecipientEvent],
         symptoms: [Symptom]
     ) {
         self.init(context: context)

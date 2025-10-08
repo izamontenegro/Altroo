@@ -9,7 +9,7 @@ import Foundation
 
 protocol EventProtocol {
     func addEvent(name: String, category: String, startDate: Date, endDate: Date, startTime: Date, endTime: Date, location: String, note: String, in careRecipient: CareRecipient)
-    func deleteEvent(eventRecord: CareRecipientEvents, from careRecipient: CareRecipient)
+    func deleteEvent(eventRecord: CareRecipientEvent, from careRecipient: CareRecipient)
 }
 
 extension CareRecipientFacade: EventProtocol {
@@ -18,7 +18,7 @@ extension CareRecipientFacade: EventProtocol {
         
         guard let context = careRecipient.managedObjectContext else { return }
         
-        let newEvent = CareRecipientEvents(context: context)
+        let newEvent = CareRecipientEvent(context: context)
         newEvent.name = name
         newEvent.category = category
         newEvent.startDate = startDate
@@ -32,7 +32,7 @@ extension CareRecipientFacade: EventProtocol {
         eventsSet.add(newEvent)
     }
     
-    func deleteEvent(eventRecord: CareRecipientEvents, from careRecipient: CareRecipient) {
+    func deleteEvent(eventRecord: CareRecipientEvent, from careRecipient: CareRecipient) {
         let eventsSet = careRecipient.mutableSetValue(forKey: "events")
         eventsSet.remove(eventRecord)
     }
