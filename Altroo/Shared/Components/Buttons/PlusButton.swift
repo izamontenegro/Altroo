@@ -36,7 +36,7 @@ class PlusButton: UIButton {
         
         let icon = UIImageView(image: UIImage(systemName: "plus"))
         icon.contentMode = .scaleAspectFit
-        icon.tintColor = UIColor(resource: .white80)
+        icon.tintColor = UIColor(resource: .pureWhite)
         icon.translatesAutoresizingMaskIntoConstraints = false
                 
         addSubview(circle)
@@ -53,10 +53,12 @@ class PlusButton: UIButton {
             
             icon.centerXAnchor.constraint(equalTo: circle.centerXAnchor),
             icon.centerYAnchor.constraint(equalTo: circle.centerYAnchor),
-            icon.widthAnchor.constraint(equalTo: circle.widthAnchor, multiplier: 0.75),
+            icon.widthAnchor.constraint(equalTo: circle.widthAnchor, multiplier: 0.65),
             icon.heightAnchor.constraint(equalTo: icon.widthAnchor)
         ])
     }
 }
 
-
+#Preview {
+    PlusButton()
+}
