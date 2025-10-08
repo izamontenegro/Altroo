@@ -83,7 +83,7 @@ final class CareRecipientFacadeEventTests: XCTestCase {
         )
 
         // Then
-        let events = careRecipient.events as? Set<CareRecipientEvent>
+        let events = careRecipient.careRecipientEvents as? Set<CareRecipientEvent>
         XCTAssertEqual(events?.count, 2, "CareRecipient should have 2 events")
     }
 
@@ -104,16 +104,16 @@ final class CareRecipientFacadeEventTests: XCTestCase {
             in: careRecipient
         )
 
-        guard let event = (careRecipient.events as? Set<CareRecipientEvent>)?.first else {
+        guard let careRecipientEvents = (careRecipient.careRecipientEvents as? Set<CareRecipientEvent>)?.first else {
             XCTFail("Event was not created properly")
             return
         }
 
         // When
-        facade.deleteEvent(eventRecord: event, from: careRecipient)
+        facade.deleteEvent(eventRecord: careRecipientEvents, from: careRecipient)
 
         // Then
-        let remainingEvents = careRecipient.events as? Set<CareRecipientEvent>
+        let remainingEvents = careRecipient.careRecipientEvents as? Set<CareRecipientEvent>
         XCTAssertEqual(remainingEvents?.count, 0, "Event should have been deleted")
     }
 }

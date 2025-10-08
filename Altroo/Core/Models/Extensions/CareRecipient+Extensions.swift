@@ -18,7 +18,7 @@ extension CareRecipient {
         personalCare: PersonalCare,
         basicNeeds: BasicNeeds,
         routineActivities: RoutineActivities,
-        events: [CareRecipientEvent],
+        careRecipientEvents: [CareRecipientEvent],
         symptoms: [Symptom]
     ) {
         self.init(context: context)
@@ -31,7 +31,7 @@ extension CareRecipient {
         self.basicNeeds = basicNeeds
         self.routineActivities = routineActivities
         
-        events.forEach { self.addToEvents($0) }
+        careRecipientEvents.forEach { self.addToCareRecipientEvents($0) }
         symptoms.forEach { self.addToSymptoms($0) }
     }
 }

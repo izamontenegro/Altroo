@@ -10,7 +10,7 @@
     <entity name="CareRecipient" representedClassName="CareRecipient" syncable="YES" codeGenerationType="class">
         <attribute name="id" optional="YES" attributeType="UUID" usesScalarValueType="NO"/>
         <relationship name="basicNeeds" optional="YES" maxCount="1" deletionRule="Nullify" destinationEntity="BasicNeeds" inverseName="careRecipient" inverseEntity="BasicNeeds"/>
-        <relationship name="events" optional="YES" toMany="YES" deletionRule="Nullify" destinationEntity="CareRecipientEvent" inverseName="careRecipient" inverseEntity="CareRecipientEvent"/>
+        <relationship name="careRecipientEvents" optional="YES" toMany="YES" deletionRule="Nullify" destinationEntity="CareRecipientEvent" inverseName="careRecipient" inverseEntity="CareRecipientEvent"/>
         <relationship name="healthProblems" optional="YES" maxCount="1" deletionRule="Nullify" destinationEntity="HealthProblems" inverseName="careRecipient" inverseEntity="HealthProblems"/>
         <relationship name="mentalState" optional="YES" maxCount="1" deletionRule="Nullify" destinationEntity="MentalState" inverseName="careRecipient" inverseEntity="MentalState"/>
         <relationship name="personalCare" optional="YES" maxCount="1" deletionRule="Nullify" destinationEntity="PersonalCare" inverseName="careRecipient" inverseEntity="PersonalCare"/>
@@ -29,7 +29,7 @@
         <attribute name="note" optional="YES" attributeType="String"/>
         <attribute name="startDate" optional="YES" attributeType="Date" usesScalarValueType="NO"/>
         <attribute name="startTime" optional="YES" attributeType="Date" usesScalarValueType="NO"/>
-        <relationship name="careRecipient" optional="YES" maxCount="1" deletionRule="Nullify" destinationEntity="CareRecipient" inverseName="events" inverseEntity="CareRecipient"/>
+        <relationship name="careRecipient" optional="YES" maxCount="1" deletionRule="Nullify" destinationEntity="CareRecipient" inverseName="careRecipientEvents" inverseEntity="CareRecipient"/>
         <relationship name="task" optional="YES" maxCount="1" deletionRule="Nullify" destinationEntity="RoutineTask" inverseName="events" inverseEntity="RoutineTask"/>
     </entity>
     <entity name="Contact" representedClassName="Contact" syncable="YES" codeGenerationType="class">

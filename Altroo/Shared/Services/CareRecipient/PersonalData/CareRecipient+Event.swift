@@ -28,12 +28,12 @@ extension CareRecipientFacade: EventProtocol {
         newEvent.location = location
         newEvent.note = note
         
-        let eventsSet = careRecipient.mutableSetValue(forKey: "events")
+        let eventsSet = careRecipient.mutableSetValue(forKey: "careRecipientEvents")
         eventsSet.add(newEvent)
     }
     
     func deleteEvent(eventRecord: CareRecipientEvent, from careRecipient: CareRecipient) {
-        let eventsSet = careRecipient.mutableSetValue(forKey: "events")
+        let eventsSet = careRecipient.mutableSetValue(forKey: "careRecipientEvents")
         eventsSet.remove(eventRecord)
     }
 

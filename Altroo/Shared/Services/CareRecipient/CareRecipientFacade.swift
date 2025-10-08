@@ -27,7 +27,7 @@ class CareRecipientFacade {
 extension CareRecipientFacade {
     
     func buildCareRecipient(
-        configure: (PersonalData, PersonalCare, MentalState, PhysicalState) -> Void
+        configure: (PersonalData, PersonalCare, HealthProblems, MentalState, PhysicalState, RoutineActivities, BasicNeeds, CareRecipientEvent, Symptom) -> Void
     ) -> CareRecipient {
         let context = persistenceService.stack.context
         
@@ -36,14 +36,24 @@ extension CareRecipientFacade {
         let personalCare = PersonalCare(context: context)
         let mentalState = MentalState(context: context)
         let physicalState = PhysicalState(context: context)
+        let healthProblems = HealthProblems(context: context)
+        let routineActivities = RoutineActivities(context: context)
+        let basicNeeds = BasicNeeds(context: context)
+        let careRecipientEvent = CareRecipientEvent(context: context)
+        let symptom = Symptom(context: context)
         
         careRecipient.personalData = personalData
         careRecipient.personalCare = personalCare
+        careRecipient.healthProblems = healthProblems
         careRecipient.mentalState = mentalState
         careRecipient.physicalState = physicalState
+        careRecipient.routineActivities = routineActivities
+        careRecipient.basicNeeds = basicNeeds
+        careRecipient.careRecipientEvents = [careRecipientEvent]
+        careRecipient.symptoms = [symptom]
         careRecipient.id = UUID()
         
-        configure(personalData, personalCare, mentalState, physicalState)
+        configure(personalData, personalCare, healthProblems, mentalState, physicalState, routineActivities, basicNeeds, careRecipientEvent, symptom)
         
         persistenceService.save()
 
