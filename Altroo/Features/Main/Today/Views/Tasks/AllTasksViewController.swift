@@ -13,7 +13,7 @@ class AllTasksViewController: GradientNavBarViewController {
     var onTaskSelected: ((MockTask) -> Void)?
     
     let titleLabel = StandardLabel(labelText: "Shifts", labelFont: .sfPro, labelType: .title2, labelColor: .black, labelWeight: .semibold)
-
+    
     let descriptionLabel = StandardLabel(labelText: "Confira os tarefas cadastradas no sistema ou adicione uma nova tarefa para visualizá-la aqui.", labelFont: .sfPro, labelType: .body, labelColor: .black, labelWeight: .regular)
     
     let scrollView: UIScrollView = {
@@ -23,16 +23,17 @@ class AllTasksViewController: GradientNavBarViewController {
     }()
     
     init(viewModel: AllTasksViewModel, onTaskSelected: ((MockTask) -> Void)? = nil) {
-            self.viewModel = viewModel
-            self.onTaskSelected = onTaskSelected
-            super.init(nibName: nil, bundle: nil)
+        self.viewModel = viewModel
+        self.onTaskSelected = onTaskSelected
+        super.init(nibName: nil, bundle: nil)
+        hidesBottomBarWhenPushed = true
     }
-
+    
     required init?(coder: NSCoder) { fatalError() }
     
     override func viewDidLoad() {
         super.viewDidLoad()
-
+        
         view.backgroundColor = .blue80
         
         makeContent()
@@ -47,7 +48,7 @@ class AllTasksViewController: GradientNavBarViewController {
             titleLabel.topAnchor.constraint(equalTo: scrollView.contentLayoutGuide.topAnchor, constant: 16),
             titleLabel.leadingAnchor.constraint(equalTo: scrollView.contentLayoutGuide.leadingAnchor),
             titleLabel.trailingAnchor.constraint(equalTo: scrollView.contentLayoutGuide.trailingAnchor),
-
+            
             
             descriptionLabel.topAnchor.constraint(equalTo: titleLabel.bottomAnchor),
             descriptionLabel.leadingAnchor.constraint(equalTo: scrollView.contentLayoutGuide.leadingAnchor),
@@ -95,7 +96,7 @@ class AllTasksViewController: GradientNavBarViewController {
         cardStack.translatesAutoresizingMaskIntoConstraints = false
         
         cardStack.addArrangedSubview(periodTag)
-                    
+        
         let tasks = viewModel.filterTasksByPeriod(period)
         for task in tasks {
             let card = TaskCard(task: task)

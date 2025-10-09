@@ -8,8 +8,13 @@
 import UIKit
 import Combine
 
+protocol AddTaskNavigationDelegate: AnyObject {
+    func didFinishAddingTask()
+}
+
 class AddTaskViewController: GradientNavBarViewController {
     var viewModel: AddTaskViewModel
+    weak var coordinator: TodayCoordinator?
     private var cancellables = Set<AnyCancellable>()
     
     let titleLabel = StandardLabel(labelText: "Adicionar Tarefas", labelFont: .sfPro, labelType: .title2, labelColor: .black, labelWeight: .semibold)
@@ -39,7 +44,6 @@ class AddTaskViewController: GradientNavBarViewController {
         return stackView
     }()
     
-    
     let contentStack: UIStackView = {
         let stackView = UIStackView(arrangedSubviews: [])
         stackView.axis = .vertical
@@ -63,6 +67,7 @@ class AddTaskViewController: GradientNavBarViewController {
     init(viewModel: AddTaskViewModel) {
         self.viewModel = viewModel
         super.init(nibName: nil, bundle: nil)
+        hidesBottomBarWhenPushed = true
     }
     
     @MainActor required init?(coder: NSCoder) {
@@ -111,6 +116,8 @@ class AddTaskViewController: GradientNavBarViewController {
         view.addSubview(titleLabel)
         view.addSubview(addButton)
         
+        addButton.addTarget(self, action: #selector(didFinishCreating), for: .touchUpInside)
+        
         setupContent()
         
         NSLayoutConstraint.activate([
@@ -140,7 +147,15 @@ class AddTaskViewController: GradientNavBarViewController {
         contentStack.addArrangedSubview(hourSection)
         
         //repeat
-        let weekdayRow = makeDayRow()
+        let weekdayRow = RepeatDaysRow()
+        weekdayRow.didSelectDay = { [weak self] day, isSelected in
+            guard let self else { return }
+            if isSelected {
+                self.viewModel.repeatingDays.append(day)
+            } else {
+                self.viewModel.repeatingDays.removeAll { $0 == day }
+            }
+        }
         let repeatSection = FormSectionView(title: "Repetir", content: weekdayRow)
         contentStack.addArrangedSubview(repeatSection)
         
@@ -179,26 +194,6 @@ class AddTaskViewController: GradientNavBarViewController {
         
     }
     
-    func makeDayRow() -> UIStackView {
-        let stackView = UIStackView(arrangedSubviews: [])
-        stackView.axis = .horizontal
-        stackView.distribution = .equalCentering
-        stackView.translatesAutoresizingMaskIntoConstraints = false
-        
-        for day in Locale.Weekday.allCases {
-            let button = PrimaryStyleButton(title: day.rawValue.first!.uppercased())
-            button.backgroundColor = .black40
-            
-            button.associatedData = day
-            button.addTarget(self, action: #selector(didClickDayButton(_:)), for: .touchUpInside)
-            
-            
-            stackView.addArrangedSubview(button)
-        }
-        
-        return stackView
-    }
-    
     func makeHourSection() -> UIStackView {
         let hourSection = FormSectionView(title: "Horário", content: hourStack)
  
@@ -228,22 +223,7 @@ class AddTaskViewController: GradientNavBarViewController {
         guard index < viewModel.times.count else { return }
         viewModel.times[index] = sender.date
     }
-    
-    @objc func didClickDayButton(_ sender: PrimaryStyleButton) {
-        let day = sender.associatedData as! Locale.Weekday
         
-        if viewModel.repeatingDays.contains(day) {
-            viewModel.repeatingDays.removeAll(where: {$0 == day})
-            sender.backgroundColor = .black40
-
-        } else {
-            viewModel.repeatingDays.append(sender.associatedData as! Locale.Weekday)
-            sender.backgroundColor = .teal20
-        }
-
-        print(viewModel.repeatingDays)
-    }
-    
     @objc func didAddTime() {
         let newPicker = UIDatePicker.make(mode: .time)
         
@@ -263,6 +243,9 @@ class AddTaskViewController: GradientNavBarViewController {
         hourPickers.append(newPicker)
     }
     
+    @objc func didFinishCreating() {
+        coordinator?.didFinishAddingTask()
+    }
 }
 
 
@@ -277,7 +260,3 @@ struct MyViewControllerPreview: UIViewControllerRepresentable {
 #Preview {
     MyViewControllerPreview()
 }
-
-
-
-

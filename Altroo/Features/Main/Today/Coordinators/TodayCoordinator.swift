@@ -100,7 +100,8 @@ final class TodayCoordinator: Coordinator {
             }
             navigation.pushViewController(vc, animated: true)
         case .addNewTask:
-            let vc = factory.makeAddTaskViewController()
+            let vc = factory.makeAddTaskViewController() as! AddTaskViewController
+            vc.coordinator = self
             navigation.pushViewController(vc, animated: true)
         case .taskDetail:
             //TODO: Take this out
@@ -261,4 +262,14 @@ enum TodayDestination {
     case seeAllEvents, addNewEvent
     
     case addSymptom
+}
+
+extension TodayCoordinator: AddTaskNavigationDelegate {
+    func didFinishAddingTask() {
+        let superVC = navigation.viewControllers.first!
+        let vc = factory.makeAllTasksViewController { [weak self] task in
+            self?.goToTaskDetail(with: task)
+        }
+        navigation.setViewControllers([superVC, vc], animated: true)
+    }
 }
