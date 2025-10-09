@@ -14,4 +14,8 @@ enum Layout {
     static let largeSpacing: CGFloat = 22
     static let verylargeSpacing: CGFloat = 24 //in between components
     static let hugeSpacing: CGFloat = 30 //home section spacing
+    
+    static let homeSectionSpacing = hugeSpacing
+    static let viewPadding = mediumSpacing
+    static let cardPadding = standardSpacing
 }
