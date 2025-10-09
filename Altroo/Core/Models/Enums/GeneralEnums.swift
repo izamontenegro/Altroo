@@ -31,6 +31,7 @@ enum PeriodEnum: String {
 }
 
 enum FrequencyEnum: String {
+    case daily
     case weekly
     case biweekly
     case monthly
