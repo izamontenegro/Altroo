@@ -104,7 +104,6 @@ class AddTaskViewController: GradientNavBarViewController {
                 }
             }
             .store(in: &cancellables)
-            
     }
     
     func setupUI() {

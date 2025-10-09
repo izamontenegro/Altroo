@@ -77,7 +77,7 @@ class TaskCard: InnerShadowView {
     }
     
     func makeTimeTag() -> UIView {
-        let timeLabel = StandardLabel(labelText: "\(task.time.formatted(date: .omitted, time: .shortened))", labelFont: .sfPro, labelType: .subHeadline, labelColor: .teal0, labelWeight: .regular)
+        let timeLabel = StandardLabel(labelText: "\(task.time!.formatted(date: .omitted, time: .shortened))", labelFont: .sfPro, labelType: .subHeadline, labelColor: .teal0, labelWeight: .regular)
         let icon = UIImageView(image: UIImage(systemName: "alarm.fill"))
         icon.tintColor = UIColor(resource: .teal10)
         icon.translatesAutoresizingMaskIntoConstraints = false
@@ -143,6 +143,14 @@ class TaskCard: InnerShadowView {
 
 
 #Preview {
-    let task = MockTask(name: "Banho", note: "", period: .afternoon, frequency: "", reminder: false, time: .now, daysOfTheWeek: [.friday])
+    let task = MockTask(
+        name: "Administer medications",
+        note: "Check medication log for proper dosage and timing.",
+        reminder: true,
+        time: Calendar.current.date(from: DateComponents(hour: 7, minute: 30))!,
+        daysOfTheWeek: [.friday, .sunday],
+        startDate: Calendar.current.date(from: DateComponents(year: 2025, month: 10, day: 10))!,
+        endDate: Calendar.current.date(from: DateComponents(year: 2025, month: 12, day: 31))!
+    )
     TaskCard(task: task)
 }

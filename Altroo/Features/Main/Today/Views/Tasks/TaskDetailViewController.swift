@@ -39,11 +39,11 @@ class TaskDetailViewController: UIViewController {
     func setupUI() {
         view.backgroundColor = .white
         
-        let name = InfoRowView(title: "Name", info: task.name)
-        let time = InfoRowView(title: "Time", info: DateFormatterHelper.hourFormatter(date: task.time))
+        let name = InfoRowView(title: "Nome", info: task.name ?? "Nome")
+        let time = InfoRowView(title: "Horário", info: DateFormatterHelper.hourFormatter(date: task.time ?? .now))
         let repetition = StandardLabel(labelText: "Repetition", labelFont: .sfPro, labelType: .callOut, labelColor: .black10, labelWeight: .semibold)
-        let period = InfoRowView(title: "Interval", info: task.period.rawValue.capitalized)
-        let notes = InfoRowView(title: "Notes", info: task.note)
+        let period = InfoRowView(title: "Interval", info: makeTimeText())
+        let notes = InfoRowView(title: "Notes", info: task.note ?? "Observação")
         
         let dayRow = makeDayRow()
         
@@ -64,7 +64,7 @@ class TaskDetailViewController: UIViewController {
         ])
     }
     
-    func configureNavBar() {
+    private func configureNavBar() {
         navigationItem.title = "Tarefa"
         
         let closeButton = UIBarButtonItem(title: "Close", style: .done, target: self, action: #selector(closeTapped))
@@ -81,17 +81,16 @@ class TaskDetailViewController: UIViewController {
         
     }
     
-    func makeDayRow() -> UIStackView {
+    private func makeDayRow() -> UIStackView {
         let stackView = UIStackView(arrangedSubviews: [])
         stackView.axis = .horizontal
         stackView.distribution = .equalCentering
-//        stackView.spacing = 11
         stackView.translatesAutoresizingMaskIntoConstraints = false
                 
         for day in Locale.Weekday.allCases {
             //TODO: CHANGE FROM BUTTONS TO TAG
             let tag = PrimaryStyleButton(title: day.rawValue.first!.uppercased())
-            if task.daysOfTheWeek.contains(day) {
+            if task.daysOfTheWeek!.contains(day) {
                 tag.backgroundColor = .blue30
             } else {
                 tag.backgroundColor = .black40
@@ -101,6 +100,22 @@ class TaskDetailViewController: UIViewController {
         
         return stackView
     }
+    
+    private func makeTimeText() -> String {
+        if let start = task.startDate, let end = task.endDate {
+            let timeLabelText = "\(DateFormatterHelper.fullDayFormatter(date: start)) - \(DateFormatterHelper.fullDayFormatter(date: end))"
+        
+            return timeLabelText
+            
+        } else if let start = task.startDate {
+            let timeLabelText = "\(DateFormatterHelper.fullDayFormatter(date: start)) - Contínuo"
+        
+            return timeLabelText
+        } else {
+            return ""
+        }
+    }
+
     
     @objc func closeTapped() {
         dismiss(animated: true)
@@ -113,12 +128,13 @@ class TaskDetailViewController: UIViewController {
 
 #Preview {
     TaskDetailViewController(task: MockTask(
-        name: "Ensure home is secure",
-        note: "Lock doors, turn off lights, and set the alarm.",
-        period: .night,
-        frequency: "Daily",
+        name: "Administer medications",
+        note: "Check medication log for proper dosage and timing.",
         reminder: true,
-        time: Date(),
-        daysOfTheWeek: [.monday, .friday, .saturday, .thursday]
-    ))
+        time: Calendar.current.date(from: DateComponents(hour: 7, minute: 30))!,
+        daysOfTheWeek: [.friday, .sunday],
+        startDate: Calendar.current.date(from: DateComponents(year: 2025, month: 10, day: 10))!,
+        endDate: nil
+    )
+    )
 }

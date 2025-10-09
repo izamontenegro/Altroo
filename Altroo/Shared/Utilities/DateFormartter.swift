@@ -25,6 +25,15 @@ final class DateFormatterHelper {
         let formattedDate = dayFormatter.string(from: date).uppercased()
         return formattedDate
     }
+    
+    static func fullDayFormatter(date: Date) -> String {
+        let dayFormatter = DateFormatter()
+        dayFormatter.locale = Locale(identifier: "pt_BR")
+        dayFormatter.dateFormat = "d/MM/YYYY"
+        
+        let formattedDate = dayFormatter.string(from: date).uppercased()
+        return formattedDate
+    }
 
     static func hourFormatter(date: Date) -> String {
         let hourFormatter = DateFormatter()
