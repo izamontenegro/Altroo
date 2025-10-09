@@ -8,14 +8,12 @@ import UIKit
 
 class WideRectangleButton: PrimaryStyleButton {
     var title: String
-    private var innerShadowView: InnerShadowView?
 
     init(title: String) {
         self.title = title
         super.init()
         
         setupButton()
-        addInnerShadow()
     }
 
     required init?(coder: NSCoder) {
@@ -24,7 +22,6 @@ class WideRectangleButton: PrimaryStyleButton {
 
     override func layoutSubviews() {
         super.layoutSubviews()
-        innerShadowView?.frame = bounds
     }
     
     override func didMoveToSuperview() {
@@ -49,13 +46,6 @@ class WideRectangleButton: PrimaryStyleButton {
                 
         titleLabel?.font = UIFont.systemFont(ofSize: 17, weight: .semibold)
 
-    }
-    
-    private func addInnerShadow() {
-        let shadowView = InnerShadowView(frame: bounds, color: .black)
-        shadowView.isUserInteractionEnabled = false
-        addSubview(shadowView)
-        innerShadowView = shadowView
     }
 }
 

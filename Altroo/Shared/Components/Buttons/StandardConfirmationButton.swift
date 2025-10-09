@@ -10,14 +10,12 @@ import UIKit
 
 final class StandardConfirmationButton: PrimaryStyleButton {
     var title: String
-    private var innerShadowView: InnerShadowView?
     
     init(title: String) {
         self.title = title
         super.init()
         
         setupButton()
-        addInnerShadow()
     }
     
     required init?(coder: NSCoder) {
@@ -26,7 +24,6 @@ final class StandardConfirmationButton: PrimaryStyleButton {
     
     override func layoutSubviews() {
         super.layoutSubviews()
-        innerShadowView?.frame = bounds
     }
     
     private func setupButton() {
@@ -41,13 +38,6 @@ final class StandardConfirmationButton: PrimaryStyleButton {
         titleLabel?.font = UIFont.systemFont(ofSize: 24, weight: .semibold)
         
         self.translatesAutoresizingMaskIntoConstraints = false
-    }
-    
-    private func addInnerShadow() {
-        let shadowView = InnerShadowView(frame: bounds, color: .black)
-        shadowView.isUserInteractionEnabled = false
-        addSubview(shadowView)
-        innerShadowView = shadowView
     }
 }
 

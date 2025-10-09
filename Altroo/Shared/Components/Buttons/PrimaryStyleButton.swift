@@ -11,13 +11,10 @@ import UIKit
 class PrimaryStyleButton: UIButton {
     let color = UIColor(resource: .teal20)
     
-    private var innerShadowView: InnerShadowView?
-    
     init() {
         super.init(frame: .zero)
         setupBackground()
         setupLabel()
-        addInnerShadow()
     }
     
     convenience init(title: String) {
@@ -33,7 +30,6 @@ class PrimaryStyleButton: UIButton {
 
     override func layoutSubviews() {
         super.layoutSubviews()
-        innerShadowView?.frame = bounds
     }
 
     private func setupBackground() {
@@ -49,13 +45,6 @@ class PrimaryStyleButton: UIButton {
     
     private func setupLabel() {
         setTitleColor(.white, for: .normal)
-    }
-    
-    private func addInnerShadow() {
-        let shadowView = InnerShadowView(frame: bounds, color: .black)
-        shadowView.isUserInteractionEnabled = false
-        addSubview(shadowView)
-        innerShadowView = shadowView
     }
 }
 
