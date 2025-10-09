@@ -8,7 +8,7 @@
 import UIKit
 import Combine
 
-class AllTasksViewController: UIViewController {
+class AllTasksViewController: GradientNavBarViewController {
     let viewModel: AllTasksViewModel
     var onTaskSelected: ((MockTask) -> Void)?
     
@@ -39,6 +39,7 @@ class AllTasksViewController: UIViewController {
     }
     
     func makeTitle() {
+        descriptionLabel.numberOfLines = 0
         scrollView.addSubview(titleLabel)
         scrollView.addSubview(descriptionLabel)
         

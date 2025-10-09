@@ -12,8 +12,8 @@ class StandardTextfield: UITextField {
         borderStyle = .roundedRect
         backgroundColor = UIColor(resource: .teal80)
         font = UIFont.systemFont(ofSize: 18)
-        placeholder = "Maria Clara"
     }
+    
     required init?(coder: NSCoder) {
         fatalError("init(coder:) has not been implemented")
     }

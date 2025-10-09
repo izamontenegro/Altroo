@@ -30,23 +30,29 @@ class InfoRowView: UIView {
         
         let titleLabel = StandardLabel(labelText: title, labelFont: .sfPro, labelType: .title3, labelColor: .black40)
         let infoLabel = StandardLabel(labelText: info, labelFont: .sfPro, labelType: .title3, labelColor: .black10)
+        infoLabel.numberOfLines = 0
         
         addSubview(titleLabel)
         addSubview(infoLabel)
         
         NSLayoutConstraint.activate([
             titleLabel.topAnchor.constraint(equalTo: self.topAnchor,  constant: 6),
-            titleLabel.bottomAnchor.constraint(equalTo: self.bottomAnchor, constant: -6),
+            titleLabel.bottomAnchor.constraint(lessThanOrEqualTo: self.bottomAnchor, constant: -6),
             titleLabel.leadingAnchor.constraint(equalTo: self.leadingAnchor, constant: 16),
             
             infoLabel.topAnchor.constraint(equalTo: self.topAnchor,  constant: 6),
             infoLabel.bottomAnchor.constraint(equalTo: self.bottomAnchor, constant: -6),
             infoLabel.trailingAnchor.constraint(equalTo: self.trailingAnchor, constant: -16),
+            infoLabel.leadingAnchor.constraint(greaterThanOrEqualTo: titleLabel.trailingAnchor, constant: 16)
+
             ])
+        
+        titleLabel.setContentHuggingPriority(.defaultHigh, for: .horizontal)
+        infoLabel.setContentCompressionResistancePriority(.defaultLow, for: .horizontal)
     }
     
 }
 
 #Preview {
-    InfoRowView(title: "Nome", info: "Dar banho")
+    InfoRowView(title: "Nome", info: "Dar banho Dar banhoDar banhoDar banhoDar banhoDar banho")
 }

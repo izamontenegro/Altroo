@@ -40,7 +40,7 @@ class EventCard: InnerShadowView {
     
     private func makeDateStack() -> UIStackView {
         let dayLabel = StandardLabel(
-            labelText: DateFormartterHelper.weekDayFormatter(date: date),
+            labelText: DateFormatterHelper.weekDayFormatter(date: date),
             labelFont: .sfPro,
             labelType: .footnote,
             labelColor: .black40,
@@ -48,7 +48,7 @@ class EventCard: InnerShadowView {
         )
         
         let numberLabel = StandardLabel(
-            labelText: DateFormartterHelper.dayFormatter(date: date),
+            labelText: DateFormatterHelper.dayFormatter(date: date),
             labelFont: .sfPro,
             labelType: .largeTitle,
             labelColor: .black20,
@@ -143,7 +143,7 @@ class EventCard: InnerShadowView {
     
     private func makeTimeLabel(event: mockEvents) -> UIView {
         if let start = event.startTime, let end = event.endTime {
-            let timeLabelText = "\(DateFormartterHelper.hourFormatter(date: start)) - \(DateFormartterHelper.hourFormatter(date: end))"
+            let timeLabelText = "\(DateFormatterHelper.hourFormatter(date: start)) - \(DateFormatterHelper.hourFormatter(date: end))"
             
             let timeLabel = StandardLabel(labelText: timeLabelText, labelFont: .sfPro, labelType: .subHeadline, labelColor: .pureWhite, labelWeight: .regular)
         
@@ -151,13 +151,13 @@ class EventCard: InnerShadowView {
             
         } else if let start = event.startTime {
             
-            let timeLabelText = DateFormartterHelper.hourFormatter(date: start)
+            let timeLabelText = DateFormatterHelper.hourFormatter(date: start)
             
             let timeLabel = StandardLabel(labelText: timeLabelText, labelFont: .sfPro, labelType: .subHeadline, labelColor: .pureWhite, labelWeight: .regular)
         
             return timeLabel
         } else if let end = event.endTime {
-            let timeLabelText = "até \(DateFormartterHelper.hourFormatter(date: end))"
+            let timeLabelText = "até \(DateFormatterHelper.hourFormatter(date: end))"
             
             let timeLabel = StandardLabel(labelText: timeLabelText, labelFont: .sfPro, labelType: .subHeadline, labelColor: .pureWhite, labelWeight: .regular)
             

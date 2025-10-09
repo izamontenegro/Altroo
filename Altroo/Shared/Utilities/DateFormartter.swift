@@ -7,7 +7,7 @@
 
 import Foundation
 
-final class DateFormartterHelper {
+final class DateFormatterHelper {
     static func weekDayFormatter(date: Date) -> String {
         let weekdayFormatter = DateFormatter()
         weekdayFormatter.locale = Locale(identifier: "pt_BR")

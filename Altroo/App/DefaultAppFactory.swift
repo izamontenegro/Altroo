@@ -190,11 +190,13 @@ extension DefaultAppFactory {
         return vc
     }
     func makeAddTaskViewController() -> UIViewController {
-        let vc = AddTaskViewController()
+        let vm = AddTaskViewModel()
+        let vc = AddTaskViewController(viewModel: vm)
         return vc
     }
     func makeTaskDetailViewController(task: MockTask) -> UIViewController {
         let vc = TaskDetailViewController(task: task)
+        vc.title = "Task"
         return vc
     }
 }

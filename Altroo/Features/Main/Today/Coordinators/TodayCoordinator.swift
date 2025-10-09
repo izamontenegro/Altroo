@@ -103,6 +103,7 @@ final class TodayCoordinator: Coordinator {
             let vc = factory.makeAddTaskViewController()
             navigation.pushViewController(vc, animated: true)
         case .taskDetail:
+            //TODO: Take this out
             print("ok")
             
         case .seeAllMedication:
@@ -207,13 +208,15 @@ extension TodayCoordinator: TodayViewControllerDelegate {
     
     func goToTaskDetail(with task: MockTask) {
         let vc = factory.makeTaskDetailViewController(task: task)
-        vc.modalPresentationStyle = .pageSheet
         
-        if let sheet = vc.sheetPresentationController {
+        let nav = UINavigationController(rootViewController: vc)
+        nav.modalPresentationStyle = .pageSheet
+        
+        if let sheet = nav.sheetPresentationController {
             sheet.detents = [.medium()]
             sheet.prefersGrabberVisible = true
         }
-        navigation.present(vc, animated: true)
+        navigation.present(nav, animated: true)
     }
     
     func goToSeeAllMedication() {

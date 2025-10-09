@@ -6,27 +6,16 @@
 //
 import UIKit
 
-class TaskDetailViewController: UIViewController {
-    var task: MockTask
+class MedicationTimeSheetViewController: UIViewController {
 
     let viewLabel: UILabel = {
         let label = UILabel()
-        label.text = "Task Detail View"
+        label.text = "MedicationTimeSheetViewController"
         label.textAlignment = .center
         
         label.translatesAutoresizingMaskIntoConstraints = false
         return label
     }()
-    
-    init(task: MockTask) {
-        self.task = task
-        super.init(nibName: nil, bundle: nil)
-
-    }
-    
-    required init?(coder: NSCoder) {
-        fatalError("init(coder:) has not been implemented")
-    }
     
     override func viewDidLoad() {
         super.viewDidLoad()
