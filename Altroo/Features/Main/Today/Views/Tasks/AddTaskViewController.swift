@@ -11,39 +11,39 @@ import Combine
 class AddTaskViewController: GradientNavBarViewController {
     var viewModel: AddTaskViewModel
     private var cancellables = Set<AnyCancellable>()
-
-
-    let titleLabel = StandardLabel(labelText: "Add Tasks", labelFont: .sfPro, labelType: .title2, labelColor: .black, labelWeight: .semibold)
     
-    let addButton = StandardConfirmationButton(title: "Add")
+    let titleLabel = StandardLabel(labelText: "Adicionar Tarefas", labelFont: .sfPro, labelType: .title2, labelColor: .black, labelWeight: .semibold)
+    
+    let addButton = StandardConfirmationButton(title: "Adicionar")
     
     let nameTexfield = StandardTextfield()
     let noteTexfield = StandardTextfield()
     
-    let startDatePicker: UIDatePicker = {
-        let datePicker = UIDatePicker()
-        datePicker.preferredDatePickerStyle = .compact
-        datePicker.datePickerMode = .date
-        datePicker.tintColor = .teal50
-        datePicker.translatesAutoresizingMaskIntoConstraints = true
-        return datePicker
-    }()
+    var hourPickers: [UIDatePicker] = []
+    let addTimeButton = PrimaryStyleButton(title: "Novo Horário")
+    
+    let startDatePicker: UIDatePicker = UIDatePicker.make(mode: .date)
     
     var endDateSection: UIView!
     
-    let endDatePicker: UIDatePicker = {
-        let datePicker = UIDatePicker()
-        datePicker.preferredDatePickerStyle = .compact
-        datePicker.datePickerMode = .date
-        datePicker.tintColor = .teal50
-        datePicker.translatesAutoresizingMaskIntoConstraints = true
-        return datePicker
+    let endDatePicker: UIDatePicker = UIDatePicker.make(mode: .date)
+    
+    let hourStack: UIStackView = {
+        let stackView = UIStackView(arrangedSubviews: [])
+        stackView.axis = .vertical
+        stackView.alignment = .leading
+        stackView.distribution = .fill
+        stackView.spacing = 8
+        
+        stackView.translatesAutoresizingMaskIntoConstraints = false
+        return stackView
     }()
+    
     
     let contentStack: UIStackView = {
         let stackView = UIStackView(arrangedSubviews: [])
         stackView.axis = .vertical
-        stackView.distribution = .fillEqually
+        stackView.distribution = .fill
         stackView.spacing = 16
         
         stackView.translatesAutoresizingMaskIntoConstraints = false
@@ -59,10 +59,10 @@ class AddTaskViewController: GradientNavBarViewController {
         stackView.translatesAutoresizingMaskIntoConstraints = false
         return stackView
     }()
-        
+    
     init(viewModel: AddTaskViewModel) {
-            self.viewModel = viewModel
-            super.init(nibName: nil, bundle: nil)
+        self.viewModel = viewModel
+        super.init(nibName: nil, bundle: nil)
     }
     
     @MainActor required init?(coder: NSCoder) {
@@ -71,7 +71,7 @@ class AddTaskViewController: GradientNavBarViewController {
     
     override func viewDidLoad() {
         super.viewDidLoad()
-
+        
         view.backgroundColor = .white
         
         setupUI()
@@ -104,6 +104,7 @@ class AddTaskViewController: GradientNavBarViewController {
                 }
             }
             .store(in: &cancellables)
+        
     }
     
     func setupUI() {
@@ -113,43 +114,44 @@ class AddTaskViewController: GradientNavBarViewController {
         setupContent()
         
         NSLayoutConstraint.activate([
-            titleLabel.topAnchor.constraint(equalTo: view.safeAreaLayoutGuide.topAnchor),
-            titleLabel.leadingAnchor.constraint(equalTo: view.safeAreaLayoutGuide.leadingAnchor),
-            titleLabel.trailingAnchor.constraint(equalTo: view.safeAreaLayoutGuide.trailingAnchor),
+            titleLabel.topAnchor.constraint(equalTo: view.safeAreaLayoutGuide.topAnchor, constant: 16),
+            titleLabel.leadingAnchor.constraint(equalTo: view.safeAreaLayoutGuide.leadingAnchor, constant: 16),
+            titleLabel.trailingAnchor.constraint(equalTo: view.safeAreaLayoutGuide.trailingAnchor, constant: -16),
             
-            contentStack.topAnchor.constraint(equalTo: titleLabel.bottomAnchor),
-            contentStack.leadingAnchor.constraint(equalTo: view.safeAreaLayoutGuide.leadingAnchor),
-            contentStack.trailingAnchor.constraint(equalTo: view.safeAreaLayoutGuide.trailingAnchor),
+            contentStack.topAnchor.constraint(equalTo: titleLabel.bottomAnchor, constant: 16),
+            contentStack.leadingAnchor.constraint(equalTo: view.safeAreaLayoutGuide.leadingAnchor, constant: 16),
+            contentStack.trailingAnchor.constraint(equalTo: view.safeAreaLayoutGuide.trailingAnchor, constant: -16),
             
-            addButton.bottomAnchor.constraint(equalTo: view.bottomAnchor),
+            addButton.bottomAnchor.constraint(equalTo: view.bottomAnchor, constant: -16),
             addButton.centerXAnchor.constraint(equalTo: view.centerXAnchor),
-
+            
         ])
     }
     
     func setupContent() {
         view.addSubview(contentStack)
         //name
-        nameTexfield.placeholder = "Enter task name"
-        let nameSection = makeSection(title: "Name", content: nameTexfield)
+        nameTexfield.placeholder = "Nome da tarefa"
+        let nameSection = FormSectionView(title: "Nome", content: nameTexfield)
         contentStack.addArrangedSubview(nameSection)
         
         //time
-        
+        let hourSection = makeHourSection()
+        contentStack.addArrangedSubview(hourSection)
         
         //repeat
         let weekdayRow = makeDayRow()
-        let repeatSection = makeSection(title: "Repeat", content: weekdayRow)
+        let repeatSection = FormSectionView(title: "Repetir", content: weekdayRow)
         contentStack.addArrangedSubview(repeatSection)
         
         //duration
-            //start
+        //start
         startDatePicker.addTarget(self, action: #selector(startDateChanged), for: .valueChanged)
-        let startSection = makeSection(title: "Start", content: startDatePicker)
-            //end
+        let startSection = FormSectionView(title: "Início", content: startDatePicker)
+        //end
         endDatePicker.addTarget(self, action: #selector(endDateChanged), for: .valueChanged)
-        endDateSection = makeSection(title: "End", content: endDatePicker)
-            //picker
+        endDateSection = FormSectionView(title: "Término", content: endDatePicker)
+        //picker
         let continuousButton = PopupMenuButton(title: viewModel.continuousButtonTitle)
         let pickActionClosure = { [self](action: UIAction) in
             self.viewModel.isContinuous.toggle()
@@ -162,9 +164,9 @@ class AddTaskViewController: GradientNavBarViewController {
         continuousButton.showsMenuAsPrimaryAction = true
         continuousButton.changesSelectionAsPrimaryAction = true
         
-        let durationSection = makeSection(title: "Duration", content: continuousButton)
+        let durationSection = FormSectionView(title: "Duração", content: continuousButton)
         
-            //stack
+        //stack
         dateStack.addArrangedSubview(startSection)
         dateStack.addArrangedSubview(durationSection)
         contentStack.addArrangedSubview(dateStack)
@@ -172,24 +174,9 @@ class AddTaskViewController: GradientNavBarViewController {
         
         //notes
         noteTexfield.placeholder = "Enter observations"
-        let noteSection = makeSection(title: "Notes", content: noteTexfield)
+        let noteSection = FormSectionView(title: "Observações", content: noteTexfield)
         contentStack.addArrangedSubview(noteSection)
         
-    }
-    
-    func makeSection(title: String, content: UIView) -> UIStackView {
-        let titleSection = StandardLabel(labelText: title, labelFont: .sfPro, labelType: .callOut, labelColor: .black10, labelWeight: .semibold)
-        
-        let stackView = UIStackView(arrangedSubviews: [])
-        stackView.axis = .vertical
-        stackView.distribution = .fillEqually
-        stackView.spacing = 4
-        stackView.translatesAutoresizingMaskIntoConstraints = false
-        
-        stackView.addArrangedSubview(titleSection)
-        stackView.addArrangedSubview(content)
-        
-        return stackView
     }
     
     func makeDayRow() -> UIStackView {
@@ -197,14 +184,27 @@ class AddTaskViewController: GradientNavBarViewController {
         stackView.axis = .horizontal
         stackView.distribution = .equalCentering
         stackView.translatesAutoresizingMaskIntoConstraints = false
-                
+        
         for day in Locale.Weekday.allCases {
-            //TODO: CHANGE FROM BUTTONS TO TAG
-            let tag = PrimaryStyleButton(title: day.rawValue.first!.uppercased())
-            stackView.addArrangedSubview(tag)
+            let button = PrimaryStyleButton(title: day.rawValue.first!.uppercased())
+            button.backgroundColor = .black40
+            
+            button.associatedData = day
+            button.addTarget(self, action: #selector(didClickDayButton(_:)), for: .touchUpInside)
+            
+            
+            stackView.addArrangedSubview(button)
         }
         
         return stackView
+    }
+    
+    func makeHourSection() -> UIStackView {
+        let hourSection = FormSectionView(title: "Horário", content: hourStack)
+ 
+        addTimeButton.addTarget(self, action: #selector(didAddTime), for: .touchUpInside)
+        hourStack.addArrangedSubview(addTimeButton)
+        return hourSection
     }
     
     func addEndDate() {
@@ -218,11 +218,51 @@ class AddTaskViewController: GradientNavBarViewController {
     @objc func startDateChanged(_ picker: UIDatePicker) {
         viewModel.startDate = picker.date
     }
-
+    
     @objc func endDateChanged(_ picker: UIDatePicker) {
         viewModel.endDate = picker.date
     }
+    
+    @objc func timeChanged(_ sender: UIDatePicker) {
+        let index = sender.tag
+        guard index < viewModel.times.count else { return }
+        viewModel.times[index] = sender.date
+    }
+    
+    @objc func didClickDayButton(_ sender: PrimaryStyleButton) {
+        let day = sender.associatedData as! Locale.Weekday
+        
+        if viewModel.repeatingDays.contains(day) {
+            viewModel.repeatingDays.removeAll(where: {$0 == day})
+            sender.backgroundColor = .black40
 
+        } else {
+            viewModel.repeatingDays.append(sender.associatedData as! Locale.Weekday)
+            sender.backgroundColor = .teal20
+        }
+
+        print(viewModel.repeatingDays)
+    }
+    
+    @objc func didAddTime() {
+        let newPicker = UIDatePicker.make(mode: .time)
+        
+        let index = viewModel.times.count
+        newPicker.tag = index
+        
+        viewModel.times.append(newPicker.date)
+        
+        newPicker.addTarget(self, action: #selector(timeChanged(_:)), for: .valueChanged)
+        
+        if let addTimeButton = hourStack.arrangedSubviews.last {
+            hourStack.insertArrangedSubview(newPicker, at: hourStack.arrangedSubviews.count - 1)
+        } else {
+            hourStack.addArrangedSubview(newPicker)
+        }
+        
+        hourPickers.append(newPicker)
+    }
+    
 }
 
 
@@ -237,3 +277,7 @@ struct MyViewControllerPreview: UIViewControllerRepresentable {
 #Preview {
     MyViewControllerPreview()
 }
+
+
+
+
