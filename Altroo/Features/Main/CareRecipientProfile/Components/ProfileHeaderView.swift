@@ -9,7 +9,7 @@ import CoreData
 import UIKit
 import SwiftUI
 
-final class ProfileCardView: InnerShadowView {
+final class ProfileHeader: InnerShadowView {
     var careRecipient: CareRecipient
     
     init(careRecipient: CareRecipient) {
@@ -28,7 +28,7 @@ final class ProfileCardView: InnerShadowView {
     }
 }
 
-private extension ProfileCardView {
+private extension ProfileHeader {
     func setupUI() {
         backgroundColor = .white70
         layer.cornerRadius = 8
@@ -65,33 +65,7 @@ private extension ProfileCardView {
     }
 
     func setupAvatarView() -> UIView {
-        let avatar = UIView()
-        avatar.translatesAutoresizingMaskIntoConstraints = false
-        avatar.backgroundColor = .blue30
-        avatar.layer.cornerRadius = 35
-        avatar.layer.masksToBounds = true
-        avatar.layer.borderColor = UIColor.pureWhite.cgColor
-        avatar.layer.borderWidth = 4
-
-        let initials = initialsFromName(careRecipient.personalData?.name ?? "??")
-
-        let initialsLabel = StandardLabel(
-            labelText: initials,
-            labelFont: .sfPro,
-            labelType: .title1,
-            labelColor: .pureWhite,
-            labelWeight: .regular
-        )
-        initialsLabel.translatesAutoresizingMaskIntoConstraints = false
-
-        avatar.addSubview(initialsLabel)
-
-        NSLayoutConstraint.activate([
-            avatar.widthAnchor.constraint(equalToConstant: 70),
-            avatar.heightAnchor.constraint(equalToConstant: 70),
-            initialsLabel.centerXAnchor.constraint(equalTo: avatar.centerXAnchor),
-            initialsLabel.centerYAnchor.constraint(equalTo: avatar.centerYAnchor)
-        ])
+        let avatar = CareRecipientInitialsCircleView(careRecipientName: careRecipient.personalData?.name ?? "Sem nome").setupLayout()
 
         return avatar
     }
@@ -216,12 +190,7 @@ private extension ProfileCardView {
 }
 
 // MARK: - Helpers
-private extension ProfileCardView {
-    func initialsFromName(_ name: String) -> String {
-        let comps = name.split(separator: " ")
-        let initials = comps.prefix(2).compactMap { $0.first?.uppercased() }.joined()
-        return initials.isEmpty ? "?" : initials
-    }
+private extension ProfileHeader {
 
     func formattedWeight(from weight: Double?) -> String {
         guard let weight else { return "—" }
@@ -237,8 +206,8 @@ private extension ProfileCardView {
 // MARK: - PREVIEW
 private struct ProfileCardWrapper: UIViewRepresentable {
     let recipient: CareRecipient
-    func makeUIView(context: Context) -> ProfileCardView { ProfileCardView(careRecipient: recipient) }
-    func updateUIView(_ uiView: ProfileCardView, context: Context) {}
+    func makeUIView(context: Context) -> ProfileHeader { ProfileHeader(careRecipient: recipient) }
+    func updateUIView(_ uiView: ProfileHeader, context: Context) {}
 }
 
 private func makePreviewRecipient() -> CareRecipient {

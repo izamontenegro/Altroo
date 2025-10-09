@@ -31,6 +31,7 @@ class CapsuleIconView: UIView {
         self.text = text
         self.mainColor = mainColor
         self.accentColor = accentColor
+//        self.weight = weight
         
         makeCapsule()
     }
