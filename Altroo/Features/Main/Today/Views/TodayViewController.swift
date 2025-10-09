@@ -8,31 +8,7 @@
 import UIKit
 
 protocol TodayViewControllerDelegate: AnyObject {
-    func goToCareRecipientProfileView()
-    func goToEditSectionView()
-    
-    func goToRecordFeeding()
-    func goToRecordHydration()
-    func goToRecordStool()
-    func goToRecordUrine()
-    
-    func goToRecordHeartRate()
-    func goToRecordGlycemia()
-    func goToRecordBloodPressure()
-    func goToRecordTemperature()
-    func goToRecordSaturation()
-    
-    func goToSeeAllTasks()
-    func goToAddNewTask()
-    
-    func goToSeeAllMedication()
-    func goToAddNewMedication()
-    func goToCheckMedicationDone()
-    
-    func goToSeeAllEvents()
-    func goToAddNewEvent()
-    
-    func goToAddNewSymptom()
+    func goTo(_ destination: TodayDestination)
 }
 
 class TodayViewController: UIViewController {
@@ -120,79 +96,79 @@ class TodayViewController: UIViewController {
     
     //MARK: - BUTTON ACTIONS
     @objc private func didTapProfileView() {
-        delegate?.goToCareRecipientProfileView()
+        delegate?.goTo(.careRecipientProfile)
     }
     
     @objc private func didTapEditSectionView() {
-        delegate?.goToEditSectionView()
+        delegate?.goTo(.editSection)
     }
     
     @objc private func didTapRecordFeeding() {
-        delegate?.goToRecordFeeding()
+        delegate?.goTo(.recordFeeding)
     }
     
     @objc private func didTapRecordHydration() {
-        delegate?.goToRecordHydration()
+        delegate?.goTo(.recordHydration)
     }
     
     @objc private func didTapRecordStool() {
-        delegate?.goToRecordStool()
+        delegate?.goTo(.recordStool)
     }
     
     @objc private func didTapRecordUrine() {
-        delegate?.goToRecordUrine()
+        delegate?.goTo(.recordUrine)
     }
     
     @objc private func didTapRecordHeartRate() {
-        delegate?.goToRecordHeartRate()
+        delegate?.goTo(.recordHeartRate)
     }
     
     @objc private func didTapRecordGlycemia() {
-        delegate?.goToRecordGlycemia()
+        delegate?.goTo(.recordGlycemia)
     }
     
     @objc private func didTapRecordBloodPressure() {
-        delegate?.goToRecordBloodPressure()
+        delegate?.goTo(.recordBloodPressure)
     }
     
     @objc private func didTapRecordTemperature() {
-        delegate?.goToRecordTemperature()
+        delegate?.goTo(.recordTemperature)
     }
     
     @objc private func didTapRecordSaturation() {
-        delegate?.goToRecordSaturation()
+        delegate?.goTo(.recordSaturation)
     }
     
     @objc private func didTapSeeAllTasks() {
-        delegate?.goToSeeAllTasks()
+        delegate?.goTo(.seeAllTasks)
     }
     
     @objc private func didTapAddNewTask() {
-        delegate?.goToAddNewTask()
+        delegate?.goTo(.addNewTask)
     }
     
     @objc private func didTapSeeAllMedication() {
-        delegate?.goToSeeAllMedication()
+        delegate?.goTo(.seeAllMedication)
     }
     
     @objc private func didTapAddNewMedication() {
-        delegate?.goToAddNewMedication()
+        delegate?.goTo(.addNewMedication)
     }
     
     @objc private func didTapCheckMedicationDone() {
-        delegate?.goToCheckMedicationDone()
+        delegate?.goTo(.checkMedicationDone)
     }
     
     @objc private func didTapSeeAllEvents() {
-        delegate?.goToSeeAllEvents()
+        delegate?.goTo(.seeAllEvents)
     }
     
     @objc private func didTapAddNewEvent() {
-        delegate?.goToAddNewEvent()
+        delegate?.goTo(.addNewEvent)
     }
     
     @objc private func didTapAddNewSymptom() {
-        delegate?.goToAddNewSymptom()
+        delegate?.goTo(.addSymptom)
     }
     
     

@@ -26,222 +26,83 @@ final class TodayCoordinator: Coordinator {
         navigation.setViewControllers([vc], animated: false)
     }
     
-    
-    private func show(destination: TodayDestination) {
+    private func makeViewController(for destination: TodayDestination) -> UIViewController? {
         switch destination {
-        case .recordFeeding:
-            let vc = factory.makeMealRecordViewController()
-            navigation.pushViewController(vc, animated: true)
-        case .recordHydration:
-            let vc = factory.makeHydrationRecordSheet()
-            vc.modalPresentationStyle = .pageSheet
-            
-            if let sheet = vc.sheetPresentationController {
-                sheet.detents = [.medium()]
-                sheet.prefersGrabberVisible = true
-            }
-            navigation.present(vc, animated: true)
-        case .recordStool:
-            let vc = factory.makeStoolRecordViewController()
-            navigation.pushViewController(vc, animated: true)
-        case .recordUrine:
-            let vc = factory.makeUrineRecordViewController()
-            navigation.pushViewController(vc, animated: true)
-            
-        case .recordHeartRate:
-            let vc = factory.makeRecordHeartRateSheet()
-            vc.modalPresentationStyle = .pageSheet
-            
-            if let sheet = vc.sheetPresentationController {
-                sheet.detents = [.medium()]
-                sheet.prefersGrabberVisible = true
-            }
-            navigation.present(vc, animated: true)
-        case .recordGlycemia:
-            let vc = factory.makerRecordGlycemiaSheet()
-            vc.modalPresentationStyle = .pageSheet
-            
-            if let sheet = vc.sheetPresentationController {
-                sheet.detents = [.medium()]
-                sheet.prefersGrabberVisible = true
-            }
-            navigation.present(vc, animated: true)
-        case .recordBloodPressure:
-            let vc = factory.makeRecordBloodPressureSheet()
-            vc.modalPresentationStyle = .pageSheet
-            
-            if let sheet = vc.sheetPresentationController {
-                sheet.detents = [.medium()]
-                sheet.prefersGrabberVisible = true
-            }
-            navigation.present(vc, animated: true)
-        case .recordTemperature:
-            let vc = factory.makeRecordTemperatureSheet()
-            vc.modalPresentationStyle = .pageSheet
-            
-            if let sheet = vc.sheetPresentationController {
-                sheet.detents = [.medium()]
-                sheet.prefersGrabberVisible = true
-            }
-            navigation.present(vc, animated: true)
-        case .recordSaturation:
-            let vc = factory.makeRecordSaturationSheet()
-            vc.modalPresentationStyle = .pageSheet
-            
-            if let sheet = vc.sheetPresentationController {
-                sheet.detents = [.medium()]
-                sheet.prefersGrabberVisible = true
-            }
-            navigation.present(vc, animated: true)
-            
+        case .recordFeeding: return factory.makeMealRecordViewController()
+        case .recordHydration: return factory.makeHydrationRecordSheet()
+        case .recordStool: return factory.makeStoolRecordViewController()
+        case .recordUrine: return factory.makeUrineRecordViewController()
+        case .recordHeartRate: return factory.makeRecordHeartRateSheet()
+        case .recordGlycemia: return factory.makerRecordGlycemiaSheet()
+        case .recordBloodPressure: return factory.makeRecordBloodPressureSheet()
+        case .recordTemperature: return factory.makeRecordTemperatureSheet()
+        case .recordSaturation: return factory.makeRecordSaturationSheet()
         case .seeAllTasks:
-            let vc = factory.makeAllTasksViewController()
-            navigation.pushViewController(vc, animated: true)
+            return factory.makeAllTasksViewController()
+//            return factory.makeAllTasksViewController { [weak self] task in
+//                self?.goToTaskDetail(with: task)
+//            }
         case .addNewTask:
-            let vc = factory.makeAddTaskViewController()
-            navigation.pushViewController(vc, animated: true)
-            
-        case .seeAllMedication:
-            let vc = factory.makeAllMedicationViewController()
-            navigation.pushViewController(vc, animated: true)
-        case .addNewMedication:
-            let vc = factory.makeAddMedicationViewController()
-            navigation.pushViewController(vc, animated: true)
-        case .checkMedicationDone:
-            let nav = UINavigationController()
-
-            let medicationDetailCood = MedicationDetailCoordinator(
-                navigation: nav, patientService: patientService, factory: factory
-            )
-            add(child: medicationDetailCood)
-            
-            nav.modalPresentationStyle = .pageSheet
-                if let sheet = nav.sheetPresentationController {
-                    sheet.detents = [.medium()]
-                    sheet.prefersGrabberVisible = true
-                }
-
-                navigation.present(nav, animated: true)
-                medicationDetailCood.start()
-            
-        case .seeAllEvents:
-            let vc = factory.makeAllEventsViewController()
-            navigation.pushViewController(vc, animated: true)
-        case .addNewEvent:
-            let vc = factory.makeAddEventViewController()
-            navigation.pushViewController(vc, animated: true)
-            
-        case .editSection:
-            let vc = factory.makeEditSectionsViewController()
-            navigation.pushViewController(vc, animated: true)
+            let vc = factory.makeAddTaskViewController() as! AddTaskViewController
+//            vc.coordinator = self
+            return vc
+        case .seeAllMedication: return factory.makeAllMedicationViewController()
+        case .addNewMedication: return factory.makeAddMedicationViewController()
+        case .seeAllEvents: return factory.makeAllEventsViewController()
+        case .addNewEvent: return factory.makeAddEventViewController()
+        case .editSection: return factory.makeEditSectionsViewController()
+        case .addSymptom: return factory.makeAddSymptomViewController()
             
         case .careRecipientProfile:
-            let profileCoord = ProfileCoordinator(
-                navigation: navigation, patientService: patientService, factory: factory
-            )
-            add(child: profileCoord); profileCoord.start()
+            let profileCoord = ProfileCoordinator(navigation: navigation, patientService: patientService, factory: factory)
+            add(child: profileCoord)
+            profileCoord.start()
+            return nil
             
-        case .addSymptom:
-            let vc = factory.makeAddSymptomViewController()
+        case .checkMedicationDone:
+            let nav = UINavigationController()
+            let medicationDetailCoord = MedicationDetailCoordinator(navigation: nav, patientService: patientService, factory: factory)
+            add(child: medicationDetailCoord)
+            presentSheet(nav, from: navigation)
+            medicationDetailCoord.start()
+            return nil
+        }
+    }
+
+    private func show(destination: TodayDestination) {
+        guard let vc = makeViewController(for: destination) else { return }
+
+        if destination.isSheet {
+            presentSheet(vc, from: navigation)
+        } else {
             navigation.pushViewController(vc, animated: true)
         }
     }
 }
 
 extension TodayCoordinator: TodayViewControllerDelegate {
-    func goToCareRecipientProfileView() {
-        show(destination: .careRecipientProfile)
-    }
-    
-    func goToEditSectionView() {
-        show(destination: .editSection)
-    }
-    
-    func goToRecordFeeding() {
-        show(destination: .recordFeeding)
-    }
-    
-    func goToRecordHydration() {
-        show(destination: .recordHydration)
-    }
-    
-    func goToRecordStool() {
-        show(destination: .recordStool)
-    }
-    
-    func goToRecordUrine() {
-        show(destination: .recordUrine)
-    }
-    
-    func goToRecordHeartRate() {
-        show(destination: .recordHeartRate)
-    }
-    
-    func goToRecordGlycemia() {
-        show(destination: .recordGlycemia)
-    }
-    
-    func goToRecordBloodPressure() {
-        show(destination: .recordBloodPressure)
-    }
-    
-    func goToRecordTemperature() {
-        show(destination: .recordTemperature)
-    }
-    
-    func goToRecordSaturation() {
-        show(destination: .recordSaturation)
-    }
-    
-    func goToSeeAllTasks() {
-        show(destination: .seeAllTasks)
-    }
-    
-    func goToAddNewTask() {
-        show(destination: .addNewTask)
-    }
-    
-    func goToSeeAllMedication() {
-        show(destination: .seeAllMedication)
-    }
-    
-    func goToAddNewMedication() {
-        show(destination: .addNewMedication)
-    }
-    
-    func goToCheckMedicationDone() {
-        show(destination: .checkMedicationDone)
-    }
-    
-    func goToSeeAllEvents() {
-        show(destination: .seeAllEvents)
-    }
-    
-    func goToAddNewEvent() {
-        show(destination: .addNewEvent)
-    }
-    
-    func goToAddNewSymptom() {
-        show(destination: .addSymptom)
+    func goTo(_ destination: TodayDestination) {
+        show(destination: destination)
     }
 }
 
-
-
 enum TodayDestination {
     case careRecipientProfile
-    
     case editSection
-    
     case recordFeeding, recordHydration, recordStool, recordUrine
-    
     case recordHeartRate, recordGlycemia, recordBloodPressure, recordTemperature, recordSaturation
-    
     case seeAllTasks, addNewTask
-    
     case seeAllMedication, addNewMedication, checkMedicationDone
-    
     case seeAllEvents, addNewEvent
-    
     case addSymptom
+    
+    var isSheet: Bool {
+         switch self {
+         case .recordHydration, .recordHeartRate, .recordGlycemia,
+              .recordBloodPressure, .recordTemperature, .recordSaturation:
+             return true
+         default:
+             return false
+         }
+     }
 }
