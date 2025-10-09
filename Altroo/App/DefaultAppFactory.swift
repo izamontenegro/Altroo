@@ -29,7 +29,7 @@ extension DefaultAppFactory {
 extension DefaultAppFactory {
 
     func makeAssociatePatientViewController(delegate: AssociatePatientViewControllerDelegate) -> UIViewController {
-        let vc = AssociatePatientViewController()
+        let vc = AssociatePatientViewController(viewModel: AssociatePatientViewModel(patientService: patientService))
         vc.delegate = delegate
         vc.title = "Associate Patient View"
         return vc
@@ -41,7 +41,16 @@ extension DefaultAppFactory {
     }
     
     func makePatientFormViewController(delegate: AssociatePatientViewControllerDelegate) -> UIViewController {
-        let vc = PatientFormsViewController()
+        let basicNeeds = BasicNeedsFacadeMock()
+        let routineActivities = RoutineActivitiesFacadeMock()
+        let persistence = CoreDataService()
+
+        let facade = CareRecipientFacade(
+            basicNeedsFacade: basicNeeds,
+            routineActivitiesFacade: routineActivities,
+            persistenceService: persistence
+        )
+        let vc = PatientFormsViewController(viewModel: PatientFormsViewModel(careRecipientFacade: facade))
         vc.delegate = delegate
         vc.title = "Patient Forms"
         return vc

@@ -13,7 +13,7 @@ protocol ShiftFormsViewControllerDelegate: AnyObject {
 
 class ShiftFormViewController: UIViewController {
     weak var delegate: ShiftFormsViewControllerDelegate?
-    
+        
     let doneButton: UIButton = {
         let button = UIButton(type: .custom)
         button.setTitle("Create", for: .normal)

@@ -17,6 +17,8 @@ protocol AssociatePatientViewControllerDelegate: AnyObject {
 
 class AssociatePatientViewController: UIViewController {
     weak var delegate: AssociatePatientViewControllerDelegate?
+    
+    private let viewModel: AssociatePatientViewModel
 
     let viewLabel: UILabel = {
         let label = UILabel()
@@ -56,12 +58,26 @@ class AssociatePatientViewController: UIViewController {
         stackView.translatesAutoresizingMaskIntoConstraints = false
         return stackView
     }()
+    
+    init(viewModel: AssociatePatientViewModel) {
+        self.viewModel = viewModel
+        super.init(nibName: nil, bundle: nil)
+    }
+    
+    required init?(coder: NSCoder) {
+        fatalError("init(coder:) has not been implemented")
+    }
 
+    // MARK: - Lifecycle
     override func viewDidLoad() {
         super.viewDidLoad()
-
-        view.backgroundColor = .systemBlue
         
+        view.backgroundColor = .systemBlue
+        setupLayout()
+        updateView()
+    }
+    
+    private func setupLayout() {
         view.addSubview(vStack)
         vStack.addArrangedSubview(viewLabel)
         vStack.addArrangedSubview(addNewPatientButton)
@@ -74,6 +90,18 @@ class AssociatePatientViewController: UIViewController {
         
         addNewPatientButton.addTarget(self, action: #selector(didTapAddNewPatientButton), for: .touchUpInside)
         addExistingPatientButton.addTarget(self, action: #selector(didTapAddExistingPatientButton), for: .touchUpInside)
+    }
+    
+    private func updateView() {
+        
+        let patients = viewModel.allPatients
+
+        if patients.isEmpty {
+            viewLabel.text = "Sem pacientes cadastrados 😔"
+        } else {
+            let names = patients.compactMap { $0.personalData?.name }
+            viewLabel.text = names.joined(separator: "")
+        }
     }
     
     @objc
