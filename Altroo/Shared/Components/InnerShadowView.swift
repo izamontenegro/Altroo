@@ -51,5 +51,4 @@ class InnerShadowView: UIView {
         
         innerShadowLayer.shadowPath = CGPath(rect: CGRect(x: 0, y: bounds.height - 12, width: bounds.width, height: 10 + innerShadowLayer.shadowRadius * 2), transform: nil)
     }
-
 }

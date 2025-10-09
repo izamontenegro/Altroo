@@ -44,7 +44,6 @@ class PlusButton: UIButton {
         
         circle.isUserInteractionEnabled = false
 
-
         NSLayoutConstraint.activate([
             circle.topAnchor.constraint(equalTo: self.topAnchor),
             circle.bottomAnchor.constraint(equalTo: self.bottomAnchor),

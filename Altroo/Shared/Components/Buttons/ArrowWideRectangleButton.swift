@@ -8,6 +8,7 @@
 import UIKit
 
 class ArrowWideRectangleButton: WideRectangleButton {
+    
     let icon = UIImage(systemName: "chevron.right")
     
     override init(title: String) {
@@ -31,15 +32,15 @@ class ArrowWideRectangleButton: WideRectangleButton {
         let imageWidth = imageView.intrinsicContentSize.width
         let titleWidth = titleLabel.intrinsicContentSize.width
         
-        // Título à esquerda
+        // Title on the left
         titleLabel.frame.origin.x = horizontalPadding
         titleLabel.frame.origin.y = (bounds.height - titleLabel.frame.height) / 2
         
-        // Ícone à direita
+        // Title on the right
         imageView.frame.origin.x = bounds.width - imageWidth - horizontalPadding
         imageView.frame.origin.y = (bounds.height - imageView.frame.height) / 2
         
-        // Evita sobreposição do texto com o ícone
+        // Avoids text overlapping with the icon
         let maxTitleWidth = bounds.width - imageWidth - spacingBetweenTitleAndIcon - horizontalPadding * 2
         titleLabel.frame.size.width = min(titleWidth, maxTitleWidth)
     }
@@ -47,20 +48,19 @@ class ArrowWideRectangleButton: WideRectangleButton {
     private func setupButton() {
         guard let icon = icon?.withRenderingMode(.alwaysTemplate) else { return }
         
-        // Configura aparência do botão
         setImage(icon, for: .normal)
         tintColor = .pureWhite
         setTitleColor(.pureWhite, for: .normal)
         titleLabel?.font = UIFont.systemFont(ofSize: 17, weight: .medium)
         
-        // Alinhamento e espaçamento base
+        // Base alignment and spacing
         contentHorizontalAlignment = .left
         contentEdgeInsets = UIEdgeInsets(top: 10,
                                          left: 16,
                                          bottom: 10,
                                          right: 16)
         
-        // Reseta insets de imagem/título (layoutSubviews vai reposicionar)
+        // Resets image/title insets (layoutSubviews will reposition)
         titleEdgeInsets = .zero
         imageEdgeInsets = .zero
     }

@@ -9,6 +9,7 @@ import UIKit
 
 //Mother class to setup basic button style - color, shadow, cornerradius etc
 class PrimaryStyleButton: UIButton {
+    
     let color = UIColor(resource: .teal20)
     
     init() {
@@ -38,7 +39,10 @@ class PrimaryStyleButton: UIButton {
         layer.cornerRadius = 8
         layer.masksToBounds = true
         
-        contentEdgeInsets = UIEdgeInsets(top: 8, left: 16, bottom: 8, right: 16)
+        contentEdgeInsets = UIEdgeInsets(top: 8,
+                                         left: 16,
+                                         bottom: 8,
+                                         right: 16)
         
         translatesAutoresizingMaskIntoConstraints = false
     }

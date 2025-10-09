@@ -8,6 +8,7 @@
 import UIKit
 
 final class PopupMenuButton: PrimaryStyleButton {
+    
     var title: String
     let icon = UIImage(systemName: "chevron.up.chevron.down")
         
@@ -47,10 +48,10 @@ final class PopupMenuButton: PrimaryStyleButton {
         setTitleColor(.white, for: .normal)
         titleLabel?.font = UIFont.systemFont(ofSize: 17, weight: .regular)
         
-        // ícone
+        // icon
         if let icon = icon?.withRenderingMode(.alwaysTemplate) {
             setImage(icon, for: .normal)
-            tintColor = .white // altera a cor do ícone aqui
+            tintColor = .white // change the icon color here
         }
         
         if let icon = icon {
@@ -62,10 +63,12 @@ final class PopupMenuButton: PrimaryStyleButton {
                                                 left: -icon.size.width - spacing / 2,
                                                 bottom: 0,
                                                 right: icon.size.width + spacing / 2)
+            
             self.imageEdgeInsets = UIEdgeInsets(top: 0,
                                                 left: self.titleLabel!.frame.size.width + spacing / 2,
                                                 bottom: 0,
                                                 right: -self.titleLabel!.frame.size.width - spacing / 2)
+            
             let currentInsets = self.contentEdgeInsets
             self.contentEdgeInsets = UIEdgeInsets(top: currentInsets.top,
                                                   left: currentInsets.left + 16,

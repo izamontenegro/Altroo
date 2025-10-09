@@ -7,8 +7,8 @@
 
 import UIKit
 
-
 final class StandardConfirmationButton: PrimaryStyleButton {
+    
     var title: String
     
     init(title: String) {
@@ -33,7 +33,10 @@ final class StandardConfirmationButton: PrimaryStyleButton {
         
         layer.cornerRadius = 22
         
-        contentEdgeInsets = UIEdgeInsets(top: 8, left: 64, bottom: 8, right: 64)
+        contentEdgeInsets = UIEdgeInsets(top: 8,
+                                         left: 64,
+                                         bottom: 8,
+                                         right: 64)
         
         titleLabel?.font = UIFont.systemFont(ofSize: 24, weight: .semibold)
         

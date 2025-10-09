@@ -7,6 +7,7 @@
 import UIKit
 
 class WideRectangleButton: PrimaryStyleButton {
+    
     var title: String
 
     init(title: String) {
@@ -45,7 +46,6 @@ class WideRectangleButton: PrimaryStyleButton {
         setTitleColor(.white, for: .normal)
                 
         titleLabel?.font = UIFont.systemFont(ofSize: 17, weight: .semibold)
-
     }
 }
 
