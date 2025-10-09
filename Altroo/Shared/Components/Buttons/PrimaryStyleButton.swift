@@ -12,10 +12,13 @@ class PrimaryStyleButton: UIButton {
     
     let color = UIColor(resource: .teal20)
     
+    private var innerShadowView: InnerShadowView?
+    
     init() {
         super.init(frame: .zero)
         setupBackground()
         setupLabel()
+        setupInnerShadow()
     }
     
     convenience init(title: String) {
@@ -31,6 +34,7 @@ class PrimaryStyleButton: UIButton {
 
     override func layoutSubviews() {
         super.layoutSubviews()
+        innerShadowView?.frame = bounds
     }
 
     private func setupBackground() {
@@ -49,6 +53,14 @@ class PrimaryStyleButton: UIButton {
     
     private func setupLabel() {
         setTitleColor(.white, for: .normal)
+    }
+    
+    private func setupInnerShadow() {
+        let shadow = InnerShadowView(frame: bounds, color: UIColor.teal0, opacity: 0.20)
+        shadow.isUserInteractionEnabled = false
+        shadow.layer.cornerRadius = layer.cornerRadius
+        addSubview(shadow)
+        innerShadowView = shadow
     }
 }
 

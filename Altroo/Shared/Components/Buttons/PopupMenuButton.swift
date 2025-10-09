@@ -11,12 +11,15 @@ final class PopupMenuButton: PrimaryStyleButton {
     
     var title: String
     let icon = UIImage(systemName: "chevron.up.chevron.down")
+    
+    private var innerShadowView: InnerShadowView?
         
     init(title: String) {
         self.title = title
         super.init()
         
         setupButton()
+        setupInnerShadow()
     }
     
     required init?(coder: NSCoder) {
@@ -25,6 +28,7 @@ final class PopupMenuButton: PrimaryStyleButton {
     
     override func layoutSubviews() {
         super.layoutSubviews()
+        innerShadowView?.frame = bounds
         
          if let icon = icon, let titleLabel = self.titleLabel {
              let spacing: CGFloat = 8
@@ -75,6 +79,14 @@ final class PopupMenuButton: PrimaryStyleButton {
                                                   bottom: currentInsets.bottom,
                                                   right: currentInsets.right + icon.size.width)
         }
+    }
+    
+    private func setupInnerShadow() {
+        let shadow = InnerShadowView(frame: bounds, color: UIColor.teal0, opacity: 0.20)
+        shadow.isUserInteractionEnabled = false
+        shadow.layer.cornerRadius = layer.cornerRadius
+        addSubview(shadow)
+        innerShadowView = shadow
     }
 }
 
