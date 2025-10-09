@@ -21,14 +21,14 @@ class RecordCard: InnerShadowView {
         self.title = title
         self.iconName = iconName
         
-        super.init(frame: frame)
+        super.init(frame: frame, color: .blue70)
         
         setupBackground()
         setupShadows()
         setupPlusButton()
     }
 
-    convenience override init(frame: CGRect) {
+    convenience init(frame: CGRect) {
         self.init(frame: frame,
                   title: "",
                   iconName: "questionmark.circle")
@@ -84,7 +84,7 @@ class RecordCard: InnerShadowView {
     }
     
     func makeHeader() -> UIStackView {
-        let label = StandardLabel(labelText: title, labelFont: .sfPro, labelType: .h1, labelColor: .blue, labelWeight: .medium)
+        let label = StandardLabel(labelText: title, labelFont: .sfPro, labelType: .title3, labelColor: .blue, labelWeight: .medium)
         
         let icon = PulseIcon(iconName: "waterbottle.fill", color: UIColor(resource: .blue30), shadowColor: UIColor(resource: .blue60))
         
@@ -106,9 +106,30 @@ class RecordCard: InnerShadowView {
     }
 }
 
+//class RecordCardPreview: UIViewController {
+//    let card = RecordCard(title: "Hidratação", iconName: "waterbottle.fill")
+//    
+//    
+//    override func viewDidLoad() {
+//        view.backgroundColor = .blue80
+//        
+//        view.addSubview(card)
+//        
+//        card.translatesAutoresizingMaskIntoConstraints = false
+//        
+//        NSLayoutConstraint.activate([
+//            card.centerXAnchor.constraint(equalTo: view.centerXAnchor),
+//            card.centerYAnchor.constraint(equalTo: view.centerYAnchor),
+//            card.widthAnchor.constraint(equalToConstant: 370)
+//        ])
+//
+//    }
+//}
 
 #Preview {
     let card = RecordCard(title: "Hidratação", iconName: "waterbottle.fill")
     
     return card
+    
+//    RecordCardPreview()
 }

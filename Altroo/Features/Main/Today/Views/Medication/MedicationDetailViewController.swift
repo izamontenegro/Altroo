@@ -1,25 +1,21 @@
 //
-//  SettingsViewController.swift
+//  MedicationDetailViewController.swift
 //  Altroo
 //
-//  Created by Layza Maria Rodrigues Carneiro on 25/09/25.
+//  Created by Raissa Parente on 02/10/25.
 //
-
 import UIKit
 
-protocol SettingsViewControllerDelegate: AnyObject {
-    func goToUserProfile()
-    func goToPrivacySecurity()
-    func goToDevelopers()
-
+protocol MedicationDetailViewControllerDelegate: AnyObject {
+    func didTapOutOfTimeButton()
 }
 
-class SettingsViewController: UIViewController {
-    weak var delegate: SettingsViewControllerDelegate?
-    
+class MedicationDetailViewController: UIViewController {
+    weak var delegate: MedicationDetailViewControllerDelegate?
+
     let viewLabel: UILabel = {
         let label = UILabel()
-        label.text = "Settings View"
+        label.text = "Medication Detail View"
         label.textAlignment = .center
         
         label.translatesAutoresizingMaskIntoConstraints = false
@@ -39,7 +35,7 @@ class SettingsViewController: UIViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
 
-        view.backgroundColor = .systemTeal
+        view.backgroundColor = .white
         
         view.addSubview(viewLabel)
         view.addSubview(vStack)
@@ -56,22 +52,9 @@ class SettingsViewController: UIViewController {
     }
     
     private func addDelegateButtons() {
-        createButton(title: "User Profile", action: #selector(didTapUserProfileButton))
-        createButton(title: "Privacy and Security", action: #selector(didTapPrivacySecurityButton))
-        createButton(title: "Ratings", action: #selector(didTapDevelopersButton))
-        createButton(title: "Developers", action: #selector(didTapDevelopersButton))
-    }
-    
-    @objc func didTapUserProfileButton() {
-        delegate?.goToUserProfile()
-    }
-    
-    @objc func didTapPrivacySecurityButton() {
-        delegate?.goToPrivacySecurity()
-    }
-    
-    @objc func didTapDevelopersButton() {
-        delegate?.goToDevelopers()
+        createButton(title: "Taken in time", action: #selector(didTapInTimeButton))
+        createButton(title: "Taken out of time", action: #selector(didTapOutOfTimeButton))
+        createButton(title: "Not taken", action: #selector(didTapNotTakenButton))
     }
     
     //UTILITY FUNC
@@ -81,5 +64,15 @@ class SettingsViewController: UIViewController {
         button.translatesAutoresizingMaskIntoConstraints = false
         button.addTarget(self, action: action, for: .touchUpInside)
         vStack.addArrangedSubview(button)
+    }
+    
+    @objc func didTapInTimeButton() {
+    }
+    
+    @objc func didTapOutOfTimeButton() {
+        delegate?.didTapOutOfTimeButton()
+    }
+    
+    @objc func didTapNotTakenButton() {
     }
 }

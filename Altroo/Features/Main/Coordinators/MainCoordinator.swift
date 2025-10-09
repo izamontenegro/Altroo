@@ -67,29 +67,7 @@ final class MainCoordinator: Coordinator {
         
         tabBar.viewControllers = [settingsNav, todayNav, histNav, analysisNav]
         
-        tabBar.onPlusTapped = { [weak self] in
-            self?.presentAddFlow()
-        }
-        
         rootNavigation.setNavigationBarHidden(true, animated: false)
         rootNavigation.setViewControllers([tabBar], animated: false)
-    }
-    
-    private func presentAddFlow() {
-        let addNav = UINavigationController()
-        let addCoord = AddItemCoordinator(
-            navigation: addNav, patientService: patientService, factory: factory
-        )
-        add(child: addCoord)
-        addCoord.start()
-        
-        addNav.modalPresentationStyle = .pageSheet
-        if let sheet = addNav.sheetPresentationController {
-            sheet.detents = [.large()]
-            sheet.prefersGrabberVisible = true
-            sheet.preferredCornerRadius = 16
-        }
-        
-        rootNavigation.present(addNav, animated: true, completion: nil)
     }
 }
