@@ -15,7 +15,7 @@ final class AppCoordinator: Coordinator {
     private let factory: AppFactory
 
     init(rootNavigation: UINavigationController,
-        patientService: PatientService = PatientSessionService()) {
+         patientService: PatientService = PatientSessionService()) {
         self.rootNavigation = rootNavigation
         self.patientService = patientService
         self.factory = DefaultAppFactory(patientService: patientService)
