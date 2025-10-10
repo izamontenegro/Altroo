@@ -147,6 +147,7 @@ class AddTaskViewController: GradientNavBarViewController {
         //time
         let hourSection = makeHourSection()
         contentStack.addArrangedSubview(hourSection)
+        didAddTime()
         
         //repeat
         let weekdayRow = RepeatDaysRow()

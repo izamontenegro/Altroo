@@ -9,7 +9,7 @@ import Foundation
 
 protocol RoutineTaskServiceProtocol {
     
-    func addRoutineTask(name: String, time: Date, daysOfTheWeek: [Locale.Weekday], startDate: Date, endDate: Date, reminder: Bool, note: String, in careRecipient: CareRecipient)
+    func addRoutineTask(name: String, time: Date, daysOfTheWeek: [Locale.Weekday], startDate: Date, endDate: Date?, reminder: Bool, note: String, in careRecipient: CareRecipient)
     
     func deleteRoutineTask(routineTask: RoutineTask, from careRecipient: CareRecipient)
     
@@ -18,7 +18,7 @@ protocol RoutineTaskServiceProtocol {
 }
 
 class RoutineTaskService: RoutineTaskServiceProtocol {
-    func addRoutineTask(name: String, time: Date, daysOfTheWeek: [Locale.Weekday], startDate: Date, endDate: Date, reminder: Bool, note: String, in careRecipient: CareRecipient) {
+    func addRoutineTask(name: String, time: Date, daysOfTheWeek: [Locale.Weekday], startDate: Date, endDate: Date?, reminder: Bool, note: String, in careRecipient: CareRecipient) {
         
         guard let context = careRecipient.managedObjectContext else { return }
         

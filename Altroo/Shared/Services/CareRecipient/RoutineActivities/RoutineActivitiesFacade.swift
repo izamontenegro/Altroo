@@ -22,7 +22,7 @@ class RoutineActivitiesFacade: RoutineActivitiesFacadeProtocol {
     }
     
     // MARK: - TASK ACTIONS
-    func addRoutineTask(name: String, time: Date, daysOfTheWeek: [Locale.Weekday], startDate: Date, endDate: Date, reminder: Bool, note: String, in careRecipient: CareRecipient) {
+    func addRoutineTask(name: String, time: Date, daysOfTheWeek: [Locale.Weekday], startDate: Date, endDate: Date?, reminder: Bool, note: String, in careRecipient: CareRecipient) {
         routineTaskService.addRoutineTask(name: name, time: time, daysOfTheWeek: daysOfTheWeek, startDate: startDate, endDate: endDate, reminder: reminder, note: note, in: careRecipient)
         
         persistenceService.save()

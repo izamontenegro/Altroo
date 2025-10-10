@@ -33,29 +33,89 @@ class AddTaskViewModel {
         self.taskService = taskService
         
         //Test person
-//        let stack = CoreDataStack.shared
-//        let service = CoreDataService(stack: stack)
-//        
-//        let personalData = PersonalData(context: stack.context)
-//        personalData.name = "Mrs. Parente"
-//        let recipient = CareRecipient(context: stack.context)
-//        recipient.personalData = personalData
-//        let routineAct = RoutineActivities(context: stack.context)
-//        routineAct.tasks = []
-//        recipient.routineActivities = routineAct
-//        
-//        service.save()
+        //        let stack = CoreDataStack.shared
+        //        let service = CoreDataService(stack: stack)
+        //
+        //        let personalData = PersonalData(context: stack.context)
+        //        personalData.name = "Mrs. Parente"
+        //        let recipient = CareRecipient(context: stack.context)
+        //        recipient.personalData = personalData
+        //        let routineAct = RoutineActivities(context: stack.context)
+        //        routineAct.tasks = []
+        //        recipient.routineActivities = routineAct
+        //
+        //        service.save()
         
         currentCareRecipient = CoreDataService(stack: CoreDataStack.shared).fetchAllCareRecipients().first(where: { $0.personalData?.name == "Mrs. Parente" })!
     }
     
+    //MARK: VALIDATION
+    //    func isTexfieldEmpty() -> Bool {
+    //
+    //    }
+    
+    var finalEndDate: Date? {
+        if isContinuous == true { return nil } else { return endDate }
+    }
+    
+    func checkRepeatingDays() {
+        if repeatingDays.isEmpty {
+            repeatingDays = Locale.Weekday.allCases
+        }
+    }
+    
+    //MARK: FORMATTING
+    
+    
+    //MARK: CREATION
+    func generateTaskDates() -> [Date] {
+        var generatedDates: [Date] = []
+        let calendar = Calendar.current
+        
+        guard !times.isEmpty else { return [] }
+        
+        //TODO: Logic to regenerate tasks once this period ends
+        let end = isContinuous
+        ? calendar.date(byAdding: .month, value: 3, to: startDate) ?? startDate //generates task instances for 3 months
+        : endDate
+        
+        checkRepeatingDays()
+        
+        //range
+        var currentDate = calendar.startOfDay(for: startDate)
+        let finalDate = calendar.startOfDay(for: end)
+        
+        while currentDate <= finalDate {
+            //conversion from calendar weekday(int) to enum Locale.weekday
+            guard let weekday = Locale.Weekday.from(calendarWeekday: calendar.component(.weekday, from: currentDate)) else {
+                continue
+            }
+            guard repeatingDays.contains(weekday) else { continue }
+            
+            for time in times {
+                //final date -> date + time
+                let hour = calendar.component(.hour, from: time)
+                let minute = calendar.component(.minute, from: time)
+                if let combinedDate = calendar.date(bySettingHour: hour, minute: minute, second: 0, of: currentDate) {
+                    generatedDates.append(combinedDate)
+                }
+            }
+            
+            guard let nextDay = calendar.date(byAdding: .day, value: 1, to: currentDate) else { break }
+            currentDate = nextDay
+        }
+        return generatedDates
+    }
+
     func createTaskUnit(time: Date) {
-        taskService.addRoutineTask(name: name, time: time, daysOfTheWeek: repeatingDays, startDate: startDate, endDate: endDate, reminder: false, note: note, in: currentCareRecipient)
+        taskService.addRoutineTask(name: name, time: time, daysOfTheWeek: repeatingDays, startDate: startDate, endDate: finalEndDate, reminder: false, note: note, in: currentCareRecipient)
         print(currentCareRecipient.routineActivities?.tasks)
     }
     
     func createAllTasks() {
-        for time in times {
+        let allDates = generateTaskDates()
+        
+        for time in allDates {
             createTaskUnit(time: time)
         }
     }
