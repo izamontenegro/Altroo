@@ -11,14 +11,12 @@ final class OnboardingCoordinator: Coordinator {
     
     var childCoordinators: [Coordinator] = []
     private let navigation: UINavigationController
-    private let patientService: PatientService
     private let factory: AppFactory
 
     var onFinish: (() -> Void)?
 
-    init(navigation: UINavigationController, patientService: PatientService, factory: AppFactory) {
+    init(navigation: UINavigationController, factory: AppFactory) {
         self.navigation = navigation
-        self.patientService = patientService
         self.factory = factory
     }
 

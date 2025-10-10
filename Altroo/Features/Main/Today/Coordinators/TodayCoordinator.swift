@@ -10,14 +10,12 @@ import UIKit
 final class TodayCoordinator: Coordinator {
     var childCoordinators: [Coordinator] = []
     private let navigation: UINavigationController
-    private let patientService: PatientService
     private let factory: AppFactory
     
     var onRequestLogout: (() -> Void)?
     
-    init(navigation: UINavigationController, patientService: PatientService, factory: AppFactory) {
+    init(navigation: UINavigationController, factory: AppFactory) {
         self.navigation = navigation
-        self.patientService = patientService
         self.factory = factory
     }
     
@@ -117,7 +115,7 @@ final class TodayCoordinator: Coordinator {
             let nav = UINavigationController()
 
             let medicationDetailCood = MedicationDetailCoordinator(
-                navigation: nav, patientService: patientService, factory: factory
+                navigation: nav, factory: factory
             )
             add(child: medicationDetailCood)
             
@@ -143,7 +141,7 @@ final class TodayCoordinator: Coordinator {
             
         case .careRecipientProfile:
             let profileCoord = ProfileCoordinator(
-                navigation: navigation, patientService: patientService, factory: factory
+                navigation: navigation, factory: factory
             )
             add(child: profileCoord); profileCoord.start()
             

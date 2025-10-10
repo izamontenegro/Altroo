@@ -20,7 +20,8 @@ protocol AppFactory:
     MeasurementFactory,
     GeneralFactory,
     HistoryFactory,
-    SettingsFactory {
+    SettingsFactory,
+    ServiceFactory {
 }
 
 // MARK: - ONBOARDING FLOW
@@ -112,4 +113,10 @@ protocol SettingsFactory {
     func makeUserProfileViewController() -> UIViewController
     func makePrivacySecurityViewController() -> UIViewController
     func makeDevelopersViewController() -> UIViewController
+}
+
+// MARK: - SERVICES
+protocol ServiceFactory {
+    func makeBasicNeedsFacade() -> BasicNeedsFacade
+    func makeCareRecipientFacade() -> CareRecipientFacade
 }

@@ -8,10 +8,10 @@ import UIKit
 
 // MARK: - DefaultAppFactory
 final class DefaultAppFactory: AppFactory {
-    private let patientService: PatientService
+    private let dependencies: AppDependencies
     
-    init(patientService: PatientService) {
-        self.patientService = patientService
+    init(dependencies: AppDependencies) {
+        self.dependencies = dependencies
     }
 }
 
@@ -27,7 +27,7 @@ extension DefaultAppFactory {
 
 // MARK: - AssociatePatientFactory
 extension DefaultAppFactory {
-
+    
     func makeAssociatePatientViewController(delegate: AssociatePatientViewControllerDelegate) -> UIViewController {
         let vc = AssociatePatientViewController()
         vc.delegate = delegate
@@ -93,7 +93,7 @@ extension DefaultAppFactory {
 }
 
 // MARK: - TodayFactory
-extension DefaultAppFactory {    
+extension DefaultAppFactory {
     func makeEditSectionsViewController() -> UIViewController {
         let vc = EditSectionViewController()
         return vc
@@ -260,3 +260,15 @@ extension DefaultAppFactory {
         return vc
     }
 }
+
+//MARK: - FacadeFactory
+extension DefaultAppFactory {
+    func makeBasicNeedsFacade() -> BasicNeedsFacade {
+        dependencies.basicNeedsFacade
+    }
+    
+    func makeCareRecipientFacade() -> CareRecipientFacade {
+        dependencies.careRecipientFacade
+    }
+}
+
