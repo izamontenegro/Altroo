@@ -8,7 +8,7 @@
 import Foundation
 
 //TODO: CHECK
-extension Task {
+extension RoutineTask {
     var period: PeriodEnum {
         let hour = Calendar.current.component(.hour, from: time!)
         

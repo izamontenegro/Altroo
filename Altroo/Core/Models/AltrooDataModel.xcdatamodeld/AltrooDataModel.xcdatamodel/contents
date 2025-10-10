@@ -1,5 +1,4 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
-
 <model type="com.apple.IDECoreDataModeler.DataModel" documentVersion="1.0" lastSavedToolsVersion="23605" systemVersion="24D70" minimumToolsVersion="Automatic" sourceLanguage="Swift" userDefinedModelVersionIdentifier="">
     <entity name="BasicNeeds" representedClassName="BasicNeeds" syncable="YES" codeGenerationType="class">
         <relationship name="careRecipient" optional="YES" maxCount="1" deletionRule="Nullify" destinationEntity="CareRecipient" inverseName="basicNeeds" inverseEntity="CareRecipient"/>
@@ -43,7 +42,7 @@
         <attribute name="name" optional="YES" attributeType="String"/>
         <relationship name="healthProblems" optional="YES" maxCount="1" deletionRule="Nullify" destinationEntity="HealthProblems" inverseName="diseases" inverseEntity="HealthProblems"/>
         <relationship name="relatedMedications" optional="YES" toMany="YES" deletionRule="Nullify" destinationEntity="Medication" inverseName="disease" inverseEntity="Medication"/>
-        <relationship name="relatedTasks" optional="YES" toMany="YES" deletionRule="Nullify" destinationEntity="RoutineTask" inverseName="disease" inverseEntity="RoutineTask"/>
+        <relationship name="relatedTasks" optional="YES" toMany="YES" deletionRule="Nullify" destinationEntity="RoutineTask"/>
     </entity>
     <entity name="Dose" representedClassName="Dose" syncable="YES" codeGenerationType="class">
         <attribute name="completionDate" optional="YES" attributeType="Date" usesScalarValueType="NO"/>
@@ -133,15 +132,15 @@
         <relationship name="careRecipient" optional="YES" maxCount="1" deletionRule="Nullify" destinationEntity="CareRecipient" inverseName="routineActivities" inverseEntity="CareRecipient"/>
         <relationship name="measurements" optional="YES" toMany="YES" deletionRule="Nullify" destinationEntity="Measurements" inverseName="routineActivities" inverseEntity="Measurements"/>
         <relationship name="medications" optional="YES" toMany="YES" deletionRule="Nullify" destinationEntity="Medication" inverseName="routineActivities" inverseEntity="Medication"/>
-        <relationship name="tasks" optional="YES" toMany="YES" deletionRule="Nullify" destinationEntity="RoutineTask" inverseName="routineActivities" inverseEntity="RoutineTask"/>
+        <relationship name="tasks" optional="YES" toMany="YES" deletionRule="Nullify" destinationEntity="RoutineTask"/>
     </entity>
     <entity name="RoutineTask" representedClassName="RoutineTask" syncable="YES" codeGenerationType="class">
         <attribute name="daysOfTheWeek" optional="YES" attributeType="Transformable" customClassName="[String]"/>
-        <attribute name="frequency" optional="YES" attributeType="String"/>
+        <attribute name="endDate" optional="YES" attributeType="Date" usesScalarValueType="NO"/>
         <attribute name="name" optional="YES" attributeType="String"/>
         <attribute name="note" optional="YES" attributeType="String"/>
-        <attribute name="period" optional="YES" attributeType="String"/>
         <attribute name="reminder" optional="YES" attributeType="Boolean" usesScalarValueType="YES"/>
+        <attribute name="startDate" optional="YES" attributeType="Date" usesScalarValueType="NO"/>
         <attribute name="time" optional="YES" attributeType="Date" usesScalarValueType="NO"/>
         <relationship name="disease" optional="YES" maxCount="1" deletionRule="Nullify" destinationEntity="Disease" inverseName="relatedTasks" inverseEntity="Disease"/>
         <relationship name="events" optional="YES" maxCount="1" deletionRule="Nullify" destinationEntity="CareRecipientEvent" inverseName="task" inverseEntity="CareRecipientEvent"/>
@@ -161,18 +160,6 @@
         <attribute name="name" optional="YES" attributeType="String"/>
         <attribute name="symptomDescription" optional="YES" attributeType="String"/>
         <relationship name="careRecipient" optional="YES" maxCount="1" deletionRule="Nullify" destinationEntity="CareRecipient" inverseName="symptoms" inverseEntity="CareRecipient"/>
-    </entity>
-    <entity name="Task" representedClassName="Task" syncable="YES" codeGenerationType="class">
-        <attribute name="daysOfTheWeek" optional="YES" attributeType="Transformable" customClassName="[String]"/>
-        <attribute name="endDate" optional="YES" attributeType="Date" usesScalarValueType="NO"/>
-        <attribute name="name" optional="YES" attributeType="String"/>
-        <attribute name="note" optional="YES" attributeType="String"/>
-        <attribute name="reminder" optional="YES" attributeType="Boolean" usesScalarValueType="YES"/>
-        <attribute name="startDate" optional="YES" attributeType="Date" usesScalarValueType="NO"/>
-        <attribute name="time" optional="YES" attributeType="Date" usesScalarValueType="NO"/>
-        <relationship name="disease" optional="YES" maxCount="1" deletionRule="Nullify" destinationEntity="Disease" inverseName="relatedTasks" inverseEntity="Disease"/>
-        <relationship name="events" optional="YES" maxCount="1" deletionRule="Nullify" destinationEntity="CareRecipientEvents" inverseName="task" inverseEntity="CareRecipientEvents"/>
-        <relationship name="routineActivities" optional="YES" maxCount="1" deletionRule="Nullify" destinationEntity="RoutineActivities" inverseName="tasks" inverseEntity="RoutineActivities"/>
     </entity>
     <entity name="UrineRecord" representedClassName="UrineRecord" syncable="YES" codeGenerationType="class">
         <attribute name="color" optional="YES" attributeType="String"/>

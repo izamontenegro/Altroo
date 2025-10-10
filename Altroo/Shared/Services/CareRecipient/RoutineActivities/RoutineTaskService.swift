@@ -15,6 +15,7 @@ protocol RoutineTaskServiceProtocol {
     
 }
 
+//TODO: Add startdate enddate
 class RoutineTaskService: RoutineTaskServiceProtocol {
     func addRoutineTask(name: String, period: PeriodEnum, time: Date, frequency: FrequencyEnum, reminder: Bool, note: String, in careRecipient: CareRecipient) {
         
@@ -22,9 +23,7 @@ class RoutineTaskService: RoutineTaskServiceProtocol {
         
         let newRoutineTask = RoutineTask(context: context)
         newRoutineTask.name = name
-        newRoutineTask.period = period.rawValue
         newRoutineTask.time = time
-        newRoutineTask.frequency = frequency.rawValue
         newRoutineTask.reminder = reminder
         newRoutineTask.note = note
 
