@@ -22,8 +22,8 @@ class RoutineActivitiesFacade: RoutineActivitiesFacadeProtocol {
     }
     
     // MARK: - TASK ACTIONS
-    func addRoutineTask(name: String, period: PeriodEnum, time: Date, frequency: FrequencyEnum, reminder: Bool, note: String, in careRecipient: CareRecipient) {
-        routineTaskService.addRoutineTask(name: name, period: period, time: time, frequency: frequency, reminder: reminder, note: note, in: careRecipient)
+    func addRoutineTask(name: String, time: Date, daysOfTheWeek: [Locale.Weekday], startDate: Date, endDate: Date, reminder: Bool, note: String, in careRecipient: CareRecipient) {
+        routineTaskService.addRoutineTask(name: name, time: time, daysOfTheWeek: daysOfTheWeek, startDate: startDate, endDate: endDate, reminder: reminder, note: note, in: careRecipient)
         
         persistenceService.save()
     }
@@ -32,6 +32,10 @@ class RoutineActivitiesFacade: RoutineActivitiesFacadeProtocol {
         routineTaskService.deleteRoutineTask(routineTask: routineTask, from: careRecipient)
         
         persistenceService.save()
+    }
+    
+    func fetchAllRoutineTasks(from careRecipient: CareRecipient) -> [RoutineTask]{
+        return routineTaskService.fetchRoutineTasks(for: careRecipient)
     }
     
 //    // MARK: - MEDICATION ACTIONS

@@ -9,6 +9,16 @@ import Foundation
 
 //TODO: CHECK
 extension RoutineTask {
+    var weekdays: [Locale.Weekday] {
+            get {
+                guard let storedDays = daysOfTheWeek else { return [] }
+                return storedDays.compactMap { Locale.Weekday(rawValue: $0) }
+            }
+            set {
+                daysOfTheWeek = newValue.map { $0.rawValue }
+            }
+    }
+    
     var period: PeriodEnum {
         let hour = Calendar.current.component(.hour, from: time!)
         

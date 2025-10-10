@@ -8,7 +8,7 @@
 import UIKit
 
 class TaskCard: InnerShadowView {
-    let task: MockTask
+    let task: RoutineTask
     
     var cardTapAction: (() -> Void)?
 
@@ -33,7 +33,7 @@ class TaskCard: InnerShadowView {
         return icon
     }()
     
-    init(task: MockTask) {
+    init(task: RoutineTask) {
         self.task = task
         super.init(frame: .zero, color: .blue80)
         setupUI()
@@ -142,15 +142,15 @@ class TaskCard: InnerShadowView {
 }
 
 
-#Preview {
-    let task = MockTask(
-        name: "Administer medications",
-        note: "Check medication log for proper dosage and timing.",
-        reminder: true,
-        time: Calendar.current.date(from: DateComponents(hour: 7, minute: 30))!,
-        daysOfTheWeek: [.friday, .sunday],
-        startDate: Calendar.current.date(from: DateComponents(year: 2025, month: 10, day: 10))!,
-        endDate: Calendar.current.date(from: DateComponents(year: 2025, month: 12, day: 31))!
-    )
-    TaskCard(task: task)
-}
+//#Preview {
+//    let task = MockTask(
+//        name: "Administer medications",
+//        note: "Check medication log for proper dosage and timing.",
+//        reminder: true,
+//        time: Calendar.current.date(from: DateComponents(hour: 7, minute: 30))!,
+//        daysOfTheWeek: [.friday, .sunday],
+//        startDate: Calendar.current.date(from: DateComponents(year: 2025, month: 10, day: 10))!,
+//        endDate: Calendar.current.date(from: DateComponents(year: 2025, month: 12, day: 31))!
+//    )
+//    TaskCard(task: task)
+//}

@@ -205,7 +205,7 @@ extension TodayCoordinator: TodayViewControllerDelegate {
         show(destination: .addNewTask)
     }
     
-    func goToTaskDetail(with task: MockTask) {
+    func goToTaskDetail(with task: RoutineTask) {
         let vc = factory.makeTaskDetailViewController(task: task)
         
         let nav = UINavigationController(rootViewController: vc)

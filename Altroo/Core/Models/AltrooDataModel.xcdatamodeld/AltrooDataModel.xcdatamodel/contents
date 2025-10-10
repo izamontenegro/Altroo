@@ -42,7 +42,7 @@
         <attribute name="name" optional="YES" attributeType="String"/>
         <relationship name="healthProblems" optional="YES" maxCount="1" deletionRule="Nullify" destinationEntity="HealthProblems" inverseName="diseases" inverseEntity="HealthProblems"/>
         <relationship name="relatedMedications" optional="YES" toMany="YES" deletionRule="Nullify" destinationEntity="Medication" inverseName="disease" inverseEntity="Medication"/>
-        <relationship name="relatedTasks" optional="YES" toMany="YES" deletionRule="Nullify" destinationEntity="RoutineTask"/>
+        <relationship name="relatedTasks" optional="YES" toMany="YES" deletionRule="Nullify" destinationEntity="RoutineTask" inverseName="disease" inverseEntity="RoutineTask"/>
     </entity>
     <entity name="Dose" representedClassName="Dose" syncable="YES" codeGenerationType="class">
         <attribute name="completionDate" optional="YES" attributeType="Date" usesScalarValueType="NO"/>
@@ -132,7 +132,7 @@
         <relationship name="careRecipient" optional="YES" maxCount="1" deletionRule="Nullify" destinationEntity="CareRecipient" inverseName="routineActivities" inverseEntity="CareRecipient"/>
         <relationship name="measurements" optional="YES" toMany="YES" deletionRule="Nullify" destinationEntity="Measurements" inverseName="routineActivities" inverseEntity="Measurements"/>
         <relationship name="medications" optional="YES" toMany="YES" deletionRule="Nullify" destinationEntity="Medication" inverseName="routineActivities" inverseEntity="Medication"/>
-        <relationship name="tasks" optional="YES" toMany="YES" deletionRule="Nullify" destinationEntity="RoutineTask"/>
+        <relationship name="tasks" optional="YES" toMany="YES" deletionRule="Nullify" destinationEntity="RoutineTask" inverseName="routineActivities" inverseEntity="RoutineTask"/>
     </entity>
     <entity name="RoutineTask" representedClassName="RoutineTask" syncable="YES" codeGenerationType="class">
         <attribute name="daysOfTheWeek" optional="YES" attributeType="Transformable" customClassName="[String]"/>

@@ -84,9 +84,9 @@ protocol BasicNeedsFactory {
 
 // MARK: - ROUTINE ACTIVITIES FLOW
 protocol RoutineActivitiesFactory {
-    func makeAllTasksViewController(onTaskSelected: ((MockTask) -> Void)?) -> UIViewController
+    func makeAllTasksViewController(onTaskSelected: ((RoutineTask) -> Void)?) -> UIViewController
     func makeAddTaskViewController() -> UIViewController
-    func makeTaskDetailViewController(task: MockTask) -> UIViewController
+    func makeTaskDetailViewController(task: RoutineTask) -> UIViewController
 }
 
 // MARK: - MEASUREMENT FLOW

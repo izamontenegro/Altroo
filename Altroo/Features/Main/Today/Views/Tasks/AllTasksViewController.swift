@@ -10,7 +10,7 @@ import Combine
 
 class AllTasksViewController: GradientNavBarViewController {
     let viewModel: AllTasksViewModel
-    var onTaskSelected: ((MockTask) -> Void)?
+    var onTaskSelected: ((RoutineTask) -> Void)?
     
     let titleLabel = StandardLabel(labelText: "Shifts", labelFont: .sfPro, labelType: .title2, labelColor: .black, labelWeight: .semibold)
     
@@ -22,7 +22,7 @@ class AllTasksViewController: GradientNavBarViewController {
         return scrollView
     }()
     
-    init(viewModel: AllTasksViewModel, onTaskSelected: ((MockTask) -> Void)? = nil) {
+    init(viewModel: AllTasksViewModel, onTaskSelected: ((RoutineTask) -> Void)? = nil) {
         self.viewModel = viewModel
         self.onTaskSelected = onTaskSelected
         super.init(nibName: nil, bundle: nil)
@@ -118,15 +118,15 @@ class AllTasksViewController: GradientNavBarViewController {
 }
 
 
-import SwiftUI
-struct MeuViewControllerPreview: UIViewControllerRepresentable {
-    func makeUIViewController(context: Context) -> some UIViewController {
-        AllTasksViewController(viewModel: AllTasksViewModel())
-    }
-    func updateUIViewController(_ uiViewController: UIViewControllerType, context: Context) {}
-}
-
-#Preview {
-    MeuViewControllerPreview()
-}
+//import SwiftUI
+//struct MeuViewControllerPreview: UIViewControllerRepresentable {
+//    func makeUIViewController(context: Context) -> some UIViewController {
+//        AllTasksViewController(viewModel: AllTasksViewModel())
+//    }
+//    func updateUIViewController(_ uiViewController: UIViewControllerType, context: Context) {}
+//}
+//
+//#Preview {
+//    MeuViewControllerPreview()
+//}
 

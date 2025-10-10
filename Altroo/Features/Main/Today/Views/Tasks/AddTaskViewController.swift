@@ -68,6 +68,8 @@ class AddTaskViewController: GradientNavBarViewController {
         self.viewModel = viewModel
         super.init(nibName: nil, bundle: nil)
         hidesBottomBarWhenPushed = true
+        nameTexfield.delegate = self
+        noteTexfield.delegate = self
     }
     
     @MainActor required init?(coder: NSCoder) {
@@ -244,19 +246,27 @@ class AddTaskViewController: GradientNavBarViewController {
     }
     
     @objc func didFinishCreating() {
+        viewModel.createAllTasks()
         coordinator?.didFinishAddingTask()
     }
 }
 
-
-import SwiftUI
-struct MyViewControllerPreview: UIViewControllerRepresentable {
-    func makeUIViewController(context: Context) -> some UIViewController {
-        AddTaskViewController(viewModel: AddTaskViewModel())
+extension AddTaskViewController: UITextFieldDelegate {
+    func textFieldShouldReturn(_ textField: UITextField) -> Bool {
+        textField.resignFirstResponder()
+        return true
     }
-    func updateUIViewController(_ uiViewController: UIViewControllerType, context: Context) {}
 }
 
-#Preview {
-    MyViewControllerPreview()
-}
+
+//import SwiftUI
+//struct MyViewControllerPreview: UIViewControllerRepresentable {
+//    func makeUIViewController(context: Context) -> some UIViewController {
+//        AddTaskViewController(viewModel: AddTaskViewModel())
+//    }
+//    func updateUIViewController(_ uiViewController: UIViewControllerType, context: Context) {}
+//}
+//
+//#Preview {
+//    MyViewControllerPreview()
+//}

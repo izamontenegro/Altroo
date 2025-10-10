@@ -9,7 +9,7 @@ import UIKit
 // MARK: - DefaultAppFactory
 final class DefaultAppFactory: AppFactory {
     private let dependencies: AppDependencies
-    
+
     init(dependencies: AppDependencies) {
         self.dependencies = dependencies
     }
@@ -184,17 +184,17 @@ extension DefaultAppFactory {
 
 // MARK: - TaskFactory
 extension DefaultAppFactory {
-    func makeAllTasksViewController(onTaskSelected: ((MockTask) -> Void)? = nil) -> UIViewController {
-        let vm = AllTasksViewModel()
+    func makeAllTasksViewController(onTaskSelected: ((RoutineTask) -> Void)? = nil) -> UIViewController {
+        let vm = AllTasksViewModel(taskService: dependencies.routineActivitiesFacade)
         let vc = AllTasksViewController(viewModel: vm, onTaskSelected: onTaskSelected)
         return vc
     }
     func makeAddTaskViewController() -> UIViewController {
-        let vm = AddTaskViewModel()
+        let vm = AddTaskViewModel(taskService: dependencies.routineActivitiesFacade)
         let vc = AddTaskViewController(viewModel: vm)
         return vc
     }
-    func makeTaskDetailViewController(task: MockTask) -> UIViewController {
+    func makeTaskDetailViewController(task: RoutineTask) -> UIViewController {
         let vc = TaskDetailViewController(task: task)
         vc.title = "Task"
         return vc

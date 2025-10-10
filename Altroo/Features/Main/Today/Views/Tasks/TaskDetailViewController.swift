@@ -8,7 +8,7 @@
 import UIKit
 
 class TaskDetailViewController: UIViewController {
-    var task: MockTask
+    var task: RoutineTask
     
     let vStack: UIStackView = {
         let stackView = UIStackView(arrangedSubviews: [])
@@ -20,7 +20,7 @@ class TaskDetailViewController: UIViewController {
         return stackView
     }()
     
-    init(task: MockTask) {
+    init(task: RoutineTask) {
         self.task = task
         super.init(nibName: nil, bundle: nil)
         
@@ -90,7 +90,7 @@ class TaskDetailViewController: UIViewController {
         for day in Locale.Weekday.allCases {
             //TODO: CHANGE FROM BUTTONS TO TAG
             let tag = PrimaryStyleButton(title: day.rawValue.first!.uppercased())
-            if task.daysOfTheWeek!.contains(day) {
+            if task.daysOfTheWeek!.contains(day.rawValue) {
                 tag.backgroundColor = .blue30
             } else {
                 tag.backgroundColor = .black40
@@ -126,15 +126,15 @@ class TaskDetailViewController: UIViewController {
     }
 }
 
-#Preview {
-    TaskDetailViewController(task: MockTask(
-        name: "Administer medications",
-        note: "Check medication log for proper dosage and timing.",
-        reminder: true,
-        time: Calendar.current.date(from: DateComponents(hour: 7, minute: 30))!,
-        daysOfTheWeek: [.friday, .sunday],
-        startDate: Calendar.current.date(from: DateComponents(year: 2025, month: 10, day: 10))!,
-        endDate: nil
-    )
-    )
-}
+//#Preview {
+//    TaskDetailViewController(task: MockTask(
+//        name: "Administer medications",
+//        note: "Check medication log for proper dosage and timing.",
+//        reminder: true,
+//        time: Calendar.current.date(from: DateComponents(hour: 7, minute: 30))!,
+//        daysOfTheWeek: [.friday, .sunday],
+//        startDate: Calendar.current.date(from: DateComponents(year: 2025, month: 10, day: 10))!,
+//        endDate: nil
+//    )
+//    )
+//}

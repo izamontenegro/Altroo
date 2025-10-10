@@ -82,23 +82,24 @@ let cloudkitTasks: [MockTask] = [
 ]
 
 class AllTasksViewModel {
-    @Published var tasks: [MockTask] = []
+    var taskService: RoutineActivitiesFacade
+
+    @Published var tasks: [RoutineTask] = []
 
 //    private let taskService: TaskService
 //    
-//    init(taskService: TaskService) {
-//        self.taskService = taskService
-//    }
-    
-    init() {
+    init(taskService: RoutineActivitiesFacade) {
+        self.taskService = taskService
         loadTasks()
+
     }
     
     func loadTasks() {
-        tasks = cloudkitTasks
+        let person = CoreDataService(stack: CoreDataStack.shared).fetchAllCareRecipients().first(where: { $0.personalData?.name == "Mrs. Parente" })
+        tasks = taskService.fetchAllRoutineTasks(from: person!)
     }
     
-    func filterTasksByPeriod(_ period: PeriodEnum) -> [MockTask] {
+    func filterTasksByPeriod(_ period: PeriodEnum) -> [RoutineTask] {
         return tasks.filter({$0.period == period})
             .sorted(by: {$0.time! < $1.time!})
     }
