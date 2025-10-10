@@ -8,6 +8,7 @@
 final class AppDependencies {
     let coreDataService: CoreDataService
     let basicNeedsFacade: BasicNeedsFacade
+    let routineActivitiesFacade: RoutineActivitiesFacade
     let careRecipientFacade: CareRecipientFacade
 
     init() {
@@ -20,10 +21,18 @@ final class AppDependencies {
             urineService: UrineService(),
             persistenceService: coreDataService
         )
+        
+        self.routineActivitiesFacade = RoutineActivitiesFacade(
+            routineTaskService: RoutineTaskService(),
+            medicationService: MedicationService(),
+            measurementService: MeasurementService(),
+            persistenceService: coreDataService)
 
         self.careRecipientFacade = CareRecipientFacade(
             basicNeedsFacade: basicNeedsFacade,
+            routineActivitiesFacade: routineActivitiesFacade,
             persistenceService: coreDataService
         )
     }
 }
+
