@@ -37,6 +37,15 @@ enum PeriodEnum: String, CaseIterable {
         case .night: "cloud.moon.fill"
         }
     }
+    
+    var name: String {
+        switch self {
+        case .morning: "Manhã"
+        case .afternoon: "Tarde"
+        case .evening: "Noite"
+        case .night: "Madrugada"
+        }
+    }
 }
 
 enum FrequencyEnum: String {
