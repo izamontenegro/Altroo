@@ -179,6 +179,8 @@ private extension ProfileHeader {
             fill.leadingAnchor.constraint(equalTo: track.leadingAnchor),
             fill.centerYAnchor.constraint(equalTo: track.centerYAnchor),
             fill.heightAnchor.constraint(equalTo: track.heightAnchor),
+            
+            // TODO: CHANGE HERE WHEN HAVE THE PROPER FUNCTION
             fill.widthAnchor.constraint(equalTo: track.widthAnchor, multiplier: 0.70),
 
             chevron.widthAnchor.constraint(equalToConstant: 10),

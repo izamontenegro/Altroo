@@ -4,30 +4,264 @@
 //
 //  Created by Raissa Parente on 02/10/25.
 //
-
 import UIKit
 
-class ChangeCareRecipientViewController: UIViewController {
+final class ChangeCareRecipientViewController: UIViewController {
 
-    let viewLabel: UILabel = {
-        let label = UILabel()
-        label.text = "Change Care Recipient View"
-        label.textAlignment = .center
-        
-        label.translatesAutoresizingMaskIntoConstraints = false
-        return label
-    }()
-    
+    // MARK: - Lifecycle
     override func viewDidLoad() {
         super.viewDidLoad()
-
-        view.backgroundColor = .systemGray
-        
-        view.addSubview(viewLabel)
-        
-        NSLayoutConstraint.activate([
-            viewLabel.centerXAnchor.constraint(equalTo: view.centerXAnchor),
-            viewLabel.centerYAnchor.constraint(equalTo: view.centerYAnchor)
-        ])
+        view.backgroundColor = .systemBackground
+        configureNavigation()
+        buildLayout()
     }
+
+    // MARK: - Navigation
+    private func configureNavigation() {
+        navigationItem.title = "Seus Assistidos"
+
+        let close = UIBarButtonItem(title: "Fechar", style: .plain, target: self, action: #selector(closeTapped))
+        navigationItem.leftBarButtonItem = close
+        navigationController?.navigationBar.prefersLargeTitles = false
+    }
+
+    // MARK: - Build
+    private func buildLayout() {
+        let scroll = makeScrollArea()
+        let bottomBar = makeBottomBar()
+
+        view.addSubview(scroll.container)
+        view.addSubview(bottomBar.container)
+
+        NSLayoutConstraint.activate([
+            // ScrollView ocupa o topo até o início da bottomBar
+            scroll.container.topAnchor.constraint(equalTo: view.safeAreaLayoutGuide.topAnchor),
+            scroll.container.leadingAnchor.constraint(equalTo: view.leadingAnchor),
+            scroll.container.trailingAnchor.constraint(equalTo: view.trailingAnchor),
+            scroll.container.bottomAnchor.constraint(equalTo: bottomBar.container.topAnchor),
+
+            // BottomBar fixa no rodapé
+            bottomBar.container.leadingAnchor.constraint(equalTo: view.leadingAnchor),
+            bottomBar.container.trailingAnchor.constraint(equalTo: view.trailingAnchor),
+            bottomBar.container.bottomAnchor.constraint(equalTo: view.safeAreaLayoutGuide.bottomAnchor)
+        ])
+
+        // Conteúdo: cards (mockados)
+        let cardsStack = makeCardsStack()
+        scroll.stack.addArrangedSubview(cardsStack)
+
+        // Espaço flexível para empurrar conteúdo e não colidir com a bottomBar
+        let spacer = UIView()
+        spacer.translatesAutoresizingMaskIntoConstraints = false
+        spacer.heightAnchor.constraint(equalToConstant: 24).isActive = true
+        scroll.stack.addArrangedSubview(spacer)
+    }
+
+    // MARK: - Sections / Factories
+
+    /// Scroll vertical com `UIStackView` interno para empilhar as seções.
+    private func makeScrollArea() -> (container: UIScrollView, stack: UIStackView) {
+        let scroll = UIScrollView()
+        scroll.translatesAutoresizingMaskIntoConstraints = false
+        scroll.alwaysBounceVertical = true
+        scroll.keyboardDismissMode = .onDrag
+
+        let content = UIView()
+        content.translatesAutoresizingMaskIntoConstraints = false
+
+        let stack = UIStackView()
+        stack.axis = .vertical
+        stack.alignment = .fill
+        stack.spacing = 16
+        stack.translatesAutoresizingMaskIntoConstraints = false
+        stack.layoutMargins = UIEdgeInsets(top: 16, left: 16, bottom: 0, right: 16)
+        stack.isLayoutMarginsRelativeArrangement = true
+
+        view.addSubview(scroll)
+        scroll.addSubview(content)
+        content.addSubview(stack)
+
+        NSLayoutConstraint.activate([
+            content.topAnchor.constraint(equalTo: scroll.contentLayoutGuide.topAnchor),
+            content.leadingAnchor.constraint(equalTo: scroll.contentLayoutGuide.leadingAnchor),
+            content.trailingAnchor.constraint(equalTo: scroll.contentLayoutGuide.trailingAnchor),
+            content.bottomAnchor.constraint(equalTo: scroll.contentLayoutGuide.bottomAnchor),
+
+            content.widthAnchor.constraint(equalTo: scroll.frameLayoutGuide.widthAnchor),
+
+            stack.topAnchor.constraint(equalTo: content.topAnchor),
+            stack.leadingAnchor.constraint(equalTo: content.leadingAnchor),
+            stack.trailingAnchor.constraint(equalTo: content.trailingAnchor),
+            stack.bottomAnchor.constraint(equalTo: content.bottomAnchor)
+        ])
+
+        return (scroll, stack)
+    }
+
+    /// Barra inferior com botão "Adicionar" e link secundário.
+    private func makeBottomBar() -> (container: UIView, addButton: UIButton, linkButton: UIButton) {
+        let container = UIView()
+        container.translatesAutoresizingMaskIntoConstraints = false
+        container.backgroundColor = .clear
+
+        let addButton = UIButton(type: .system)
+        addButton.translatesAutoresizingMaskIntoConstraints = false
+        addButton.setTitle("Adicionar", for: .normal)
+        addButton.titleLabel?.font = UIFont.systemFont(ofSize: 20, weight: .semibold)
+        addButton.setTitleColor(.white, for: .normal)
+        addButton.backgroundColor = UIColor.systemTeal
+        addButton.layer.cornerCurve = .continuous
+        addButton.layer.cornerRadius = 20
+        addButton.addTarget(self, action: #selector(addTapped), for: .touchUpInside)
+
+        let link = UIButton(type: .system)
+        link.translatesAutoresizingMaskIntoConstraints = false
+        link.setTitle("Já tenho uma pessoa cadastrada", for: .normal)
+        link.titleLabel?.font = UIFont.systemFont(ofSize: 16, weight: .regular)
+        link.setTitleColor(UIColor.systemTeal, for: .normal)
+        link.addTarget(self, action: #selector(linkTapped), for: .touchUpInside)
+
+        container.addSubview(addButton)
+        container.addSubview(link)
+
+        NSLayoutConstraint.activate([
+            addButton.topAnchor.constraint(equalTo: container.topAnchor, constant: 12),
+            addButton.leadingAnchor.constraint(equalTo: container.leadingAnchor, constant: 24),
+            addButton.trailingAnchor.constraint(equalTo: container.trailingAnchor, constant: -24),
+            addButton.heightAnchor.constraint(equalToConstant: 56),
+
+            link.topAnchor.constraint(equalTo: addButton.bottomAnchor, constant: 12),
+            link.centerXAnchor.constraint(equalTo: container.centerXAnchor),
+            link.bottomAnchor.constraint(equalTo: container.bottomAnchor, constant: -8)
+        ])
+
+        return (container, addButton, link)
+    }
+
+    /// Empilha os cards de assistidos.
+    private func makeCardsStack() -> UIStackView {
+        let stack = UIStackView()
+        stack.axis = .vertical
+        stack.alignment = .fill
+        stack.spacing = 14
+        stack.translatesAutoresizingMaskIntoConstraints = false
+
+        let data: [(String, Int, String)] = [
+            ("Karlisson Oliveira", 68, "KO"),
+            ("Karlisson Oliveira", 68, "KO"),
+            ("Karlisson Oliveira", 68, "KO")
+        ]
+
+        data.forEach { name, age, initials in
+            stack.addArrangedSubview(makeRecipientCard(name: name, age: age, initials: initials))
+        }
+
+        return stack
+    }
+
+    /// Card de um assistido, com avatar circular, nome e idade.
+    private func makeRecipientCard(name: String, age: Int, initials: String) -> UIView {
+        let container = UIView()
+        container.translatesAutoresizingMaskIntoConstraints = false
+        container.backgroundColor = UIColor.systemBlue.withAlphaComponent(0.08)
+        container.layer.cornerCurve = .continuous
+        container.layer.cornerRadius = 14
+
+        let hStack = UIStackView()
+        hStack.axis = .horizontal
+        hStack.alignment = .center
+        hStack.spacing = 14
+        hStack.translatesAutoresizingMaskIntoConstraints = false
+        hStack.layoutMargins = UIEdgeInsets(top: 14, left: 14, bottom: 14, right: 14)
+        hStack.isLayoutMarginsRelativeArrangement = true
+
+        let avatar = makeAvatar(initials: initials)
+
+        let title = UILabel()
+        title.translatesAutoresizingMaskIntoConstraints = false
+        title.text = name
+        title.textColor = UIColor.systemBlue
+        title.font = UIFont.systemFont(ofSize: 20, weight: .semibold)
+        title.setContentCompressionResistancePriority(.defaultLow, for: .horizontal)
+
+        let subtitle = UILabel()
+        subtitle.translatesAutoresizingMaskIntoConstraints = false
+        subtitle.text = "\(age) anos"
+        subtitle.textColor = UIColor.secondaryLabel
+        subtitle.font = UIFont.systemFont(ofSize: 18, weight: .regular)
+
+        let vStack = UIStackView(arrangedSubviews: [title, subtitle])
+        vStack.axis = .vertical
+        vStack.alignment = .leading
+        vStack.spacing = 2
+        vStack.translatesAutoresizingMaskIntoConstraints = false
+
+        container.addSubview(hStack)
+        hStack.addArrangedSubview(avatar)
+        hStack.addArrangedSubview(vStack)
+
+        NSLayoutConstraint.activate([
+            hStack.topAnchor.constraint(equalTo: container.topAnchor),
+            hStack.leadingAnchor.constraint(equalTo: container.leadingAnchor),
+            hStack.trailingAnchor.constraint(equalTo: container.trailingAnchor),
+            hStack.bottomAnchor.constraint(equalTo: container.bottomAnchor),
+
+            avatar.widthAnchor.constraint(equalToConstant: 64),
+            avatar.heightAnchor.constraint(equalToConstant: 64)
+        ])
+
+        // Tap inteiro no card
+        let tap = UITapGestureRecognizer(target: self, action: #selector(cardTapped(_:)))
+        container.addGestureRecognizer(tap)
+
+        return container
+    }
+
+    /// Bolinha com iniciais.
+    private func makeAvatar(initials: String) -> UIView {
+        let circle = UIView()
+        circle.translatesAutoresizingMaskIntoConstraints = false
+        circle.backgroundColor = UIColor.systemBlue
+        circle.layer.cornerCurve = .continuous
+        circle.layer.cornerRadius = 32
+        circle.layer.masksToBounds = true
+
+        let label = UILabel()
+        label.translatesAutoresizingMaskIntoConstraints = false
+        label.text = initials
+        label.textColor = .white
+        label.font = UIFont.systemFont(ofSize: 24, weight: .semibold)
+
+        circle.addSubview(label)
+        NSLayoutConstraint.activate([
+            label.centerXAnchor.constraint(equalTo: circle.centerXAnchor),
+            label.centerYAnchor.constraint(equalTo: circle.centerYAnchor)
+        ])
+
+        return circle
+    }
+
+    // MARK: - Actions
+    @objc private func closeTapped() {
+        dismiss(animated: true)
+    }
+
+    @objc private func addTapped() {
+        // TODO: ação de adicionar assistido
+        print("Adicionar tapped")
+    }
+
+    @objc private func linkTapped() {
+        // TODO: navegação para login/seleção de pessoa existente
+        print("Link tapped")
+    }
+
+    @objc private func cardTapped(_ gesture: UITapGestureRecognizer) {
+        // TODO: selecionar assistido
+        print("Card tapped")
+    }
+}
+
+#Preview {
+    ChangeCareRecipientViewController()
 }

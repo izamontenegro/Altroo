@@ -108,7 +108,7 @@ final class CareRecipientProfileViewController: GradientNavBarViewController {
 
     private func setupBottomButtons(below lastView: UIView) {
         let swapButton = makeFilledButton(
-            icon: UIImage(systemName: "arrow.triangle.2.circlepath"),
+            icon: UIImage(systemName: "arrow.2.squarepath"),
             title: "Trocar Perfil de Assistido",
             action: #selector(didTapChangeCareRecipientButton)
         )
