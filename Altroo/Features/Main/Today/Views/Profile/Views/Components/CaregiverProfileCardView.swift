@@ -106,8 +106,7 @@ class CaregiverProfileCardView: UIView {
     
     override init(frame: CGRect) {
         super.init(frame: frame)
-        // nao to conseguindo trocarrrr
-        backgroundColor = UIColor.systemGray6
+        backgroundColor = UIColor.blue80
         layer.cornerRadius = 12
         translatesAutoresizingMaskIntoConstraints = false
         

@@ -26,6 +26,13 @@ final class ProfileCoordinator: Coordinator {
 }
 
 extension ProfileCoordinator: ProfileViewControllerDelegate {
+    
+    func goToMedicalRecordViewController() {
+        let vc = factory.makeMedicalRecordViewController()
+        
+        navigation.pushViewController(vc, animated: true)
+    }
+    
     func openShareCareRecipientSheet(_ careRecipient: CareRecipient) {
         guard let topViewController = navigation.topViewController else { return }
         
