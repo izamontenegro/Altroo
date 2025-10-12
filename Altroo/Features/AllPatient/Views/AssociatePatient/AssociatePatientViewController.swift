@@ -11,7 +11,6 @@ protocol AssociatePatientViewControllerDelegate: AnyObject {
     func goToPatientForms()
     func goToComorbiditiesForms()
     func goToShiftForms()
-    
     func goToTutorialAddSheet()
 }
 
@@ -94,14 +93,14 @@ class AssociatePatientViewController: UIViewController {
     
     private func updateView() {
         
-        let patients = viewModel.allPatients
+//        let patients = viewModel.allPatients
 
-        if patients.isEmpty {
-            viewLabel.text = "Sem pacientes cadastrados 😔"
-        } else {
-            let names = patients.compactMap { $0.personalData?.name }
-            viewLabel.text = names.joined(separator: "")
-        }
+//        if patients.isEmpty {
+            viewLabel.text = "No patients"
+//        } else {
+//            let names = patients.compactMap { $0.personalData?.name }
+//            viewLabel.text = names.joined(separator: "")
+//        }
     }
     
     @objc
