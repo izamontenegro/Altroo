@@ -34,32 +34,26 @@ final class ChangeCareRecipientViewController: UIViewController {
         view.addSubview(bottomBar.container)
 
         NSLayoutConstraint.activate([
-            // ScrollView ocupa o topo até o início da bottomBar
             scroll.container.topAnchor.constraint(equalTo: view.safeAreaLayoutGuide.topAnchor),
             scroll.container.leadingAnchor.constraint(equalTo: view.leadingAnchor),
             scroll.container.trailingAnchor.constraint(equalTo: view.trailingAnchor),
             scroll.container.bottomAnchor.constraint(equalTo: bottomBar.container.topAnchor),
 
-            // BottomBar fixa no rodapé
             bottomBar.container.leadingAnchor.constraint(equalTo: view.leadingAnchor),
             bottomBar.container.trailingAnchor.constraint(equalTo: view.trailingAnchor),
             bottomBar.container.bottomAnchor.constraint(equalTo: view.safeAreaLayoutGuide.bottomAnchor)
         ])
 
-        // Conteúdo: cards (mockados)
         let cardsStack = makeCardsStack()
         scroll.stack.addArrangedSubview(cardsStack)
 
-        // Espaço flexível para empurrar conteúdo e não colidir com a bottomBar
         let spacer = UIView()
         spacer.translatesAutoresizingMaskIntoConstraints = false
         spacer.heightAnchor.constraint(equalToConstant: 24).isActive = true
         scroll.stack.addArrangedSubview(spacer)
     }
 
-    // MARK: - Sections / Factories
 
-    /// Scroll vertical com `UIStackView` interno para empilhar as seções.
     private func makeScrollArea() -> (container: UIScrollView, stack: UIStackView) {
         let scroll = UIScrollView()
         scroll.translatesAutoresizingMaskIntoConstraints = false
@@ -98,7 +92,6 @@ final class ChangeCareRecipientViewController: UIViewController {
         return (scroll, stack)
     }
 
-    /// Barra inferior com botão "Adicionar" e link secundário.
     private func makeBottomBar() -> (container: UIView, addButton: UIButton, linkButton: UIButton) {
         let container = UIView()
         container.translatesAutoresizingMaskIntoConstraints = false
@@ -138,7 +131,6 @@ final class ChangeCareRecipientViewController: UIViewController {
         return (container, addButton, link)
     }
 
-    /// Empilha os cards de assistidos.
     private func makeCardsStack() -> UIStackView {
         let stack = UIStackView()
         stack.axis = .vertical
@@ -159,7 +151,6 @@ final class ChangeCareRecipientViewController: UIViewController {
         return stack
     }
 
-    /// Card de um assistido, com avatar circular, nome e idade.
     private func makeRecipientCard(name: String, age: Int, initials: String) -> UIView {
         let container = UIView()
         container.translatesAutoresizingMaskIntoConstraints = false
@@ -210,14 +201,12 @@ final class ChangeCareRecipientViewController: UIViewController {
             avatar.heightAnchor.constraint(equalToConstant: 64)
         ])
 
-        // Tap inteiro no card
         let tap = UITapGestureRecognizer(target: self, action: #selector(cardTapped(_:)))
         container.addGestureRecognizer(tap)
 
         return container
     }
 
-    /// Bolinha com iniciais.
     private func makeAvatar(initials: String) -> UIView {
         let circle = UIView()
         circle.translatesAutoresizingMaskIntoConstraints = false
@@ -247,17 +236,14 @@ final class ChangeCareRecipientViewController: UIViewController {
     }
 
     @objc private func addTapped() {
-        // TODO: ação de adicionar assistido
-        print("Adicionar tapped")
+        print("Add tapped")
     }
 
     @objc private func linkTapped() {
-        // TODO: navegação para login/seleção de pessoa existente
         print("Link tapped")
     }
 
     @objc private func cardTapped(_ gesture: UITapGestureRecognizer) {
-        // TODO: selecionar assistido
         print("Card tapped")
     }
 }
