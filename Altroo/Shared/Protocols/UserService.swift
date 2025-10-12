@@ -2,7 +2,7 @@
 //  UserService.swift
 //  Altroo
 //
-//  Created by Izadora de Oliveira Albuquerque Montenegro on 22/09/25.
+//  Created by Layza Maria Rodrigues Carneiro on 12/10/25.
 //
 
 import Foundation
