@@ -8,25 +8,26 @@
 import UIKit
 
 class PulseIcon: UIView {
-    var iconName: String
+    var iconName: String?
+    var text: String?
+    
     var color: UIColor
     var shadowColor: UIColor
-
+    
     init(frame: CGRect = .zero, iconName: String, color: UIColor, shadowColor: UIColor) {
         self.iconName = iconName
         self.color = color
         self.shadowColor = shadowColor
-        
         super.init(frame: frame)
-        
         setupBackground()
     }
-
-    convenience override init(frame: CGRect) {
-        self.init(frame: frame,
-                  iconName: "questionmark.circle",
-                  color: .systemGray,
-                  shadowColor: .darkGray)
+    
+    init(frame: CGRect = .zero, text: String, color: UIColor, shadowColor: UIColor) {
+        self.text = text
+        self.color = color
+        self.shadowColor = shadowColor
+        super.init(frame: frame)
+        setupBackground()
     }
     
     required init?(coder: NSCoder) {
@@ -34,8 +35,8 @@ class PulseIcon: UIView {
     }
     
     func setupBackground() {
-//        backgroundColor = .gray
-
+        //        backgroundColor = .gray
+        
         //top
         let circle1 = CircleView()
         circle1.fillColor = color.withAlphaComponent(0.8)
@@ -57,17 +58,11 @@ class PulseIcon: UIView {
         circle3.innerShadowOpacity = 0.5
         circle3.translatesAutoresizingMaskIntoConstraints = false
         
-        //icon
-        let icon = UIImage(systemName: iconName)
-        let iconImageView = UIImageView(image: icon)
-        iconImageView.tintColor = .white
-        iconImageView.contentMode = .scaleAspectFit
-        iconImageView.translatesAutoresizingMaskIntoConstraints = false
+
         
         addSubview(circle3)
         addSubview(circle2)
         addSubview(circle1)
-        addSubview(iconImageView)
         
         NSLayoutConstraint.activate([
             circle3.centerXAnchor.constraint(equalTo: centerXAnchor),
@@ -85,17 +80,44 @@ class PulseIcon: UIView {
             circle1.widthAnchor.constraint(equalTo: circle3.widthAnchor, multiplier: 0.65),
             circle1.heightAnchor.constraint(equalTo: circle1.widthAnchor),
             
-            iconImageView.centerXAnchor.constraint(equalTo: centerXAnchor),
-            iconImageView.centerYAnchor.constraint(equalTo: centerYAnchor),
-            iconImageView.widthAnchor.constraint(equalTo: circle1.widthAnchor, multiplier: 0.95),
-            iconImageView.heightAnchor.constraint(equalTo: iconImageView.widthAnchor)
+   
         ])
+        
+        //icon
+        if let iconName {
+            let icon = UIImage(systemName: iconName)
+            let iconImageView = UIImageView(image: icon)
+            iconImageView.tintColor = .white
+            iconImageView.contentMode = .scaleAspectFit
+            iconImageView.translatesAutoresizingMaskIntoConstraints = false
+            addSubview(iconImageView)
 
+            NSLayoutConstraint.activate([
+                iconImageView.centerXAnchor.constraint(equalTo: centerXAnchor),
+                iconImageView.centerYAnchor.constraint(equalTo: centerYAnchor),
+                iconImageView.widthAnchor.constraint(equalTo: circle1.widthAnchor, multiplier: 0.95),
+                iconImageView.heightAnchor.constraint(equalTo: iconImageView.widthAnchor)
+            ])
+        }
+        
+        //text
+        if let text {
+            let label = StandardLabel(labelText: text, labelFont: .sfPro, labelType: .title2, labelColor: .white)
+            addSubview(label)
+            
+            NSLayoutConstraint.activate([
+                label.centerXAnchor.constraint(equalTo: centerXAnchor),
+                label.centerYAnchor.constraint(equalTo: centerYAnchor)
+            ])
+        }
     }
 }
 
 #Preview {
-    let iconView = PulseIcon(iconName: "waterbottle.fill", color: UIColor(resource: .blue30), shadowColor: UIColor(resource: .blue60))
+//    let iconView = PulseIcon(iconName: "waterbottle.fill", color: UIColor(resource: .blue30), shadowColor: UIColor(resource: .blue60))
+    
+    let iconView = PulseIcon(text: "3", color: UIColor(resource: .blue30), shadowColor: UIColor(resource: .blue60))
+    
     iconView.translatesAutoresizingMaskIntoConstraints = false
     NSLayoutConstraint.activate([
         iconView.widthAnchor.constraint(equalToConstant: 320),

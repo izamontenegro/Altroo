@@ -9,7 +9,6 @@ import CoreData
 import CloudKit
 
 class CoreDataService: PersistenceServicePrococol {
-    
     let stack: CoreDataStack
     
     init(stack: CoreDataStack = .shared) {

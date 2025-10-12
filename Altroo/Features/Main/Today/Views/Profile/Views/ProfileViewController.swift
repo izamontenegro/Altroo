@@ -8,10 +8,15 @@
 import UIKit
 
 protocol ProfileViewControllerDelegate: AnyObject {
-    func Show()
+    func openChangeCaregiversSheet()
+    func openEditCaregiversSheet()
+    func openShareCareRecipientSheet(_ careRecipient: CareRecipient)
 }
 
 class ProfileViewController: UIViewController {
+    weak var delegate: ProfileViewControllerDelegate?
+    
+    var mockPerson: CareRecipient?
 
     let viewLabel: UILabel = {
         let label = UILabel()
@@ -39,6 +44,13 @@ class ProfileViewController: UIViewController {
     let exportButton: UIButton = {
         let button = UIButton(type: .system)
         button.setTitle("Export file", for: .normal)
+        button.translatesAutoresizingMaskIntoConstraints = false
+        return button
+    }()
+    
+    let shareCareRecipient: UIButton = {
+        let button = UIButton(type: .system)
+        button.setTitle("Share recipient", for: .normal)
         button.translatesAutoresizingMaskIntoConstraints = false
         return button
     }()
@@ -71,15 +83,48 @@ class ProfileViewController: UIViewController {
         view.addSubview(vStack)
         
         vStack.addArrangedSubview(viewLabel)
+        vStack.addArrangedSubview(shareCareRecipient)
         vStack.addArrangedSubview(changeCareRecipientButton)
         vStack.addArrangedSubview(editCaregiverButton)
         vStack.addArrangedSubview(exportButton)
+
+        
+        changeCareRecipientButton.addTarget(self, action: #selector(didTapChangeCareRecipientButton), for: .touchUpInside)
+        editCaregiverButton.addTarget(self, action: #selector(didTapEditCaregiverButton), for: .touchUpInside)
+        shareCareRecipient.addTarget(self, action: #selector(didTapShareCareRecipientButton), for: .touchUpInside)
 
         NSLayoutConstraint.activate([
             vStack.centerXAnchor.constraint(equalTo: view.centerXAnchor),
             vStack.centerYAnchor.constraint(equalTo: view.centerYAnchor)
         ])
         
+        createMockPerson() //FIXME: Take this out once there is a real CareRecipient
+    }
+    
+    @objc func didTapChangeCareRecipientButton() {
+        delegate?.openChangeCaregiversSheet()
+    }
+    
+    @objc func didTapEditCaregiverButton() {
+        delegate?.openEditCaregiversSheet()
+    }
+    
+    @objc func didTapShareCareRecipientButton() {
+        delegate?.openShareCareRecipientSheet(mockPerson!)
+    }
+    
+    func createMockPerson() {
+        let stack = CoreDataStack.shared
+        let service = CoreDataService(stack: stack)
+        
+        let personalData = PersonalData(context: stack.context)
+        personalData.name = "Raissa Parente"
+        let recipient = CareRecipient(context: stack.context)
+        recipient.personalData = personalData
+        
+        mockPerson = recipient
+        
+        service.save()
     }
 
 }
