@@ -1,6 +1,5 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
-
-<model type="com.apple.IDECoreDataModeler.DataModel" documentVersion="1.0" lastSavedToolsVersion="23605" systemVersion="24D70" minimumToolsVersion="Automatic" sourceLanguage="Swift" userDefinedModelVersionIdentifier="">
+<model type="com.apple.IDECoreDataModeler.DataModel" documentVersion="1.0" lastSavedToolsVersion="23605" systemVersion="24A335" minimumToolsVersion="Automatic" sourceLanguage="Swift" userDefinedModelVersionIdentifier="">
     <entity name="BasicNeeds" representedClassName="BasicNeeds" syncable="YES" codeGenerationType="class">
         <relationship name="careRecipient" optional="YES" maxCount="1" deletionRule="Nullify" destinationEntity="CareRecipient" inverseName="basicNeeds" inverseEntity="CareRecipient"/>
         <relationship name="feeding" optional="YES" toMany="YES" deletionRule="Nullify" destinationEntity="FeedingRecord" inverseName="basicNeeds" inverseEntity="FeedingRecord"/>
@@ -60,6 +59,7 @@
     </entity>
     <entity name="HealthProblems" representedClassName="HealthProblems" syncable="YES" codeGenerationType="class">
         <attribute name="allergies" optional="YES" attributeType="Transformable" valueTransformerName="" customClassName="[String]"/>
+        <attribute name="bedridden" optional="YES" attributeType="String"/>
         <attribute name="observation" optional="YES" attributeType="String"/>
         <attribute name="surgery" optional="YES" attributeType="Transformable" valueTransformerName="" customClassName="[String]"/>
         <relationship name="careRecipient" optional="YES" maxCount="1" deletionRule="Nullify" destinationEntity="CareRecipient" inverseName="healthProblems" inverseEntity="CareRecipient"/>
