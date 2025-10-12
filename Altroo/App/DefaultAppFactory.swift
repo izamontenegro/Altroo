@@ -9,9 +9,11 @@ import UIKit
 // MARK: - DefaultAppFactory
 final class DefaultAppFactory: AppFactory {
     private let dependencies: AppDependencies
+    private let addPatientViewModel: AddPatientViewModel
     
     init(dependencies: AppDependencies) {
         self.dependencies = dependencies
+        self.addPatientViewModel = AddPatientViewModel(careRecipientFacade: dependencies.careRecipientFacade)
     }
 }
 
@@ -29,7 +31,7 @@ extension DefaultAppFactory {
 extension DefaultAppFactory {
     
     func makeAssociatePatientViewController(delegate: AssociatePatientViewControllerDelegate) -> UIViewController {
-        let vc = AssociatePatientViewController(viewModel: AssociatePatientViewModel(patientService: patientService))
+        let vc = AssociatePatientViewController(viewModel: AssociatePatientViewModel())
         vc.delegate = delegate
         vc.title = "Associate Patient View"
         return vc
@@ -41,23 +43,14 @@ extension DefaultAppFactory {
     }
     
     func makePatientFormViewController(delegate: AssociatePatientViewControllerDelegate) -> UIViewController {
-        let basicNeeds = BasicNeedsFacadeMock()
-        let routineActivities = RoutineActivitiesFacadeMock()
-        let persistence = CoreDataService()
-
-        let facade = CareRecipientFacade(
-            basicNeedsFacade: basicNeeds,
-            routineActivitiesFacade: routineActivities,
-            persistenceService: persistence
-        )
-        let vc = PatientFormsViewController(viewModel: PatientFormsViewModel(careRecipientFacade: facade))
+        let vc = PatientFormsViewController(viewModel: addPatientViewModel)
         vc.delegate = delegate
         vc.title = "Patient Forms"
         return vc
     }
     
     func makeComorbiditiesFormViewController(delegate: AssociatePatientViewControllerDelegate) -> UIViewController {
-        let vc = ComorbiditiesFormsViewController()
+        let vc = ComorbiditiesFormsViewController(viewModel: addPatientViewModel)
         vc.delegate = delegate
         vc.title = "Comorbidities Forms"
         return vc
