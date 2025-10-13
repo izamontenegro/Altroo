@@ -71,8 +71,16 @@ class ComponentPreviewViewController: UIViewController {
 //        textField.borderStyle = .roundedRect
 
         // SEGMENTEDCONTROL
-        let segmentedControl = StandardSegmentedControl(items: ["Opção 1", "Opção 2", "Opção 3"])
-        segmentedControl.selectedSegmentIndex = 0
+        let segmentedControl = StandardSegmentedControl(
+            items: ["F", "M"],
+            width: 113,
+            height: 35,
+            backgroundColor: UIColor(resource: .white70),
+            selectedColor: UIColor(resource: .teal20),
+            selectedFontColor: UIColor(resource: .black0),
+            unselectedFontColor: UIColor(resource: .black0),
+            cornerRadius: 8
+        )
 
         // TOGGLE
         let toggleSwitch = StandardToggle()
