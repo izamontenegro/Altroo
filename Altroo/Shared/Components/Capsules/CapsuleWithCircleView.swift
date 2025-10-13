@@ -16,6 +16,8 @@ class CapsuleWithCircleView: UIView {
     
     var labelIconSpacing: CGFloat = 12
     
+    private var innerShadowView: InnerShadowView?
+    
     override init(frame: CGRect) {
         super.init(frame: frame)
     }
@@ -35,12 +37,14 @@ class CapsuleWithCircleView: UIView {
         self.buttonIconColor = buttonIconColor
         
         makeCapsule()
+        setupInnerShadow()
     }
     
     required init?(coder: NSCoder) { super.init(coder: coder) }
     
     override func layoutSubviews() {
         super.layoutSubviews()
+        innerShadowView?.frame = bounds
         self.layer.cornerRadius = self.bounds.height / 2
     }
     
@@ -93,9 +97,22 @@ class CapsuleWithCircleView: UIView {
         
         return circle
     }
+    
+    private func setupInnerShadow() {
+        let shadow = InnerShadowView(frame: bounds,
+                                     color: UIColor.blue40,
+                                     opacity: 0.15)
+        shadow.isUserInteractionEnabled = false
+        shadow.layer.cornerRadius = layer.cornerRadius
+        addSubview(shadow)
+        innerShadowView = shadow
+    }
 }
 
 #Preview {
-    let button = CapsuleWithCircleView(iconName: "plus", text: "250ml", mainColor: UIColor(resource: .black0), accentColor: UIColor(resource: .teal20))
+    let button = CapsuleWithCircleView(iconName: "plus",
+                                       text: "250ml",
+                                       mainColor: UIColor(resource: .black0),
+                                       accentColor: UIColor(resource: .teal20))
     return button
 }
