@@ -7,7 +7,7 @@
 
 import Foundation
 
-final class DateFormartterHelper {
+final class DateFormatterHelper {
     static func weekDayFormatter(date: Date) -> String {
         let weekdayFormatter = DateFormatter()
         weekdayFormatter.locale = Locale(identifier: "pt_BR")
@@ -21,6 +21,15 @@ final class DateFormartterHelper {
         let dayFormatter = DateFormatter()
         dayFormatter.locale = Locale(identifier: "pt_BR")
         dayFormatter.dateFormat = "d"
+        
+        let formattedDate = dayFormatter.string(from: date).uppercased()
+        return formattedDate
+    }
+    
+    static func fullDayFormatter(date: Date) -> String {
+        let dayFormatter = DateFormatter()
+        dayFormatter.locale = Locale(identifier: "pt_BR")
+        dayFormatter.dateFormat = "d/MM/YYYY"
         
         let formattedDate = dayFormatter.string(from: date).uppercased()
         return formattedDate
