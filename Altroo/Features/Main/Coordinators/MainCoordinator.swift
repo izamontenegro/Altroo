@@ -11,14 +11,12 @@ final class MainCoordinator: Coordinator {
     
     var childCoordinators: [Coordinator] = []
     private let rootNavigation: UINavigationController
-    private let patientService: PatientService
     private let factory: AppFactory
     
     var onLogout: (() -> Void)?
     
-    init(navigation: UINavigationController, patientService: PatientService, factory: AppFactory) {
+    init(navigation: UINavigationController, factory: AppFactory) {
         self.rootNavigation = navigation
-        self.patientService = patientService
         self.factory = factory
     }
     
@@ -28,12 +26,19 @@ final class MainCoordinator: Coordinator {
         let tabBar = AppTabBarController()
         self.tabBar = tabBar
         
-        
-        
+        // MARK: - SETTINGS
+        let settingsNav = UINavigationController()
+        let settingsCoord = SettingsCoordinator(
+            navigation: settingsNav, factory: factory
+        )
+        add(child: settingsCoord)
+        settingsCoord.start()
+        settingsNav.tabBarItem = UITabBarItem(title: "Settings", image: UIImage(systemName: "gear"), tag: 0)
+               
         // MARK: - TODAY
         let todayNav = UINavigationController()
         let todayCoord = TodayCoordinator(
-            navigation: todayNav, patientService: patientService, factory: factory
+            navigation: todayNav, factory: factory
         )
         add(child: todayCoord)
         todayCoord.start()
@@ -42,7 +47,7 @@ final class MainCoordinator: Coordinator {
         // MARK: - HISTORY
         let histNav = UINavigationController()
         let histCoord = HistoryCoordinator(
-            navigation: histNav, patientService: patientService, factory: factory
+            navigation: histNav, factory: factory
         )
         add(child: histCoord); histCoord.start()
         histNav.tabBarItem = UITabBarItem(title: "Histórico", image: UIImage(systemName: "folder.fill"), tag: 1)
@@ -50,21 +55,12 @@ final class MainCoordinator: Coordinator {
         // MARK: - ANALYSIS
         let analysisNav = UINavigationController()
         let analysisCoord = AnalysisCoordinator(
-            navigation: analysisNav, patientService: patientService, factory: factory
+            navigation: analysisNav, factory: factory
         )
         add(child: analysisCoord)
         analysisCoord.start()
         analysisNav.tabBarItem = UITabBarItem(title: "Relatório", image: UIImage(systemName: "chart.bar.xaxis.ascending.badge.clock"), tag: 2)
         
-        // MARK: - SETTINGS
-        let settingsNav = UINavigationController()
-        let settingsCoord = SettingsCoordinator(
-            navigation: settingsNav, patientService: patientService, factory: factory
-        )
-        add(child: settingsCoord)
-        settingsCoord.start()
-        settingsNav.tabBarItem = UITabBarItem(title: "Ajustes", image: UIImage(systemName: "gearshape.fill"), tag: 3)
-
         // MARK: - TAB BAR CONFIGURATION
         
         tabBar.viewControllers = [todayNav, analysisNav, settingsNav]

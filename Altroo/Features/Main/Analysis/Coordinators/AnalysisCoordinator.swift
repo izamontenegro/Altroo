@@ -10,10 +10,9 @@ import UIKit
 final class AnalysisCoordinator: Coordinator {
     var childCoordinators: [Coordinator] = []
     private let navigation: UINavigationController
-    private let patientService: PatientService
-    private let factory: AppFactory 
-    init(navigation: UINavigationController, patientService: PatientService, factory: AppFactory) {
-        self.navigation = navigation; self.patientService = patientService; self.factory = factory
+    private let factory: AppFactory
+    init(navigation: UINavigationController, factory: AppFactory) {
+        self.navigation = navigation; self.factory = factory
     }
     func start() {
         let vc = factory.makeAnalysisViewController()
