@@ -22,8 +22,8 @@ class RoutineActivitiesFacade: RoutineActivitiesFacadeProtocol {
     }
     
     // MARK: - TASK ACTIONS
-    func addRoutineTask(name: String, period: PeriodEnum, time: Date, frequency: FrequencyEnum, reminder: Bool, note: String, in careRecipient: CareRecipient) {
-        routineTaskService.addRoutineTask(name: name, period: period, time: time, frequency: frequency, reminder: reminder, note: note, in: careRecipient)
+    func addTemplateRoutineTask(name: String, allTimes: [DateComponents], daysOfTheWeek: [Locale.Weekday], startDate: Date, endDate: Date?, reminder: Bool, note: String, in careRecipient: CareRecipient) {
+        routineTaskService.addTemplateRoutineTask(name: name, allTimes: allTimes, daysOfTheWeek: daysOfTheWeek, startDate: startDate, endDate: endDate, reminder: reminder, note: note, in: careRecipient)
         
         persistenceService.save()
     }
@@ -31,6 +31,65 @@ class RoutineActivitiesFacade: RoutineActivitiesFacadeProtocol {
     func deleteRoutineTask(routineTask: RoutineTask, from careRecipient: CareRecipient) {
         routineTaskService.deleteRoutineTask(routineTask: routineTask, from: careRecipient)
         
+        persistenceService.save()
+    }
+    
+    func fetchAllTemplateRoutineTasks(from careRecipient: CareRecipient) -> [RoutineTask]{
+        return routineTaskService.fetchRoutineTasks(for: careRecipient)
+    }
+    
+    func fetchAllInstanceRoutineTasks(from careRecipient: CareRecipient) -> [TaskInstance]{
+        return routineTaskService.fetchInstanceRoutineTasks(for: careRecipient)
+    }
+    
+    func markInstanceAsDone(_ instance: TaskInstance) {
+        routineTaskService.markInstanceAsDone(instance)
+        
+        persistenceService.save()
+    }
+    
+    func addInstanceRoutineTask(from template: RoutineTask, on date: Date) {
+        routineTaskService.addInstanceRoutineTask(from: template, on: date)
+        
+        persistenceService.save()
+    }
+    
+    func deleteInstanceRoutineTask(_ instance: TaskInstance) {
+        routineTaskService.deleteInstanceRoutineTask(instance)
+        
+        persistenceService.save()
+    }
+    
+    func generateInstancesForToday(for careRecipient: CareRecipient) {
+        let today = Date()
+        let calendar = Calendar.current
+        let todayWeek = Locale.Weekday.from(calendarWeekday: Calendar.current.component(.weekday, from: today))
+        let templates = fetchAllTemplateRoutineTasks(from: careRecipient)
+        print("Templates encontrados: \(templates.count)")
+        
+        for template in templates {
+            guard let allTimes = template.allTimes else { continue }
+            guard let todayWeek, template.weekdays.contains(todayWeek) else {
+                print("Pulando template \(template.name ?? "") — não é hoje.")
+                continue
+            }
+            
+            for time in allTimes {
+                let exists = fetchAllInstanceRoutineTasks(from: careRecipient)
+                                .contains { instance in
+                                    instance.template == template && calendar.isDate(instance.time!, inSameDayAs: today) &&
+                                    calendar.component(.hour, from: instance.time!) == time.hour &&
+                                    calendar.component(.minute, from: instance.time!) == time.minute
+                                }
+                
+                if !exists {
+                    print("Criando instância para \(template.name ?? "") às \(time)")
+                    addInstanceRoutineTask(from: template, on: today)
+                }
+            }
+
+            
+        }
         persistenceService.save()
     }
     
