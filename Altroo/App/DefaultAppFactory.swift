@@ -132,6 +132,7 @@ extension DefaultAppFactory {
 // MARK: - EventsFactory
 extension DefaultAppFactory {
     func makeAllEventsViewController() -> UIViewController {
+        let vm = AllTasksViewModel(taskService: dependencies.routineActivitiesFacade)
         let vc = AllEventViewController()
         return vc
     }
