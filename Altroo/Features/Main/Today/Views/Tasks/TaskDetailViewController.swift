@@ -8,7 +8,9 @@
 import UIKit
 
 class TaskDetailViewController: UIViewController {
-    var task: RoutineTask
+    var taskInstance: TaskInstance
+    var taskTemplate: RoutineTask
+
     
     let vStack: UIStackView = {
         let stackView = UIStackView(arrangedSubviews: [])
@@ -20,8 +22,9 @@ class TaskDetailViewController: UIViewController {
         return stackView
     }()
     
-    init(task: RoutineTask) {
-        self.task = task
+    init(task: TaskInstance) {
+        self.taskInstance = task
+        self.taskTemplate = task.template!
         super.init(nibName: nil, bundle: nil)
         
     }
@@ -39,11 +42,11 @@ class TaskDetailViewController: UIViewController {
     func setupUI() {
         view.backgroundColor = .white
         
-        let name = InfoRowView(title: "Nome", info: task.name ?? "Nome")
-        let time = InfoRowView(title: "Horário", info: DateFormatterHelper.hourFormatter(date: task.time ?? .now))
+        let name = InfoRowView(title: "Nome", info: taskTemplate.name ?? "Nome")
+        let time = InfoRowView(title: "Horário", info: DateFormatterHelper.hourFormatter(date: taskInstance.time ?? .now))
         let repetition = StandardLabel(labelText: "Repetition", labelFont: .sfPro, labelType: .callOut, labelColor: .black10, labelWeight: .semibold)
         let period = InfoRowView(title: "Interval", info: makeTimeText())
-        let notes = InfoRowView(title: "Notes", info: task.note ?? "Observação")
+        let notes = InfoRowView(title: "Notes", info: taskTemplate.note ?? "Observação")
         
         let dayRow = makeDayRow()
         
@@ -90,7 +93,7 @@ class TaskDetailViewController: UIViewController {
         for day in Locale.Weekday.allCases {
             //TODO: CHANGE FROM BUTTONS TO TAG
             let tag = PrimaryStyleButton(title: day.rawValue.first!.uppercased())
-            if task.daysOfTheWeek!.contains(day.rawValue) {
+            if taskTemplate.daysOfTheWeek!.contains(day.rawValue) {
                 tag.backgroundColor = .blue30
             } else {
                 tag.backgroundColor = .black40
@@ -102,12 +105,12 @@ class TaskDetailViewController: UIViewController {
     }
     
     private func makeTimeText() -> String {
-        if let start = task.startDate, let end = task.endDate {
+        if let start = taskTemplate.startDate, let end = taskTemplate.endDate {
             let timeLabelText = "\(DateFormatterHelper.fullDayFormatter(date: start)) - \(DateFormatterHelper.fullDayFormatter(date: end))"
         
             return timeLabelText
             
-        } else if let start = task.startDate {
+        } else if let start = taskTemplate.startDate {
             let timeLabelText = "\(DateFormatterHelper.fullDayFormatter(date: start)) - Contínuo"
         
             return timeLabelText

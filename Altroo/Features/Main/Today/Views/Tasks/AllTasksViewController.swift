@@ -10,7 +10,7 @@ import Combine
 
 class AllTasksViewController: GradientNavBarViewController {
     let viewModel: AllTasksViewModel
-    var onTaskSelected: ((RoutineTask) -> Void)?
+    var onTaskSelected: ((TaskInstance) -> Void)?
     
     let titleLabel = StandardLabel(labelText: "Shifts", labelFont: .sfPro, labelType: .title2, labelColor: .black, labelWeight: .semibold)
     
@@ -22,7 +22,7 @@ class AllTasksViewController: GradientNavBarViewController {
         return scrollView
     }()
     
-    init(viewModel: AllTasksViewModel, onTaskSelected: ((RoutineTask) -> Void)? = nil) {
+    init(viewModel: AllTasksViewModel, onTaskSelected: ((TaskInstance) -> Void)? = nil) {
         self.viewModel = viewModel
         self.onTaskSelected = onTaskSelected
         super.init(nibName: nil, bundle: nil)

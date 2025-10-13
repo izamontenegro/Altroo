@@ -224,7 +224,7 @@ class AddTaskViewController: GradientNavBarViewController {
     @objc func timeChanged(_ sender: UIDatePicker) {
         let index = sender.tag
         guard index < viewModel.times.count else { return }
-        viewModel.times[index] = sender.date
+        viewModel.addTime(from: sender.date, at: index)
     }
         
     @objc func didAddTime() {
@@ -233,7 +233,7 @@ class AddTaskViewController: GradientNavBarViewController {
         let index = viewModel.times.count
         newPicker.tag = index
         
-        viewModel.times.append(newPicker.date)
+        viewModel.addTime(from: newPicker.date)
         
         newPicker.addTarget(self, action: #selector(timeChanged(_:)), for: .valueChanged)
         
@@ -247,7 +247,7 @@ class AddTaskViewController: GradientNavBarViewController {
     }
     
     @objc func didFinishCreating() {
-        viewModel.createAllTasks()
+        viewModel.createTask()
         coordinator?.didFinishAddingTask()
     }
 }

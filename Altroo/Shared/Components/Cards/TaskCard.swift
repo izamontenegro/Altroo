@@ -8,7 +8,7 @@
 import UIKit
 
 class TaskCard: InnerShadowView {
-    let task: RoutineTask
+    let task: TaskInstance
     
     var cardTapAction: (() -> Void)?
 
@@ -33,7 +33,7 @@ class TaskCard: InnerShadowView {
         return icon
     }()
     
-    init(task: RoutineTask) {
+    init(task: TaskInstance) {
         self.task = task
         super.init(frame: .zero, color: .blue80)
         setupUI()
@@ -123,7 +123,7 @@ class TaskCard: InnerShadowView {
     }
     
     func loadData() {
-        titleLabel.text = task.name
+        titleLabel.text = task.template?.name
     }
     
     func setupTapGesture() {
