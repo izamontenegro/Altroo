@@ -17,40 +17,35 @@ class AddTaskViewController: GradientNavBarViewController {
     weak var coordinator: TodayCoordinator?
     private var cancellables = Set<AnyCancellable>()
     
-    let titleLabel = StandardLabel(labelText: "Adicionar Tarefas", labelFont: .sfPro, labelType: .title2, labelColor: .black, labelWeight: .semibold)
+    let titleLabel = StandardLabel(labelText: "Adicionar Tarefas",
+                                   labelFont: .sfPro,
+                                   labelType: .title2,
+                                   labelColor: UIColor(resource: .black10),
+                                   labelWeight: .semibold)
     
     let addButton = StandardConfirmationButton(title: "Adicionar")
     
-    let nameTexfield = StandardTextfield(
-        width: 370,
-        height: 38,
-        title: StandardLabel(labelText: "Nome",
-                             labelFont: .sfPro,
-                             labelType: .title3,
-                             labelColor: UIColor(resource: .black10),
-                             labelWeight: .medium
-                            ),
-        placeholder: "Maria Clara"
-    )
-    let noteTexfield = StandardTextfield(
-        width: 370,
-        height: 38,
-        title: StandardLabel(labelText: "Nome",
-                             labelFont: .sfPro,
-                             labelType: .title3,
-                             labelColor: UIColor(resource: .black10),
-                             labelWeight: .medium
-                            ),
-        placeholder: "Maria Clara"
-    )
+    let nameTexfield = StandardTextfield(width: 370,
+                                         height: 38,
+                                         title: StandardLabel(labelText: "Nome",
+                                                              labelFont: .sfPro,
+                                                              labelType: .title3,
+                                                              labelColor: UIColor(resource: .black10),
+                                                              labelWeight: .semibold),
+                                         placeholder: "Nome")
+    let noteTexfield = StandardTextfield(width: 370,
+                                         height: 38,
+                                         title: StandardLabel(labelText: "Observação",
+                                                              labelFont: .sfPro,
+                                                              labelType: .title3,
+                                                              labelColor: UIColor(resource: .black10),
+                                                              labelWeight: .semibold),
+                                         placeholder: "Observação")
     
     var hourPickers: [UIDatePicker] = []
     let addTimeButton = PrimaryStyleButton(title: "Novo Horário")
-    
     let startDatePicker: UIDatePicker = UIDatePicker.make(mode: .date)
-    
     var endDateSection: UIView!
-    
     let endDatePicker: UIDatePicker = UIDatePicker.make(mode: .date)
     
     let hourStack: UIStackView = {
@@ -99,7 +94,7 @@ class AddTaskViewController: GradientNavBarViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
         
-        view.backgroundColor = .white
+        view.backgroundColor = .pureWhite
         
         setupUI()
         bindViewModel()
@@ -131,7 +126,6 @@ class AddTaskViewController: GradientNavBarViewController {
                 }
             }
             .store(in: &cancellables)
-        
     }
     
     func setupUI() {
@@ -153,14 +147,12 @@ class AddTaskViewController: GradientNavBarViewController {
             
             addButton.bottomAnchor.constraint(equalTo: view.bottomAnchor, constant: -16),
             addButton.centerXAnchor.constraint(equalTo: view.centerXAnchor),
-            
         ])
     }
     
     func setupContent() {
         view.addSubview(contentStack)
         //name
-        nameTexfield.placeholder = "Nome da tarefa"
         let nameSection = FormSectionView(title: "Nome", content: nameTexfield)
         contentStack.addArrangedSubview(nameSection)
         
@@ -208,13 +200,10 @@ class AddTaskViewController: GradientNavBarViewController {
         dateStack.addArrangedSubview(startSection)
         dateStack.addArrangedSubview(durationSection)
         contentStack.addArrangedSubview(dateStack)
-        
-        
+    
         //notes
-        noteTexfield.placeholder = "Enter observations"
         let noteSection = FormSectionView(title: "Observações", content: noteTexfield)
         contentStack.addArrangedSubview(noteSection)
-        
     }
     
     func makeHourSection() -> UIStackView {
