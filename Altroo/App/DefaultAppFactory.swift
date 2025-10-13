@@ -100,7 +100,8 @@ extension DefaultAppFactory {
     }
     
     func makeAddSymptomViewController() -> UIViewController {
-        let vc = AddSymptomViewController()
+        let vm = AddSymptomViewModel()
+        let vc = AddSymptomViewController(viewModel: vm)
         return vc
     }
 }

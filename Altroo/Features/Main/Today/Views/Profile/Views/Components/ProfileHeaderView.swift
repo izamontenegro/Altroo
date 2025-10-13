@@ -74,7 +74,7 @@ private extension ProfileHeader {
         let data = careRecipient.personalData
 
         let nameText = data?.name ?? "Nome não informado"
-        let birthText = DateFormartterHelper.birthDateFormatter(from: data?.dateOfBirth)
+        let birthText = DateFormatterHelper.birthDateFormatter(from: data?.dateOfBirth)
         let weightText = formattedWeight(from: data?.weight)
         let heightText = formattedHeight(from: data?.height)
 
