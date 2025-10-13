@@ -7,7 +7,7 @@
 
 import Foundation
 
-class BasicNeedsFacade {
+class BasicNeedsFacade: BasicNeedsFacadeProtocol {
     private let persistenceService: CoreDataService
     
     private let feedingService: FeedingServiceProtocol

@@ -9,7 +9,8 @@ import UIKit
 
 //Mother class to setup basic button style - color, shadow, cornerradius etc
 class PrimaryStyleButton: UIButton {
-    
+
+    var associatedData: Any?
     let color = UIColor(resource: .teal20)
     
     private var innerShadowView: InnerShadowView?

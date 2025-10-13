@@ -32,8 +32,10 @@ class InnerShadowView: UIView {
     }
 
     private func configure() {
+        self.backgroundColor = .white
         self.layer.masksToBounds = true
         self.layer.cornerRadius = 6
+        self.translatesAutoresizingMaskIntoConstraints = false
         
         innerShadowLayer.shadowColor = shadowColor.cgColor
         innerShadowLayer.shadowOffset = CGSize(width: 0, height: 4)
