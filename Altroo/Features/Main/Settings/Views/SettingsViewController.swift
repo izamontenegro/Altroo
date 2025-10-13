@@ -15,70 +15,53 @@ protocol SettingsViewControllerDelegate: AnyObject {
 }
 
 class SettingsViewController: UIViewController {
+
     weak var delegate: SettingsViewControllerDelegate?
-    
-    let viewLabel: UILabel = {
-        let label = UILabel()
-        label.text = "Settings View"
-        label.textAlignment = .center
-        
-        label.translatesAutoresizingMaskIntoConstraints = false
-        return label
-    }()
-    
+
     let vStack: UIStackView = {
         let stackView = UIStackView(arrangedSubviews: [])
         stackView.axis = .vertical
-        stackView.distribution = .fillEqually
-        stackView.spacing = 20
-        
+        stackView.spacing = 16
         stackView.translatesAutoresizingMaskIntoConstraints = false
         return stackView
     }()
-    
+
     override func viewDidLoad() {
         super.viewDidLoad()
+        view.backgroundColor = .blue80
 
-        view.backgroundColor = .systemTeal
-        
-        view.addSubview(viewLabel)
         view.addSubview(vStack)
-        
+
         addDelegateButtons()
-        
+
         NSLayoutConstraint.activate([
-            viewLabel.centerXAnchor.constraint(equalTo: view.centerXAnchor),
-            viewLabel.centerYAnchor.constraint(equalTo: view.centerYAnchor),
-            
-            vStack.centerXAnchor.constraint(equalTo: view.centerXAnchor),
-            vStack.topAnchor.constraint(equalTo: viewLabel.bottomAnchor),
+            vStack.topAnchor.constraint(equalTo: view.safeAreaLayoutGuide.topAnchor, constant: 30),
+            vStack.leadingAnchor.constraint(equalTo: view.leadingAnchor, constant: 20),
+            vStack.trailingAnchor.constraint(equalTo: view.trailingAnchor, constant: -20)
         ])
     }
-    
+
     private func addDelegateButtons() {
-        createButton(title: "User Profile", action: #selector(didTapUserProfileButton))
-        createButton(title: "Privacy and Security", action: #selector(didTapPrivacySecurityButton))
-        createButton(title: "Ratings", action: #selector(didTapDevelopersButton))
-        createButton(title: "Developers", action: #selector(didTapDevelopersButton))
+        createStandardButton(title: "User Profile", action: #selector(didTapUserProfileButton))
+        createStandardButton(title: "Privacy and Security", action: #selector(didTapPrivacySecurityButton))
+        createStandardButton(title: "Ratings", action: #selector(didTapDevelopersButton))
+        createStandardButton(title: "Developers", action: #selector(didTapDevelopersButton))
     }
-    
-    @objc func didTapUserProfileButton() {
-        delegate?.goToUserProfile()
-    }
-    
-    @objc func didTapPrivacySecurityButton() {
-        delegate?.goToPrivacySecurity()
-    }
-    
-    @objc func didTapDevelopersButton() {
-        delegate?.goToDevelopers()
-    }
-    
-    //UTILITY FUNC
-    private func createButton(title: String, action: Selector) {
+
+    // MARK: - BUTTON ACTIONS
+    @objc func didTapUserProfileButton() { delegate?.goToUserProfile() }
+    @objc func didTapPrivacySecurityButton() { delegate?.goToPrivacySecurity() }
+    @objc func didTapDevelopersButton() { delegate?.goToDevelopers() }
+
+    // MARK: - Utility
+    private func createStandardButton(title: String, action: Selector) {
         let button = UIButton(type: .system)
         button.setTitle(title, for: .normal)
-        button.translatesAutoresizingMaskIntoConstraints = false
+        button.backgroundColor = .teal20
+        button.setTitleColor(.white, for: .normal)
+        button.titleLabel?.font = UIFont.systemFont(ofSize: 16, weight: .medium)
+        button.layer.cornerRadius = 22
+        button.heightAnchor.constraint(equalToConstant: 44).isActive = true
         button.addTarget(self, action: action, for: .touchUpInside)
         vStack.addArrangedSubview(button)
     }
