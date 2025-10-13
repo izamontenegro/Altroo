@@ -15,8 +15,8 @@ class InnerShadowView: UIView {
 
     init(
         frame: CGRect,
-        color: UIColor = .black,
-        opacity: Float = 0.25
+        color: UIColor = .teal0,
+        opacity: Float = 0.20
     ) {
         self.shadowColor = color
         self.shadowOpacity = opacity
@@ -25,22 +25,22 @@ class InnerShadowView: UIView {
     }
     
     required init?(coder aDecoder: NSCoder) {
-        self.shadowColor = .black
-        self.shadowOpacity = 0.25
+        self.shadowColor = .teal0
+        self.shadowOpacity = 0.20
         super.init(coder: aDecoder)
         self.configure()
     }
 
     private func configure() {
-        self.backgroundColor = .white
+        self.backgroundColor = .clear
         self.layer.masksToBounds = true
-        self.layer.cornerRadius = 6
+        self.layer.cornerRadius = 8
         self.translatesAutoresizingMaskIntoConstraints = false
         
         innerShadowLayer.shadowColor = shadowColor.cgColor
-        innerShadowLayer.shadowOffset = CGSize(width: 0, height: 4)
+        innerShadowLayer.shadowOffset = CGSize(width: 0, height: 5)
         innerShadowLayer.shadowOpacity = shadowOpacity
-        innerShadowLayer.shadowRadius = 7
+        innerShadowLayer.shadowRadius = 5
         innerShadowLayer.fillRule = .evenOdd
         
         self.layer.addSublayer(innerShadowLayer)
@@ -66,4 +66,27 @@ class InnerShadowView: UIView {
             transform: nil
         )
     }
+}
+
+import SwiftUI
+
+private struct InnerShadowViewPreview: UIViewRepresentable {
+    func makeUIView(context: Context) -> InnerShadowView {
+        // Cria a view UIKit
+        let view = InnerShadowView(
+            frame: CGRect(x: 0, y: 0, width: 200, height: 100),
+            color: UIColor(resource: .teal0),
+            opacity: 0.2
+        )
+        return view
+    }
+    
+    func updateUIView(_ uiView: InnerShadowView, context: Context) { }
+}
+
+#Preview {
+    InnerShadowViewPreview()
+        .frame(width: 350, height: 200)
+        .padding()
+        .background(Color.black)
 }
