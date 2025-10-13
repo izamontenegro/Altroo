@@ -14,7 +14,9 @@ class CapsuleIconView: UIView {
     var mainColor: UIColor = UIColor(resource: .teal20)
     var accentColor: UIColor = UIColor(.white)
 
-    var labelIconSpacing: CGFloat = 12
+    var labelIconSpacing: CGFloat = 8
+    
+    private var innerShadowView: InnerShadowView?
     
     override init(frame: CGRect) {
         super.init(frame: frame)
@@ -23,7 +25,7 @@ class CapsuleIconView: UIView {
     convenience init(iconName: String,
                      text: String,
                      mainColor: UIColor = UIColor(resource: .teal20),
-                     accentColor: UIColor = UIColor(.white)
+                     accentColor: UIColor = UIColor(.pureWhite)
     ) {
         
         self.init(frame: .zero)
@@ -31,14 +33,17 @@ class CapsuleIconView: UIView {
         self.text = text
         self.mainColor = mainColor
         self.accentColor = accentColor
+//        self.weight = weight
         
         makeCapsule()
+        setupInnerShadow()
     }
     
     required init?(coder: NSCoder) { super.init(coder: coder) }
     
     override func layoutSubviews() {
         super.layoutSubviews()
+        innerShadowView?.frame = bounds
         self.layer.cornerRadius = self.bounds.height / 2
     }
     
@@ -49,7 +54,7 @@ class CapsuleIconView: UIView {
         let stackView = UIStackView()
         stackView.axis = .horizontal
         stackView.alignment = .center
-        stackView.spacing = 12
+        stackView.spacing = 8
         stackView.translatesAutoresizingMaskIntoConstraints = false
         
         addSubview(stackView)
@@ -57,8 +62,8 @@ class CapsuleIconView: UIView {
         NSLayoutConstraint.activate([
             stackView.topAnchor.constraint(equalTo: self.topAnchor, constant: 8),
             stackView.bottomAnchor.constraint(equalTo: self.bottomAnchor, constant: -8),
-            stackView.leadingAnchor.constraint(equalTo: self.leadingAnchor, constant: 12),
-            stackView.trailingAnchor.constraint(equalTo: self.trailingAnchor, constant: -12)
+            stackView.leadingAnchor.constraint(equalTo: self.leadingAnchor, constant: 16),
+            stackView.trailingAnchor.constraint(equalTo: self.trailingAnchor, constant: -16)
         ])
         
         //left icon
@@ -73,16 +78,23 @@ class CapsuleIconView: UIView {
         ])
         
         //label
-        let label = StandardLabel(labelText: text, labelFont: .sfPro, labelType: .callOut, labelColor: UIColor.teal20, labelWeight: .bold)
+        let label = StandardLabel(labelText: text, labelFont: .sfPro, labelType: .subHeadline, labelColor: UIColor.teal20, labelWeight: .medium)
         label.textColor = accentColor
         stackView.addArrangedSubview(label)
-        
     }
     
+    private func setupInnerShadow() {
+        let shadow = InnerShadowView(frame: bounds,
+                                     color: UIColor.blue40,
+                                     opacity: 0.15)
+        shadow.isUserInteractionEnabled = false
+        shadow.layer.cornerRadius = layer.cornerRadius
+        addSubview(shadow)
+        innerShadowView = shadow
+    }
 }
 
 #Preview {
-//    let button = CapsuleIconView(iconName: "drop.fill", text: "250ml", mainColor: UIColor(resource: .black0), accentColor: UIColor(resource: .teal20))
-    let button = CapsuleIconView(iconName: "drop.fill", text: "250ml")
+    let button = CapsuleIconView(iconName: "cloud.moon.fill", text: "Madrugada")
     return button
 }

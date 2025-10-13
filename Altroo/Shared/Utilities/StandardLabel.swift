@@ -7,6 +7,13 @@
 
 import UIKit
 
+enum FontWeight {
+    case regular
+    case medium
+    case semibold
+    case bold
+}
+
 class StandardLabel: UILabel {
     enum LabelType {
         case largeTitle
@@ -28,12 +35,6 @@ class StandardLabel: UILabel {
         case comfortaa
     }
     
-    enum FontWeight {
-        case regular
-        case medium
-        case semibold
-        case bold
-    }
     public private(set) var labelText: String
     public private(set) var labelFont: FontStyle
     public private(set) var labelType: LabelType

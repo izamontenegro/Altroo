@@ -20,7 +20,7 @@ class AnalysisViewController: UIViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
 
-        view.backgroundColor = .systemTeal
+        view.backgroundColor = .blue80
         
         view.addSubview(viewLabel)
         

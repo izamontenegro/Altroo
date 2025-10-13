@@ -10,12 +10,13 @@ class MedicationTimeSheetViewController: UIViewController {
 
     let viewLabel: UILabel = {
         let label = UILabel()
-        label.text = "Change Time Medication Was Taken View"
+        label.text = "MedicationTimeSheetViewController"
         label.textAlignment = .center
         
         label.translatesAutoresizingMaskIntoConstraints = false
         return label
     }()
+    
     override func viewDidLoad() {
         super.viewDidLoad()
 

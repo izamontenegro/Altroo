@@ -8,9 +8,10 @@
 import UIKit
 
 class RecordCard: InnerShadowView {
+    
     let title: String
     let iconName: String
-    let addButtonPosition: Position = .bottom
+    let addButtonPosition: Position = .none
     
     let addButton = PlusButton()
     var onAddButtonTap: (() -> Void)? //call closure using [weak self]
@@ -27,7 +28,7 @@ class RecordCard: InnerShadowView {
         setupShadows()
         setupPlusButton()
     }
-
+    
     convenience init(frame: CGRect) {
         self.init(frame: frame,
                   title: "",
@@ -39,11 +40,11 @@ class RecordCard: InnerShadowView {
     }
     
     override var intrinsicContentSize: CGSize {
-            return CGSize(width: UIView.noIntrinsicMetric, height: 85)
-        }
+        return CGSize(width: UIView.noIntrinsicMetric, height: 85)
+    }
     
     func setupBackground() {
-        backgroundColor = .white
+        backgroundColor = .pureWhite
         layer.cornerRadius = 12
         
         let header = makeHeader()
@@ -56,10 +57,10 @@ class RecordCard: InnerShadowView {
     }
     
     func setupShadows() {
-        layer.shadowColor = UIColor(resource: .blue40).cgColor
-        layer.shadowOpacity = 0.1
-        layer.shadowRadius = 10
-        layer.shadowOffset = CGSize(width: 5, height: 5)
+        layer.shadowColor = UIColor(resource: .blue70).cgColor
+        layer.shadowOpacity = 0.2
+        layer.shadowRadius = 12
+        layer.shadowOffset = CGSize(width: 5, height: 2)
     }
     
     func setupPlusButton() {
@@ -80,16 +81,22 @@ class RecordCard: InnerShadowView {
         }
         
         addButton.addTarget(self, action: #selector(buttonWasTapped), for: .touchUpInside)
-
     }
     
     func makeHeader() -> UIStackView {
-        let label = StandardLabel(labelText: title, labelFont: .sfPro, labelType: .title3, labelColor: .blue, labelWeight: .medium)
+        let label = StandardLabel(labelText: title,
+                                  labelFont: .sfPro,
+                                  labelType: .title3,
+                                  labelColor: .blue40,
+                                  labelWeight: .medium)
         
-        let icon = PulseIcon(iconName: "waterbottle.fill", color: UIColor(resource: .blue30), shadowColor: UIColor(resource: .blue60))
+        let icon = PulseIcon(iconName: "waterbottle.fill",
+                             color: UIColor(resource: .blue30),
+                             iconColor: UIColor(resource: .pureWhite),
+                             shadowColor: UIColor(resource: .blue60))
         
         let stack = UIStackView()
-        stack.spacing = 12
+        stack.spacing = 8
         stack.translatesAutoresizingMaskIntoConstraints = false
         stack.addArrangedSubview(icon)
         stack.addArrangedSubview(label)
@@ -108,15 +115,15 @@ class RecordCard: InnerShadowView {
 
 //class RecordCardPreview: UIViewController {
 //    let card = RecordCard(title: "Hidratação", iconName: "waterbottle.fill")
-//    
-//    
+//
+//
 //    override func viewDidLoad() {
 //        view.backgroundColor = .blue80
-//        
+//
 //        view.addSubview(card)
-//        
+//
 //        card.translatesAutoresizingMaskIntoConstraints = false
-//        
+//
 //        NSLayoutConstraint.activate([
 //            card.centerXAnchor.constraint(equalTo: view.centerXAnchor),
 //            card.centerYAnchor.constraint(equalTo: view.centerYAnchor),
@@ -131,5 +138,5 @@ class RecordCard: InnerShadowView {
     
     return card
     
-//    RecordCardPreview()
+    //    RecordCardPreview()
 }

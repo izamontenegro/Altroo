@@ -6,7 +6,8 @@
 	<string>development</string>
 	<key>com.apple.developer.icloud-container-identifiers</key>
 	<array>
-		<string>iCloud.com.Altroo.testContainer</string>
+		<string>iCloud.IzadoraMontenegro.CloudToDoList</string>
+		<string>iCloud.IzadoraMontenegro.Restock</string>
 	</array>
 	<key>com.apple.developer.icloud-services</key>
 	<array>
