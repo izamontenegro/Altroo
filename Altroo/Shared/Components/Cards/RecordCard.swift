@@ -86,7 +86,10 @@ class RecordCard: InnerShadowView {
     func makeHeader() -> UIStackView {
         let label = StandardLabel(labelText: title, labelFont: .sfPro, labelType: .title3, labelColor: .blue, labelWeight: .medium)
         
-        let icon = PulseIcon(iconName: "waterbottle.fill", color: UIColor(resource: .blue30), shadowColor: UIColor(resource: .blue60))
+        let icon = PulseIcon(iconName: "waterbottle.fill",
+                             color: UIColor(resource: .blue30),
+                             iconColor: UIColor(resource: .pureWhite),
+                             shadowColor: UIColor(resource: .blue60))
         
         let stack = UIStackView()
         stack.spacing = 12

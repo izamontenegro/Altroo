@@ -82,7 +82,9 @@ final class PopupMenuButton: PrimaryStyleButton {
     }
     
     private func setupInnerShadow() {
-        let shadow = InnerShadowView(frame: bounds, color: UIColor.teal0, opacity: 0.20)
+        let shadow = InnerShadowView(frame: bounds,
+                                     color: UIColor.teal0,
+                                     opacity: 0.2)
         shadow.isUserInteractionEnabled = false
         shadow.layer.cornerRadius = layer.cornerRadius
         addSubview(shadow)

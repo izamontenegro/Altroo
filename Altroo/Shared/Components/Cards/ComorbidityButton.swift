@@ -81,6 +81,7 @@ class ComorbidityButton: UIButton {
         
         iconView = PulseIcon(iconName: comorbidity.iconName,
                              color: UIColor(resource: .blue30),
+                             iconColor: UIColor(resource: .pureWhite),
                              shadowColor: UIColor(resource: .blue60))
         iconView.heightAnchor.constraint(equalToConstant: 74).isActive = true
         iconView.widthAnchor.constraint(equalToConstant: 74).isActive = true

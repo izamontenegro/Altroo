@@ -13,7 +13,12 @@ class BedriddenButton: UIButton {
     
     private var isSelectedState = false
     private var innerShadowView: InnerShadowView?
-    private var iconView: PulseIcon!
+    
+    var circle1 = CircleView()
+    var circle2 = CircleView()
+    var circle3 = CircleView()
+    var icon = UIImageView()
+    
     private var checkIconView: UIImageView!
     private var label: StandardLabel!
     
@@ -45,11 +50,22 @@ class BedriddenButton: UIButton {
         UIView.animate(withDuration: 0.4, delay: 0, options: [.curveEaseInOut]) {
             
             self.backgroundColor = self.isSelectedState ? UIColor(resource: .blue40)
-                                                        : UIColor(resource: .white70)
+            : UIColor(resource: .white70)
+            
             let tint = self.isSelectedState ? UIColor(resource: .pureWhite)
-                                            : UIColor(resource: .blue30)
+            : UIColor(resource: .blue30)
             self.label.textColor = tint
             self.checkIconView.tintColor = tint
+            
+            self.circle1.fillColor = self.isSelectedState ? UIColor(resource: .pureWhite).withAlphaComponent(0.3)
+            : UIColor(resource: .blue30).withAlphaComponent(0.3)
+            self.circle2.fillColor = self.isSelectedState ? UIColor(resource: .pureWhite).withAlphaComponent(0.5)
+            : UIColor(resource: .blue30).withAlphaComponent(0.5)
+            self.circle3.fillColor = self.isSelectedState ? UIColor(resource: .pureWhite).withAlphaComponent(0.8)
+            : UIColor(resource: .blue30).withAlphaComponent(0.8)
+            
+            self.icon.tintColor = self.isSelectedState ? UIColor(resource: .blue40)
+            : UIColor(resource: .white70)
         }
     }
     // MARK: - Setup
@@ -81,14 +97,59 @@ class BedriddenButton: UIButton {
     // MARK: - UI Construction
     private func makeContent() -> UIStackView {
         
-        // bed icon with circles
-        iconView = PulseIcon(
-            iconName: bedriddenState.iconName,
-            color: UIColor(resource: .blue30),
-            shadowColor: UIColor(resource: .blue60)
-        )
-        iconView.heightAnchor.constraint(equalToConstant: 90).isActive = true
-        iconView.widthAnchor.constraint(equalToConstant: 90).isActive = true
+        // circles
+        circle1.fillColor = UIColor(resource: .blue30).withAlphaComponent(0.3)
+        circle1.translatesAutoresizingMaskIntoConstraints = false
+        circle1.widthAnchor.constraint(equalToConstant: 90).isActive = true
+        circle1.heightAnchor.constraint(equalToConstant: 90).isActive = true
+        
+        circle2.fillColor = UIColor(resource: .blue30).withAlphaComponent(0.5)
+        circle2.translatesAutoresizingMaskIntoConstraints = false
+        circle2.widthAnchor.constraint(equalToConstant: 74).isActive = true
+        circle2.heightAnchor.constraint(equalToConstant: 74).isActive = true
+        
+        circle3.fillColor = UIColor(resource: .blue30).withAlphaComponent(0.8)
+        circle3.translatesAutoresizingMaskIntoConstraints = false
+        circle3.widthAnchor.constraint(equalToConstant: 57).isActive = true
+        circle3.heightAnchor.constraint(equalToConstant: 57).isActive = true
+        
+        // icon
+        icon = UIImageView(image: UIImage(systemName: bedriddenState.iconName))
+        icon.tintColor = UIColor(resource: .pureWhite)
+        icon.contentMode = .scaleAspectFit
+        icon.translatesAutoresizingMaskIntoConstraints = false
+        
+        NSLayoutConstraint.activate([
+            icon.heightAnchor.constraint(equalToConstant: 55),
+            icon.widthAnchor.constraint(equalToConstant: 55)
+        ])
+        
+        // Container for circles
+        let circles = UIView()
+        circles.translatesAutoresizingMaskIntoConstraints = false
+        circles.addSubview(circle1)
+        circles.addSubview(circle2)
+        circles.addSubview(circle3)
+        circles.addSubview(icon)
+        
+        NSLayoutConstraint.activate([
+            // Sets the container size equal to the largest circle
+            circles.widthAnchor.constraint(equalToConstant: 90),
+            circles.heightAnchor.constraint(equalToConstant: 90),
+            
+            // Centers all circles in the container
+            circle1.centerXAnchor.constraint(equalTo: circles.centerXAnchor),
+            circle1.centerYAnchor.constraint(equalTo: circles.centerYAnchor),
+            
+            circle2.centerXAnchor.constraint(equalTo: circles.centerXAnchor),
+            circle2.centerYAnchor.constraint(equalTo: circles.centerYAnchor),
+            
+            circle3.centerXAnchor.constraint(equalTo: circles.centerXAnchor),
+            circle3.centerYAnchor.constraint(equalTo: circles.centerYAnchor),
+            
+            icon.centerXAnchor.constraint(equalTo: circles.centerXAnchor),
+            icon.centerYAnchor.constraint(equalTo: circles.centerYAnchor)
+        ])
         
         // "x" or "check" icon
         checkIconView = UIImageView(image: UIImage(systemName: bedriddenState.iconCheck))
@@ -115,7 +176,7 @@ class BedriddenButton: UIButton {
         label.widthAnchor.constraint(equalToConstant: 140).isActive = true
         
         // Stack
-        let stack = UIStackView(arrangedSubviews: [iconView, checkIconView, label])
+        let stack = UIStackView(arrangedSubviews: [circles, checkIconView, label])
         stack.axis = .vertical
         stack.alignment = .center
         stack.spacing = 8
