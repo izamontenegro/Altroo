@@ -19,31 +19,30 @@ class AssociatePatientViewController: UIViewController {
     
     private let viewModel: AssociatePatientViewModel
 
-    let viewLabel: UILabel = {
-        let label = UILabel()
-        label.text = "All patients / no patient View"
-        label.textAlignment = .center
-        
-        label.translatesAutoresizingMaskIntoConstraints = false
-        return label
-    }()
+    let viewLabel = StandardLabel(
+        labelText: "Nenhum Assistido encontrado.\nClique no botão \"Adicionar\" para criar.",
+        labelFont: .sfPro,
+        labelType: .title3,
+        labelColor: .black40,
+        labelWeight: .regular
+    )
     
-    let addNewPatientButton: UIButton = {
-        let button = UIButton(type: .custom)
-        button.setTitle("Add new patient", for: .normal)
-        button.backgroundColor = .black
-        button.layer.cornerRadius = 8
-        
-        button.translatesAutoresizingMaskIntoConstraints = false
-        return button
-    }()
+    let addNewPatientButton = StandardConfirmationButton(title: "Adicionar")
     
     let addExistingPatientButton: UIButton = {
-        let button = UIButton(type: .custom)
-        button.setTitle("Add existing patient", for: .normal)
-        button.backgroundColor = .black
-        button.layer.cornerRadius = 8
-        
+        let button = UIButton(type: .system)
+        let label = StandardLabel(
+            labelText: "Já tenho uma pessoa cadastrada",
+            labelFont: .sfPro,
+            labelType: .title3,
+            labelColor: .teal10,
+            labelWeight: .regular
+        )
+        button.setAttributedTitle(NSAttributedString(string: label.labelText, attributes: [
+            .font: label.font!,
+            .foregroundColor: label.textColor!
+        ]), for: .normal)
+        button.backgroundColor = .clear
         button.translatesAutoresizingMaskIntoConstraints = false
         return button
     }()
@@ -67,49 +66,59 @@ class AssociatePatientViewController: UIViewController {
         fatalError("init(coder:) has not been implemented")
     }
 
-    // MARK: - Lifecycle
     override func viewDidLoad() {
         super.viewDidLoad()
         
-        view.backgroundColor = .systemBlue
+        view.backgroundColor = .white
+        navigationItem.title = "Seus Assistidos"
+
         setupLayout()
         updateView()
     }
     
     private func setupLayout() {
-        view.addSubview(vStack)
-        vStack.addArrangedSubview(viewLabel)
-        vStack.addArrangedSubview(addNewPatientButton)
-        vStack.addArrangedSubview(addExistingPatientButton)
+        view.addSubview(viewLabel)
+        view.addSubview(addNewPatientButton)
+        view.addSubview(addExistingPatientButton)
+        
+        let buttonsStack = UIStackView(arrangedSubviews: [addNewPatientButton, addExistingPatientButton])
+        buttonsStack.axis = .vertical
+        buttonsStack.spacing = 7
+        buttonsStack.alignment = .center
+        buttonsStack.translatesAutoresizingMaskIntoConstraints = false
+        view.addSubview(buttonsStack)
         
         NSLayoutConstraint.activate([
-            vStack.centerXAnchor.constraint(equalTo: view.centerXAnchor),
-            vStack.centerYAnchor.constraint(equalTo: view.centerYAnchor),
+            viewLabel.centerXAnchor.constraint(equalTo: view.centerXAnchor),
+            viewLabel.centerYAnchor.constraint(equalTo: view.centerYAnchor, constant: -40),
+            viewLabel.leadingAnchor.constraint(equalTo: view.leadingAnchor, constant: 24),
+            viewLabel.trailingAnchor.constraint(equalTo: view.trailingAnchor, constant: -24),
+            
+            buttonsStack.centerXAnchor.constraint(equalTo: view.centerXAnchor),
+            buttonsStack.bottomAnchor.constraint(equalTo: view.safeAreaLayoutGuide.bottomAnchor, constant: -40),
+            buttonsStack.leadingAnchor.constraint(equalTo: view.leadingAnchor, constant: 40),
+            buttonsStack.trailingAnchor.constraint(equalTo: view.trailingAnchor, constant: -40),
+            
+            addNewPatientButton.heightAnchor.constraint(equalToConstant: 50),
+            addNewPatientButton.widthAnchor.constraint(equalToConstant: 229)
         ])
         
         addNewPatientButton.addTarget(self, action: #selector(didTapAddNewPatientButton), for: .touchUpInside)
         addExistingPatientButton.addTarget(self, action: #selector(didTapAddExistingPatientButton), for: .touchUpInside)
     }
-    
-    private func updateView() {
-        
-//        let patients = viewModel.allPatients
 
-//        if patients.isEmpty {
-            viewLabel.text = "No patients"
-//        } else {
-//            let names = patients.compactMap { $0.personalData?.name }
-//            viewLabel.text = names.joined(separator: "")
-//        }
+    private func updateView() {
+        // TODO: add logic to fetch user's careRecipients
+        viewLabel.numberOfLines = 0
+        viewLabel.lineBreakMode = .byWordWrapping
+        viewLabel.textAlignment = .center
     }
     
-    @objc
-    func didTapAddNewPatientButton() {
-        delegate?.goToPatientForms()
-    }
+    @objc func didTapAddNewPatientButton() { delegate?.goToPatientForms() }
     
-    @objc
-    func didTapAddExistingPatientButton() {
-        delegate?.goToTutorialAddSheet()
-    }
+    @objc func didTapAddExistingPatientButton() { delegate?.goToTutorialAddSheet() }
+}
+
+#Preview {
+    AssociatePatientViewController(viewModel: AssociatePatientViewModel())
 }
