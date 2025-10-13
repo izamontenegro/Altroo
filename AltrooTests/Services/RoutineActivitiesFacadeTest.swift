@@ -69,14 +69,17 @@ final class MedicationServiceSpy: MedicationServiceProtocol {
 }
 
 final class RoutineTaskServiceSpy: RoutineTaskServiceProtocol {
+    
+    //Template
     struct AddCaptured {
-        var name: String?
-        var period: PeriodEnum?
-        var time: Date?
-        var frequency: FrequencyEnum?
-        var reminder: Bool?
-        var note: String?
-        var careRecipient: CareRecipient?
+            var name: String?
+            var allTimes: [DateComponents]?
+            var daysOfTheWeek: [Locale.Weekday]?
+            var startDate: Date?
+            var endDate: Date?
+            var reminder: Bool?
+            var note: String?
+            var careRecipient: CareRecipient?
     }
     private(set) var addCalled = 0
     private(set) var deleteCalled = 0
@@ -84,14 +87,69 @@ final class RoutineTaskServiceSpy: RoutineTaskServiceProtocol {
     private(set) var lastDeleted: (RoutineTask, CareRecipient)?
     
     
-    func addRoutineTask(name: String, period: PeriodEnum, time: Date, frequency: FrequencyEnum, reminder: Bool, note: String, in careRecipient: CareRecipient) {
-        addCalled += 1
-        lastAdd = .init(name: name, period: period, time: time, frequency: frequency, reminder: reminder, note: note, careRecipient: careRecipient)
+    func addTemplateRoutineTask(
+            name: String,
+            allTimes: [DateComponents],
+            daysOfTheWeek: [Locale.Weekday],
+            startDate: Date,
+            endDate: Date?,
+            reminder: Bool,
+            note: String,
+            in careRecipient: CareRecipient
+        ) {
+            addCalled += 1
+            lastAdd = .init(
+                name: name,
+                allTimes: allTimes,
+                daysOfTheWeek: daysOfTheWeek,
+                startDate: startDate,
+                endDate: endDate,
+                reminder: reminder,
+                note: note,
+                careRecipient: careRecipient
+            )
     }
     
     func deleteRoutineTask(routineTask: RoutineTask, from careRecipient: CareRecipient) {
         deleteCalled += 1
         lastDeleted = (routineTask, careRecipient)
+    }
+    
+    func fetchRoutineTasks(for careRecipient: CareRecipient) -> [RoutineTask] {
+        return []
+    }
+    
+    //Instance
+    struct AddInstanceCaptured {
+        var template: RoutineTask?
+        var date: Date?
+    }
+
+    private(set) var addInstanceCalled = 0
+    private(set) var lastInstanceAdd: AddInstanceCaptured?
+    private(set) var markInstanceCalled = 0
+    private(set) var deleteInstanceCalled = 0
+    private(set) var lastMarkedInstance: TaskInstance?
+    private(set) var lastDeletedInstance: TaskInstance?
+    
+    func addInstanceRoutineTask(from template: RoutineTask, on date: Date) {
+        addInstanceCalled += 1
+        lastInstanceAdd = .init(template: template, date: date)
+    }
+    
+    func fetchInstanceRoutineTasks(for careRecipient: CareRecipient) -> [TaskInstance] {
+        return []
+    }
+    
+    
+    func markInstanceAsDone(_ instance: TaskInstance) {
+        markInstanceCalled += 1
+        lastMarkedInstance = instance
+    }
+    
+    func deleteInstanceRoutineTask(_ instance: TaskInstance) {
+        deleteInstanceCalled += 1
+        lastDeletedInstance = instance
     }
 }
 
@@ -100,6 +158,8 @@ final class RoutineTaskServiceSpy: RoutineTaskServiceProtocol {
 final class DummyMeasurements: Measurements {}
 final class DummyMedication: Medication {}
 final class DummyRoutineTask: RoutineTask {}
+final class DummyTaskInstance: TaskInstance {}
+
 //
 // MARK: - Tests
 final class RoutineActivitiesFacadeTests: XCTestCase {
@@ -216,26 +276,31 @@ final class RoutineActivitiesFacadeTests: XCTestCase {
         let formatter = DateFormatter()
         formatter.dateFormat = "yyyy/MM/dd HH:mm"
         let routineTime = formatter.date(from: "2025/10/10 07:00")!
+        
+        let allTimes = [DateComponents(hour: 8, minute: 30)]
+            let days: [Locale.Weekday] = [.monday, .wednesday, .friday]
+            let start = Date()
+            let end = Calendar.current.date(byAdding: .day, value: 10, to: start)
 
-        sut.addRoutineTask(
-            name: "Morning blood pressure check",
-            period: .morning,
-            time: routineTime,
-            frequency: .daily,
-            reminder: false,
-            note: "Sit quietly for 5 minutes before measuring. Record the result in the app.",
-            in: care
+        sut.addTemplateRoutineTask(
+                name: "Morning Bath",
+                allTimes: allTimes,
+                daysOfTheWeek: days,
+                startDate: start,
+                endDate: end,
+                reminder: false,
+                note: "Use lavender soap",
+                in: care
         )
 
         XCTAssertEqual(routineTaskServiceSpy.addCalled, 1)
         XCTAssertEqual(coreDataSpy.saveContextCalled, 1)
 
-        XCTAssertEqual(routineTaskServiceSpy.lastAdd?.name, "Morning blood pressure check")
-        XCTAssertEqual(routineTaskServiceSpy.lastAdd?.period, .morning)
-        XCTAssertEqual(routineTaskServiceSpy.lastAdd?.time, routineTime)
-        XCTAssertEqual(routineTaskServiceSpy.lastAdd?.frequency, .daily)
+        XCTAssertEqual(routineTaskServiceSpy.lastAdd?.name, "Morning Bath")
+        XCTAssertEqual(routineTaskServiceSpy.lastAdd?.allTimes?.first?.hour, 8)
+        XCTAssertEqual(routineTaskServiceSpy.lastAdd?.daysOfTheWeek, days)
         XCTAssertEqual(routineTaskServiceSpy.lastAdd?.reminder, false)
-        XCTAssertEqual(routineTaskServiceSpy.lastAdd?.note, "Sit quietly for 5 minutes before measuring. Record the result in the app.")
+        XCTAssertEqual(routineTaskServiceSpy.lastAdd?.note, "Use lavender soap")
         XCTAssertTrue(routineTaskServiceSpy.lastAdd?.careRecipient === care)
     }
 
@@ -251,4 +316,40 @@ final class RoutineActivitiesFacadeTests: XCTestCase {
         XCTAssertTrue(routineTaskSpy.lastDeleted?.0 === record)
         XCTAssertTrue(routineTaskSpy.lastDeleted?.1 === care)
     }
+    
+    func test_addInstanceRoutineTask_callsService_andSaves() {
+        let (sut, _, _, routineTaskSpy, coreDataSpy) = makeSUT()
+        let template = DummyRoutineTask()
+        let instanceDate = Date()
+
+        sut.addInstanceRoutineTask(from: template, on: instanceDate)
+
+        XCTAssertEqual(routineTaskSpy.addInstanceCalled, 1)
+        XCTAssertEqual(coreDataSpy.saveContextCalled, 1)
+        XCTAssertTrue(routineTaskSpy.lastInstanceAdd?.template === template)
+        XCTAssertEqual(routineTaskSpy.lastInstanceAdd?.date, instanceDate)
+    }
+    
+    func test_markInstanceAsDone_callsService_andRecordsInstance() {
+        let (sut, _, _, routineTaskSpy, _) = makeSUT()
+        let instance = DummyTaskInstance()
+        
+        sut.markInstanceAsDone(instance)
+        
+        XCTAssertEqual(routineTaskSpy.markInstanceCalled, 1)
+        XCTAssertTrue(routineTaskSpy.lastMarkedInstance === instance)
+    }
+    
+    func test_deleteInstanceRoutineTask_callsService_andRecordsInstance() {
+        let (sut, _, _, routineTaskSpy, coreDataSpy) = makeSUT()
+        let instance = DummyTaskInstance()
+        
+        sut.deleteInstanceRoutineTask(instance)
+        
+        XCTAssertEqual(routineTaskSpy.deleteInstanceCalled, 1)
+        XCTAssertEqual(coreDataSpy.saveContextCalled, 1)
+        XCTAssertTrue(routineTaskSpy.lastDeletedInstance === instance)
+    }
+
+
 }

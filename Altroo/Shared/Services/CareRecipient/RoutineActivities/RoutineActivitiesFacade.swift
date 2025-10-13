@@ -42,6 +42,24 @@ class RoutineActivitiesFacade: RoutineActivitiesFacadeProtocol {
         return routineTaskService.fetchInstanceRoutineTasks(for: careRecipient)
     }
     
+    func markInstanceAsDone(_ instance: TaskInstance) {
+        routineTaskService.markInstanceAsDone(instance)
+        
+        persistenceService.save()
+    }
+    
+    func addInstanceRoutineTask(from template: RoutineTask, on date: Date) {
+        routineTaskService.addInstanceRoutineTask(from: template, on: date)
+        
+        persistenceService.save()
+    }
+    
+    func deleteInstanceRoutineTask(_ instance: TaskInstance) {
+        routineTaskService.deleteInstanceRoutineTask(instance)
+        
+        persistenceService.save()
+    }
+    
     func generateInstancesForToday(for careRecipient: CareRecipient) {
         let today = Date()
         let calendar = Calendar.current
@@ -66,7 +84,7 @@ class RoutineActivitiesFacade: RoutineActivitiesFacadeProtocol {
                 
                 if !exists {
                     print("Criando instância para \(template.name ?? "") às \(time)")
-                    routineTaskService.addInstanceRoutineTask(from: template, on: today)
+                    addInstanceRoutineTask(from: template, on: today)
                 }
             }
 

@@ -59,6 +59,7 @@ class RoutineTaskService: RoutineTaskServiceProtocol {
     }
     
     func deleteRoutineTask(routineTask: RoutineTask, from careRecipient: CareRecipient) {
+        //TODO: understand why was relationship and not coredata instance deleted
         if let routineActivities = careRecipient.routineActivities?.tasks {
             let mutableRoutineTask = routineActivities.mutableSetValue(forKey: "tasks")
             mutableRoutineTask.remove(routineTask)
@@ -106,6 +107,8 @@ class RoutineTaskService: RoutineTaskServiceProtocol {
     }
 
     func deleteInstanceRoutineTask(_ instance: TaskInstance) {
-        //TODO
+        guard let context = instance.managedObjectContext else { return }
+            
+        context.delete(instance)
     }
 }
