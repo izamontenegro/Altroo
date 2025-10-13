@@ -115,7 +115,7 @@ class AddSymptomViewController: GradientNavBarViewController {
         contentStack.addArrangedSubview(noteSection)
         
         //time
-        let timePicker: UIDatePicker = UIDatePicker.make(mode: .date)
+        let timePicker: UIDatePicker = UIDatePicker.make(mode: .time)
         let timeSection = FormSectionView(title: "Horário", content: timePicker)
         timePicker.addTarget(self, action: #selector(timeChanged), for: .valueChanged)
 
