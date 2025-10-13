@@ -8,111 +8,112 @@ import UIKit
 
 class CapsuleWithCircleView: UIView {
     
-    var iconName: String!
     var text: String!
-    var mainColor: UIColor!
-    var accentColor: UIColor!
-    var buttonIconColor: UIColor = UIColor(resource: .white80)
-    
-    var labelIconSpacing: CGFloat = 12
-    
-    private var innerShadowView: InnerShadowView?
+    var textColor: UIColor = UIColor(resource: .teal20)
+   
+    var nameIcon: String!
+    var nameIconColor: UIColor = UIColor(resource: .pureWhite)
+    var circleIconColor: UIColor = UIColor(resource: .teal20)
     
     override init(frame: CGRect) {
         super.init(frame: frame)
     }
     
-    convenience init(iconName: String,
-                     text: String,
-                     mainColor: UIColor,
-                     accentColor: UIColor,
-                     buttonIconColor: UIColor = UIColor(resource: .white80)
-    ) {
+    convenience init(text: String, textColor: UIColor, nameIcon: String, nameIconColor: UIColor, circleIconColor: UIColor) {
         
         self.init(frame: .zero)
-        self.iconName = iconName
         self.text = text
-        self.mainColor = mainColor
-        self.accentColor = accentColor
-        self.buttonIconColor = buttonIconColor
+        self.textColor = textColor
+        self.nameIcon = nameIcon
+        self.nameIconColor = nameIconColor
+        self.circleIconColor = circleIconColor
         
         makeCapsule()
-        setupInnerShadow()
     }
     
     required init?(coder: NSCoder) { super.init(coder: coder) }
     
     override func layoutSubviews() {
         super.layoutSubviews()
-        innerShadowView?.frame = bounds
         self.layer.cornerRadius = self.bounds.height / 2
     }
     
     func makeCapsule() {
-        self.backgroundColor = mainColor
+        self.backgroundColor = UIColor(resource: .teal80)
         self.translatesAutoresizingMaskIntoConstraints = false
         
         let stackView = UIStackView()
         stackView.axis = .horizontal
         stackView.alignment = .center
-        stackView.spacing = 12
+        stackView.spacing = 8
         stackView.translatesAutoresizingMaskIntoConstraints = false
         
-        let icon = makeIcon()
-        let label = StandardLabel(labelText: text, labelFont: .sfPro, labelType: .subHeadline, labelColor: UIColor.teal20, labelWeight: .bold)
-        label.translatesAutoresizingMaskIntoConstraints = false
         addSubview(stackView)
         
         NSLayoutConstraint.activate([
-            stackView.topAnchor.constraint(equalTo: self.topAnchor, constant: 6),
-            stackView.bottomAnchor.constraint(equalTo: self.bottomAnchor, constant: -6),
+            stackView.topAnchor.constraint(equalTo: self.topAnchor, constant: 4),
+            stackView.bottomAnchor.constraint(equalTo: self.bottomAnchor, constant: -4),
             stackView.leadingAnchor.constraint(equalTo: self.leadingAnchor, constant: 16),
-            stackView.trailingAnchor.constraint(equalTo: self.trailingAnchor, constant: -6)
+            stackView.trailingAnchor.constraint(equalTo: self.trailingAnchor, constant: -4)
         ])
         
-        NSLayoutConstraint.activate([
-            icon.heightAnchor.constraint(equalTo: label.heightAnchor, multiplier: 1.5),
-            icon.widthAnchor.constraint(equalTo: icon.heightAnchor)
-        ])
-    }
-    
-    func makeIcon() -> UIView {
+        //label
+        let label = StandardLabel(labelText: text,
+                                  labelFont: .sfPro,
+                                  labelType: .subHeadline,
+                                  labelColor: textColor,
+                                  labelWeight: .medium)
+        stackView.addArrangedSubview(label)
+        
+        //circle
         let circle = CircleView()
-        circle.fillColor = accentColor
+        circle.fillColor = circleIconColor
         circle.translatesAutoresizingMaskIntoConstraints = false
+        circle.widthAnchor.constraint(equalToConstant: 30).isActive = true
+        circle.heightAnchor.constraint(equalToConstant: 30).isActive = true
         
-        let icon = UIImageView(image: UIImage(systemName: iconName))
+        //icon
+        let icon = UIImageView(image: UIImage(systemName: nameIcon))
+        icon.tintColor = nameIconColor
         icon.contentMode = .scaleAspectFit
-        icon.tintColor = buttonIconColor
         icon.translatesAutoresizingMaskIntoConstraints = false
+        icon.widthAnchor.constraint(equalToConstant: 30).isActive = true
         
-        circle.addSubview(icon)
+        // Container for circle+icon
+        let container = UIView()
+        container.translatesAutoresizingMaskIntoConstraints = false
+        container.addSubview(circle)
+        container.addSubview(icon)
         
         NSLayoutConstraint.activate([
-            icon.centerXAnchor.constraint(equalTo: circle.centerXAnchor),
-            icon.centerYAnchor.constraint(equalTo: circle.centerYAnchor),
-            icon.widthAnchor.constraint(equalTo: circle.widthAnchor, multiplier: 0.75),
-            icon.heightAnchor.constraint(equalTo: icon.widthAnchor)
+            container.widthAnchor.constraint(equalToConstant: 30),
+            container.heightAnchor.constraint(equalToConstant: 30),
+            
+            circle.centerXAnchor.constraint(equalTo: container.centerXAnchor),
+            circle.centerYAnchor.constraint(equalTo: container.centerYAnchor),
+            icon.centerXAnchor.constraint(equalTo: container.centerXAnchor),
+            icon.centerYAnchor.constraint(equalTo: container.centerYAnchor)
         ])
         
-        return circle
+        stackView.addArrangedSubview(container)
     }
     
-    private func setupInnerShadow() {
-        let shadow = InnerShadowView(frame: bounds,
-                                     color: UIColor.blue40,
-                                     opacity: 0.15)
-        shadow.isUserInteractionEnabled = false
-        shadow.layer.cornerRadius = layer.cornerRadius
-        addSubview(shadow)
-        innerShadowView = shadow
-    }
+//    private func setupInnerShadow() {
+//        let shadow = InnerShadowView(frame: bounds,
+//                                     color: UIColor.blue40,
+//                                     opacity: 0.15)
+//        shadow.isUserInteractionEnabled = false
+//        shadow.layer.cornerRadius = layer.cornerRadius
+//        addSubview(shadow)
+//        innerShadowView = shadow
+//    }
 }
 
 #Preview {
-    let button = CapsuleWithCircleView(iconName: "plus",
-                                       text: "250ml",
-                                       mainColor: UIColor(resource: .black0),
-                                       accentColor: UIColor(resource: .teal20))
+    let button = CapsuleWithCircleView(text: "Editar Seções",
+                                       textColor: .teal20,
+                                       nameIcon: "pencil",
+                                       nameIconColor: .pureWhite,
+                                       circleIconColor: .teal20)
     return button
 }

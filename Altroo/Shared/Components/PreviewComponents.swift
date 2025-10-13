@@ -28,13 +28,11 @@ class ComponentPreviewViewController: UIViewController {
         return label
     }()
 
-
     override func viewDidLoad() {
         super.viewDidLoad()
         setupView()
         previewComponents()
     }
-
 
     private func setupView() {
         view.backgroundColor = .systemBackground
@@ -53,7 +51,6 @@ class ComponentPreviewViewController: UIViewController {
         ])
     }
 
-
     private func previewComponents() {
         // TEXTFIELD
         let textField = StandardTextfield(
@@ -67,8 +64,6 @@ class ComponentPreviewViewController: UIViewController {
                                 ),
             placeholder: "Maria Clara"
         )
-//        textField.placeholder = "Digite algo..."
-//        textField.borderStyle = .roundedRect
 
         // SEGMENTEDCONTROL
         let segmentedControl = StandardSegmentedControl(
@@ -97,14 +92,18 @@ class ComponentPreviewViewController: UIViewController {
 
         let button6 = PlusButton()
 
-        
         //CAPSULES
         //these are views, not buttons
         //to make a capsule button add it as the button's view
-//        let capsule1 = CapsuleWithCircleView(iconName: "pencil", text: "Editar Seções", mainColor: UIColor(resource: .teal80), accentColor: UIColor(resource: .teal20))
-        let capsule2 = CapsuleIconView(iconName: "drop.fill", text: "250ml")
+        let capsule1 = CapsuleIconView(iconName: "drop.fill",
+                                       text: "250ml")
         
-        
+        let capsule2 = CapsuleWithCircleView(text: "Editar",
+                                             textColor: .teal20,
+                                             nameIcon: "pencil",
+                                             nameIconColor: .pureWhite,
+                                             circleIconColor: .teal20)
+
         stackView.addArrangedSubview(textField)
         stackView.addArrangedSubview(segmentedControl)
         stackView.addArrangedSubview(toggleSwitch)
@@ -114,9 +113,8 @@ class ComponentPreviewViewController: UIViewController {
         stackView.addArrangedSubview(button4)
         stackView.addArrangedSubview(button5)
         stackView.addArrangedSubview(button6)
-//        stackView.addArrangedSubview(capsule1)
+        stackView.addArrangedSubview(capsule1)
         stackView.addArrangedSubview(capsule2)
-
     }
 }
 
