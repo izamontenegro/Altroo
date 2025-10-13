@@ -56,9 +56,19 @@ class ComponentPreviewViewController: UIViewController {
 
     private func previewComponents() {
         // TEXTFIELD
-        let textField = StandardTextfield()
-        textField.placeholder = "Digite algo..."
-        textField.borderStyle = .roundedRect
+        let textField = StandardTextfield(
+            width: 250,
+            height: 45,
+            title: StandardLabel(labelText: "Nome",
+                                 labelFont: .sfPro,
+                                 labelType: .title3,
+                                 labelColor: UIColor(resource: .black10),
+                                 labelWeight: .medium
+                                ),
+            placeholder: "Maria Clara"
+        )
+//        textField.placeholder = "Digite algo..."
+//        textField.borderStyle = .roundedRect
 
         // SEGMENTEDCONTROL
         let segmentedControl = StandardSegmentedControl(items: ["Opção 1", "Opção 2", "Opção 3"])
@@ -83,7 +93,7 @@ class ComponentPreviewViewController: UIViewController {
         //CAPSULES
         //these are views, not buttons
         //to make a capsule button add it as the button's view
-        let capsule1 = CapsuleWithCircleView(iconName: "pencil", text: "Editar Seções", mainColor: UIColor(resource: .teal80), accentColor: UIColor(resource: .teal20))
+//        let capsule1 = CapsuleWithCircleView(iconName: "pencil", text: "Editar Seções", mainColor: UIColor(resource: .teal80), accentColor: UIColor(resource: .teal20))
         let capsule2 = CapsuleIconView(iconName: "drop.fill", text: "250ml")
         
         stackView.addArrangedSubview(textField)
@@ -95,7 +105,7 @@ class ComponentPreviewViewController: UIViewController {
         stackView.addArrangedSubview(button4)
         stackView.addArrangedSubview(button5)
         stackView.addArrangedSubview(button6)
-        stackView.addArrangedSubview(capsule1)
+//        stackView.addArrangedSubview(capsule1)
         stackView.addArrangedSubview(capsule2)
     }
 }
