@@ -35,7 +35,7 @@ class HistoryViewController: UIViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
 
-        view.backgroundColor = .systemTeal
+        view.backgroundColor = .blue80
         
         view.addSubview(viewLabel)
         view.addSubview(detailButton)

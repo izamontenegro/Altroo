@@ -8,10 +8,10 @@ import UIKit
 
 // MARK: - DefaultAppFactory
 final class DefaultAppFactory: AppFactory {
-    private let patientService: PatientService
-    
-    init(patientService: PatientService) {
-        self.patientService = patientService
+    private let dependencies: AppDependencies
+
+    init(dependencies: AppDependencies) {
+        self.dependencies = dependencies
     }
 }
 
@@ -27,7 +27,7 @@ extension DefaultAppFactory {
 
 // MARK: - AssociatePatientFactory
 extension DefaultAppFactory {
-
+    
     func makeAssociatePatientViewController(delegate: AssociatePatientViewControllerDelegate) -> UIViewController {
         let vc = AssociatePatientViewController()
         vc.delegate = delegate
@@ -93,7 +93,7 @@ extension DefaultAppFactory {
 }
 
 // MARK: - TodayFactory
-extension DefaultAppFactory {    
+extension DefaultAppFactory {
     func makeEditSectionsViewController() -> UIViewController {
         let vc = EditSectionViewController()
         return vc
@@ -108,7 +108,7 @@ extension DefaultAppFactory {
 //MARK: - ProfileFactory
 extension DefaultAppFactory {
     func makeProfileViewController(delegate: ProfileViewControllerDelegate) -> UIViewController {
-        let vc = ProfileViewController()
+        let vc = CareRecipientProfileViewController()
         vc.delegate = delegate
         return vc
     }
@@ -120,6 +120,11 @@ extension DefaultAppFactory {
     
     func makeEditCaregiverViewController() -> UIViewController {
         let vc = EditCaregiverViewController()
+        return vc
+    }
+    
+    func makeMedicalRecordViewController() -> UIViewController {
+        let vc = MedicalRecordViewController()
         return vc
     }
 }
@@ -184,12 +189,19 @@ extension DefaultAppFactory {
 
 // MARK: - TaskFactory
 extension DefaultAppFactory {
-    func makeAllTasksViewController() -> UIViewController {
-        let vc = AllTasksViewController()
+    func makeAllTasksViewController(onTaskSelected: ((TaskInstance) -> Void)? = nil) -> UIViewController {
+        let vm = AllTasksViewModel(taskService: dependencies.routineActivitiesFacade)
+        let vc = AllTasksViewController(viewModel: vm, onTaskSelected: onTaskSelected)
         return vc
     }
     func makeAddTaskViewController() -> UIViewController {
-        let vc = AddTaskViewController()
+        let vm = AddTaskViewModel(taskService: dependencies.routineActivitiesFacade)
+        let vc = AddTaskViewController(viewModel: vm)
+        return vc
+    }
+    func makeTaskDetailViewController(task: TaskInstance) -> UIViewController {
+        let vc = TaskDetailViewController(task: task)
+        vc.title = "Task"
         return vc
     }
 }
@@ -253,3 +265,15 @@ extension DefaultAppFactory {
         return vc
     }
 }
+
+//MARK: - FacadeFactory
+extension DefaultAppFactory {
+    func makeBasicNeedsFacade() -> BasicNeedsFacade {
+        dependencies.basicNeedsFacade
+    }
+    
+    func makeCareRecipientFacade() -> CareRecipientFacade {
+        dependencies.careRecipientFacade
+    }
+}
+

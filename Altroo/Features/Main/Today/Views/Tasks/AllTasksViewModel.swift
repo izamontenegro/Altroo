@@ -1,0 +1,91 @@
+//
+//  AllTasksViewModel.swift
+//  Altroo
+//
+//  Created by Raissa Parente on 07/10/25.
+//
+import Foundation
+import Combine
+
+class AllTasksViewModel {
+    var taskService: RoutineActivitiesFacadeProtocol
+    var currentCareRecipient: CareRecipient
+    
+    @Published var tasks: [TaskInstance] = []
+  
+    init(taskService: RoutineActivitiesFacadeProtocol,
+         currentCareRecipient: CareRecipient =  CoreDataService(stack: CoreDataStack.shared).fetchAllCareRecipients().first(where: { $0.personalData?.name == "Mrs. Parente" })!) {
+        self.taskService = taskService
+        
+        //FIXME: SWAP FOR REAL INJECTED CARERECIPIENT
+        self.currentCareRecipient = currentCareRecipient
+        
+        loadTasks()
+    }
+    
+    func loadTasks() {
+        taskService.generateInstancesForToday(for: currentCareRecipient)
+        let allTasks = taskService.fetchAllInstanceRoutineTasks(from: currentCareRecipient)
+        
+        print("DEBUG: fetchAllInstanceRoutineTasks returned \(allTasks.count) instances total")
+            for inst in allTasks {
+                let tmplName = inst.template?.name ?? "NO_TEMPLATE"
+                let tmplStart = inst.template?.startDate?.description(with: .current) ?? "nil"
+                let tmplEnd = inst.template?.endDate?.description(with: .current) ?? "nil"
+                let tmplWeekdays = inst.template?.weekdays ?? []
+                let instTime = inst.time?.description(with: .current) ?? "nil"
+                print("DEBUG: instance '\(tmplName)' — instance.time: \(instTime) — template.start: \(tmplStart) — template.end: \(tmplEnd) — weekdays: \(tmplWeekdays)")
+            }
+        
+        tasks = filterTasksByDay(allTasks)
+        
+        if tasks.isEmpty {
+            print("Nao tem tasks hj")
+        } else {
+            for t in tasks {
+                print("Instância: \(t.template!.name ?? "") às \(t.time ?? Date())")
+            }
+        }
+    }
+    
+    func filterTasksByPeriod(_ period: PeriodEnum) -> [TaskInstance] {
+        return tasks
+            .filter({$0.period == period})
+            .sorted(by: {$0.time! < $1.time!})
+    }
+    
+    func filterTasksByDay(_ tasks: [TaskInstance]) -> [TaskInstance] {
+        let today = Date()
+        let todayDayOfTheWeek = Locale.Weekday.from(calendarWeekday: Calendar.current.component(.weekday, from: today))
+        
+        //filter by task interval
+        let intervalTasks = tasks.filter { task in
+            guard let start = task.template?.startDate else {
+                return false
+            }
+            
+            let end = task.template?.endDate //will be nil if continuous
+            let isAfterStart = start <= today
+            let isBeforeEnd = end == nil || end! >= today
+
+            return isAfterStart && isBeforeEnd
+
+        }
+        for t in intervalTasks {
+            print("🚨🚨 INTERVAL TASKS")
+            print("Instância: \(t.template!.name ?? "") às \(t.time ?? Date())")
+        }
+        
+        //filter by weekday
+        let weekdayTasks = intervalTasks.filter { task in
+            
+            guard let todayWeek = todayDayOfTheWeek else { return false }
+            return task.template?.weekdays.contains(todayWeek) ?? false
+        }
+        return weekdayTasks
+    }
+    
+    func markAsDone(_ instance: TaskInstance) {
+        taskService.markInstanceAsDone(instance)
+    }
+}

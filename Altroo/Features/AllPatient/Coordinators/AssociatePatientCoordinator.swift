@@ -11,14 +11,12 @@ final class AssociatePatientCoordinator: Coordinator {
 
     var childCoordinators: [Coordinator] = []
     private let navigation: UINavigationController
-    private let patientService: PatientService
     private let factory: AssociatePatientFactory
 
     var onFinish: (() -> Void)?
 
-    init(navigation: UINavigationController, patientService: PatientService, factory: AssociatePatientFactory) {
+    init(navigation: UINavigationController, factory: AssociatePatientFactory) {
         self.navigation = navigation
-        self.patientService = patientService
         self.factory = factory
     }
 

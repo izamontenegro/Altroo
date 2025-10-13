@@ -10,14 +10,12 @@ import CloudKit
 final class ProfileCoordinator: Coordinator {
     var childCoordinators: [Coordinator] = []
     private let navigation: UINavigationController
-    private let patientService: PatientService
     private let factory: AppFactory
     
     private var cloudSharingCoordinator: CloudSharingCoordinator?
     
-    init(navigation: UINavigationController, patientService: PatientService, factory: AppFactory) {
+    init(navigation: UINavigationController, factory: AppFactory) {
         self.factory = factory
-        self.patientService = patientService
         self.navigation = navigation
     }
     
@@ -28,6 +26,13 @@ final class ProfileCoordinator: Coordinator {
 }
 
 extension ProfileCoordinator: ProfileViewControllerDelegate {
+    
+    func goToMedicalRecordViewController() {
+        let vc = factory.makeMedicalRecordViewController()
+        
+        navigation.pushViewController(vc, animated: true)
+    }
+    
     func openShareCareRecipientSheet(_ careRecipient: CareRecipient) {
         guard let topViewController = navigation.topViewController else { return }
         
