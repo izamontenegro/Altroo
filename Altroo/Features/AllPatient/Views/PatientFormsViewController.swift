@@ -14,21 +14,90 @@ class PatientFormsViewController: UIViewController {
     
     private var contactsList: [ContactDraft] = []
     
-    private let nameTextField = PatientFormsViewController.makeTextField(placeholder: "Full name")
-    private let genderTextField = PatientFormsViewController.makeTextField(placeholder: "Gender (e.g. Male / Female)")
-    private let heightTextField = PatientFormsViewController.makeTextField(placeholder: "Height (cm)")
-    private let weightTextField = PatientFormsViewController.makeTextField(placeholder: "Weight (kg)")
-    private let addressTextField = PatientFormsViewController.makeTextField(placeholder: "Address")
-    private let contactTextField = PatientFormsViewController.makeTextField(placeholder: "Contact (phone)")
-        
-    private let contactsStack: UIStackView = {
-        let stack = UIStackView()
-        stack.axis = .vertical
+    private let genderSegmentedControl: StandardSegmentedControl = {
+        let items = ["F", "M"]
+        let control = StandardSegmentedControl(items: items)
+        control.backgroundColor = .white70
+        control.selectedSegmentTintColor = .teal20
+        control.selectedSegmentIndex = 0
+        return control
+    }()
+    
+    private lazy var nameTextField: StandardTextfield = {
+        let tf = StandardTextfield()
+        tf.placeholder = "Nome Completo"
+        tf.backgroundColor = .white70
+        tf.textColor = .black10
+        tf.translatesAutoresizingMaskIntoConstraints = false
+        return tf
+    }()
+    private lazy var heightTextField: StandardTextfield = {
+        let tf = StandardTextfield()
+        tf.placeholder = ""
+        tf.backgroundColor = .white70
+        tf.textColor = .black10
+        tf.keyboardType = .numberPad
+        tf.translatesAutoresizingMaskIntoConstraints = false
+        return tf
+    }()
+    private lazy var heightInputStack: UIStackView = {
+        let label = StandardLabel(
+            labelText: "cm",
+            labelFont: .sfPro,
+            labelType: .callOut,
+            labelColor: .black10,
+            labelWeight: .regular
+        )
+
+        let stack = UIStackView(arrangedSubviews: [heightTextField, label])
+        stack.axis = .horizontal
         stack.spacing = 8
-        stack.translatesAutoresizingMaskIntoConstraints = false
+        stack.distribution = .fillProportionally
         return stack
     }()
+    
+    private lazy var weightTextField: StandardTextfield = {
+        let tf = StandardTextfield()
+        tf.placeholder = ""
+        tf.backgroundColor = .white70
+        tf.textColor = .black10
+        tf.keyboardType = .numberPad
+        tf.translatesAutoresizingMaskIntoConstraints = false
+        
+        return tf
+    }()
+    private lazy var weightInputStack: UIStackView = {
+        let label = StandardLabel(
+            labelText: "kg",
+            labelFont: .sfPro,
+            labelType: .callOut,
+            labelColor: .black10,
+            labelWeight: .regular
+        )
 
+        let stack = UIStackView(arrangedSubviews: [weightTextField, label])
+        stack.axis = .horizontal
+        stack.spacing = 8
+        stack.distribution = .fillProportionally
+        return stack
+    }()
+    
+    private lazy var addressTextField: StandardTextfield = {
+        let tf = StandardTextfield()
+        tf.placeholder = "Endereço"
+        tf.backgroundColor = .white70
+        tf.textColor = .black10
+        tf.translatesAutoresizingMaskIntoConstraints = false
+        return tf
+    }()
+    private lazy var contactTextField: StandardTextfield = {
+        let tf = StandardTextfield()
+        tf.placeholder = "Número ou email"
+        tf.backgroundColor = .white70
+        tf.textColor = .black10
+        tf.translatesAutoresizingMaskIntoConstraints = false
+        return tf
+    }()
     private let datePicker: UIDatePicker = {
         let picker = UIDatePicker()
         picker.datePickerMode = .date
@@ -38,60 +107,61 @@ class PatientFormsViewController: UIViewController {
         return picker
     }()
     
-    private let viewLabel: UILabel = {
-        let label = UILabel()
-        label.text = "Insert the patient information here"
-        label.textAlignment = .center
-        label.font = .systemFont(ofSize: 18, weight: .semibold)
-        label.translatesAutoresizingMaskIntoConstraints = false
+    private lazy var heightSection = FormSectionView(title: "Altura", content: heightInputStack)
+    private lazy var weightSection = FormSectionView(title: "Peso", content: weightInputStack)
+    private lazy var addressSection = FormSectionView(title: "Endereço", content: addressTextField)
+    private lazy var contactSection = FormSectionView(title: "Contatos", content: contactTextField)
+    private lazy var genderSection = FormSectionView(title: "Sexo", content: genderSegmentedControl)
+    private lazy var nameSection = FormSectionView(title: "Nome", content: nameTextField)
+    private lazy var birthDateSection = FormSectionView(title: "Data de Nascimento", content: datePicker)
+    
+    private lazy var ageLabel: StandardLabel = {
+        let label = StandardLabel(
+            labelText: "0 anos",
+            labelFont: .sfPro,
+            labelType: .largeTitle,
+            labelColor: .blue0,
+            labelWeight: .regular
+        )
         return label
     }()
     
-    private let nextStepButton: UIButton = {
-        let button = UIButton(type: .system)
-        button.setTitle("Next Step", for: .normal)
-        button.backgroundColor = .black
-        button.tintColor = .white
-        button.layer.cornerRadius = 8
-        button.translatesAutoresizingMaskIntoConstraints = false
-        return button
+    private lazy var birthAndAgeStack: UIStackView = {
+        let stack = UIStackView(arrangedSubviews: [birthDateSection, ageLabel])
+        stack.axis = .horizontal
+        stack.spacing = 40
+        stack.distribution = .fillEqually
+        return stack
     }()
-    
-    private let contactsTextView: UITextView = {
-        let tv = UITextView()
-        tv.layer.borderWidth = 0.5
-        tv.layer.borderColor = UIColor.gray.cgColor
-        tv.layer.cornerRadius = 8
-        tv.font = .systemFont(ofSize: 16)
-        tv.translatesAutoresizingMaskIntoConstraints = false
-        return tv
+
+    private lazy var physicalInfoStack: UIStackView = {
+        let stack = UIStackView(arrangedSubviews: [weightSection, heightSection, genderSection])
+        stack.axis = .horizontal
+        stack.spacing = 8
+        stack.distribution = .fillEqually
+        return stack
     }()
-    
+
     private lazy var formStack: UIStackView = {
         let stack = UIStackView(arrangedSubviews: [
-            nameTextField,
-            genderTextField,
-            datePicker,
-            heightTextField,
-            weightTextField,
-            addressTextField,
-            contactsStack
+            nameSection,
+            birthAndAgeStack,
+            physicalInfoStack,
+            addressSection,
+            contactSection,
+            addContactButton,
+            nextStepButton
         ])
-        
         stack.axis = .vertical
-        stack.spacing = 12
+        stack.spacing = 22
         stack.translatesAutoresizingMaskIntoConstraints = false
         return stack
     }()
+
     
-    private let addContactButton: UIButton = {
-        let button = UIButton(type: .system)
-        button.setTitle("+ Add Contact", for: .normal)
-        button.tintColor = .systemBlue
-        button.translatesAutoresizingMaskIntoConstraints = false
-        return button
-    }()
-    
+    private let nextStepButton = StandardConfirmationButton(title: "Próximo")
+    private let addContactButton = WideRectangleButton(title: "+")
+        
     init(viewModel: AddPatientViewModel) {
         self.viewModel = viewModel
         super.init(nibName: nil, bundle: nil)
@@ -107,35 +177,26 @@ class PatientFormsViewController: UIViewController {
     }
     
     private func setupUI() {
-        view.backgroundColor = .systemBackground
+        view.backgroundColor = .pureWhite
+//        navigationItem.title = "Perfil do Assistido"
         
-        view.addSubview(viewLabel)
         view.addSubview(formStack)
-        view.addSubview(nextStepButton)
-        
-        contactsStack.addArrangedSubview(contactTextField)
-        contactsStack.addArrangedSubview(addContactButton)
-        
-        addContactButton.addTarget(self, action: #selector(didTapAddContactButton), for: .touchUpInside)
-        nextStepButton.addTarget(self, action: #selector(didTapNextStepButton), for: .touchUpInside)
         
         NSLayoutConstraint.activate([
-            viewLabel.topAnchor.constraint(equalTo: view.safeAreaLayoutGuide.topAnchor, constant: 32),
-            viewLabel.centerXAnchor.constraint(equalTo: view.centerXAnchor),
+            formStack.topAnchor.constraint(equalTo: view.safeAreaLayoutGuide.topAnchor, constant: 32),
+            formStack.leadingAnchor.constraint(equalTo: view.leadingAnchor, constant: 16),
+            formStack.trailingAnchor.constraint(equalTo: view.trailingAnchor, constant: -16),
             
-            formStack.topAnchor.constraint(equalTo: viewLabel.bottomAnchor, constant: 24),
-            formStack.leadingAnchor.constraint(equalTo: view.leadingAnchor, constant: 32),
-            formStack.trailingAnchor.constraint(equalTo: view.trailingAnchor, constant: -32),
-            
-            nextStepButton.topAnchor.constraint(equalTo: formStack.bottomAnchor, constant: 32),
-            nextStepButton.centerXAnchor.constraint(equalTo: view.centerXAnchor),
-            nextStepButton.widthAnchor.constraint(equalToConstant: 150),
-            nextStepButton.heightAnchor.constraint(equalToConstant: 44)
         ])
         
+        datePicker.addTarget(self, action: #selector(updateAgeLabel), for: .valueChanged)
+        addContactButton.addTarget(self, action: #selector(didTapAddContactButton), for: .touchUpInside)
+        nextStepButton.addTarget(self, action: #selector(didTapNextStepButton), for: .touchUpInside)
+       
         let tapGesture = UITapGestureRecognizer(target: self, action: #selector(dismissKeyboard))
         tapGesture.cancelsTouchesInView = false
         view.addGestureRecognizer(tapGesture)
+    
     }
 
     @objc
@@ -148,43 +209,51 @@ class PatientFormsViewController: UIViewController {
         contactTextField.text = ""
     }
 
-    @objc private func dismissKeyboard() {
+    @objc
+    private func dismissKeyboard() {
         view.endEditing(true)
     }
     
     @objc
-    func didTapNextStepButton() {
+    func didTapNextStepButton(_ sender: UISegmentedControl) {
         guard let name = nameTextField.text, !name.isEmpty,
-              let gender = genderTextField.text, !gender.isEmpty,
               let heightText = heightTextField.text, let height = Double(heightText),
               let weightText = weightTextField.text, let weight = Double(weightText),
-              let address = addressTextField.text, !address.isEmpty,
-              let contact = contactTextField.text, !contact.isEmpty
+              let address = addressTextField.text
         else {
-            showAlert(message: "Please fill in all fields correctly.")
+            showAlert(message: "Preencha todos os campos corretamente.")
             return
         }
-        
+
+        let selectedIndex = genderSegmentedControl.selectedSegmentIndex
+        let gender = selectedIndex == 0 ? "female" : "male"
+
         let dateOfBirth = datePicker.date
-        
+
         viewModel.updatePersonalData(
             name: name,
-            gender: gender.lowercased(),
+            gender: gender,
             dateOfBirth: dateOfBirth,
             height: height,
             weight: weight,
             address: address
         )
-        
+
         for c in contactsList {
             viewModel.addContact(name: c.name, contactDescription: c.description, contactMethod: c.method)
         }
-        
+
         delegate?.goToComorbiditiesForms()
+    }
+
+    @objc
+    private func updateAgeLabel() {
+        let age = Calendar.current.dateComponents([.year], from: datePicker.date, to: Date()).year ?? 0
+        ageLabel.updateLabelText("\(age) anos")
     }
     
     private func showAlert(message: String) {
-        let alert = UIAlertController(title: "Missing Information", message: message, preferredStyle: .alert)
+        let alert = UIAlertController(title: "Informação Incompleta", message: message, preferredStyle: .alert)
         alert.addAction(UIAlertAction(title: "OK", style: .default))
         present(alert, animated: true)
     }

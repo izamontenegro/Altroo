@@ -112,6 +112,11 @@ class StandardLabel: UILabel {
         }
         
     }
+    
+    func updateLabelText(_ newText: String) {
+        self.labelText = newText
+        self.text = newText
+    }
 }
 
 #Preview {

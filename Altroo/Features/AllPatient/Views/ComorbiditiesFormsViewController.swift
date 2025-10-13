@@ -24,21 +24,26 @@ class ComorbiditiesFormsViewController: UIViewController {
         fatalError("init(coder:) has not been implemented")
     }
     
-    private let viewLabel: UILabel = {
-        let label = UILabel()
-        label.text = "Insert the comorbidities here"
-        label.textAlignment = .center
-        label.font = .systemFont(ofSize: 18, weight: .semibold)
-        label.translatesAutoresizingMaskIntoConstraints = false
-        return label
-    }()
+    private let label1 = StandardLabel(
+        labelText: "O Assistido possui alguma das seguintes doenças?",
+        labelFont: .sfPro,
+        labelType: .title3,
+        labelColor: .black10,
+        labelWeight: .semibold
+    )
     
-    private let doneButton: UIButton = {
-        let button = UIButton(type: .system)
-        button.setTitle("Next Step", for: .normal)
-        button.backgroundColor = .black
-        button.tintColor = .white
-        button.layer.cornerRadius = 8
+    private let label2 = StandardLabel(
+        labelText: "O Assistido é acamado?",
+        labelFont: .sfPro,
+        labelType: .title3,
+        labelColor: .black10,
+        labelWeight: .semibold
+    )
+    
+    private let nextStepButton = StandardConfirmationButton(title: "Próximo")
+    
+    private lazy var bedriddenButton: BedriddenButton = {
+        let button = BedriddenButton(bedriddenState: .movement)
         button.translatesAutoresizingMaskIntoConstraints = false
         return button
     }()
@@ -46,7 +51,7 @@ class ComorbiditiesFormsViewController: UIViewController {
     private let firstRowStack: UIStackView = {
         let stack = UIStackView()
         stack.axis = .horizontal
-        stack.spacing = 12
+        stack.spacing = 15
         stack.distribution = .fillEqually
         stack.translatesAutoresizingMaskIntoConstraints = false
         return stack
@@ -74,14 +79,18 @@ class ComorbiditiesFormsViewController: UIViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
 
-        view.backgroundColor = .systemBackground
+        view.backgroundColor = .pureWhite
         
         setupComorbidityButtons()
         
-        mainStack.addArrangedSubview(viewLabel)
+        label1.numberOfLines = 0
+        label1.lineBreakMode = .byWordWrapping
+        
+        mainStack.addArrangedSubview(label1)
         mainStack.addArrangedSubview(firstRowStack)
+        mainStack.addArrangedSubview(label2)
         mainStack.addArrangedSubview(secondRowStack)
-        mainStack.addArrangedSubview(doneButton)
+        mainStack.addArrangedSubview(nextStepButton)
         
         view.addSubview(mainStack)
         
@@ -89,24 +98,28 @@ class ComorbiditiesFormsViewController: UIViewController {
             mainStack.topAnchor.constraint(equalTo: view.safeAreaLayoutGuide.topAnchor, constant: 32),
             mainStack.leadingAnchor.constraint(equalTo: view.leadingAnchor, constant: 32),
             mainStack.trailingAnchor.constraint(equalTo: view.trailingAnchor, constant: -32),
-            doneButton.heightAnchor.constraint(equalToConstant: 44)
+            nextStepButton.heightAnchor.constraint(equalToConstant: 44)
         ])
         
-        doneButton.addTarget(self, action: #selector(didTapDoneButton), for: .touchUpInside)
+        nextStepButton.addTarget(self, action: #selector(didTapDoneButton), for: .touchUpInside)
     }
     
     private func setupComorbidityButtons() {
-        let firstRowDiseases = ["Diabetes", "Hypertension", "Asthma"]
+        let firstRowDiseases: [ComorbidityButton.Comorbidity] = [.diabetes, .hypertension, .heartFailure]
         for disease in firstRowDiseases {
-            let button = createComorbidityButton(title: disease)
+            let button = ComorbidityButton(comorbidity: disease)
+            button.addTarget(self, action: #selector(didTapComorbidityButton(_:)), for: .touchUpInside)
             firstRowStack.addArrangedSubview(button)
         }
         
-        let secondRowDiseases = ["without movement", "with movement"]
-        for disease in secondRowDiseases {
-            let button = createComorbidityButton(title: disease)
-            secondRowStack.addArrangedSubview(button)
-        }
+        let bedriddenMovableButton = BedriddenButton(bedriddenState: .movement)
+        let bedriddenNoMovementButton = BedriddenButton(bedriddenState: .noMovement)
+
+        bedriddenMovableButton.addTarget(self, action: #selector(didTapBedriddenButton(_:)), for: .touchUpInside)
+        bedriddenNoMovementButton.addTarget(self, action: #selector(didTapBedriddenButton(_:)), for: .touchUpInside)
+
+        secondRowStack.addArrangedSubview(bedriddenNoMovementButton)
+        secondRowStack.addArrangedSubview(bedriddenMovableButton)
     }
     
     private func createComorbidityButton(title: String) -> UIButton {
@@ -121,38 +134,37 @@ class ComorbiditiesFormsViewController: UIViewController {
     }
     
     @objc
-    private func didTapComorbidityButton(_ sender: UIButton) {
-        guard let title = sender.title(for: .normal) else { return }
+    private func didTapComorbidityButton(_ sender: ComorbidityButton) {
+        sender.toggleSelection()
 
-        if firstRowStack.arrangedSubviews.contains(sender) {
-            if selectedComorbidities.contains(title) {
-                selectedComorbidities.remove(title)
-                // Remove da diseasesList
-                if let index = diseasesList.firstIndex(where: { $0.name == title }) {
-                    diseasesList.remove(at: index)
-                }
-                sender.backgroundColor = .systemGray5
-            } else {
-                selectedComorbidities.insert(title)
-                // Adiciona à diseasesList
-                diseasesList.append(DiseaseDraft(name: title))
-                sender.backgroundColor = .systemBlue
+        if sender.isSelectedState {
+            diseasesList.append(DiseaseDraft(name: sender.comorbidity.name))
+        } else {
+            if let index = diseasesList.firstIndex(where: { $0.name == sender.comorbidity.name }) {
+                diseasesList.remove(at: index)
             }
-        } else if secondRowStack.arrangedSubviews.contains(sender) {
-            // Reset visual de todos os botões da segunda linha
-            for case let button as UIButton in secondRowStack.arrangedSubviews {
-                button.backgroundColor = .systemGray5
-            }
-            sender.backgroundColor = .systemBlue
-            
-            switch title {
-            case "without movement":
-                bedriddenStatus = .notBedridden
-            case "with movement":
-                bedriddenStatus = .bedriddenMovable
-            default:
-                bedriddenStatus = .notBedridden
-            }
+        }
+    }
+    
+    @objc
+    private func didTapBedriddenButton(_ sender: BedriddenButton) {
+        if sender.backgroundColor == .blue40 {
+            sender.backgroundColor = .white70
+            bedriddenStatus = .notBedridden
+            return
+        }
+
+        for case let button as BedriddenButton in secondRowStack.arrangedSubviews {
+            button.backgroundColor = .white70
+        }
+
+        sender.backgroundColor = .blue40
+
+        switch sender.bedriddenState {
+        case .movement:
+            bedriddenStatus = .bedriddenMovable
+        case .noMovement:
+            bedriddenStatus = .notBedridden
         }
     }
     
@@ -162,4 +174,12 @@ class ComorbiditiesFormsViewController: UIViewController {
         viewModel.finalizeCareRecipient()
         delegate?.goToShiftForms()
     }
+}
+
+class BasicNeedsFacadeMock: BasicNeedsFacadeProtocol {}
+class RoutineActivitiesFacadeMock: RoutineActivitiesFacadeProtocol {}
+class CoreDataServiceMock: CoreDataService {}
+
+#Preview {
+    ComorbiditiesFormsViewController(viewModel: AddPatientViewModel(careRecipientFacade: CareRecipientFacade(basicNeedsFacade: BasicNeedsFacadeMock(), routineActivitiesFacade: RoutineActivitiesFacadeMock(), persistenceService: CoreDataServiceMock())))
 }

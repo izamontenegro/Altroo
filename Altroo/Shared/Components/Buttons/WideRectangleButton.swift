@@ -26,8 +26,8 @@ class WideRectangleButton: PrimaryStyleButton {
         guard let superview = self.superview else { return }
 
         NSLayoutConstraint.activate([
-            self.leadingAnchor.constraint(equalTo: superview.leadingAnchor, constant: 20),
-            self.trailingAnchor.constraint(equalTo: superview.trailingAnchor, constant: -20)
+            self.leadingAnchor.constraint(equalTo: superview.leadingAnchor),
+            self.trailingAnchor.constraint(equalTo: superview.trailingAnchor)
         ])
     }
 
