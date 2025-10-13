@@ -148,6 +148,10 @@ final class TodayCoordinator: Coordinator {
         case .addSymptom:
             let vc = factory.makeAddSymptomViewController()
             navigation.pushViewController(vc, animated: true)
+            
+        case .symptomDetail:
+            //TODO: Take this out
+            print("ok")
         }
     }
 }
@@ -241,6 +245,17 @@ extension TodayCoordinator: TodayViewControllerDelegate {
     func goToAddNewSymptom() {
         show(destination: .addSymptom)
     }
+    
+    func goToSymptomDetail(with symptom: Symptom) {
+        let vc = factory.makeSymptomDetailViewController(from: symptom)
+        vc.modalPresentationStyle = .pageSheet
+        
+        if let sheet = vc.sheetPresentationController {
+            sheet.detents = [.medium()]
+            sheet.prefersGrabberVisible = true
+        }
+        navigation.present(vc, animated: true)
+    }
 }
 
 
@@ -259,7 +274,7 @@ enum TodayDestination {
     
     case seeAllEvents, addNewEvent
     
-    case addSymptom
+    case addSymptom, symptomDetail
 }
 
 extension TodayCoordinator: AddTaskNavigationDelegate {

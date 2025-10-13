@@ -104,6 +104,11 @@ extension DefaultAppFactory {
         let vc = AddSymptomViewController(viewModel: vm)
         return vc
     }
+    
+    func makeSymptomDetailViewController(from symptom: Symptom) -> UIViewController {
+        let vc = SymptomDetailViewController(symptom: symptom)
+        return vc
+    }
 }
 
 //MARK: - ProfileFactory

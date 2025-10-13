@@ -50,6 +50,7 @@ protocol MainFlowFactory {
 protocol TodayFactory {
     func makeEditSectionsViewController() -> UIViewController
     func makeAddSymptomViewController() -> UIViewController
+    func makeSymptomDetailViewController(from symptom: Symptom) -> UIViewController
 }
 
 // MARK: - PROFILE FLOW

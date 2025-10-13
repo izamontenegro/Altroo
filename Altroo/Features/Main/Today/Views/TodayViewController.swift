@@ -33,10 +33,11 @@ protocol TodayViewControllerDelegate: AnyObject {
     func goToAddNewEvent()
     
     func goToAddNewSymptom()
+    func goToSymptomDetail(with symptom: Symptom)
 }
 
 class TodayViewController: UIViewController {
-    
+//    var viewModel: TodayViewModel
     weak var delegate: TodayViewControllerDelegate?
     
     let scrollView: UIScrollView = {
@@ -53,8 +54,24 @@ class TodayViewController: UIViewController {
         return stackView
     }()
     
+    var symptomsCard: SymptomsCard
+    
+    init() {
+        //TODO: Feed real symptoms
+        self.symptomsCard = SymptomsCard(symptoms: [])
+        super.init(nibName: nil, bundle: nil)
+
+        self.symptomsCard.delegate = self
+    }
+    
+    required init?(coder: NSCoder) {
+        fatalError("init(coder:) has not been implemented")
+    }
+    
     override func viewDidLoad() {
         super.viewDidLoad()
+        
+        
         view.backgroundColor = UIColor(named: "blue80")
         
         view.addSubview(scrollView)
@@ -99,6 +116,7 @@ class TodayViewController: UIViewController {
             vStack.addArrangedSubview(makeSection(title: "Sintomas", buttons: [
                 ("Adicionar Sintoma", #selector(didTapAddNewSymptom))
             ]))
+            vStack.addArrangedSubview(symptomsCard)
         }
 
         // MARK: - Section Factory
@@ -159,4 +177,10 @@ class TodayViewController: UIViewController {
     @objc private func didTapSeeAllTasks() { delegate?.goToSeeAllTasks() }
     
     @objc private func didTapAddNewSymptom() { delegate?.goToAddNewSymptom() }
+}
+
+extension TodayViewController: SymptomsCardDelegate {
+    func tappedSymptom(_ symptom: Symptom, on card: SymptomsCard) {
+        delegate?.goToSymptomDetail(with: symptom)
+    }
 }
