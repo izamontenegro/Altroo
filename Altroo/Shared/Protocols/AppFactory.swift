@@ -56,6 +56,7 @@ protocol TodayFactory {
 protocol ProfileFactory {
     func makeProfileViewController(delegate: ProfileViewControllerDelegate) -> UIViewController
     func makeChangeCaregiverViewController() -> UIViewController
+    func makeMedicalRecordViewController() -> UIViewController
     func makeEditCaregiverViewController() -> UIViewController
 }
 

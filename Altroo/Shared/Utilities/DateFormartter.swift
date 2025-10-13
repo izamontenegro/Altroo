@@ -43,6 +43,16 @@ final class DateFormatterHelper {
         let formattedDate = hourFormatter.string(from: date).uppercased()
         return formattedDate
     }
+    
+    static func birthDateFormatter(from date: Date?) -> String {
+        guard let date else { return "Data não informada" }
+        let formatter = DateFormatter()
+        formatter.dateFormat = "dd/MM/yyyy"
+        let dateString = formatter.string(from: date)
+
+        let age = Calendar.current.dateComponents([.year], from: date, to: Date()).year ?? 0
+        return "\(dateString) (\(age) anos)"
+    }
 }
 
 

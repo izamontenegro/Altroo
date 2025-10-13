@@ -108,7 +108,7 @@ extension DefaultAppFactory {
 //MARK: - ProfileFactory
 extension DefaultAppFactory {
     func makeProfileViewController(delegate: ProfileViewControllerDelegate) -> UIViewController {
-        let vc = ProfileViewController()
+        let vc = CareRecipientProfileViewController()
         vc.delegate = delegate
         return vc
     }
@@ -120,6 +120,11 @@ extension DefaultAppFactory {
     
     func makeEditCaregiverViewController() -> UIViewController {
         let vc = EditCaregiverViewController()
+        return vc
+    }
+    
+    func makeMedicalRecordViewController() -> UIViewController {
+        let vc = MedicalRecordViewController()
         return vc
     }
 }
