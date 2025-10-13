@@ -6,23 +6,20 @@
 //
 import UIKit
 
-class StandardTextfield: UIView {
+class StandardTextfield: UITextField {
     
-    var textfieldWidth: CGFloat
-    var textfieldHeight: CGFloat
-    var textfieldTitle: StandardLabel!
-    var textfieldPlaceholder: String
-    
-    let textField = UITextField()
+    private var textfieldWidth: CGFloat
+    private var textfieldHeight: CGFloat
+    private var textfieldTitle: StandardLabel
+    private var containerView = UIView()
     
     init(width: CGFloat, height: CGFloat, title: StandardLabel, placeholder: String) {
         self.textfieldWidth = width
         self.textfieldHeight = height
         self.textfieldTitle = title
-        self.textfieldPlaceholder = placeholder
-        
         super.init(frame: .zero)
         
+        self.placeholder = placeholder
         setupView()
     }
     
@@ -31,58 +28,65 @@ class StandardTextfield: UIView {
     }
     // MARK: - Setup
     private func setupView() {
-        // Title label
-        textfieldTitle = StandardLabel(
-            labelText: "Nome",
-            labelFont: .sfPro,
-            labelType: .callOut,
-            labelColor: .black10,
-            labelWeight: .regular
-        )
-        textfieldTitle.textAlignment = .left
-        textfieldTitle.numberOfLines = 0
-        textfieldTitle.lineBreakMode = .byWordWrapping
-        textfieldTitle.translatesAutoresizingMaskIntoConstraints = false
-        
-        // TextField
-        textField.placeholder = textfieldPlaceholder
-        textField.textAlignment = .left
-        textField.font = UIFont.systemFont(ofSize: 16, weight: .regular)
-        textField.borderStyle = .roundedRect
-        textField.textColor = UIColor(resource: .black10)
-        textField.backgroundColor = UIColor(resource: .white70)
-        textField.widthAnchor.constraint(equalToConstant: textfieldWidth).isActive = true
-        textField.heightAnchor.constraint(equalToConstant: textfieldHeight).isActive = true
-        textField.translatesAutoresizingMaskIntoConstraints = false
 
-        addSubview(textfieldTitle)
-        addSubview(textField)
+        self.textAlignment = .left
+        self.font = UIFont.systemFont(ofSize: 16, weight: .regular)
+        self.borderStyle = .roundedRect
+        self.textColor = UIColor(resource: .black10)
+        self.backgroundColor = UIColor(resource: .white70)
+        self.translatesAutoresizingMaskIntoConstraints = false
+
+        NSLayoutConstraint.activate([
+            self.widthAnchor.constraint(equalToConstant: textfieldWidth),
+            self.heightAnchor.constraint(equalToConstant: textfieldHeight)
+        ])
+        
+        textfieldTitle.translatesAutoresizingMaskIntoConstraints = false
+
+        containerView.translatesAutoresizingMaskIntoConstraints = false
+        containerView.addSubview(textfieldTitle)
+        containerView.addSubview(self)
         
         NSLayoutConstraint.activate([
-            textfieldTitle.bottomAnchor.constraint(equalTo: textField.topAnchor, constant: -8),
-            textField.topAnchor.constraint(equalTo: textfieldTitle.bottomAnchor, constant: 8)
+            textfieldTitle.topAnchor.constraint(equalTo: containerView.topAnchor),
+            textfieldTitle.leadingAnchor.constraint(equalTo: containerView.leadingAnchor),
+            textfieldTitle.trailingAnchor.constraint(equalTo: containerView.trailingAnchor),
+            
+            self.topAnchor.constraint(equalTo: textfieldTitle.bottomAnchor, constant: 8),
+            self.leadingAnchor.constraint(equalTo: containerView.leadingAnchor),
+            self.trailingAnchor.constraint(equalTo: containerView.trailingAnchor),
+            self.bottomAnchor.constraint(equalTo: containerView.bottomAnchor)
         ])
+    }
+    
+    func asView() -> UIView {
+        return containerView
     }
 }
 
 import SwiftUI
 
 private struct TextfieldPreviewWrapper: UIViewRepresentable {
-    func updateUIView(_ uiView: StandardTextfield, context: Context) { }
-    
-    func makeUIView(context: Context) -> StandardTextfield {
-        return StandardTextfield(
+    func makeUIView(context: Context) -> UIView {
+        let title = StandardLabel(
+            labelText: "Nome",
+            labelFont: .sfPro,
+            labelType: .title3,
+            labelColor: UIColor(resource: .black10),
+            labelWeight: .semibold
+        )
+        
+        let field = StandardTextfield(
             width: 370,
             height: 38,
-            title: StandardLabel(labelText: "Nome",
-                                 labelFont: .sfPro,
-                                 labelType: .title3,
-                                 labelColor: UIColor(resource: .black10),
-                                 labelWeight: .medium
-                                ),
+            title: title,
             placeholder: "Maria Clara"
         )
+        
+        return field.asView()
     }
+    
+    func updateUIView(_ uiView: UIView, context: Context) {}
 }
 
 #Preview {
