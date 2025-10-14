@@ -9,14 +9,18 @@ import CloudKit
 
 final class ProfileCoordinator: Coordinator {
     var childCoordinators: [Coordinator] = []
+    
+    private let associateFactory: AssociatePatientFactory
+
     private let navigation: UINavigationController
     private let factory: AppFactory
     
     private var cloudSharingCoordinator: CloudSharingCoordinator?
     
-    init(navigation: UINavigationController, factory: AppFactory) {
+    init(navigation: UINavigationController, factory: AppFactory, associateFactory: AssociatePatientFactory) {
         self.factory = factory
         self.navigation = navigation
+        self.associateFactory = associateFactory
     }
     
     func start() {
@@ -57,6 +61,12 @@ extension ProfileCoordinator: ProfileViewControllerDelegate {
         navigation.present(vc, animated: true)
     }
     
+//    func goToAssociatePatientViewController() {
+//        let vc =  factory.makeAssociatePatientViewController(delegate: AssociatePatientViewControllerDelegate)
+//        
+//        navigation.pushViewController(vc, animated: true)
+//    }
+    
 //    func openEditCaregiversSheet() {
 //        let vc = factory.makeEditCaregiverViewController()
 //        vc.modalPresentationStyle = .pageSheet
@@ -67,4 +77,22 @@ extension ProfileCoordinator: ProfileViewControllerDelegate {
 //        }
 //        navigation.present(vc, animated: true)
 //    }
+}
+
+extension ProfileCoordinator {
+    func goToAssociatePatientViewController() {
+        let associate = AssociatePatientCoordinator(
+            navigation: navigation,
+            factory: associateFactory
+        )
+        childCoordinators.append(associate)
+
+        associate.onFinish = { [weak self, weak associate] in
+            guard let self, let associate else { return }
+            self.childCoordinators.removeAll { $0 === associate }
+            // self.navigation.popToViewController(<profileVC>, animated: true)
+        }
+
+        associate.start()
+    }
 }

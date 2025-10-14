@@ -254,8 +254,9 @@ final class ChangeCareRecipientViewController: UIViewController {
         dismiss(animated: true)
     }
 
+    // AQUI
     @objc private func addTapped() {
-        print("Add tapped")
+//        goToAssociatePatientViewController
     }
 
     @objc private func linkTapped() {
