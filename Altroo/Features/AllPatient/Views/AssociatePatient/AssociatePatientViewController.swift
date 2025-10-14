@@ -12,6 +12,7 @@ protocol AssociatePatientViewControllerDelegate: AnyObject {
     func goToComorbiditiesForms()
     func goToShiftForms()
     func goToTutorialAddSheet()
+    func goToMainFlow()
 }
 
 class AssociatePatientViewController: UIViewController {
@@ -141,13 +142,26 @@ class AssociatePatientViewController: UIViewController {
             for careRecipient in careRecipients {
                 let card = CareRecipientCard(
                     name: careRecipient.personalData?.name ?? "",
-                    age: careRecipient.personalData?.age ?? 0
+                    age: careRecipient.personalData?.age ?? 0,
+                    careRecipient: careRecipient
                 )
+                
+                let tapGesture = UITapGestureRecognizer(target: self, action: #selector(didTapCareRecipientCard(_:)))
+                card.addGestureRecognizer(tapGesture)
+                card.isUserInteractionEnabled = true
+                
                 vStack.addArrangedSubview(card)
             }
         }
     }
 
+    @objc private func didTapCareRecipientCard(_ sender: UITapGestureRecognizer) {
+        guard let card = sender.view as? CareRecipientCard,
+              let careRecipient = card.careRecipient else { return }
+        
+        viewModel.setCurrentPatient(careRecipient)
+        delegate?.goToMainFlow()
+    }
     
     @objc func didTapAddNewPatientButton() { delegate?.goToPatientForms() }
     

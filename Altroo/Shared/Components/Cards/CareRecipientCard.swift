@@ -11,6 +11,7 @@ class CareRecipientCard: UIView {
     
     let profileName: String
     let profileAge: Int
+    var careRecipient: CareRecipient?
     
     private lazy var profileView: ProfileCareRecipient = {
         let view = ProfileCareRecipient(name: profileName)
@@ -46,9 +47,10 @@ class CareRecipientCard: UIView {
         return horizontalStack
     }
 
-    init(name: String, age: Int, frame: CGRect = .zero) {
+    init(name: String, age: Int, careRecipient: CareRecipient? = nil, frame: CGRect = .zero) {
         self.profileName = name
         self.profileAge = age
+        self.careRecipient = careRecipient
         super.init(frame: frame)
         setupLayout()
     }

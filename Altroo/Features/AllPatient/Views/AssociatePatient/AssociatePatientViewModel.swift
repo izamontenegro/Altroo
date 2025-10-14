@@ -6,18 +6,17 @@
 //
 
 final class AssociatePatientViewModel {
-//    private let patientService: PatientService
-//    private let patientRepository = PatientRepository()
-//
-//    init(patientService: PatientService) {
-//        self.patientService = patientService
-//    }
-//
-//    var hasActivePatient: Bool {
-//        patientService.hasPatient
-//    }
-//    
-//    var allPatients: [CareRecipient] {
-//        patientRepository.fetchAllPatients()
-//    }
+    private var userService: UserServiceProtocol
+
+    init(userService: UserServiceProtocol) {
+        self.userService = userService
+    }
+
+    var allPatients: [CareRecipient] {
+        userService.fetchPatients()
+    }
+    
+    func setCurrentPatient(_ careRecipient: CareRecipient) {
+        userService.setCurrentPatient(careRecipient)
+    }
 }
