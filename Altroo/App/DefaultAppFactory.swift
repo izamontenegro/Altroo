@@ -120,11 +120,11 @@ extension DefaultAppFactory {
         return vc
     }
     
-    func makeEditCaregiverViewController() -> UIViewController {
-        let vc = EditCaregiverViewController()
-        return vc
-    }
-    
+//    func makeEditCaregiverViewController() -> UIViewController {
+//        let vc = EditCaregiverViewController()
+//        return vc
+//    }
+//    
     func makeMedicalRecordViewController() -> UIViewController {
         let vm = MedicalRecordViewModel(userService: dependencies.userService)
         let vc = MedicalRecordViewController(viewModel: vm)

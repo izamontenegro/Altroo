@@ -57,7 +57,7 @@ protocol ProfileFactory {
     func makeProfileViewController(delegate: ProfileViewControllerDelegate) -> UIViewController
     func makeChangeCareRecipientViewController() -> UIViewController
     func makeMedicalRecordViewController() -> UIViewController
-    func makeEditCaregiverViewController() -> UIViewController
+//    func makeEditCaregiverViewController() -> UIViewController
 }
 
 // MARK: - EVENTS FLOW

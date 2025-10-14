@@ -9,8 +9,8 @@ import UIKit
 import CloudKit
 
 protocol ProfileViewControllerDelegate: AnyObject {
-    func openChangeCaregiversSheet()
-    func openEditCaregiversSheet()
+    func openChangeCareRecipientSheet()
+//    func openEditCaregiversSheet()
     func openShareCareRecipientSheet(_ careRecipient: CareRecipient)
     func goToMedicalRecordViewController()
 }
@@ -238,7 +238,7 @@ final class CareRecipientProfileViewController: GradientNavBarViewController {
    }
 
     @objc private func didTapHeader() { delegate?.goToMedicalRecordViewController() }
-    @objc private func didTapChangeCareRecipientButton() { delegate?.openChangeCaregiversSheet() }
+    @objc private func didTapChangeCareRecipientButton() { delegate?.openChangeCareRecipientSheet() }
     @objc private func didTapShareCareRecipientButton() {
         guard let p = viewModel.currentCareRecipient() else { return }
         delegate?.openShareCareRecipientSheet(p)
@@ -246,5 +246,5 @@ final class CareRecipientProfileViewController: GradientNavBarViewController {
     @objc private func didTapEndCareButton() {
         viewModel.finishCare()
     }
-    @objc private func didTapEditCaregiverButton() { delegate?.openEditCaregiversSheet() }
+//    @objc private func didTapEditCaregiverButton() { delegate?.openEditCaregiversSheet() }
 }

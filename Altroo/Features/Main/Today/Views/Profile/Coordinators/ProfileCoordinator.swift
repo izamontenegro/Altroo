@@ -45,7 +45,7 @@ extension ProfileCoordinator: ProfileViewControllerDelegate {
         sharingCoordinator.presentSharingSheet()
     }
     
-    func openChangeCaregiversSheet() {
+    func openChangeCareRecipientSheet() {
         let vc = factory.makeChangeCareRecipientViewController()
         vc.modalPresentationStyle = .pageSheet
         
@@ -56,14 +56,14 @@ extension ProfileCoordinator: ProfileViewControllerDelegate {
         navigation.present(vc, animated: true)
     }
     
-    func openEditCaregiversSheet() {
-        let vc = factory.makeEditCaregiverViewController()
-        vc.modalPresentationStyle = .pageSheet
-        
-        if let sheet = vc.sheetPresentationController {
-            sheet.detents = [.medium()]
-            sheet.prefersGrabberVisible = true
-        }
-        navigation.present(vc, animated: true)
-    }
+//    func openEditCaregiversSheet() {
+//        let vc = factory.makeEditCaregiverViewController()
+//        vc.modalPresentationStyle = .pageSheet
+//        
+//        if let sheet = vc.sheetPresentationController {
+//            sheet.detents = [.medium()]
+//            sheet.prefersGrabberVisible = true
+//        }
+//        navigation.present(vc, animated: true)
+//    }
 }

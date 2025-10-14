@@ -32,8 +32,6 @@ final class MedicalRecordViewController: GradientNavBarViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
 
-        let person = MockCareRecipientBuilder().build()
-
         setupLayout()
         bindViewModel()
     }
