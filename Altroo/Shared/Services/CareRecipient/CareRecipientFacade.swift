@@ -6,6 +6,7 @@
 //
 
 import Foundation
+import CoreData
 
 protocol BasicNeedsFacadeProtocol {}
 
@@ -84,12 +85,22 @@ extension CareRecipientFacade {
         configure(personalData, personalCare, healthProblems, mentalState, physicalState, routineActivities, basicNeeds, careRecipientEvent, symptom)
         
         persistenceService.save()
-
+        
         return careRecipient
     }
     
     func fetchCareRecipient(by id: UUID) -> CareRecipient? {
         return persistenceService.fetchAllCareRecipients().first(where: { $0.id == id })
+    }
+    
+    func fetchAllCareRecipients() -> [CareRecipient] {
+        let request: NSFetchRequest<CareRecipient> = CareRecipient.fetchRequest()
+        do {
+            return try persistenceService.stack.context.fetch(request)
+        } catch {
+            print("Error searching for patients:", error)
+            return []
+        }
     }
     
     func deleteCareRecipient(_ careRecipient: CareRecipient) {

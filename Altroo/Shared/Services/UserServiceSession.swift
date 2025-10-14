@@ -78,6 +78,20 @@ class UserServiceSession: UserServiceProtocol {
         save()
     }
     
+    func setShift(_ shifts: [PeriodEnum]) {
+        guard let user = fetchUser() else { return }
+        user.preferenceNotification = shifts.map { $0.rawValue }.joined(separator: ",")
+        save()
+    }
+    
+    func getShift() -> [PeriodEnum] {
+        guard let user = fetchUser(),
+              let stored = user.preferenceNotification else { return [] }
+        return stored
+            .split(separator: ",")
+            .compactMap { PeriodEnum(rawValue: String($0)) }
+    }
+    
     // MARK: - Helpers
     private func save() {
         try? context.save()

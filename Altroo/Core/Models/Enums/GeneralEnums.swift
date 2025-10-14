@@ -26,15 +26,15 @@ enum BehaviorEnum: String {
 enum PeriodEnum: String, CaseIterable {
     case morning
     case afternoon
-    case evening
     case night
+    case overnight
     
     var iconName: String {
         switch self {
         case .morning: "sun.min.fill"
         case .afternoon: "cloud.sun.fill"
-        case .evening: "moon.stars.fill"
-        case .night: "cloud.moon.fill"
+        case .night: "moon.stars.fill"
+        case .overnight: "cloud.moon.fill"
         }
     }
     
@@ -42,9 +42,47 @@ enum PeriodEnum: String, CaseIterable {
         switch self {
         case .morning: "Manhã"
         case .afternoon: "Tarde"
-        case .evening: "Noite"
-        case .night: "Madrugada"
+        case .night: "Noite"
+        case .overnight: "Madrugada"
         }
+    }
+    
+    static func shifts(for start: Date, end: Date) -> [PeriodEnum] {
+        let calendar = Calendar.current
+        let startHour = calendar.component(.hour, from: start)
+        let endHour = calendar.component(.hour, from: end)
+        var periods: [PeriodEnum] = []
+
+        let ranges: [(PeriodEnum, Range<Int>)] = [
+            (.morning, 5..<12),
+            (.afternoon, 12..<17),
+            (.night, 17..<21),
+            (.overnight, 21..<24),
+            (.overnight, 0..<5)
+        ]
+
+        for (period, range) in ranges {
+            if range.overlaps(startHour..<endHour) {
+                periods.append(period)
+            }
+        }
+
+        if endHour < startHour {
+            for (period, range) in ranges {
+                if range.overlaps(startHour..<24) || range.overlaps(0..<endHour) {
+                    periods.append(period)
+                }
+            }
+        } else {
+            for (period, range) in ranges {
+                if range.overlaps(startHour..<endHour) {
+                    periods.append(period)
+                }
+            }
+        }
+
+        let ordered: [PeriodEnum] = [.morning, .afternoon, .night, .overnight]
+        return Array(Set(periods)).sorted { ordered.firstIndex(of: $0)! < ordered.firstIndex(of: $1)! }
     }
 }
 

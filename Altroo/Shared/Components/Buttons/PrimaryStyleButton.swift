@@ -31,23 +31,21 @@ class PrimaryStyleButton: UIButton {
         super.init(coder: coder)
         setupBackground()
         setupLabel()
+        setupInnerShadow()
     }
 
     override func layoutSubviews() {
         super.layoutSubviews()
         innerShadowView?.frame = bounds
+        bringSubviewToFront(titleLabel ?? UIView())
     }
 
     private func setupBackground() {
         backgroundColor = color
-        
         layer.cornerRadius = 8
         layer.masksToBounds = true
         
-        contentEdgeInsets = UIEdgeInsets(top: 8,
-                                         left: 16,
-                                         bottom: 8,
-                                         right: 16)
+        contentEdgeInsets = UIEdgeInsets(top: 8, left: 16, bottom: 8, right: 16)
         
         translatesAutoresizingMaskIntoConstraints = false
     }
@@ -57,12 +55,30 @@ class PrimaryStyleButton: UIButton {
     }
     
     private func setupInnerShadow() {
-        let shadow = InnerShadowView(frame: bounds, color: UIColor.teal0, opacity: 0.20)
+        let shadow = InnerShadowView(frame: bounds, color: UIColor.teal0, opacity: 0.2)
         shadow.isUserInteractionEnabled = false
         shadow.layer.cornerRadius = layer.cornerRadius
         addSubview(shadow)
         innerShadowView = shadow
     }
+    
+    override var isHighlighted: Bool {
+        didSet {
+//            UIView.animate(withDuration: 0.15) {
+//                self.backgroundColor = self.isHighlighted
+//                ? self.color.withAlphaComponent(0.8)
+//                : self.color
+//            }
+            
+            UIView.animate(withDuration: 0.1) {
+                self.transform = self.isHighlighted
+                    ? CGAffineTransform(scaleX: 0.97, y: 0.97)
+                    : .identity
+            }
+        }
+    }
+
+
 }
 
 #Preview {
