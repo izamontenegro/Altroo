@@ -17,27 +17,28 @@ public struct MedicalRecordSectionVM {
 }
 
 final class MedicalRecordViewModel {
-
+    
+    var userService: UserServiceProtocol
+    
     // MARK: - Input
-    private(set) var person: CareRecipient
 
     // MARK: - Output
     @Published private(set) var sections: [MedicalRecordSectionVM] = []
     @Published private(set) var completionPercent: CGFloat = 0.0
 
     // MARK: - Init
-    init(person: CareRecipient) {
-        self.person = person
-        rebuildOutputs()
+    init(userService: UserServiceProtocol) {
+        self.userService = userService
+//        rebuildOutputs()
     }
 
-    func update(person: CareRecipient) {
-        self.person = person
-        rebuildOutputs()
-    }
+//    func update(person: CareRecipient) {
+//        self.person = person
+//        rebuildOutputs()
+//    }
 
     // MARK: - Public export texts (usados para PDF/compartilhamento)
-    func personalDataText() -> String {
+    func personalDataText(person: CareRecipient) -> String {
         let p = person.personalData
         let name = p?.name ?? "—"
         let address = p?.address ?? "—"
@@ -54,7 +55,7 @@ final class MedicalRecordViewModel {
         """
     }
 
-    func healthProblemsText() -> String {
+    func healthProblemsText(person: CareRecipient) -> String {
         let hp = person.healthProblems
         let diseasesList = diseasesBulletList(from: hp?.diseases as? Set<Disease>)
         let surgeries = (hp?.surgery as? [String])?.joined(separator: "\n") ?? "—"
@@ -75,7 +76,7 @@ final class MedicalRecordViewModel {
         """
     }
 
-    func physicalStateText() -> String {
+    func physicalStateText(person: CareRecipient) -> String {
         let ph = person.physicalState
         return """
         Visão: \(ph?.visionState ?? "—")
@@ -85,7 +86,7 @@ final class MedicalRecordViewModel {
         """
     }
 
-    func mentalStateText() -> String {
+    func mentalStateText(person: CareRecipient) -> String {
         let m = person.mentalState
         return """
         Comportamento: \(m?.emotionalState ?? "—")
@@ -95,7 +96,7 @@ final class MedicalRecordViewModel {
         """
     }
 
-    func personalCareText() -> String {
+    func personalCareText(person: CareRecipient) -> String {
         let pc = person.personalCare
         let equipments = bulletList(fromCSV: pc?.equipmentState)
         return """
@@ -110,7 +111,7 @@ final class MedicalRecordViewModel {
     }
 
     // MARK: - Build outputs
-    private func rebuildOutputs() {
+    private func rebuildOutputs(person: CareRecipient) {
         completionPercent = calcCompletion(for: person)
         sections = [
             .init(title: "Dados Pessoais", iconSystemName: "person.fill", rows: rowsPersonalData(from: person)),

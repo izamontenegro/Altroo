@@ -17,10 +17,19 @@ protocol ProfileViewControllerDelegate: AnyObject {
 final class CareRecipientProfileViewController: GradientNavBarViewController {
     weak var delegate: ProfileViewControllerDelegate?
     private(set) var mockPerson: CareRecipient!
+    
+    let viewModel: CareRecipientProfileViewModel
 
     // MARK: - Lifecycle
-    required init?(coder: NSCoder) { super.init(coder: coder) }
-    init() { super.init(nibName: nil, bundle: nil) }
+       init(viewModel: CareRecipientProfileViewModel) {
+           self.viewModel = viewModel
+           super.init(nibName: nil, bundle: nil)
+       }
+
+       @available(*, unavailable)
+       required init?(coder: NSCoder) {
+           fatalError("Use init(viewModel:) em vez de init(coder:)")
+       }
 
     override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
@@ -227,7 +236,7 @@ final class CareRecipientProfileViewController: GradientNavBarViewController {
         service.save()
     }
 }
-
-#Preview {
-    UINavigationController(rootViewController: CareRecipientProfileViewController())
-}
+//
+//#Preview {
+//    UINavigationController(rootViewController: CareRecipientProfileViewController()
+//}

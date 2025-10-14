@@ -55,7 +55,7 @@ protocol TodayFactory {
 // MARK: - PROFILE FLOW
 protocol ProfileFactory {
     func makeProfileViewController(delegate: ProfileViewControllerDelegate) -> UIViewController
-    func makeChangeCaregiverViewController() -> UIViewController
+    func makeChangeCareRecipientViewController() -> UIViewController
     func makeMedicalRecordViewController() -> UIViewController
     func makeEditCaregiverViewController() -> UIViewController
 }

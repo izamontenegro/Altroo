@@ -7,7 +7,18 @@
 import UIKit
 
 final class ChangeCareRecipientViewController: UIViewController {
+    let viewModel: ChangeCareRecipientViewModel
+    
+       init(viewModel: ChangeCareRecipientViewModel) {
+           self.viewModel = viewModel
+           super.init(nibName: nil, bundle: nil) 
+       }
 
+       @available(*, unavailable)
+       required init?(coder: NSCoder) {
+           fatalError("Use init(viewModel:) em vez de init(coder:)")
+       }
+    
     // MARK: - Lifecycle
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -248,6 +259,6 @@ final class ChangeCareRecipientViewController: UIViewController {
     }
 }
 
-#Preview {
-    ChangeCareRecipientViewController()
-}
+//#Preview {
+//    ChangeCareRecipientViewController()
+//}
