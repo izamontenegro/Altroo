@@ -135,7 +135,7 @@ class ComorbiditiesFormsViewController: UIViewController {
     
     @objc
     private func didTapComorbidityButton(_ sender: ComorbidityButton) {
-        sender.toggleSelection()
+        sender.toggleState()
 
         if sender.isSelectedState {
             diseasesList.append(DiseaseDraft(name: sender.comorbidity.name))

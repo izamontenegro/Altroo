@@ -10,7 +10,7 @@ class ComorbidityButton: UIButton {
     
     var comorbidity: Comorbidity
     
-    private var isSelectedState = false
+    private(set) var isSelectedState = false
     private var innerShadowView: InnerShadowView?
     
     var circle1 = CircleView()
@@ -43,7 +43,7 @@ class ComorbidityButton: UIButton {
     }
     
     // MARK: - click to change color
-    @objc private func toggleState() {
+    @objc func toggleState() {
         isSelectedState.toggle()
         
         UIView.animate(withDuration: 0.4, delay: 0, options: [.curveEaseInOut]) {
@@ -71,9 +71,7 @@ class ComorbidityButton: UIButton {
         backgroundColor = UIColor(resource: .white70)
         layer.cornerRadius = 8
         clipsToBounds = true
-        
-        addTarget(self, action: #selector(toggleState), for: .touchUpInside)
-        
+                
         let content = makeContent()
         addSubview(content)
         
