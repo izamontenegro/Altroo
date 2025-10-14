@@ -37,7 +37,7 @@ protocol TodayViewControllerDelegate: AnyObject {
 }
 
 class TodayViewController: UIViewController {
-//    var viewModel: TodayViewModel
+    var viewModel: TodayViewModel
     weak var delegate: TodayViewControllerDelegate?
     
     let scrollView: UIScrollView = {
@@ -56,9 +56,10 @@ class TodayViewController: UIViewController {
     
     var symptomsCard: SymptomsCard
     
-    init() {
+    init(viewModel: TodayViewModel) {
         //TODO: Feed real symptoms
-        self.symptomsCard = SymptomsCard(symptoms: [])
+        self.viewModel = viewModel
+        self.symptomsCard = SymptomsCard(symptoms: viewModel.todaySymptoms)
         super.init(nibName: nil, bundle: nil)
 
         self.symptomsCard.delegate = self

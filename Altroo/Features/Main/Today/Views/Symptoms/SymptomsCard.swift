@@ -113,8 +113,8 @@ class SymptomsCard: UIView {
         
         let hStack = UIStackView(arrangedSubviews: [icon, name, spacer, time])
         hStack.axis = .horizontal
-        hStack.alignment = .fill
-        hStack.distribution = .equalSpacing
+        hStack.alignment = .leading
+        hStack.distribution = .fillProportionally
         hStack.spacing = CGFloat(Layout.verySmallSpacing)
         hStack.translatesAutoresizingMaskIntoConstraints = false
         hStack.isUserInteractionEnabled = false
@@ -123,7 +123,6 @@ class SymptomsCard: UIView {
         button.addSubview(hStack)
         button.backgroundColor = .clear
         button.translatesAutoresizingMaskIntoConstraints = false
-        
         
         NSLayoutConstraint.activate([
             hStack.leadingAnchor.constraint(equalTo: button.leadingAnchor),

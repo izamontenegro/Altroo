@@ -72,7 +72,8 @@ extension DefaultAppFactory {
     }
     
     func makeTodayViewController(delegate: TodayViewControllerDelegate) -> UIViewController {
-        let vc = TodayViewController()
+        let vm = TodayViewModel(careRecipientFacade: dependencies.careRecipientFacade)
+        let vc = TodayViewController(viewModel: vm)
         vc.title = "Today"
         vc.delegate = delegate
         return vc
@@ -100,7 +101,7 @@ extension DefaultAppFactory {
     }
     
     func makeAddSymptomViewController() -> UIViewController {
-        let vm = AddSymptomViewModel()
+        let vm = AddSymptomViewModel(careRecipientFacade: dependencies.careRecipientFacade)
         let vc = AddSymptomViewController(viewModel: vm)
         return vc
     }

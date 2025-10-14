@@ -47,6 +47,7 @@ class AddSymptomViewController: GradientNavBarViewController {
         view.backgroundColor = .white
         
         setupUI()
+        bindViewModel()
     }
     
     func bindViewModel() {
@@ -61,20 +62,6 @@ class AddSymptomViewController: GradientNavBarViewController {
             .compactMap { ($0.object as? UITextField)?.text }
             .assign(to: \.note, on: viewModel)
             .store(in: &cancellables)
-        
-        //isContinuous
-//        viewModel.$isContinuous
-//            .receive(on: RunLoop.main)
-//            .sink { [weak self] isContinuous in
-//                guard let self else { return }
-//                
-//                if isContinuous {
-//                    removeEndDate()
-//                } else {
-//                    addEndDate()
-//                }
-//            }
-//            .store(in: &cancellables)
         
     }
 
@@ -137,13 +124,15 @@ class AddSymptomViewController: GradientNavBarViewController {
     
     
     @objc func didFinishCreating() {
-
+        viewModel.createSymptom()
     }
     
     @objc func dateChanged(_ picker: UIDatePicker) {
+        viewModel.date = picker.date
     }
     
     @objc func timeChanged(_ picker: UIDatePicker) {
+        viewModel.time = picker.date
     }
 }
 
@@ -154,6 +143,6 @@ extension AddSymptomViewController: UITextFieldDelegate {
     }
 }
 
-#Preview {
-    AddSymptomViewController(viewModel: AddSymptomViewModel())
-}
+//#Preview {
+//    AddSymptomViewController(viewModel: AddSymptomViewModel(careRecipientFacade: Car))
+//}

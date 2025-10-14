@@ -40,8 +40,7 @@ class SymptomDetailViewController: UIViewController {
         
         let name = InfoRowView(title: "Nome", info: symptom.name ?? "Nome")
         let time = InfoRowView(title: "Horário", info: DateFormatterHelper.hourFormatter(date: symptom.date ?? .now))
-        let notes = InfoRowView(title: "Notes", info: symptom.description ?? "Observação")
-        
+        let notes = InfoRowView(title: "Notes", info: symptom.symptomDescription ?? "Observação")
         
         vStack.addArrangedSubview(name)
         vStack.addArrangedSubview(time)

@@ -256,6 +256,10 @@ extension TodayCoordinator: TodayViewControllerDelegate {
         }
         navigation.present(vc, animated: true)
     }
+    
+    func goBackToRoot() {
+        navigation.popToRootViewController(animated: false)
+    }
 }
 
 
