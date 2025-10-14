@@ -95,6 +95,10 @@ final class AddPatientViewModel: ObservableObject {
         diseases = []
         bedriddenStatus = .notBedridden
     }
+    
+    func setShift(_ shift: [PeriodEnum]) {
+        userService.setShift(shift)
+    }
 }
 
 struct ContactDraft: Identifiable {

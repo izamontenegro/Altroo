@@ -16,7 +16,6 @@ protocol AssociatePatientViewControllerDelegate: AnyObject {
 
 class AssociatePatientViewController: UIViewController {
     weak var delegate: AssociatePatientViewControllerDelegate?
-    private var userService: UserServiceProtocol
     private let viewModel: AssociatePatientViewModel
 
     let viewLabel = StandardLabel(
@@ -47,6 +46,14 @@ class AssociatePatientViewController: UIViewController {
         return button
     }()
     
+    private let scrollView: UIScrollView = {
+        let scroll = UIScrollView()
+        scroll.translatesAutoresizingMaskIntoConstraints = false
+        scroll.alwaysBounceVertical = true
+        scroll.showsVerticalScrollIndicator = false
+        return scroll
+    }()
+    
     let vStack: UIStackView = {
         let stackView = UIStackView(arrangedSubviews: [])
         stackView.axis = .vertical
@@ -57,9 +64,8 @@ class AssociatePatientViewController: UIViewController {
         return stackView
     }()
     
-    init(viewModel: AssociatePatientViewModel, userService: UserServiceProtocol) {
+    init(viewModel: AssociatePatientViewModel) {
         self.viewModel = viewModel
-        self.userService = userService
         super.init(nibName: nil, bundle: nil)
     }
     
@@ -72,54 +78,76 @@ class AssociatePatientViewController: UIViewController {
         
         view.backgroundColor = .white
         navigationItem.title = "Seus Assistidos"
+        
+        let appearance = UINavigationBarAppearance()
+        appearance.configureWithOpaqueBackground()
+        appearance.backgroundColor = .pureWhite
+        appearance.titleTextAttributes = [.foregroundColor: UIColor.black10]
+
+        navigationController?.navigationBar.standardAppearance = appearance
+        navigationController?.navigationBar.scrollEdgeAppearance = appearance
 
         setupLayout()
         updateView()
     }
     
     private func setupLayout() {
-        view.addSubview(viewLabel)
+        view.addSubview(scrollView)
+        scrollView.addSubview(vStack)
         view.addSubview(addNewPatientButton)
         view.addSubview(addExistingPatientButton)
-        
+
         let buttonsStack = UIStackView(arrangedSubviews: [addNewPatientButton, addExistingPatientButton])
         buttonsStack.axis = .vertical
         buttonsStack.spacing = 7
         buttonsStack.alignment = .center
         buttonsStack.translatesAutoresizingMaskIntoConstraints = false
         view.addSubview(buttonsStack)
-        
+
         NSLayoutConstraint.activate([
-            viewLabel.centerXAnchor.constraint(equalTo: view.centerXAnchor),
-            viewLabel.centerYAnchor.constraint(equalTo: view.centerYAnchor, constant: -40),
-            viewLabel.leadingAnchor.constraint(equalTo: view.leadingAnchor, constant: 24),
-            viewLabel.trailingAnchor.constraint(equalTo: view.trailingAnchor, constant: -24),
-            
+            scrollView.topAnchor.constraint(equalTo: view.safeAreaLayoutGuide.topAnchor, constant: 20),
+            scrollView.leadingAnchor.constraint(equalTo: view.leadingAnchor, constant: 24),
+            scrollView.trailingAnchor.constraint(equalTo: view.trailingAnchor, constant: -24),
+            scrollView.bottomAnchor.constraint(equalTo: buttonsStack.topAnchor, constant: -20),
+
+            vStack.topAnchor.constraint(equalTo: scrollView.topAnchor),
+            vStack.leadingAnchor.constraint(equalTo: scrollView.leadingAnchor),
+            vStack.trailingAnchor.constraint(equalTo: scrollView.trailingAnchor),
+            vStack.bottomAnchor.constraint(equalTo: scrollView.bottomAnchor),
+            vStack.widthAnchor.constraint(equalTo: scrollView.widthAnchor),
+
             buttonsStack.centerXAnchor.constraint(equalTo: view.centerXAnchor),
-            buttonsStack.bottomAnchor.constraint(equalTo: view.safeAreaLayoutGuide.bottomAnchor, constant: -40),
+            buttonsStack.bottomAnchor.constraint(equalTo: view.safeAreaLayoutGuide.bottomAnchor, constant: -20),
             buttonsStack.leadingAnchor.constraint(equalTo: view.leadingAnchor, constant: 40),
             buttonsStack.trailingAnchor.constraint(equalTo: view.trailingAnchor, constant: -40),
-            
+
             addNewPatientButton.heightAnchor.constraint(equalToConstant: 50),
             addNewPatientButton.widthAnchor.constraint(equalToConstant: 229)
         ])
-        
+
         addNewPatientButton.addTarget(self, action: #selector(didTapAddNewPatientButton), for: .touchUpInside)
         addExistingPatientButton.addTarget(self, action: #selector(didTapAddExistingPatientButton), for: .touchUpInside)
     }
 
     private func updateView() {
-        let careRecipients = userService.fetchPatients()
+        let careRecipients = viewModel.allPatients
         
-        viewLabel.numberOfLines = 0
-        viewLabel.lineBreakMode = .byWordWrapping
-        viewLabel.textAlignment = .center
+        vStack.arrangedSubviews.forEach { $0.removeFromSuperview() }
         
-        if !careRecipients.isEmpty {
-            let names = careRecipients.compactMap { $0.personalData?.name }
-            viewLabel.text = names.joined(separator: "\n")
+        if careRecipients.isEmpty {
+            viewLabel.text = "Nenhum Assistido encontrado.\nClique no botão \"Adicionar\" para criar."
+            vStack.addArrangedSubview(viewLabel)
+        } else {
+            for careRecipient in careRecipients {
+                let card = CareRecipientCard(
+                    name: careRecipient.personalData?.name ?? "",
+                    age: careRecipient.personalData?.age ?? 0
+                )
+                vStack.addArrangedSubview(card)
+            }
         }
     }
+
     
     @objc func didTapAddNewPatientButton() { delegate?.goToPatientForms() }
     
@@ -128,6 +156,6 @@ class AssociatePatientViewController: UIViewController {
 
 #Preview {
     let mockService = UserServiceSession(context: AppDependencies().coreDataService.stack.context)
-    let viewModel = AssociatePatientViewModel()
-    AssociatePatientViewController(viewModel: viewModel, userService: mockService)
+    let viewModel = AssociatePatientViewModel(userService: mockService)
+    AssociatePatientViewController(viewModel: viewModel)
 }

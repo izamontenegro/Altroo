@@ -13,6 +13,16 @@ protocol ShiftFormsViewControllerDelegate: AnyObject {
 
 class ShiftFormViewController: UIViewController {
     weak var delegate: ShiftFormsViewControllerDelegate?
+    private let viewModel: AddPatientViewModel
+    
+    init(viewModel: AddPatientViewModel) {
+        self.viewModel = viewModel
+        super.init(nibName: nil, bundle: nil)
+    }
+    
+    required init?(coder: NSCoder) {
+        fatalError("init(coder:) has not been implemented")
+    }
     
     private let label1 = StandardLabel(
         labelText: "Em quais horários você vai cuidar da sua mamãe?",
@@ -91,15 +101,27 @@ class ShiftFormViewController: UIViewController {
         startTimePicker.isEnabled = !isAllDay
         endTimePicker.isEnabled = !isAllDay
         allDayButton.backgroundColor = isAllDay ? .teal20 : .black40
-        allDayButton.setTitleColor(isAllDay ? .white : .black, for: .normal)
+        allDayButton.setTitleColor(isAllDay ? .white : .white, for: .normal)
+        
+        viewModel.setShift([.afternoon, .overnight, .morning, .night])
     }
     
     @objc
     func didTapDoneButton() {
+        if startTimePicker.isEnabled {
+            let start = startTimePicker.date
+            let end = endTimePicker.date
+            let periods = PeriodEnum.shifts(for: start, end: end)
+            viewModel.setShift(periods)
+        }
+        
+        viewModel.finalizeCareRecipient()
         delegate?.shiftFormsDidFinish()
     }
 }
 
 #Preview {
-    ShiftFormViewController()
+    let mockService = UserServiceSession(context: AppDependencies().coreDataService.stack.context)
+
+    ShiftFormViewController(viewModel: AddPatientViewModel(careRecipientFacade: CareRecipientFacade(basicNeedsFacade: BasicNeedsFacadeMock(), routineActivitiesFacade: RoutineActivitiesFacadeMock(), persistenceService: CoreDataServiceMock()), userService: mockService))
 }

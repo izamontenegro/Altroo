@@ -34,7 +34,7 @@ extension DefaultAppFactory {
 extension DefaultAppFactory {
     
     func makeAssociatePatientViewController(delegate: AssociatePatientViewControllerDelegate) -> UIViewController {
-        let vc = AssociatePatientViewController(viewModel: AssociatePatientViewModel(), userService: userService)
+        let vc = AssociatePatientViewController(viewModel: AssociatePatientViewModel(userService: userService))
         vc.delegate = delegate
         vc.title = "Associate Patient View"
         return vc
@@ -48,21 +48,21 @@ extension DefaultAppFactory {
     func makePatientFormViewController(delegate: AssociatePatientViewControllerDelegate) -> UIViewController {
         let vc = PatientFormsViewController(viewModel: addPatientViewModel)
         vc.delegate = delegate
-        vc.title = "Patient Forms"
+        vc.title = "Perfil do Assistido"
         return vc
     }
     
     func makeComorbiditiesFormViewController(delegate: AssociatePatientViewControllerDelegate) -> UIViewController {
         let vc = ComorbiditiesFormsViewController(viewModel: addPatientViewModel)
         vc.delegate = delegate
-        vc.title = "Comorbidities Forms"
+        vc.title = "Comorbidades"
         return vc
     }
     
     func makeShiftFormViewController(delegate: ShiftFormsViewControllerDelegate) -> UIViewController {
-        let vc = ShiftFormViewController()
+        let vc = ShiftFormViewController(viewModel: addPatientViewModel)
         vc.delegate = delegate
-        vc.title = "Shift Forms"
+        vc.title = "Turnos"
         return vc
     }
 }

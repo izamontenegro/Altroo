@@ -70,6 +70,7 @@ class ComorbiditiesFormsViewController: UIViewController {
         let stack = UIStackView()
         stack.axis = .vertical
         stack.spacing = 24
+        stack.alignment = .center
         stack.translatesAutoresizingMaskIntoConstraints = false
         return stack
     }()
@@ -96,19 +97,32 @@ class ComorbiditiesFormsViewController: UIViewController {
         
         NSLayoutConstraint.activate([
             mainStack.topAnchor.constraint(equalTo: view.safeAreaLayoutGuide.topAnchor, constant: 32),
-            mainStack.leadingAnchor.constraint(equalTo: view.leadingAnchor, constant: 32),
-            mainStack.trailingAnchor.constraint(equalTo: view.trailingAnchor, constant: -32),
-            nextStepButton.heightAnchor.constraint(equalToConstant: 44)
+            mainStack.leadingAnchor.constraint(equalTo: view.leadingAnchor, constant: 15),
+            mainStack.trailingAnchor.constraint(equalTo: view.trailingAnchor, constant: -15),
+            label1.widthAnchor.constraint(equalTo: mainStack.widthAnchor),
+            firstRowStack.widthAnchor.constraint(equalTo: mainStack.widthAnchor),
+            label2.widthAnchor.constraint(equalTo: mainStack.widthAnchor),
+            secondRowStack.widthAnchor.constraint(equalTo: mainStack.widthAnchor),
+            nextStepButton.heightAnchor.constraint(equalToConstant: 46),
+            nextStepButton.widthAnchor.constraint(equalToConstant: 215),
+
         ])
         
         nextStepButton.addTarget(self, action: #selector(didTapDoneButton), for: .touchUpInside)
     }
     
     private func setupComorbidityButtons() {
-        let firstRowDiseases: [ComorbidityButton.Comorbidity] = [.diabetes, .hypertension, .heartFailure]
+        let firstRowDiseases: [ComorbidityButton.Comorbidity] = [.heartFailure, .diabetes, .hypertension]
         for disease in firstRowDiseases {
             let button = ComorbidityButton(comorbidity: disease)
             button.addTarget(self, action: #selector(didTapComorbidityButton(_:)), for: .touchUpInside)
+            
+            button.translatesAutoresizingMaskIntoConstraints = false
+            NSLayoutConstraint.activate([
+                button.widthAnchor.constraint(equalToConstant: 115),
+                button.heightAnchor.constraint(equalToConstant: 190)
+            ])
+            
             firstRowStack.addArrangedSubview(button)
         }
         
@@ -120,18 +134,13 @@ class ComorbiditiesFormsViewController: UIViewController {
 
         secondRowStack.addArrangedSubview(bedriddenNoMovementButton)
         secondRowStack.addArrangedSubview(bedriddenMovableButton)
+        
+        NSLayoutConstraint.activate([
+            secondRowStack.widthAnchor.constraint(equalToConstant: 115),
+            secondRowStack.heightAnchor.constraint(equalToConstant: 210)
+        ])
     }
     
-    private func createComorbidityButton(title: String) -> UIButton {
-        let button = UIButton(type: .system)
-        button.setTitle(title, for: .normal)
-        button.backgroundColor = .systemGray5
-        button.layer.cornerRadius = 8
-        button.setTitleColor(.black, for: .normal)
-        button.heightAnchor.constraint(equalToConstant: 50).isActive = true
-        button.addTarget(self, action: #selector(didTapComorbidityButton(_:)), for: .touchUpInside)
-        return button
-    }
     
     @objc
     private func didTapComorbidityButton(_ sender: ComorbidityButton) {
@@ -171,15 +180,6 @@ class ComorbiditiesFormsViewController: UIViewController {
     @objc
     func didTapDoneButton() {
         viewModel.updateHealthProblems(diseases: diseasesList, bedriddenStatus: bedriddenStatus)
-        viewModel.finalizeCareRecipient()
         delegate?.goToShiftForms()
     }
 }
-
-class BasicNeedsFacadeMock: BasicNeedsFacadeProtocol {}
-class RoutineActivitiesFacadeMock: RoutineActivitiesFacadeProtocol {}
-class CoreDataServiceMock: CoreDataService {}
-
-//#Preview {
-//    ComorbiditiesFormsViewController(viewModel: AddPatientViewModel(careRecipientFacade: CareRecipientFacade(basicNeedsFacade: BasicNeedsFacadeMock(), routineActivitiesFacade: RoutineActivitiesFacadeMock(), persistenceService: CoreDataServiceMock())))
-//}

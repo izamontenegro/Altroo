@@ -79,6 +79,7 @@ class ComorbidityButton: UIButton {
             content.centerXAnchor.constraint(equalTo: centerXAnchor),
             content.centerYAnchor.constraint(equalTo: centerYAnchor)
         ])
+        
     }
     
     private func setupInnerShadow() {
@@ -155,8 +156,8 @@ class ComorbidityButton: UIButton {
             labelWeight: .regular
         )
         label.textAlignment = .center
-        label.numberOfLines = 0 // ← allows multiple lines
-        label.lineBreakMode = .byWordWrapping // ← break between words
+        label.numberOfLines = 0
+        label.lineBreakMode = .byWordWrapping
         label.widthAnchor.constraint(equalToConstant: 120).isActive = true
         
         let stack = UIStackView(arrangedSubviews: [circles, label])

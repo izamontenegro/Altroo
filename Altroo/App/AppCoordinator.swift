@@ -25,7 +25,7 @@ final class AppCoordinator: Coordinator {
 
     func start() {
         if userService.fetchUser() == nil {
-            _ = userService.createUser(name: "User Teste", category: "Caregiver")
+            _ = userService.createUser(name: "User Teste", category: "Cuidador")
         }
         
         if UserDefaults.standard.isFirstLaunch {
@@ -33,7 +33,7 @@ final class AppCoordinator: Coordinator {
         } else if userService.fetchCurrentPatient() == nil {
             showAllPatientsFlow()
         } else {
-            showAllPatientsFlow()
+            showMainFlow()
         }
     }
 
