@@ -7,7 +7,7 @@
 
 import CoreData
 
-extension CareRecipientEvents {
+extension CareRecipientEvent {
     
     var categoryState: CategoryEventEnum? {
         get {

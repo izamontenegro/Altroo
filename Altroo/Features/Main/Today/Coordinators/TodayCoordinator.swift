@@ -10,14 +10,12 @@ import UIKit
 final class TodayCoordinator: Coordinator {
     var childCoordinators: [Coordinator] = []
     private let navigation: UINavigationController
-    private let patientService: PatientService
     private let factory: AppFactory
     
     var onRequestLogout: (() -> Void)?
     
-    init(navigation: UINavigationController, patientService: PatientService, factory: AppFactory) {
+    init(navigation: UINavigationController, factory: AppFactory) {
         self.navigation = navigation
-        self.patientService = patientService
         self.factory = factory
     }
     
@@ -86,12 +84,15 @@ extension TodayCoordinator: TodayViewControllerDelegate {
     }
 }
 
+
 enum TodayDestination {
     case careRecipientProfile
     case editSection
     case recordFeeding, recordHydration, recordStool, recordUrine
     case recordHeartRate, recordGlycemia, recordBloodPressure, recordTemperature, recordSaturation
-    case seeAllTasks, addNewTask
+    
+    case seeAllTasks, addNewTask, taskDetail
+    
     case seeAllMedication, addNewMedication, checkMedicationDone
     case seeAllEvents, addNewEvent
     case addSymptom
@@ -105,4 +106,14 @@ enum TodayDestination {
              return false
          }
      }
+}
+
+extension TodayCoordinator: AddTaskNavigationDelegate {
+    func didFinishAddingTask() {
+        let superVC = navigation.viewControllers.first!
+        let vc = factory.makeAllTasksViewController { [weak self] task in
+            self?.goToTaskDetail(with: task)
+        }
+        navigation.setViewControllers([superVC, vc], animated: true)
+    }
 }

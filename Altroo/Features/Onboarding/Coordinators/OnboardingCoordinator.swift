@@ -11,26 +11,24 @@ final class OnboardingCoordinator: Coordinator {
     
     var childCoordinators: [Coordinator] = []
     private let navigation: UINavigationController
-    private let patientService: PatientService
     private let factory: AppFactory
 
     var onFinish: (() -> Void)?
 
-    init(navigation: UINavigationController, patientService: PatientService, factory: AppFactory) {
+    init(navigation: UINavigationController, factory: AppFactory) {
         self.navigation = navigation
-        self.patientService = patientService
         self.factory = factory
     }
 
     func start() {
-        let vc = factory.makeWelcomeViewController(delegate: self)
+        let vc = factory.makeWelcomeOnboardingViewController(delegate: self)
         navigation.setViewControllers([vc], animated: false)
         navigation.setNavigationBarHidden(true, animated: false)
     }
 
 }
 
-extension OnboardingCoordinator: WelcomeViewControllerDelegate {
+extension OnboardingCoordinator: WelcomeOnboardingViewControllerDelegate {
     func goToAllPatient() {
         onFinish?()
     }

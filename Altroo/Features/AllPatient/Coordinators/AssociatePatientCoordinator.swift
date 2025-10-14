@@ -11,14 +11,12 @@ final class AssociatePatientCoordinator: Coordinator {
 
     var childCoordinators: [Coordinator] = []
     private let navigation: UINavigationController
-    private let patientService: PatientService
     private let factory: AssociatePatientFactory
 
     var onFinish: (() -> Void)?
 
-    init(navigation: UINavigationController, patientService: PatientService, factory: AssociatePatientFactory) {
+    init(navigation: UINavigationController, factory: AssociatePatientFactory) {
         self.navigation = navigation
-        self.patientService = patientService
         self.factory = factory
     }
 
@@ -28,7 +26,7 @@ final class AssociatePatientCoordinator: Coordinator {
         navigation.setNavigationBarHidden(false, animated: false)
     }
     
-    enum Destination { case patientForms, comorbiditiesForms, shiftForms, tutorialAdd }
+    enum Destination { case patientForms, comorbiditiesForms, shiftForms, tutorialAdd, mainFlow }
     
     private func show(destination: Destination) {
         switch destination {
@@ -54,11 +52,18 @@ final class AssociatePatientCoordinator: Coordinator {
             }
             
             navigation.present(vc, animated: true)
+            
+        case .mainFlow:
+            onFinish?()
         }
     }
 }
 
 extension AssociatePatientCoordinator: AssociatePatientViewControllerDelegate {
+    func goToMainFlow() {
+        show(destination: .mainFlow)
+    }
+    
     func goToPatientForms() {
         show(destination: .patientForms)
     }

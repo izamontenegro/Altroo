@@ -7,9 +7,10 @@
 
 import UIKit
 
-
 final class StandardConfirmationButton: PrimaryStyleButton {
+    
     var title: String
+    private let titleLabelCustom = StandardLabel(labelText: "", labelFont: .sfPro, labelType: .title2, labelColor: .pureWhite, labelWeight: .semibold)
     
     init(title: String) {
         self.title = title
@@ -22,19 +23,32 @@ final class StandardConfirmationButton: PrimaryStyleButton {
         fatalError("init(coder:) has not been implemented")
     }
     
+    override func layoutSubviews() {
+        super.layoutSubviews()
+    }
     
     private func setupButton() {
-        setTitle(title, for: .normal)
+        setTitle(nil, for: .normal)
+        titleLabelCustom.updateLabelText(title)
+        titleLabelCustom.textAlignment = .center
         
-        setTitleColor(.white, for: .normal)
+        addSubview(titleLabelCustom)
+        titleLabelCustom.translatesAutoresizingMaskIntoConstraints = false
         
-        layer.cornerRadius = 26
+        NSLayoutConstraint.activate([
+            titleLabelCustom.centerXAnchor.constraint(equalTo: centerXAnchor),
+            titleLabelCustom.centerYAnchor.constraint(equalTo: centerYAnchor),
+            
+            widthAnchor.constraint(equalToConstant: 229),
+            heightAnchor.constraint(greaterThanOrEqualToConstant: 46)
+        ])
         
-        contentEdgeInsets = UIEdgeInsets(top: 16, left: 24, bottom: 16, right: 24)
-        
-        titleLabel?.font = UIFont.systemFont(ofSize: 18, weight: .bold)
-        self.translatesAutoresizingMaskIntoConstraints = false
+        layer.cornerRadius = 22
+        contentEdgeInsets = UIEdgeInsets(top: 8, left: 64, bottom: 8, right: 64)
+        titleLabel?.font = UIFont.systemFont(ofSize: 24, weight: .semibold)
+        translatesAutoresizingMaskIntoConstraints = false
     }
+
 }
 
 #Preview {

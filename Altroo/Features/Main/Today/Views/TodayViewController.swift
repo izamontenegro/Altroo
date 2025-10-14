@@ -21,35 +21,20 @@ class TodayViewController: UIViewController {
         return scrollView
     }()
     
-    let viewLabel: UILabel = {
-        let label = UILabel()
-        label.text = "Today View"
-        label.textAlignment = .center
-        
-        label.translatesAutoresizingMaskIntoConstraints = false
-        return label
-    }()
-    
     let vStack: UIStackView = {
         let stackView = UIStackView(arrangedSubviews: [])
         stackView.axis = .vertical
-        stackView.distribution = .fillEqually
         stackView.spacing = 20
-        
         stackView.translatesAutoresizingMaskIntoConstraints = false
         return stackView
     }()
     
     override func viewDidLoad() {
         super.viewDidLoad()
-        
-        view.backgroundColor = .systemTeal
+        view.backgroundColor = UIColor(named: "blue80")
         
         view.addSubview(scrollView)
         scrollView.addSubview(vStack)
-        
-        vStack.addArrangedSubview(viewLabel)
-        addDelegateButtons()
         
         NSLayoutConstraint.activate([
             scrollView.topAnchor.constraint(equalTo: view.safeAreaLayoutGuide.topAnchor),
@@ -57,127 +42,97 @@ class TodayViewController: UIViewController {
             scrollView.leadingAnchor.constraint(equalTo: view.safeAreaLayoutGuide.leadingAnchor),
             scrollView.trailingAnchor.constraint(equalTo: view.safeAreaLayoutGuide.trailingAnchor),
             
-            vStack.topAnchor.constraint(equalTo: scrollView.topAnchor),
-            vStack.bottomAnchor.constraint(equalTo: scrollView.bottomAnchor),
-            vStack.leadingAnchor.constraint(equalTo: scrollView.leadingAnchor),
-            vStack.trailingAnchor.constraint(equalTo: scrollView.trailingAnchor),
-            vStack.widthAnchor.constraint(equalTo: scrollView.widthAnchor),
+            vStack.topAnchor.constraint(equalTo: scrollView.topAnchor, constant: 20),
+            vStack.bottomAnchor.constraint(equalTo: scrollView.bottomAnchor, constant: -20),
+            vStack.leadingAnchor.constraint(equalTo: scrollView.leadingAnchor, constant: 20),
+            vStack.trailingAnchor.constraint(equalTo: scrollView.trailingAnchor, constant: -20),
+            vStack.widthAnchor.constraint(equalTo: scrollView.widthAnchor, constant: -40),
         ])
         
+        addSections()
     }
     
-    private func addDelegateButtons() {
-        createButton(title: "Profile", action: #selector(didTapProfileView))
-        createButton(title: "Edit sections", action: #selector(didTapEditSectionView))
+    private func addSections() {
+            // Profile & Edit
+            vStack.addArrangedSubview(makeSection(title: "Profile", buttons: [("Abrir", #selector(didTapProfileView))]))
+            vStack.addArrangedSubview(makeSection(title: "Edit Sections", buttons: [("Abrir", #selector(didTapEditSectionView))]))
 
-        createButton(title: "Record Feeding", action: #selector(didTapRecordFeeding))
-        createButton(title: "Record Hydration", action: #selector(didTapRecordHydration))
-        createButton(title: "Record Stool", action: #selector(didTapRecordStool))
-        createButton(title: "Record Urine", action: #selector(didTapRecordUrine))
-        
-        createButton(title: "Record Heart Rate", action: #selector(didTapRecordHeartRate))
-        createButton(title: "Record Glycemia", action: #selector(didTapRecordGlycemia))
-        createButton(title: "Record Blood Pressure", action: #selector(didTapRecordBloodPressure))
-        createButton(title: "Record Temperature", action: #selector(didTapRecordTemperature))
-        createButton(title: "Record Saturation", action: #selector(didTapRecordSaturation))
-        
-        createButton(title: "See All Tasks", action: #selector(didTapSeeAllTasks))
-        createButton(title: "Add New Task", action: #selector(didTapAddNewTask))
-        
-        createButton(title: "See All Medication", action: #selector(didTapSeeAllMedication))
-        createButton(title: "Add New Medication", action: #selector(didTapAddNewMedication))
-        createButton(title: "Check Medication Done", action: #selector(didTapCheckMedicationDone))
-        
-        createButton(title: "See All Events", action: #selector(didTapSeeAllEvents))
-        createButton(title: "Add New Event", action: #selector(didTapAddNewEvent))
-        
-        createButton(title: "Add New Symptom", action: #selector(didTapAddNewSymptom))
-    }
+            // Basic Needs
+            vStack.addArrangedSubview(makeSection(title: "Necessidades Básicas", buttons: [
+                ("Alimentação", #selector(didTapRecordFeeding)),
+                ("Hidratação", #selector(didTapRecordHydration)),
+                ("Fezes", #selector(didTapRecordStool)),
+                ("Urina", #selector(didTapRecordUrine))
+            ]))
+
+            // Tasks
+            vStack.addArrangedSubview(makeSection(title: "Tarefas", buttons: [
+                ("Adicionar Tarefa", #selector(didTapAddNewTask)),
+                ("Ver Todas", #selector(didTapSeeAllTasks))
+            ]))
+
+            // Symptoms
+            vStack.addArrangedSubview(makeSection(title: "Sintomas", buttons: [
+                ("Adicionar Sintoma", #selector(didTapAddNewSymptom))
+            ]))
+        }
+
+        // MARK: - Section Factory
+        private func makeSection(title: String, buttons: [(String, Selector)]) -> UIView {
+            let section = UIView()
+            section.translatesAutoresizingMaskIntoConstraints = false
+
+            let titleLabel = UILabel()
+            titleLabel.text = title
+            titleLabel.font = UIFont.boldSystemFont(ofSize: 18)
+            titleLabel.translatesAutoresizingMaskIntoConstraints = false
+
+            section.addSubview(titleLabel)
+            NSLayoutConstraint.activate([
+                titleLabel.topAnchor.constraint(equalTo: section.topAnchor),
+                titleLabel.leadingAnchor.constraint(equalTo: section.leadingAnchor),
+                titleLabel.trailingAnchor.constraint(equalTo: section.trailingAnchor)
+            ])
+
+            let stack = UIStackView()
+            stack.axis = .vertical
+            stack.spacing = 12
+            stack.translatesAutoresizingMaskIntoConstraints = false
+            section.addSubview(stack)
+
+            NSLayoutConstraint.activate([
+                stack.topAnchor.constraint(equalTo: titleLabel.bottomAnchor, constant: 10),
+                stack.leadingAnchor.constraint(equalTo: section.leadingAnchor),
+                stack.trailingAnchor.constraint(equalTo: section.trailingAnchor),
+                stack.bottomAnchor.constraint(equalTo: section.bottomAnchor)
+            ])
+
+            for (title, selector) in buttons {
+                let button = UIButton(type: .system)
+                button.setTitle(title, for: .normal)
+                button.backgroundColor = .teal20
+                button.setTitleColor(.white, for: .normal)
+                button.layer.cornerRadius = 8
+                button.titleLabel?.font = UIFont.systemFont(ofSize: 16, weight: .medium)
+                button.addTarget(self, action: selector, for: .touchUpInside)
+                button.translatesAutoresizingMaskIntoConstraints = false
+                button.heightAnchor.constraint(equalToConstant: 44).isActive = true
+                stack.addArrangedSubview(button)
+            }
+
+            return section
+        }
     
-    //MARK: - BUTTON ACTIONS
-    @objc private func didTapProfileView() {
-        delegate?.goTo(.careRecipientProfile)
-    }
+    // MARK: - BUTTON ACTIONS
+    @objc private func didTapProfileView() { delegate?.goToCareRecipientProfileView() }
+    @objc private func didTapEditSectionView() { delegate?.goToEditSectionView() }
+    @objc private func didTapRecordFeeding() { delegate?.goToRecordFeeding() }
+    @objc private func didTapRecordHydration() { delegate?.goToRecordHydration() }
+    @objc private func didTapRecordStool() { delegate?.goToRecordStool() }
+    @objc private func didTapRecordUrine() { delegate?.goToRecordUrine() }
     
-    @objc private func didTapEditSectionView() {
-        delegate?.goTo(.editSection)
-    }
+    @objc private func didTapAddNewTask() { delegate?.goToAddNewTask() }
+    @objc private func didTapSeeAllTasks() { delegate?.goToSeeAllTasks() }
     
-    @objc private func didTapRecordFeeding() {
-        delegate?.goTo(.recordFeeding)
-    }
-    
-    @objc private func didTapRecordHydration() {
-        delegate?.goTo(.recordHydration)
-    }
-    
-    @objc private func didTapRecordStool() {
-        delegate?.goTo(.recordStool)
-    }
-    
-    @objc private func didTapRecordUrine() {
-        delegate?.goTo(.recordUrine)
-    }
-    
-    @objc private func didTapRecordHeartRate() {
-        delegate?.goTo(.recordHeartRate)
-    }
-    
-    @objc private func didTapRecordGlycemia() {
-        delegate?.goTo(.recordGlycemia)
-    }
-    
-    @objc private func didTapRecordBloodPressure() {
-        delegate?.goTo(.recordBloodPressure)
-    }
-    
-    @objc private func didTapRecordTemperature() {
-        delegate?.goTo(.recordTemperature)
-    }
-    
-    @objc private func didTapRecordSaturation() {
-        delegate?.goTo(.recordSaturation)
-    }
-    
-    @objc private func didTapSeeAllTasks() {
-        delegate?.goTo(.seeAllTasks)
-    }
-    
-    @objc private func didTapAddNewTask() {
-        delegate?.goTo(.addNewTask)
-    }
-    
-    @objc private func didTapSeeAllMedication() {
-        delegate?.goTo(.seeAllMedication)
-    }
-    
-    @objc private func didTapAddNewMedication() {
-        delegate?.goTo(.addNewMedication)
-    }
-    
-    @objc private func didTapCheckMedicationDone() {
-        delegate?.goTo(.checkMedicationDone)
-    }
-    
-    @objc private func didTapSeeAllEvents() {
-        delegate?.goTo(.seeAllEvents)
-    }
-    
-    @objc private func didTapAddNewEvent() {
-        delegate?.goTo(.addNewEvent)
-    }
-    
-    @objc private func didTapAddNewSymptom() {
-        delegate?.goTo(.addSymptom)
-    }
-    
-    
-    //UTILITY FUNC
-    private func createButton(title: String, action: Selector) {
-        let button = UIButton(type: .system)
-        button.setTitle(title, for: .normal)
-        button.translatesAutoresizingMaskIntoConstraints = false
-        button.addTarget(self, action: action, for: .touchUpInside)
-        vStack.addArrangedSubview(button)
-    }
+    @objc private func didTapAddNewSymptom() { delegate?.goToAddNewSymptom() }
 }
