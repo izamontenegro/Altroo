@@ -4,6 +4,7 @@
 //
 //  Created by Raissa Parente on 30/09/25.
 //
+
 import UIKit
 
 class InnerShadowView: UIView {
@@ -21,18 +22,19 @@ class InnerShadowView: UIView {
         self.shadowColor = color
         self.shadowOpacity = opacity
         super.init(frame: frame)
-        self.configure()
+        configure()
     }
     
     required init?(coder aDecoder: NSCoder) {
         self.shadowColor = .black
         self.shadowOpacity = 0.25
         super.init(coder: aDecoder)
-        self.configure()
+        configure()
     }
 
     private func configure() {
-        self.backgroundColor = .white
+        self.backgroundColor = .clear
+        
         self.layer.masksToBounds = true
         self.layer.cornerRadius = 6
         self.translatesAutoresizingMaskIntoConstraints = false
@@ -42,6 +44,7 @@ class InnerShadowView: UIView {
         innerShadowLayer.shadowOpacity = shadowOpacity
         innerShadowLayer.shadowRadius = 7
         innerShadowLayer.fillRule = .evenOdd
+        innerShadowLayer.fillColor = UIColor.clear.cgColor
         
         self.layer.addSublayer(innerShadowLayer)
     }
