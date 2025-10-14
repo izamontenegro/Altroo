@@ -45,7 +45,7 @@ class TutorialAddSheet: UIViewController {
     }
     
     private func makeIconView(text: String) -> PulseIcon {
-        let iconView = PulseIcon(text: text, color: UIColor(resource: .blue30), shadowColor: UIColor(resource: .blue60))
+        let iconView = PulseIcon(text: text, color: UIColor(resource: .blue30), iconColor: .red, shadowColor: UIColor(resource: .blue60))
         iconView.translatesAutoresizingMaskIntoConstraints = false
         NSLayoutConstraint.activate([
             iconView.widthAnchor.constraint(equalToConstant: 70),
