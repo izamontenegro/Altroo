@@ -8,6 +8,7 @@ import UIKit
 
 // MARK: - DefaultAppFactory
 final class DefaultAppFactory: AppFactory {
+    
     private let dependencies: AppDependencies
     private let addPatientViewModel: AddPatientViewModel
     
@@ -19,9 +20,9 @@ final class DefaultAppFactory: AppFactory {
 
 // MARK: - OnboardingFactory
 extension DefaultAppFactory {
-    func makeWelcomeViewController(delegate: WelcomeViewControllerDelegate) -> UIViewController {
-        let vc = WelcomeViewController()
-        vc.delegate = delegate
+    func makeWelcomeOnboardingViewController(delegate: WelcomeOnboardingViewControllerDelegate) -> UIViewController {
+        let vc = WelcomeOnboardingViewController()
+        vc.delegateOnboarding = delegate
         vc.title = "Welcome!"
         return vc
     }
