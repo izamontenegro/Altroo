@@ -6,8 +6,14 @@
 //
 import UIKit
 
+protocol ChangeCareRecipientViewControllerDelegate: AnyObject {
+    func changeCareRecipientWantsStartAssociate(_ controller: UIViewController)
+}
+
 final class ChangeCareRecipientViewController: UIViewController {
     let viewModel: ChangeCareRecipientViewModel
+    
+    weak var delegate: ChangeCareRecipientViewControllerDelegate?
     
        init(viewModel: ChangeCareRecipientViewModel) {
            self.viewModel = viewModel
@@ -22,7 +28,7 @@ final class ChangeCareRecipientViewController: UIViewController {
     // MARK: - Lifecycle
     override func viewDidLoad() {
         super.viewDidLoad()
-        view.backgroundColor = .systemBackground
+        view.backgroundColor = .pureWhite
         configureNavigation()
         buildLayout()
     }
@@ -254,9 +260,8 @@ final class ChangeCareRecipientViewController: UIViewController {
         dismiss(animated: true)
     }
 
-    // AQUI
     @objc private func addTapped() {
-//        goToAssociatePatientViewController
+        delegate?.changeCareRecipientWantsStartAssociate(self)
     }
 
     @objc private func linkTapped() {

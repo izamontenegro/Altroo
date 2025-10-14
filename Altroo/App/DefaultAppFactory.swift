@@ -119,11 +119,12 @@ extension DefaultAppFactory {
         return vc
     }
     
-    func makeChangeCareRecipientViewController() -> UIViewController {
+    func makeChangeCareRecipientViewController(delegate: ChangeCareRecipientViewControllerDelegate) -> UIViewController {
         let vm = ChangeCareRecipientViewModel(userService: dependencies.userService, coreDataService: dependencies.coreDataService)
-        let vc = ChangeCareRecipientViewController(viewModel: vm)
-        return vc
-    }
+            let vc = ChangeCareRecipientViewController(viewModel: vm)
+            (vc as? ChangeCareRecipientViewController)?.delegate = delegate
+            return vc
+        }
     
 //    func makeEditCaregiverViewController() -> UIViewController {
 //        let vc = EditCaregiverViewController()
