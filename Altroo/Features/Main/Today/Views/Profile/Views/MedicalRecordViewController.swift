@@ -9,17 +9,30 @@ import UIKit
 import Combine
 
 final class MedicalRecordViewController: GradientNavBarViewController {
+    
+    let viewModel: MedicalRecordViewModel
 
     // MARK: - Properties
-    private var viewModel: MedicalRecordViewModel!
     private var cancellables = Set<AnyCancellable>()
-
+    
+    init(viewModel: MedicalRecordViewModel) {
+        self.viewModel = viewModel
+        super.init(nibName: nil, bundle: nil)
+    }
+    
+    @MainActor required init?(coder: NSCoder) {
+        fatalError("init(coder:) has not been implemented")
+    }
+    
+    override func viewWillAppear(_ animated: Bool) {
+        viewModel.reload()
+    }
+    
     // MARK: - Life cycle
     override func viewDidLoad() {
         super.viewDidLoad()
 
         let person = MockCareRecipientBuilder().build()
-        viewModel = MedicalRecordViewModel(person: person)
 
         setupLayout()
         bindViewModel()
@@ -322,7 +335,7 @@ final class MedicalRecordViewController: GradientNavBarViewController {
         return button
     }
 }
-
-#Preview {
-    UINavigationController(rootViewController: MedicalRecordViewController())
-}
+//
+//#Preview {
+//    UINavigationController(rootViewController: MedicalRecordViewController())
+//}

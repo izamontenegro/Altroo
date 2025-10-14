@@ -108,13 +108,15 @@ extension DefaultAppFactory {
 //MARK: - ProfileFactory
 extension DefaultAppFactory {
     func makeProfileViewController(delegate: ProfileViewControllerDelegate) -> UIViewController {
-        let vc = CareRecipientProfileViewController()
+        let vm = CareRecipientProfileViewModel(userService: dependencies.userService, coreDataService: dependencies.coreDataService)
+        let vc = CareRecipientProfileViewController(viewModel: vm)
         vc.delegate = delegate
         return vc
     }
     
-    func makeChangeCaregiverViewController() -> UIViewController {
-        let vc = ChangeCareRecipientViewController()
+    func makeChangeCareRecipientViewController() -> UIViewController {
+        let vm = ChangeCareRecipientViewModel(userService: dependencies.userService, coreDataService: dependencies.coreDataService)
+        let vc = ChangeCareRecipientViewController(viewModel: vm)
         return vc
     }
     
@@ -124,7 +126,8 @@ extension DefaultAppFactory {
     }
     
     func makeMedicalRecordViewController() -> UIViewController {
-        let vc = MedicalRecordViewController()
+        let vm = MedicalRecordViewModel(userService: dependencies.userService)
+        let vc = MedicalRecordViewController(viewModel: vm)
         return vc
     }
 }
@@ -132,7 +135,6 @@ extension DefaultAppFactory {
 // MARK: - EventsFactory
 extension DefaultAppFactory {
     func makeAllEventsViewController() -> UIViewController {
-        let vm = AllTasksViewModel(taskService: dependencies.routineActivitiesFacade)
         let vc = AllEventViewController()
         return vc
     }

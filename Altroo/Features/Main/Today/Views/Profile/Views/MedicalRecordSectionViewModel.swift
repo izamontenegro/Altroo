@@ -17,27 +17,27 @@ public struct MedicalRecordSectionVM {
 }
 
 final class MedicalRecordViewModel {
-
-    // MARK: - Input
-    private(set) var person: CareRecipient
+    // MARK: - Dependencies
+    var userService: UserServiceProtocol
 
     // MARK: - Output
     @Published private(set) var sections: [MedicalRecordSectionVM] = []
     @Published private(set) var completionPercent: CGFloat = 0.0
 
     // MARK: - Init
-    init(person: CareRecipient) {
-        self.person = person
+    init(userService: UserServiceProtocol) {
+        self.userService = userService
         rebuildOutputs()
     }
 
-    func update(person: CareRecipient) {
-        self.person = person
+    // Caso você mude o paciente ativo em outro lugar da UI, chame isto:
+    func reload() {
         rebuildOutputs()
     }
 
     // MARK: - Public export texts (usados para PDF/compartilhamento)
     func personalDataText() -> String {
+        guard let person = currentPatient() else { return "Sem paciente selecionado." }
         let p = person.personalData
         let name = p?.name ?? "—"
         let address = p?.address ?? "—"
@@ -55,6 +55,7 @@ final class MedicalRecordViewModel {
     }
 
     func healthProblemsText() -> String {
+        guard let person = currentPatient() else { return "Sem paciente selecionado." }
         let hp = person.healthProblems
         let diseasesList = diseasesBulletList(from: hp?.diseases as? Set<Disease>)
         let surgeries = (hp?.surgery as? [String])?.joined(separator: "\n") ?? "—"
@@ -76,6 +77,7 @@ final class MedicalRecordViewModel {
     }
 
     func physicalStateText() -> String {
+        guard let person = currentPatient() else { return "Sem paciente selecionado." }
         let ph = person.physicalState
         return """
         Visão: \(ph?.visionState ?? "—")
@@ -86,6 +88,7 @@ final class MedicalRecordViewModel {
     }
 
     func mentalStateText() -> String {
+        guard let person = currentPatient() else { return "Sem paciente selecionado." }
         let m = person.mentalState
         return """
         Comportamento: \(m?.emotionalState ?? "—")
@@ -96,6 +99,7 @@ final class MedicalRecordViewModel {
     }
 
     func personalCareText() -> String {
+        guard let person = currentPatient() else { return "Sem paciente selecionado." }
         let pc = person.personalCare
         let equipments = bulletList(fromCSV: pc?.equipmentState)
         return """
@@ -111,6 +115,11 @@ final class MedicalRecordViewModel {
 
     // MARK: - Build outputs
     private func rebuildOutputs() {
+        guard let person = currentPatient() else {
+            completionPercent = 0
+            sections = []
+            return
+        }
         completionPercent = calcCompletion(for: person)
         sections = [
             .init(title: "Dados Pessoais", iconSystemName: "person.fill", rows: rowsPersonalData(from: person)),
@@ -119,6 +128,11 @@ final class MedicalRecordViewModel {
             .init(title: "Estado Mental", iconSystemName: "brain.head.profile.fill", rows: rowsMental(from: person)),
             .init(title: "Cuidados Pessoais", iconSystemName: "hand.raised.fill", rows: rowsPersonalCare(from: person))
         ]
+    }
+
+    // MARK: - Accessor centralizado
+    private func currentPatient() -> CareRecipient? {
+        userService.fetchCurrentPatient()
     }
 
     // MARK: - Rows
@@ -130,7 +144,6 @@ final class MedicalRecordViewModel {
         let weight = kg(p?.weight)
         let height = meters(p?.height)
         let contacts = contactsList(from: p?.contacts as? Set<Contact>)
-
         return [
             ("Nome", name),
             ("Data de Nascimento", dob),
@@ -147,7 +160,6 @@ final class MedicalRecordViewModel {
         let surgeries = (hp?.surgery as? [String])?.joined(separator: "\n") ?? "—"
         let allergies = (hp?.allergies as? [String])?.joined(separator: ", ") ?? "—"
         let obs = hp?.observation ?? "—"
-
         return [
             ("Doenças", diseasesList),
             ("Cirurgias", surgeries),
@@ -256,6 +268,7 @@ final class MedicalRecordViewModel {
     }
 }
 
+// MARK: - Utils
 public extension Date {
     func yearsSince(_ other: Date) -> Int {
         Calendar.current.dateComponents([.year], from: other, to: self).year ?? 0

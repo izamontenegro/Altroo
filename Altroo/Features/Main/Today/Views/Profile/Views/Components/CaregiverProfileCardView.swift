@@ -4,12 +4,60 @@
 //
 //  Created by Izadora de Oliveira Albuquerque Montenegro on 09/10/25.
 //
-
+//
 import UIKit
+import CloudKit
 
 class CaregiverProfileCardView: UIView {
-    
-    private func avatarView() -> UIView {
+    let name: String
+    let category: String
+    let permission: CKShare.ParticipantPermission
+
+    // INIT DESIGNADO
+    init(name: String, category: String, permission: CKShare.Participant.Permission) {
+        self.name = name
+        self.category = category
+        self.permission = permission
+        super.init(frame: .zero)
+        buildLayout()
+    }
+
+    @available(*, unavailable)
+    required init?(coder: NSCoder) {
+        fatalError("init(coder:) has not been implemented")
+    }
+
+    private func buildLayout() {
+        backgroundColor = UIColor.blue80
+        layer.cornerRadius = 12
+        translatesAutoresizingMaskIntoConstraints = false
+
+        let avatar = makeAvatarView()
+        let nameStack = makeNameStack()
+        let accessButton = makeAccessButton()
+
+        addSubview(avatar)
+        addSubview(nameStack)
+        addSubview(accessButton)
+
+        NSLayoutConstraint.activate([
+            avatar.leadingAnchor.constraint(equalTo: leadingAnchor, constant: 16),
+            avatar.centerYAnchor.constraint(equalTo: centerYAnchor),
+            avatar.widthAnchor.constraint(equalToConstant: 34),
+            avatar.heightAnchor.constraint(equalToConstant: 34),
+
+            nameStack.leadingAnchor.constraint(equalTo: avatar.trailingAnchor, constant: 12),
+            nameStack.centerYAnchor.constraint(equalTo: centerYAnchor),
+
+            accessButton.trailingAnchor.constraint(equalTo: trailingAnchor, constant: -16),
+            accessButton.centerYAnchor.constraint(equalTo: centerYAnchor),
+            nameStack.trailingAnchor.constraint(lessThanOrEqualTo: accessButton.leadingAnchor, constant: -12),
+            heightAnchor.constraint(greaterThanOrEqualToConstant: 54)
+        ])
+    }
+
+    // MARK: - Subviews
+    private func makeAvatarView() -> UIView {
         let avatar = UIView()
         avatar.translatesAutoresizingMaskIntoConstraints = false
         avatar.backgroundColor = .blue30
@@ -18,7 +66,7 @@ class CaregiverProfileCardView: UIView {
         avatar.layer.borderColor = UIColor.pureWhite.cgColor
         avatar.layer.borderWidth = 2
 
-        let initials = initialsFromName("joana")
+        let initials = initialsFromName(name)
         let initialsLabel = StandardLabel(
             labelText: initials,
             labelFont: .sfPro,
@@ -35,118 +83,91 @@ class CaregiverProfileCardView: UIView {
         ])
         return avatar
     }
-    
-    private let nameLabel = StandardLabel(
-        labelText: "Nome cuidador",
-        labelFont: .sfPro,
-        labelType: .subHeadline,
-        labelColor: .black10,
-        labelWeight: .medium
-    )
-    
-    private let subtitleLabel = StandardLabel(
-        labelText: "Categoria do cuidador",
-        labelFont: .sfPro,
-        labelType: .footnote,
-        labelColor: .black20,
-        labelWeight: .regular
-    )
-    
-    private lazy var accessButton: UIButton = {
+
+    private func makeNameStack() -> UIStackView {
+        let nameLabel = StandardLabel(
+            labelText: name,
+            labelFont: .sfPro,
+            labelType: .subHeadline,
+            labelColor: .black10,
+            labelWeight: .medium
+        )
+
+        let subtitleLabel = StandardLabel(
+            labelText: category,
+            labelFont: .sfPro,
+            labelType: .footnote,
+            labelColor: .black20,
+            labelWeight: .regular
+        )
+
+        let stack = UIStackView(arrangedSubviews: [nameLabel, subtitleLabel])
+        stack.axis = .vertical
+        stack.spacing = 2
+        stack.translatesAutoresizingMaskIntoConstraints = false
+        return stack
+    }
+
+    private func makeAccessButton() -> UIButton {
         let button = UIButton(type: .system)
         button.translatesAutoresizingMaskIntoConstraints = false
         button.tintColor = .blue10
         button.backgroundColor = .clear
-        
+
         let titleLabel = StandardLabel(
-            labelText: "Acesso",
+            labelText: permissionLabel(permission),
             labelFont: .sfPro,
             labelType: .subHeadline,
             labelColor: .blue10,
             labelWeight: .medium
         )
         titleLabel.translatesAutoresizingMaskIntoConstraints = false
-        
+
         let chevron = UIImageView(image: UIImage(systemName: "chevron.down"))
         chevron.translatesAutoresizingMaskIntoConstraints = false
         chevron.tintColor = .blue10
-        let symbolConfig = UIImage.SymbolConfiguration(pointSize: 14, weight: .semibold)
-        chevron.preferredSymbolConfiguration = symbolConfig
-        
+        chevron.preferredSymbolConfiguration = .init(pointSize: 14, weight: .semibold)
+
         let stack = UIStackView(arrangedSubviews: [titleLabel, chevron])
         stack.axis = .horizontal
         stack.spacing = 4
         stack.isUserInteractionEnabled = false
         stack.translatesAutoresizingMaskIntoConstraints = false
-        
+
         button.addSubview(stack)
-        
         NSLayoutConstraint.activate([
             stack.centerXAnchor.constraint(equalTo: button.centerXAnchor),
             stack.centerYAnchor.constraint(equalTo: button.centerYAnchor),
             stack.leadingAnchor.constraint(greaterThanOrEqualTo: button.leadingAnchor),
             stack.trailingAnchor.constraint(lessThanOrEqualTo: button.trailingAnchor)
         ])
-        
+
         button.addAction(UIAction { [weak self] _ in
             self?.didTapAccess()
         }, for: .touchUpInside)
-        
+
         return button
-    }()
-    
-    private lazy var nameStack: UIStackView = {
-        let stack = UIStackView(arrangedSubviews: [nameLabel, subtitleLabel])
-        stack.axis = .vertical
-        stack.spacing = 2
-        stack.translatesAutoresizingMaskIntoConstraints = false
-        return stack
-    }()
-    
-    
-    override init(frame: CGRect) {
-        super.init(frame: frame)
-        backgroundColor = UIColor.blue80
-        layer.cornerRadius = 12
-        translatesAutoresizingMaskIntoConstraints = false
-        
-        let avatarView = avatarView()
-        addSubview(avatarView)
-        addSubview(nameStack)
-        addSubview(accessButton)
-        
-        NSLayoutConstraint.activate([
-            avatarView.leadingAnchor.constraint(equalTo: leadingAnchor, constant: 16),
-            avatarView.centerYAnchor.constraint(equalTo: centerYAnchor),
-            avatarView.widthAnchor.constraint(equalToConstant: 34),
-            avatarView.heightAnchor.constraint(equalToConstant: 34),
-            
-            nameStack.leadingAnchor.constraint(equalTo: avatarView.trailingAnchor, constant: 12),
-            nameStack.centerYAnchor.constraint(equalTo: centerYAnchor),
-            
-            accessButton.trailingAnchor.constraint(equalTo: trailingAnchor, constant: -16),
-            accessButton.centerYAnchor.constraint(equalTo: centerYAnchor),
-            nameStack.trailingAnchor.constraint(lessThanOrEqualTo: accessButton.leadingAnchor, constant: -12)
-        ])
-    }
-    
-    required init?(coder: NSCoder) {
-        fatalError("init(coder:) has not been implemented")
     }
 }
 
+// MARK: - Helpers
 private extension CaregiverProfileCardView {
     func didTapAccess() {
         print("oi")
     }
-    
+
     func initialsFromName(_ name: String) -> String {
         let comps = name.split(separator: " ")
         let initials = comps.prefix(2).compactMap { $0.first?.uppercased() }.joined()
         return initials.isEmpty ? "?" : initials
     }
-}
 
-#Preview {
-    CaregiverProfileCardView()
+    func permissionLabel(_ p: CKShare.ParticipantPermission) -> String {
+        switch p {
+        case .readOnly:  return "Pode visualizar"
+        case .readWrite: return "Pode editar"
+        case .none:      return "Sem acesso"
+        default:         return "Pode visualizar"
+        }
+    }
 }
