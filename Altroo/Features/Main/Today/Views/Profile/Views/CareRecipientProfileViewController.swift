@@ -17,37 +17,43 @@ protocol ProfileViewControllerDelegate: AnyObject {
 
 final class CareRecipientProfileViewController: GradientNavBarViewController {
     weak var delegate: ProfileViewControllerDelegate?
-    private let viewModel: CareRecipientProfileViewModel
-
-    // MARK: - Init
+    
+    private(set) var mockPerson: CareRecipient!
+    
+    let viewModel: CareRecipientProfileViewModel
+    
+    // MARK: - Lifecycle
     init(viewModel: CareRecipientProfileViewModel) {
         self.viewModel = viewModel
         super.init(nibName: nil, bundle: nil)
     }
+    
     @available(*, unavailable)
-    required init?(coder: NSCoder) { fatalError("Use init(viewModel:)") }
-
+    required init?(coder: NSCoder) {
+        fatalError("Use init(viewModel:) em vez de init(coder:)")
+    }
+    
     // MARK: - Lifecycle
     override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
         tabBarController?.tabBar.isHidden = true
     }
-
+    
     override func viewWillDisappear(_ animated: Bool) {
         super.viewWillDisappear(animated)
         tabBarController?.tabBar.isHidden = false
     }
-
+    
     override func viewDidLoad() {
         super.viewDidLoad()
         setupProfileHeader()
     }
-
+    
     private func setupProfileHeader() {
         view.backgroundColor = .pureWhite
-
+        
         view.subviews.forEach { $0.removeFromSuperview() }
-
+        
         guard let person = viewModel.currentCareRecipient() else {
             let empty = StandardLabel(
                 labelText: "Nenhum assistido selecionado",
@@ -64,24 +70,24 @@ final class CareRecipientProfileViewController: GradientNavBarViewController {
             ])
             return
         }
-
+        
         let header = ProfileHeader(careRecipient: person)
         header.translatesAutoresizingMaskIntoConstraints = false
         view.addSubview(header)
-
+        
         NSLayoutConstraint.activate([
             header.topAnchor.constraint(equalTo: view.safeAreaLayoutGuide.topAnchor, constant: 30),
             header.leadingAnchor.constraint(equalTo: view.leadingAnchor, constant: 16),
             header.trailingAnchor.constraint(equalTo: view.trailingAnchor, constant: -16)
         ])
-
+        
         header.isUserInteractionEnabled = true
         let tap = UITapGestureRecognizer(target: self, action: #selector(didTapHeader))
         header.addGestureRecognizer(tap)
-
+        
         setupCaregiversSection(below: header)
     }
-
+    
     private func setupCaregiversSection(below header: UIView) {
         let titleLabel = StandardLabel(
             labelText: "Cuidadores",
@@ -90,31 +96,31 @@ final class CareRecipientProfileViewController: GradientNavBarViewController {
             labelColor: .black10,
             labelWeight: .semibold
         )
-
+        
         let inviteButton = CapsuleIconView(iconName: "paperplane", text: "Convidar cuidador")
         addTap(to: inviteButton, action: #selector(didTapShareCareRecipientButton))
-
+        
         let topStack = UIStackView(arrangedSubviews: [titleLabel, inviteButton])
         topStack.axis = .horizontal
         topStack.distribution = .equalSpacing
         topStack.alignment = .center
         topStack.translatesAutoresizingMaskIntoConstraints = false
         view.addSubview(topStack)
-
+        
         NSLayoutConstraint.activate([
             topStack.topAnchor.constraint(equalTo: header.bottomAnchor, constant: 24),
             topStack.leadingAnchor.constraint(equalTo: view.leadingAnchor, constant: 16),
             topStack.trailingAnchor.constraint(equalTo: view.trailingAnchor, constant: -16)
         ])
-
+        
         let caregivers = viewModel.caregiversForCurrentRecipient()
-
+        
         let cardsStack = UIStackView()
         cardsStack.axis = .vertical
         cardsStack.spacing = 8
         cardsStack.translatesAutoresizingMaskIntoConstraints = false
         view.addSubview(cardsStack)
-
+        
         if caregivers.isEmpty {
             let none = StandardLabel(
                 labelText: "Nenhum cuidador ainda. Toque em “Convidar cuidador”.",
@@ -132,34 +138,34 @@ final class CareRecipientProfileViewController: GradientNavBarViewController {
                 cardsStack.addArrangedSubview(card)
             }
         }
-
+        
         NSLayoutConstraint.activate([
             cardsStack.topAnchor.constraint(equalTo: topStack.bottomAnchor, constant: 12),
             cardsStack.leadingAnchor.constraint(equalTo: view.leadingAnchor, constant: 16),
             cardsStack.trailingAnchor.constraint(equalTo: view.trailingAnchor, constant: -16)
         ])
-
+        
         setupBottomButtons(below: cardsStack)
     }
-
+    
     private func setupBottomButtons(below lastView: UIView) {
         let swapButton = makeFilledButton(
             icon: UIImage(systemName: "arrow.2.squarepath"),
             title: "Trocar Perfil de Assistido",
             action: #selector(didTapChangeCareRecipientButton)
         )
-
+        
         let endButton = makeOutlineButton(
             title: "Encerrar Cuidado",
             action: #selector(didTapEndCareButton)
         )
-
+        
         let buttonsStack = UIStackView(arrangedSubviews: [swapButton, endButton])
         buttonsStack.axis = .vertical
         buttonsStack.spacing = 12
         buttonsStack.translatesAutoresizingMaskIntoConstraints = false
         view.addSubview(buttonsStack)
-
+        
         NSLayoutConstraint.activate([
             buttonsStack.leadingAnchor.constraint(equalTo: view.leadingAnchor, constant: 16),
             buttonsStack.trailingAnchor.constraint(equalTo: view.trailingAnchor, constant: -16),
@@ -167,14 +173,14 @@ final class CareRecipientProfileViewController: GradientNavBarViewController {
             buttonsStack.bottomAnchor.constraint(equalTo: view.safeAreaLayoutGuide.bottomAnchor, constant: -16)
         ])
     }
-
+    
     private func makeFilledButton(icon: UIImage?, title: String, action: Selector) -> UIButton {
         let button = UIButton(type: .system)
         button.backgroundColor = UIColor.teal20
         button.layer.cornerRadius = 23
         button.heightAnchor.constraint(equalToConstant: 46).isActive = true
         button.addTarget(self, action: action, for: .touchUpInside)
-
+        
         let label = StandardLabel(
             labelText: title,
             labelFont: .sfPro,
@@ -182,29 +188,29 @@ final class CareRecipientProfileViewController: GradientNavBarViewController {
             labelColor: .pureWhite,
             labelWeight: .medium
         )
-
+        
         let iconView = UIImageView(image: icon)
         iconView.tintColor = .white
         iconView.contentMode = .scaleAspectFit
         iconView.setContentHuggingPriority(.required, for: .horizontal)
         iconView.translatesAutoresizingMaskIntoConstraints = false
         iconView.widthAnchor.constraint(equalToConstant: 20).isActive = true
-
+        
         let contentStack = UIStackView(arrangedSubviews: [iconView, label])
         contentStack.axis = .horizontal
         contentStack.alignment = .center
         contentStack.spacing = 8
         contentStack.translatesAutoresizingMaskIntoConstraints = false
-
+        
         button.addSubview(contentStack)
         NSLayoutConstraint.activate([
             contentStack.centerXAnchor.constraint(equalTo: button.centerXAnchor),
             contentStack.centerYAnchor.constraint(equalTo: button.centerYAnchor)
         ])
-
+        
         return button
     }
-
+    
     private func makeOutlineButton(title: String, action: Selector) -> UIButton {
         let button = UIButton(type: .system)
         button.backgroundColor = .clear
@@ -213,7 +219,7 @@ final class CareRecipientProfileViewController: GradientNavBarViewController {
         button.layer.borderColor = UIColor.teal10.cgColor
         button.heightAnchor.constraint(equalToConstant: 46).isActive = true
         button.addTarget(self, action: action, for: .touchUpInside)
-
+        
         let label = StandardLabel(
             labelText: title,
             labelFont: .sfPro,
@@ -222,21 +228,21 @@ final class CareRecipientProfileViewController: GradientNavBarViewController {
             labelWeight: .medium
         )
         label.translatesAutoresizingMaskIntoConstraints = false
-
+        
         button.addSubview(label)
         NSLayoutConstraint.activate([
             label.centerXAnchor.constraint(equalTo: button.centerXAnchor),
             label.centerYAnchor.constraint(equalTo: button.centerYAnchor)
         ])
-
+        
         return button
     }
-
+    
     private func addTap(to view: UIView, action: Selector) {
         view.isUserInteractionEnabled = true
         view.addGestureRecognizer(UITapGestureRecognizer(target: self, action: action))
-   }
-
+    }
+    
     @objc private func didTapHeader() { delegate?.goToMedicalRecordViewController() }
     @objc private func didTapChangeCareRecipientButton() { delegate?.openChangeCareRecipientSheet() }
     @objc private func didTapShareCareRecipientButton() {
@@ -246,5 +252,9 @@ final class CareRecipientProfileViewController: GradientNavBarViewController {
     @objc private func didTapEndCareButton() {
         viewModel.finishCare()
     }
-//    @objc private func didTapEditCaregiverButton() { delegate?.openEditCaregiversSheet() }
+    //    @objc private func didTapEditCaregiverButton() { delegate?.openEditCaregiversSheet() }
 }
+//
+//#Preview {
+//    UINavigationController(rootViewController: CareRecipientProfileViewController()
+//}

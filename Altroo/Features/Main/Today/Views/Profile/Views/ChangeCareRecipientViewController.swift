@@ -259,7 +259,7 @@ final class ChangeCareRecipientViewController: UIViewController {
     }
 
     @objc private func linkTapped() {
-        print("Link tapped")
+        print("Link tappd")
     }
 
     @objc private func cardTapped(_ gesture: UITapGestureRecognizer) {

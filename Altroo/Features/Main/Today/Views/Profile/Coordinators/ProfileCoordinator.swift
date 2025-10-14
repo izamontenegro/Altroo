@@ -45,6 +45,7 @@ extension ProfileCoordinator: ProfileViewControllerDelegate {
         sharingCoordinator.presentSharingSheet()
     }
     
+
     func openChangeCareRecipientSheet() {
         let vc = factory.makeChangeCareRecipientViewController()
         vc.modalPresentationStyle = .pageSheet

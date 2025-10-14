@@ -19,24 +19,36 @@ public struct MedicalRecordSectionVM {
 final class MedicalRecordViewModel {
     // MARK: - Dependencies
     var userService: UserServiceProtocol
+    
+    // MARK: - Input
 
     // MARK: - Output
     @Published private(set) var sections: [MedicalRecordSectionVM] = []
     @Published private(set) var completionPercent: CGFloat = 0.0
 
     // MARK: - Init
-    init(userService: UserServiceProtocol) {
-        self.userService = userService
-        rebuildOutputs()
-    }
+        init(userService: UserServiceProtocol) {
+            self.userService = userService
+            rebuildOutputs()
+        }
 
-    func reload() {
-        rebuildOutputs()
-    }
+        func reload() {
+            rebuildOutputs()
+        }
+    // MARK: - Public export texts (usados para PDF/compartilhamento)
+//    func personalDataText() -> String {
+//        guard let person = currentPatient() else { return "Sem paciente selecionado." }
+////        rebuildOutputs()
+//        return "oi"
+//    }
+
+//    func update(person: CareRecipient) {
+//        self.person = person
+//        rebuildOutputs()
+//    }
 
     // MARK: - Public export texts (usados para PDF/compartilhamento)
-    func personalDataText() -> String {
-        guard let person = currentPatient() else { return "Sem paciente selecionado." }
+    func personalDataText(person: CareRecipient) -> String {
         let p = person.personalData
         let name = p?.name ?? "—"
         let address = p?.address ?? "—"
@@ -52,8 +64,8 @@ final class MedicalRecordViewModel {
         \(contacts)
         """
     }
-
-    func healthProblemsText() -> String {
+    
+    func healthProblemsText(person: CareRecipient) -> String {
         guard let person = currentPatient() else { return "Sem paciente selecionado." }
         let hp = person.healthProblems
         let diseasesList = diseasesBulletList(from: hp?.diseases as? Set<Disease>)
@@ -74,8 +86,8 @@ final class MedicalRecordViewModel {
         \(obs)
         """
     }
-
-    func physicalStateText() -> String {
+       
+    func physicalStateText(person: CareRecipient) -> String {
         guard let person = currentPatient() else { return "Sem paciente selecionado." }
         let ph = person.physicalState
         return """
@@ -86,7 +98,7 @@ final class MedicalRecordViewModel {
         """
     }
 
-    func mentalStateText() -> String {
+    func mentalStateText(person: CareRecipient) -> String {
         guard let person = currentPatient() else { return "Sem paciente selecionado." }
         let m = person.mentalState
         return """
@@ -97,7 +109,7 @@ final class MedicalRecordViewModel {
         """
     }
 
-    func personalCareText() -> String {
+    func personalCareText(person: CareRecipient) -> String {
         guard let person = currentPatient() else { return "Sem paciente selecionado." }
         let pc = person.personalCare
         let equipments = bulletList(fromCSV: pc?.equipmentState)
@@ -113,6 +125,7 @@ final class MedicalRecordViewModel {
     }
 
     // MARK: - Build outputs
+
     private func rebuildOutputs() {
         guard let person = currentPatient() else {
             completionPercent = 0
