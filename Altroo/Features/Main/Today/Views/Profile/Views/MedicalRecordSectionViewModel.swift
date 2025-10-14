@@ -30,7 +30,6 @@ final class MedicalRecordViewModel {
         rebuildOutputs()
     }
 
-    // Caso você mude o paciente ativo em outro lugar da UI, chame isto:
     func reload() {
         rebuildOutputs()
     }
