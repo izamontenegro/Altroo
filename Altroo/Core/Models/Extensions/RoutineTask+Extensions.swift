@@ -30,9 +30,9 @@ extension TaskInstance {
         case 12..<17:
             return .afternoon
         case 17..<21:
-            return .evening
-        default:
             return .night
+        default:
+            return .overnight
         }
     }
 }

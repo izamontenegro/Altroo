@@ -162,20 +162,18 @@ class BedriddenButton: UIButton {
             checkIconView.widthAnchor.constraint(equalToConstant: 27)
         ])
         
-        // Title
         label = StandardLabel(
-            labelText: "Acamado Sem Movimento",
+            labelText: (bedriddenState == .movement ? "Acamado Com Movimento" :"Acamado Sem Movimento"),
             labelFont: .sfPro,
             labelType: .callOut,
             labelColor: .blue30,
             labelWeight: .regular
         )
         label.textAlignment = .center
-        label.numberOfLines = 0 // ← allows multiple lines
-        label.lineBreakMode = .byWordWrapping // ← break between words
+        label.numberOfLines = 0
+        label.lineBreakMode = .byWordWrapping
         label.widthAnchor.constraint(equalToConstant: 140).isActive = true
         
-        // Stack
         let stack = UIStackView(arrangedSubviews: [circles, checkIconView, label])
         stack.axis = .vertical
         stack.alignment = .center

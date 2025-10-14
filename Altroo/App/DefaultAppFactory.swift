@@ -8,18 +8,23 @@ import UIKit
 
 // MARK: - DefaultAppFactory
 final class DefaultAppFactory: AppFactory {
+    
     private let dependencies: AppDependencies
-
-    init(dependencies: AppDependencies) {
+    private let userService: UserServiceProtocol
+    private let addPatientViewModel: AddPatientViewModel
+    
+    init(dependencies: AppDependencies, userService: UserServiceProtocol) {
         self.dependencies = dependencies
+        self.userService = userService
+        self.addPatientViewModel = AddPatientViewModel(careRecipientFacade: dependencies.careRecipientFacade, userService: userService)
     }
 }
 
 // MARK: - OnboardingFactory
 extension DefaultAppFactory {
-    func makeWelcomeViewController(delegate: WelcomeViewControllerDelegate) -> UIViewController {
-        let vc = WelcomeViewController()
-        vc.delegate = delegate
+    func makeWelcomeOnboardingViewController(delegate: WelcomeOnboardingViewControllerDelegate) -> UIViewController {
+        let vc = WelcomeOnboardingViewController()
+        vc.delegateOnboarding = delegate
         vc.title = "Welcome!"
         return vc
     }
@@ -29,7 +34,7 @@ extension DefaultAppFactory {
 extension DefaultAppFactory {
     
     func makeAssociatePatientViewController(delegate: AssociatePatientViewControllerDelegate) -> UIViewController {
-        let vc = AssociatePatientViewController()
+        let vc = AssociatePatientViewController(viewModel: AssociatePatientViewModel(userService: userService))
         vc.delegate = delegate
         vc.title = "Associate Patient View"
         return vc
@@ -41,23 +46,23 @@ extension DefaultAppFactory {
     }
     
     func makePatientFormViewController(delegate: AssociatePatientViewControllerDelegate) -> UIViewController {
-        let vc = PatientFormsViewController()
+        let vc = PatientFormsViewController(viewModel: addPatientViewModel)
         vc.delegate = delegate
-        vc.title = "Patient Forms"
+        vc.title = "Perfil do Assistido"
         return vc
     }
     
     func makeComorbiditiesFormViewController(delegate: AssociatePatientViewControllerDelegate) -> UIViewController {
-        let vc = ComorbiditiesFormsViewController()
+        let vc = ComorbiditiesFormsViewController(viewModel: addPatientViewModel)
         vc.delegate = delegate
-        vc.title = "Comorbidities Forms"
+        vc.title = "Comorbidades"
         return vc
     }
     
     func makeShiftFormViewController(delegate: ShiftFormsViewControllerDelegate) -> UIViewController {
-        let vc = ShiftFormViewController()
+        let vc = ShiftFormViewController(viewModel: addPatientViewModel)
         vc.delegate = delegate
-        vc.title = "Shift Forms"
+        vc.title = "Turnos"
         return vc
     }
 }

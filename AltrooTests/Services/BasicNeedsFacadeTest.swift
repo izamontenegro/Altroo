@@ -231,7 +231,7 @@ final class BasicNeedsFacadeTests: XCTestCase {
         let now = Date()
 
         sut.addStool(
-            period: .evening,
+            period: .overnight,
             date: now,
             format: "Solid",
             hadPain: false,
@@ -242,7 +242,7 @@ final class BasicNeedsFacadeTests: XCTestCase {
         XCTAssertEqual(stoolSpy.addCalled, 1)
         XCTAssertEqual(coreDataSpy.saveContextCalled, 1)
 
-        XCTAssertEqual(stoolSpy.lastAdd?.period, .evening)
+        XCTAssertEqual(stoolSpy.lastAdd?.period, .overnight)
         XCTAssertEqual(stoolSpy.lastAdd?.date, now)
         XCTAssertEqual(stoolSpy.lastAdd?.format, "Solid")
         XCTAssertEqual(stoolSpy.lastAdd?.hadPain, false)
