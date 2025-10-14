@@ -4,6 +4,7 @@
 //
 //  Created by Raissa Parente on 30/09/25.
 //
+
 import UIKit
 
 class InnerShadowView: UIView {
@@ -21,14 +22,14 @@ class InnerShadowView: UIView {
         self.shadowColor = color
         self.shadowOpacity = opacity
         super.init(frame: frame)
-        self.configure()
+        configure()
     }
     
     required init?(coder aDecoder: NSCoder) {
         self.shadowColor = .teal0
         self.shadowOpacity = 0.20
         super.init(coder: aDecoder)
-        self.configure()
+        configure()
     }
 
     private func configure() {
@@ -42,6 +43,7 @@ class InnerShadowView: UIView {
         innerShadowLayer.shadowOpacity = shadowOpacity
         innerShadowLayer.shadowRadius = 5
         innerShadowLayer.fillRule = .evenOdd
+        innerShadowLayer.fillColor = UIColor.clear.cgColor
         
         self.layer.addSublayer(innerShadowLayer)
     }

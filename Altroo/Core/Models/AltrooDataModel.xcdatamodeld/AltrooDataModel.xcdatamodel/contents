@@ -9,6 +9,7 @@
     </entity>
     <entity name="CareRecipient" representedClassName="CareRecipient" syncable="YES" codeGenerationType="class">
         <attribute name="id" optional="YES" attributeType="UUID" usesScalarValueType="NO"/>
+        <relationship name="activeUsers" optional="YES" maxCount="1" deletionRule="Nullify" destinationEntity="User" inverseName="activeCareRecipient" inverseEntity="User"/>
         <relationship name="basicNeeds" optional="YES" maxCount="1" deletionRule="Nullify" destinationEntity="BasicNeeds" inverseName="careRecipient" inverseEntity="BasicNeeds"/>
         <relationship name="careRecipientEvents" optional="YES" toMany="YES" deletionRule="Nullify" destinationEntity="CareRecipientEvent" inverseName="careRecipient" inverseEntity="CareRecipientEvent"/>
         <relationship name="healthProblems" optional="YES" maxCount="1" deletionRule="Nullify" destinationEntity="HealthProblems" inverseName="careRecipient" inverseEntity="HealthProblems"/>
@@ -59,6 +60,7 @@
     </entity>
     <entity name="HealthProblems" representedClassName="HealthProblems" syncable="YES" codeGenerationType="class">
         <attribute name="allergies" optional="YES" attributeType="Transformable" valueTransformerName="" customClassName="[String]"/>
+        <attribute name="bedridden" optional="YES" attributeType="String"/>
         <attribute name="observation" optional="YES" attributeType="String"/>
         <attribute name="surgery" optional="YES" attributeType="Transformable" valueTransformerName="" customClassName="[String]"/>
         <relationship name="careRecipient" optional="YES" maxCount="1" deletionRule="Nullify" destinationEntity="CareRecipient" inverseName="healthProblems" inverseEntity="CareRecipient"/>
@@ -179,6 +181,7 @@
         <attribute name="category" optional="YES" attributeType="String"/>
         <attribute name="name" optional="YES" attributeType="String"/>
         <attribute name="preferenceNotification" optional="YES" attributeType="String"/>
+        <relationship name="activeCareRecipient" optional="YES" maxCount="1" deletionRule="Nullify" destinationEntity="CareRecipient" inverseName="activeUsers" inverseEntity="CareRecipient"/>
         <relationship name="careRecipient" optional="YES" toMany="YES" deletionRule="Nullify" destinationEntity="CareRecipient" inverseName="user" inverseEntity="CareRecipient"/>
     </entity>
 </model>
