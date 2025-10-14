@@ -9,6 +9,7 @@ import UIKit
 
 protocol TodayViewControllerDelegate: AnyObject {
     func goTo(_ destination: TodayDestination)
+    func goToSymptomDetail(with symptom: Symptom)
 }
 
 class TodayViewController: UIViewController {

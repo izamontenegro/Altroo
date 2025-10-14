@@ -65,6 +65,8 @@ final class TodayCoordinator: Coordinator {
             return nil
         case .taskDetail:
             return nil
+        case .symptomDetail:
+            return nil
         }
     }
     
@@ -80,6 +82,8 @@ final class TodayCoordinator: Coordinator {
         }
         navigation.present(nav, animated: true)
     }
+    
+    
 }
 
 extension TodayCoordinator: TodayViewControllerDelegate {
@@ -107,6 +111,8 @@ extension TodayCoordinator: TodayViewControllerDelegate {
     func goBackToRoot() {
         navigation.popToRootViewController(animated: false)
     }
+    
+
 }
 
 
