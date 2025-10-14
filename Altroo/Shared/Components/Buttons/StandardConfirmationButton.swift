@@ -10,14 +10,13 @@ import UIKit
 final class StandardConfirmationButton: PrimaryStyleButton {
     
     var title: String
-    private var innerShadowView: InnerShadowView?
+    private let titleLabelCustom = StandardLabel(labelText: "", labelFont: .sfPro, labelType: .title2, labelColor: .pureWhite, labelWeight: .semibold)
     
     init(title: String) {
         self.title = title
         super.init()
         
         setupButton()
-        setupInnerShadow()
     }
     
     required init?(coder: NSCoder) {
@@ -26,33 +25,30 @@ final class StandardConfirmationButton: PrimaryStyleButton {
     
     override func layoutSubviews() {
         super.layoutSubviews()
-        innerShadowView?.frame = bounds
     }
     
     private func setupButton() {
-        setTitle(title, for: .normal)
+        setTitle(nil, for: .normal)
+        titleLabelCustom.updateLabelText(title)
+        titleLabelCustom.textAlignment = .center
         
-        setTitleColor(.white, for: .normal)
+        addSubview(titleLabelCustom)
+        titleLabelCustom.translatesAutoresizingMaskIntoConstraints = false
+        
+        NSLayoutConstraint.activate([
+            titleLabelCustom.centerXAnchor.constraint(equalTo: centerXAnchor),
+            titleLabelCustom.centerYAnchor.constraint(equalTo: centerYAnchor),
+            
+            widthAnchor.constraint(equalToConstant: 229),
+            heightAnchor.constraint(greaterThanOrEqualToConstant: 46)
+        ])
         
         layer.cornerRadius = 22
-        
-        contentEdgeInsets = UIEdgeInsets(top: 8,
-                                         left: 64,
-                                         bottom: 8,
-                                         right: 64)
-        
+        contentEdgeInsets = UIEdgeInsets(top: 8, left: 64, bottom: 8, right: 64)
         titleLabel?.font = UIFont.systemFont(ofSize: 24, weight: .semibold)
-        
-        self.translatesAutoresizingMaskIntoConstraints = false
+        translatesAutoresizingMaskIntoConstraints = false
     }
-    
-    private func setupInnerShadow() {
-        let shadow = InnerShadowView(frame: bounds, color: UIColor.teal0, opacity: 0.20)
-        shadow.isUserInteractionEnabled = false
-        shadow.layer.cornerRadius = layer.cornerRadius
-        addSubview(shadow)
-        innerShadowView = shadow
-    }
+
 }
 
 #Preview {
