@@ -276,3 +276,13 @@ extension PatientFormsViewController: UITextFieldDelegate {
         return true
     }
 }
+
+//class BasicNeedsFacadeMock: BasicNeedsFacadeProtocol {}
+//class RoutineActivitiesFacadeMock: RoutineActivitiesFacadeProtocol {}
+//class CoreDataServiceMock: CoreDataService {}
+//
+//#Preview {
+//    let mockService = UserServiceSession(context: AppDependencies().coreDataService.stack.context)
+//
+//    ComorbiditiesFormsViewController(viewModel: AddPatientViewModel(careRecipientFacade: CareRecipientFacade(basicNeedsFacade: BasicNeedsFacadeMock(), routineActivitiesFacade: RoutineActivitiesFacadeMock(), persistenceService: CoreDataServiceMock()), userService: mockService))
+//}

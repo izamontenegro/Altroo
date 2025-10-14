@@ -120,8 +120,8 @@ class ShiftFormViewController: UIViewController {
     }
 }
 
-#Preview {
-    let mockService = UserServiceSession(context: AppDependencies().coreDataService.stack.context)
-
-    ShiftFormViewController(viewModel: AddPatientViewModel(careRecipientFacade: CareRecipientFacade(basicNeedsFacade: BasicNeedsFacadeMock(), routineActivitiesFacade: RoutineActivitiesFacadeMock(), persistenceService: CoreDataServiceMock()), userService: mockService))
-}
+//#Preview {
+//    let mockService = UserServiceSession(context: AppDependencies().coreDataService.stack.context)
+//
+//    ShiftFormViewController(viewModel: AddPatientViewModel(careRecipientFacade: CareRecipientFacade(basicNeedsFacade: BasicNeedsFacadeMock(), routineActivitiesFacade: RoutineActivitiesFacadeMock(), persistenceService: CoreDataServiceMock()), userService: mockService))
+//}
