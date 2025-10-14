@@ -18,4 +18,6 @@ protocol UserServiceProtocol {
     func fetchPatients() -> [CareRecipient]
     func fetchCurrentPatient() -> CareRecipient?
     func removeCurrentPatient()
+    func setShift(_ shifts: [PeriodEnum])
+    func getShift() -> [PeriodEnum]
 }

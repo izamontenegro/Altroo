@@ -8,29 +8,28 @@
 import Foundation
 
 protocol DiseaseServiceProtocol {
-    func addDisease(name: String, in careRecipient: CareRecipient)
+    func addDisease(name: String, in healthProblems: HealthProblems)
     
-    func deleteDisease(disease: Disease, from careRecipient: CareRecipient)
+    func deleteDisease(disease: Disease, from healthProblems: HealthProblems)
 }
 
-class DiseaseService: DiseaseServiceProtocol {
-    func addDisease(name: String, in careRecipient: CareRecipient) {
+extension CareRecipientFacade: DiseaseServiceProtocol {
+    func addDisease(name: String, in healthProblems: HealthProblems) {
+        guard let context = healthProblems.managedObjectContext else { return }
         
-        guard let context = careRecipient.managedObjectContext else { return }
         let newDisease = Disease(context: context)
-        
         newDisease.name = name
         
-        if let healthProblems = careRecipient.healthProblems {
-            let mutableDisease = healthProblems.mutableSetValue(forKey: "disease")
-            mutableDisease.add(newDisease)
-        }
+        let mutableDiseases = healthProblems.mutableSetValue(forKey: "diseases")
+        mutableDiseases.add(newDisease)
+        
+        persistenceService.save()
     }
     
-    func deleteDisease(disease: Disease, from careRecipient: CareRecipient) {
-        if let healthProblems = careRecipient.healthProblems {
-            let mutableDisease = healthProblems.mutableSetValue(forKey: "disease")
-            mutableDisease.remove(disease)
-        }
+    func deleteDisease(disease: Disease, from healthProblems: HealthProblems) {
+        let mutableDiseases = healthProblems.mutableSetValue(forKey: "diseases")
+        mutableDiseases.remove(disease)
+        
+        persistenceService.save()
     }
 }

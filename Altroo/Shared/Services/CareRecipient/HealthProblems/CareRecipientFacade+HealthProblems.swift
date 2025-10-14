@@ -8,21 +8,13 @@
 import Foundation
 
 protocol HealthProblemsServiceProtocol {
-    func addDisease(diseaseName: String, in healthProblem: HealthProblems)
     func addSurgery(surgery: String, in healthProblem: HealthProblems)
     func addAllergy(allergy: String, in healthProblem: HealthProblems)
     func addObservation(observation: String, in healthProblem: HealthProblems)
+    func addBedriddenInformation(bedriddenStatus: String, in healthProblem: HealthProblems)
 }
 
 extension CareRecipientFacade: HealthProblemsServiceProtocol {
-    
-    func addDisease(diseaseName: String, in healthProblem: HealthProblems) {
-        let currentDiseases = healthProblem.diseases?.mutableCopy() as? NSMutableSet ?? NSMutableSet()
-        currentDiseases.add(diseaseName)
-        healthProblem.diseases = currentDiseases.copy() as? NSSet
-        
-        persistenceService.save()
-    }
     
     func addSurgery(surgery: String, in healthProblem: HealthProblems) {
         healthProblem.surgery?.append(surgery)
@@ -40,6 +32,10 @@ extension CareRecipientFacade: HealthProblemsServiceProtocol {
         healthProblem.observation = observation
         
         persistenceService.save()
+    }
+    
+    func addBedriddenInformation(bedriddenStatus: String, in healthProblem: HealthProblems) {
+        healthProblem.bedridden = bedriddenStatus
     }
     
 }

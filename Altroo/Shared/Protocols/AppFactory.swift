@@ -26,7 +26,7 @@ protocol AppFactory:
 
 // MARK: - ONBOARDING FLOW
 protocol OnboardingFactory {
-    func makeWelcomeViewController(delegate: WelcomeViewControllerDelegate) -> UIViewController
+    func makeWelcomeOnboardingViewController(delegate: WelcomeOnboardingViewControllerDelegate) -> UIViewController
 }
 
 // MARK: - ALL PATIENT FLOW

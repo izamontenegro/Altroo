@@ -60,6 +60,7 @@
     </entity>
     <entity name="HealthProblems" representedClassName="HealthProblems" syncable="YES" codeGenerationType="class">
         <attribute name="allergies" optional="YES" attributeType="Transformable" valueTransformerName="" customClassName="[String]"/>
+        <attribute name="bedridden" optional="YES" attributeType="String"/>
         <attribute name="observation" optional="YES" attributeType="String"/>
         <attribute name="surgery" optional="YES" attributeType="Transformable" valueTransformerName="" customClassName="[String]"/>
         <relationship name="careRecipient" optional="YES" maxCount="1" deletionRule="Nullify" destinationEntity="CareRecipient" inverseName="healthProblems" inverseEntity="CareRecipient"/>
