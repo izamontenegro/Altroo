@@ -18,18 +18,22 @@ final class AppCoordinator: Coordinator {
 
     init(rootNavigation: UINavigationController) {
         self.rootNavigation = rootNavigation
-        self.factory = DefaultAppFactory(dependencies: dependencies)
         self.userService = UserServiceSession(context: dependencies.coreDataService.stack.context)
+        self.factory = DefaultAppFactory(dependencies: dependencies, userService: userService)
         rootNavigation.setNavigationBarHidden(true, animated: false)
     }
 
     func start() {
+        if userService.fetchUser() == nil {
+            _ = userService.createUser(name: "User Teste", category: "Caregiver")
+        }
+        
         if UserDefaults.standard.isFirstLaunch {
             showOnboardingFlow()
         } else if userService.fetchCurrentPatient() == nil {
             showAllPatientsFlow()
         } else {
-            showMainFlow()
+            showAllPatientsFlow()
         }
     }
 

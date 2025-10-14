@@ -180,6 +180,6 @@ class BasicNeedsFacadeMock: BasicNeedsFacadeProtocol {}
 class RoutineActivitiesFacadeMock: RoutineActivitiesFacadeProtocol {}
 class CoreDataServiceMock: CoreDataService {}
 
-#Preview {
-    ComorbiditiesFormsViewController(viewModel: AddPatientViewModel(careRecipientFacade: CareRecipientFacade(basicNeedsFacade: BasicNeedsFacadeMock(), routineActivitiesFacade: RoutineActivitiesFacadeMock(), persistenceService: CoreDataServiceMock())))
-}
+//#Preview {
+//    ComorbiditiesFormsViewController(viewModel: AddPatientViewModel(careRecipientFacade: CareRecipientFacade(basicNeedsFacade: BasicNeedsFacadeMock(), routineActivitiesFacade: RoutineActivitiesFacadeMock(), persistenceService: CoreDataServiceMock())))
+//}

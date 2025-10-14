@@ -10,11 +10,13 @@ import UIKit
 final class DefaultAppFactory: AppFactory {
     
     private let dependencies: AppDependencies
+    private let userService: UserServiceProtocol
     private let addPatientViewModel: AddPatientViewModel
     
-    init(dependencies: AppDependencies) {
+    init(dependencies: AppDependencies, userService: UserServiceProtocol) {
         self.dependencies = dependencies
-        self.addPatientViewModel = AddPatientViewModel(careRecipientFacade: dependencies.careRecipientFacade)
+        self.userService = userService
+        self.addPatientViewModel = AddPatientViewModel(careRecipientFacade: dependencies.careRecipientFacade, userService: userService)
     }
 }
 
@@ -32,7 +34,7 @@ extension DefaultAppFactory {
 extension DefaultAppFactory {
     
     func makeAssociatePatientViewController(delegate: AssociatePatientViewControllerDelegate) -> UIViewController {
-        let vc = AssociatePatientViewController(viewModel: AssociatePatientViewModel())
+        let vc = AssociatePatientViewController(viewModel: AssociatePatientViewModel(), userService: userService)
         vc.delegate = delegate
         vc.title = "Associate Patient View"
         return vc

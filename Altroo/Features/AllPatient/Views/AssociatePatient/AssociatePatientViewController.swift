@@ -16,7 +16,7 @@ protocol AssociatePatientViewControllerDelegate: AnyObject {
 
 class AssociatePatientViewController: UIViewController {
     weak var delegate: AssociatePatientViewControllerDelegate?
-    
+    private var userService: UserServiceProtocol
     private let viewModel: AssociatePatientViewModel
 
     let viewLabel = StandardLabel(
@@ -57,8 +57,9 @@ class AssociatePatientViewController: UIViewController {
         return stackView
     }()
     
-    init(viewModel: AssociatePatientViewModel) {
+    init(viewModel: AssociatePatientViewModel, userService: UserServiceProtocol) {
         self.viewModel = viewModel
+        self.userService = userService
         super.init(nibName: nil, bundle: nil)
     }
     
@@ -108,10 +109,16 @@ class AssociatePatientViewController: UIViewController {
     }
 
     private func updateView() {
-        // TODO: add logic to fetch user's careRecipients
+        let careRecipients = userService.fetchPatients()
+        
         viewLabel.numberOfLines = 0
         viewLabel.lineBreakMode = .byWordWrapping
         viewLabel.textAlignment = .center
+        
+        if !careRecipients.isEmpty {
+            let names = careRecipients.compactMap { $0.personalData?.name }
+            viewLabel.text = names.joined(separator: "\n")
+        }
     }
     
     @objc func didTapAddNewPatientButton() { delegate?.goToPatientForms() }
@@ -120,5 +127,7 @@ class AssociatePatientViewController: UIViewController {
 }
 
 #Preview {
-    AssociatePatientViewController(viewModel: AssociatePatientViewModel())
+    let mockService = UserServiceSession(context: AppDependencies().coreDataService.stack.context)
+    let viewModel = AssociatePatientViewModel()
+    AssociatePatientViewController(viewModel: viewModel, userService: mockService)
 }

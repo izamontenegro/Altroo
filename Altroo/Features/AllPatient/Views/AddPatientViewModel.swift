@@ -12,6 +12,7 @@ import CoreData
 final class AddPatientViewModel: ObservableObject {
     
     private let careRecipientFacade: CareRecipientFacade
+    private let userService: UserServiceProtocol
     
     @Published var newPatient: CareRecipient?
     @Published var name: String = ""
@@ -27,8 +28,9 @@ final class AddPatientViewModel: ObservableObject {
     
     private var cancellables = Set<AnyCancellable>()
     
-    init(careRecipientFacade: CareRecipientFacade) {
+    init(careRecipientFacade: CareRecipientFacade, userService: UserServiceProtocol) {
         self.careRecipientFacade = careRecipientFacade
+        self.userService = userService
     }
 
     func updatePersonalData(
@@ -84,6 +86,10 @@ final class AddPatientViewModel: ObservableObject {
             }
             hp.bedridden = self.bedriddenStatus.rawValue
         }
+        
+        guard let newPatient else { return }
+        userService.addPatient(newPatient)
+        userService.setCurrentPatient(newPatient)
         
         contacts = []
         diseases = []
