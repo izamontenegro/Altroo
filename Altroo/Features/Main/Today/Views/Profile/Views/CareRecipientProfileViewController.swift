@@ -36,6 +36,7 @@ final class CareRecipientProfileViewController: GradientNavBarViewController {
     // MARK: - Lifecycle
     override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
+        viewModel.buildData()
         tabBarController?.tabBar.isHidden = true
     }
     
@@ -46,6 +47,7 @@ final class CareRecipientProfileViewController: GradientNavBarViewController {
     
     override func viewDidLoad() {
         super.viewDidLoad()
+        viewModel.buildData()
         setupProfileHeader()
     }
     
@@ -71,7 +73,7 @@ final class CareRecipientProfileViewController: GradientNavBarViewController {
             return
         }
         
-        let header = ProfileHeader(careRecipient: person)
+        let header = ProfileHeader(careRecipient: person, percent: viewModel.completionPercent)
         header.translatesAutoresizingMaskIntoConstraints = false
         view.addSubview(header)
         
@@ -132,7 +134,13 @@ final class CareRecipientProfileViewController: GradientNavBarViewController {
             cardsStack.addArrangedSubview(none)
         } else {
             for item in caregivers {
-                let card = CaregiverProfileCardView(name: item.name, category: item.category, permission: item.permission)
+                print("Nome: \(item.name) | Categoria: \(item.category) | Permissão: \(item.permission.rawValue)")
+                
+                let card = CaregiverProfileCardView(
+                    name: item.name,
+                    category: item.category,
+                    permission: item.permission
+                )
                 card.translatesAutoresizingMaskIntoConstraints = false
                 card.heightAnchor.constraint(equalToConstant: 54).isActive = true
                 cardsStack.addArrangedSubview(card)

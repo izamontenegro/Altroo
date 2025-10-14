@@ -11,9 +11,11 @@ import SwiftUI
 
 final class ProfileHeader: InnerShadowView {
     var careRecipient: CareRecipient
+    let percent: Double
     
-    init(careRecipient: CareRecipient) {
+    init(careRecipient: CareRecipient, percent: Double) {
         self.careRecipient = careRecipient
+        self.percent = percent
         super.init(frame: .zero, color: UIColor.blue70)
         setupUI()
     }
@@ -22,8 +24,9 @@ final class ProfileHeader: InnerShadowView {
         fatalError("init(coder:) has not been implemented")
     }
 
-    required init?(coder: NSCoder, careRecipient: CareRecipient) {
+    required init?(coder: NSCoder, careRecipient: CareRecipient, percent: Double) {
         self.careRecipient = careRecipient
+        self.percent = percent
         super.init(coder: coder)
     }
 }
@@ -147,9 +150,9 @@ private extension ProfileHeader {
         fill.backgroundColor = .pureWhite
         fill.layer.cornerRadius = 5
         track.addSubview(fill)
-
+        
         let percentageLabel = StandardLabel(
-            labelText: "80%",
+            labelText: "\(Int(round(percent * 100)))%",
             labelFont: .sfPro,
             labelType: .callOut,
             labelColor: .pureWhite,
@@ -179,9 +182,7 @@ private extension ProfileHeader {
             fill.leadingAnchor.constraint(equalTo: track.leadingAnchor),
             fill.centerYAnchor.constraint(equalTo: track.centerYAnchor),
             fill.heightAnchor.constraint(equalTo: track.heightAnchor),
-            
-            // TODO: CHANGE HERE WHEN HAVE THE PROPER FUNCTION
-            fill.widthAnchor.constraint(equalTo: track.widthAnchor, multiplier: 0.70),
+            fill.widthAnchor.constraint(equalTo: track.widthAnchor, multiplier: percent),
 
             chevron.widthAnchor.constraint(equalToConstant: 10),
             chevron.heightAnchor.constraint(equalToConstant: 16)
@@ -206,11 +207,6 @@ private extension ProfileHeader {
 }
 
 // MARK: - PREVIEW
-private struct ProfileCardWrapper: UIViewRepresentable {
-    let recipient: CareRecipient
-    func makeUIView(context: Context) -> ProfileHeader { ProfileHeader(careRecipient: recipient) }
-    func updateUIView(_ uiView: ProfileHeader, context: Context) {}
-}
 
 private func makePreviewRecipient() -> CareRecipient {
     let ctx = previewContextViaContainer()
@@ -231,12 +227,6 @@ private func makePreviewRecipient() -> CareRecipient {
 
     return recipient
 }
-
-#Preview() {
-    ProfileCardWrapper(recipient: makePreviewRecipient())
-        .padding()
-}
-
 private func previewContextViaContainer() -> NSManagedObjectContext {
     let container = NSPersistentContainer(name: "AltrooDataModel")
     let desc = NSPersistentStoreDescription()

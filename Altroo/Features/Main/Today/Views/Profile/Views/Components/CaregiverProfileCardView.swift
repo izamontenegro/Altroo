@@ -11,9 +11,8 @@ import CloudKit
 class CaregiverProfileCardView: UIView {
     let name: String
     let category: String
-    let permission: CKShare.ParticipantPermission
+    let permission: CKShare.Participant.Permission
 
-    // INIT DESIGNADO
     init(name: String, category: String, permission: CKShare.Participant.Permission) {
         self.name = name
         self.category = category
@@ -93,8 +92,9 @@ class CaregiverProfileCardView: UIView {
             labelWeight: .medium
         )
 
+       
         let subtitleLabel = StandardLabel(
-            labelText: category,
+            labelText: "Cuidador",
             labelFont: .sfPro,
             labelType: .footnote,
             labelColor: .black20,
@@ -127,6 +127,7 @@ class CaregiverProfileCardView: UIView {
         chevron.translatesAutoresizingMaskIntoConstraints = false
         chevron.tintColor = .blue10
         chevron.preferredSymbolConfiguration = .init(pointSize: 14, weight: .semibold)
+        chevron.layer.opacity = 0.0
 
         let stack = UIStackView(arrangedSubviews: [titleLabel, chevron])
         stack.axis = .horizontal
@@ -153,7 +154,7 @@ class CaregiverProfileCardView: UIView {
 // MARK: - Helpers
 private extension CaregiverProfileCardView {
     func didTapAccess() {
-        print("oi")
+        print("tapped")
     }
 
     func initialsFromName(_ name: String) -> String {

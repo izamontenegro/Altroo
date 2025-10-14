@@ -22,7 +22,7 @@ final class ChangeCareRecipientViewModel {
     }
     
     func fetchAvailableCareRecipients() -> [CareRecipient] {
-        let all = coreDataService.fetchAllCareRecipients()
+        let all = userService.fetchPatients()
         return all
     }
 }

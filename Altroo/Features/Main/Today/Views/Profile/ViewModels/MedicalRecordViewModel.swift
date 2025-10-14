@@ -20,8 +20,7 @@ final class MedicalRecordViewModel {
     // MARK: - Dependencies
     var userService: UserServiceProtocol
     
-    // MARK: - Input
-
+    
     // MARK: - Output
     @Published private(set) var sections: [MedicalRecordSectionVM] = []
     @Published private(set) var completionPercent: CGFloat = 0.0
@@ -35,19 +34,7 @@ final class MedicalRecordViewModel {
         func reload() {
             rebuildOutputs()
         }
-    // MARK: - Public export texts (usados para PDF/compartilhamento)
-//    func personalDataText() -> String {
-//        guard let person = currentPatient() else { return "Sem paciente selecionado." }
-////        rebuildOutputs()
-//        return "oi"
-//    }
-
-//    func update(person: CareRecipient) {
-//        self.person = person
-//        rebuildOutputs()
-//    }
-
-    // MARK: - Public export texts (usados para PDF/compartilhamento)
+    
     func personalDataText(person: CareRecipient) -> String {
         let p = person.personalData
         let name = p?.name ?? "—"
@@ -261,7 +248,7 @@ final class MedicalRecordViewModel {
         guard let set, !set.isEmpty else { return "—" }
         return set
             .sorted { ($0.name ?? "") < ($1.name ?? "") }
-            .map { "\($0.name ?? "Contato") \($0.description)" }
+            .map { "\($0.name ?? "Contato") \($0.contactDescription)" }
             .joined(separator: "\n")
     }
 

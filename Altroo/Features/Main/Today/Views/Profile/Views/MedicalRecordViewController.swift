@@ -94,10 +94,10 @@ final class MedicalRecordViewController: GradientNavBarViewController {
     }
 
     // MARK: - Header
-    private func makeHeaderSection(percent: CGFloat) -> UIView {
+    func makeHeaderSection(percent: CGFloat) -> UIView {
         let container = UIView()
         container.backgroundColor = .clear
-
+        
         let title = StandardLabel(
             labelText: "Ficha Médica",
             labelFont: .sfPro,
@@ -105,7 +105,7 @@ final class MedicalRecordViewController: GradientNavBarViewController {
             labelColor: .black10,
             labelWeight: .semibold
         )
-
+        
         let subtitle = StandardLabel(
             labelText: "Reúna as informações de saúde do assistido em um só lugar, de forma simples e acessível.",
             labelFont: .sfPro,
@@ -114,18 +114,21 @@ final class MedicalRecordViewController: GradientNavBarViewController {
             labelWeight: .regular
         )
         subtitle.numberOfLines = 0
-
+        
         let track = UIView()
         track.translatesAutoresizingMaskIntoConstraints = false
         track.backgroundColor = .blue80
         track.layer.cornerRadius = 8
-
+        
         let fill = UIView()
         fill.translatesAutoresizingMaskIntoConstraints = false
         fill.layer.cornerRadius = 8
         fill.clipsToBounds = true
+        // Fallback imediato: já pinta algo mesmo sem gradient
+        fill.backgroundColor = .blue10
+        
         track.addSubview(fill)
-
+        
         let percentLabel = StandardLabel(
             labelText: "\(Int(round(percent * 100)))%",
             labelFont: .sfPro,
@@ -133,44 +136,45 @@ final class MedicalRecordViewController: GradientNavBarViewController {
             labelColor: .blue20,
             labelWeight: .medium
         )
-
+        
         let progressRow = UIStackView(arrangedSubviews: [track, percentLabel])
         progressRow.axis = .horizontal
         progressRow.alignment = .center
         progressRow.spacing = 10
-
+        
         let stack = UIStackView(arrangedSubviews: [title, subtitle, progressRow])
         stack.axis = .vertical
         stack.spacing = 8
         stack.translatesAutoresizingMaskIntoConstraints = false
-
+        
         container.addSubview(stack)
-
+        
         NSLayoutConstraint.activate([
             track.heightAnchor.constraint(equalToConstant: 15),
             track.widthAnchor.constraint(greaterThanOrEqualToConstant: 110),
-
+            
             fill.leadingAnchor.constraint(equalTo: track.leadingAnchor),
             fill.centerYAnchor.constraint(equalTo: track.centerYAnchor),
             fill.heightAnchor.constraint(equalTo: track.heightAnchor),
-            fill.widthAnchor.constraint(equalTo: track.widthAnchor, multiplier: percent),
-
+            fill.widthAnchor.constraint(equalTo: track.widthAnchor, multiplier: max(0, min(1, percent))),
+            
             stack.topAnchor.constraint(equalTo: container.topAnchor),
             stack.leadingAnchor.constraint(equalTo: container.leadingAnchor),
             stack.trailingAnchor.constraint(equalTo: container.trailingAnchor),
             stack.bottomAnchor.constraint(equalTo: container.bottomAnchor)
         ])
-
+        
         DispatchQueue.main.async {
+            container.layoutIfNeeded()
             let gradient = CAGradientLayer()
             gradient.colors = [UIColor.blue10.cgColor, UIColor.blue50.cgColor]
             gradient.startPoint = CGPoint(x: 0.0, y: 0.5)
-            gradient.endPoint = CGPoint(x: 1.0, y: 0.5)
+            gradient.endPoint =   CGPoint(x: 1.0, y: 0.5)
             gradient.frame = fill.bounds
-            gradient.cornerRadius = 5
+            gradient.cornerRadius = fill.layer.cornerRadius
             fill.layer.insertSublayer(gradient, at: 0)
         }
-
+        
         return container
     }
 

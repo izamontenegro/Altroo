@@ -21,7 +21,10 @@ extension CoreDataService {
         do {
             let shares = try stack.persistentContainer.fetchShares(matching: [object.objectID])
             guard let share = shares[object.objectID] else { return nil }
-            return share.participants
+            
+            var participants = share.participants
+            participants.append(share.owner)
+            return participants
         } catch {
             print("Erro ao buscar CKShare/participants: \(error.localizedDescription)")
             return nil
@@ -83,22 +86,36 @@ extension CoreDataService {
             let email = p.userIdentity.lookupInfo?.emailAddress?.lowercased()
             let phone = p.userIdentity.lookupInfo?.phoneNumber?.onlyDigits()
             let recordName = p.userIdentity.userRecordID?.recordName
-            
+
             let matchedUser =
-            (email.flatMap { byEmail[$0] }) ??
-            (phone.flatMap { byPhone[$0] }) ??
-            (recordName.flatMap { byRecordName[$0] })
-            
-            let displayName =
-            p.userIdentity.nameComponents?.formatted(.name(style: .long)) ??
-            email ?? phone ?? "Usuário do iCloud"
-            
+                (email.flatMap { byEmail[$0] }) ??
+                (phone.flatMap { byPhone[$0] }) ??
+                (recordName.flatMap { byRecordName[$0] })
+
+            let isOwner: Bool
+            if #available(iOS 15.0, *) {
+                isOwner = (p.role == .owner)
+            } else {
+                isOwner = (p.userIdentity.lookupInfo == nil)
+            }
+
+           
+            let nameFromCK = p.userIdentity.nameComponents?.formatted(.name(style: .long)).trimmingCharacters(in: .whitespacesAndNewlines)
+            let nameFromUser = (matchedUser?.value(forKey: "name") as? String)?.trimmingCharacters(in: .whitespacesAndNewlines)
+            let displayName: String = {
+                if let n = nameFromCK, !n.isEmpty { return n }
+                if let n = nameFromUser, !n.isEmpty { return n }
+                if isOwner { return "Você" }
+                if let e = email, !e.isEmpty { return e }
+                if let ph = phone, !ph.isEmpty { return ph }
+                return "Usuário do iCloud"
+            }()
+
             let category = matchedUser?.category ?? "—"
             let perm = p.permission
-            
+
             result.append(.init(name: displayName, category: category, permission: perm))
         }
-        
         return result
     }
     
