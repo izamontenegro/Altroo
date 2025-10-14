@@ -14,19 +14,20 @@ final class AppCoordinator: Coordinator {
     private let factory: AppFactory
     
     let dependencies = AppDependencies()
+    private var userService: UserServiceProtocol
 
     init(rootNavigation: UINavigationController) {
         self.rootNavigation = rootNavigation
         self.factory = DefaultAppFactory(dependencies: dependencies)
+        self.userService = UserServiceSession(context: dependencies.coreDataService.stack.context)
         rootNavigation.setNavigationBarHidden(true, animated: false)
     }
 
     func start() {
         if UserDefaults.standard.isFirstLaunch {
             showOnboardingFlow()
-//        }
-//        else if !patientService.hasPatient {
-//            showAllPatientsFlow()
+        } else if userService.fetchCurrentPatient() == nil {
+            showAllPatientsFlow()
         } else {
             showMainFlow()
         }
@@ -50,7 +51,7 @@ final class AppCoordinator: Coordinator {
         mainCoordinator.onLogout = { [weak self, weak mainCoordinator] in
             guard let self, let mainCoordinator else { return }
             self.remove(child: mainCoordinator)
-//            self.patientService.clear()
+            self.userService.removeCurrentPatient()
             self.rootNavigation.viewControllers = []
             self.showMainFlow()
         }
