@@ -41,16 +41,17 @@ class AddSymptomViewModel {
         fetchCareRecipient()
     }
     
-    private func fetchCareRecipient() {
+    func fetchCareRecipient() {
         currentCareRecipient = userService.fetchCurrentPatient()
     }
     
     
     func createSymptom() -> Bool {
+        guard let careRecipient = currentCareRecipient else { return false }
         guard validator.isEmpty(name, fieldName: "Nome", error: &nameError) else { return false }
         guard validator.checkFutureDate(fullDate, error: &dateError) else { return false }
         
-        careRecipientFacade.addSymptom(name: name, symptomDescription: note, date: fullDate, in: currentCareRecipient!)
+        careRecipientFacade.addSymptom(name: name, symptomDescription: note, date: fullDate, in: careRecipient)
         
         return true
     }
