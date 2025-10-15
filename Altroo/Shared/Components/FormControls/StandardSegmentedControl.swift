@@ -7,20 +7,15 @@
 
 import UIKit
 
-class StandardSegmentedControl: UIView {
+class StandardSegmentedControl: UISegmentedControl {
     
-    private let segmentedControl = UISegmentedControl()
+    private var itemsList: [String]
     
-    var items: [String]
-    
-    var selectedColor: UIColor
-    var backgroundColorNormal: UIColor
-    var selectedFontColor: UIColor
-    var unselectedFontColor: UIColor
-    
-    var cornerRadius: CGFloat
-    var height: CGFloat
-    var width: CGFloat
+    private var selectedColor: UIColor
+    private var backgroundColorNormal: UIColor
+    private var selectedFontColor: UIColor
+    private var unselectedFontColor: UIColor
+    private var cornerRadius: CGFloat
     
     init(items: [String],
          width: CGFloat,
@@ -31,36 +26,40 @@ class StandardSegmentedControl: UIView {
          unselectedFontColor: UIColor,
          cornerRadius: CGFloat) {
         
-        self.items = items
-        self.width = width
-        self.height = height
+        self.itemsList = items
         self.backgroundColorNormal = backgroundColor
         self.selectedColor = selectedColor
         self.selectedFontColor = selectedFontColor
         self.unselectedFontColor = unselectedFontColor
         self.cornerRadius = cornerRadius
         
-        super.init(frame: .zero)
+        super.init(items: items)
         
-        setupSegmentedControl()
-        styleSegmentedControl()
-        layoutSegmentedControl()
+        setupStyle(width: width, height: height)
     }
     
     required init?(coder: NSCoder) {
         fatalError("init(coder:) has not been implemented")
     }
     
-    private func setupSegmentedControl() {
-        for (index, title) in items.enumerated() {
-            segmentedControl.insertSegment(withTitle: title, at: index, animated: false)
-        }
-        segmentedControl.selectedSegmentIndex = 0
+    convenience init(items: [String]) {
+        self.init(
+            items: items,
+            width: 113,
+            height: 35,
+            backgroundColor: .pureWhite,
+            selectedColor: .teal20,
+            selectedFontColor: .pureWhite,
+            unselectedFontColor: .black30,
+            cornerRadius: 8
+        )
     }
     
-    private func styleSegmentedControl() {
-        segmentedControl.backgroundColor = backgroundColorNormal
-        segmentedControl.selectedSegmentTintColor = selectedColor
+    private func setupStyle(width: CGFloat, height: CGFloat) {
+        selectedSegmentIndex = 0
+        
+        backgroundColor = backgroundColorNormal
+        selectedSegmentTintColor = selectedColor
         
         let normalTextAttributes: [NSAttributedString.Key: Any] = [
             .foregroundColor: unselectedFontColor
@@ -70,32 +69,21 @@ class StandardSegmentedControl: UIView {
             .foregroundColor: selectedFontColor
         ]
         
-        segmentedControl.setTitleTextAttributes(normalTextAttributes, for: .normal)
-        segmentedControl.setTitleTextAttributes(selectedTextAttributes, for: .selected)
+        setTitleTextAttributes(normalTextAttributes, for: .normal)
+        setTitleTextAttributes(selectedTextAttributes, for: .selected)
         
-        segmentedControl.layer.cornerRadius = cornerRadius
-        segmentedControl.layer.masksToBounds = true
-    }
-    
-    private func layoutSegmentedControl() {
-        addSubview(segmentedControl)
-        segmentedControl.translatesAutoresizingMaskIntoConstraints = false
+        layer.cornerRadius = cornerRadius
+        layer.masksToBounds = true
         
+        translatesAutoresizingMaskIntoConstraints = false
         NSLayoutConstraint.activate([
-            segmentedControl.widthAnchor.constraint(equalToConstant: width),
-            segmentedControl.heightAnchor.constraint(equalToConstant: height),
-            segmentedControl.centerXAnchor.constraint(equalTo: centerXAnchor),
-            segmentedControl.centerYAnchor.constraint(equalTo: centerYAnchor)
+            widthAnchor.constraint(equalToConstant: width),
+            heightAnchor.constraint(equalToConstant: height)
         ])
     }
     
-    var selectedIndex: Int {
-        get { segmentedControl.selectedSegmentIndex }
-        set { segmentedControl.selectedSegmentIndex = newValue }
-    }
-    
     var selectedTitle: String? {
-        return segmentedControl.titleForSegment(at: segmentedControl.selectedSegmentIndex)
+        titleForSegment(at: selectedSegmentIndex)
     }
 }
 
@@ -105,7 +93,7 @@ private struct SegmentedControlPreviewWrapper: UIViewRepresentable {
     func updateUIView(_ uiView: StandardSegmentedControl, context: Context) { }
     
     func makeUIView(context: Context) -> StandardSegmentedControl {
-        return StandardSegmentedControl(
+        StandardSegmentedControl(
             items: ["Diário", "Mensal"],
             width: 241,
             height: 35,
@@ -116,19 +104,6 @@ private struct SegmentedControlPreviewWrapper: UIViewRepresentable {
             cornerRadius: 8
         )
     }
-    
-//    func makeUIView(context: Context) -> StandardSegmentedControl {
-//        return StandardSegmentedControl(
-//            items: ["F", "M"],
-//            width: 113,
-//            height: 35,
-//            backgroundColor: UIColor(resource: .white70),
-//            selectedColor: UIColor(resource: .teal20),
-//            selectedFontColor: UIColor(resource: .pureWhite),
-//            unselectedFontColor: UIColor(resource: .black30),
-//            cornerRadius: 8
-//        )
-//    }
 }
 
 #Preview {
