@@ -18,6 +18,7 @@ protocol AppFactory:
     BasicNeedsFactory,
     RoutineActivitiesFactory,
     MeasurementFactory,
+    SymptomFactory,
     GeneralFactory,
     HistoryFactory,
     SettingsFactory,
@@ -49,8 +50,14 @@ protocol MainFlowFactory {
 // MARK: - TODAY FLOW
 protocol TodayFactory {
     func makeEditSectionsViewController() -> UIViewController
+    
+}
+
+//MARK: - SYMPTOM FLOW
+protocol SymptomFactory {
     func makeAddSymptomViewController() -> UIViewController
     func makeSymptomDetailViewController(from symptom: Symptom) -> UIViewController
+    func makeEditSymptom(from symptom: Symptom) -> UIViewController
 }
 
 // MARK: - PROFILE FLOW

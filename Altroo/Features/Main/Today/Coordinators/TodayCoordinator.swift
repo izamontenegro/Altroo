@@ -85,7 +85,11 @@ final class TodayCoordinator: Coordinator {
         navigation.present(nav, animated: true)
     }
     
-    
+    private func goToEditSymptom(_ symptom: Symptom) {
+        let vc = factory.makeEditSymptom(from: symptom) as! EditSymptomViewController
+        vc.coordinator = self
+        navigation.pushViewController(vc, animated: true)
+    }
 }
 
 extension TodayCoordinator: TodayViewControllerDelegate {
@@ -100,7 +104,10 @@ extension TodayCoordinator: TodayViewControllerDelegate {
     }
     
     func goToSymptomDetail(with symptom: Symptom) {
-        let vc = factory.makeSymptomDetailViewController(from: symptom)
+        let vc = factory.makeSymptomDetailViewController(from: symptom) as! SymptomDetailViewController
+        vc.onEditTapped = {[weak self] symptom in
+            self?.goToEditSymptom(symptom)
+        }
         
         let nav = UINavigationController(rootViewController: vc)
         nav.modalPresentationStyle = .pageSheet
@@ -111,8 +118,6 @@ extension TodayCoordinator: TodayViewControllerDelegate {
         }
         navigation.present(nav, animated: true)
     }
-    
-
 }
 
 

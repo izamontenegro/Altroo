@@ -9,6 +9,7 @@ import UIKit
 
 class SymptomDetailViewController: UIViewController {
     var symptom: Symptom
+    var onEditTapped: ((Symptom) -> Void)?
     
     let vStack: UIStackView = {
         let stackView = UIStackView(arrangedSubviews: [])
@@ -63,7 +64,7 @@ class SymptomDetailViewController: UIViewController {
         closeButton.tintColor = .blue10
         navigationItem.leftBarButtonItem = closeButton
         
-        let editButton = UIBarButtonItem(title: "Editar", style: .plain, target: self, action: #selector(closeTapped))
+        let editButton = UIBarButtonItem(title: "Editar", style: .plain, target: self, action: #selector(editTapped))
         editButton.tintColor = .blue10
         navigationItem.rightBarButtonItem = editButton
         
@@ -79,6 +80,7 @@ class SymptomDetailViewController: UIViewController {
     
     @objc func editTapped() {
         dismiss(animated: true)
+        onEditTapped?(symptom)
     }
 }
 

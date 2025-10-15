@@ -10,12 +10,17 @@ import UIKit
 final class StandardConfirmationButton: PrimaryStyleButton {
     
     var title: String
-    private let titleLabelCustom = StandardLabel(labelText: "", labelFont: .sfPro, labelType: .title2, labelColor: .pureWhite, labelWeight: .semibold)
+    private let titleLabelCustom = StandardLabel(
+        labelText: "",
+        labelFont: .sfPro,
+        labelType: .title2,
+        labelColor: .pureWhite,
+        labelWeight: .semibold
+    )
     
     init(title: String) {
         self.title = title
         super.init()
-        
         setupButton()
     }
     
@@ -39,15 +44,19 @@ final class StandardConfirmationButton: PrimaryStyleButton {
             titleLabelCustom.centerXAnchor.constraint(equalTo: centerXAnchor),
             titleLabelCustom.centerYAnchor.constraint(equalTo: centerYAnchor),
             
-            widthAnchor.constraint(equalToConstant: 229),
-            heightAnchor.constraint(greaterThanOrEqualToConstant: 46)
+            widthAnchor.constraint(equalToConstant: 230),
+            heightAnchor.constraint(equalToConstant: 46)
         ])
         
         layer.cornerRadius = 22
         contentEdgeInsets = UIEdgeInsets(top: 8, left: 64, bottom: 8, right: 64)
-        titleLabel?.font = UIFont.systemFont(ofSize: 24, weight: .semibold)
         translatesAutoresizingMaskIntoConstraints = false
     }
+    
+    // MARK: - Public funcs
+        func updateTitle(_ title: String) {
+            titleLabelCustom.updateLabelText(title)
+        }
 
 }
 

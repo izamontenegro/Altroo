@@ -172,31 +172,32 @@ final class CareRecipientProfileViewController: GradientNavBarViewController {
     }
 
     private func makeOutlineButton(title: String, action: Selector) -> UIButton {
-        let button = UIButton(type: .system)
-        button.backgroundColor = .clear
-        button.layer.cornerRadius = 23
-        button.layer.borderWidth = 2
-        button.layer.borderColor = UIColor.teal10.cgColor
-        button.heightAnchor.constraint(equalToConstant: 46).isActive = true
-        button.addTarget(self, action: action, for: .touchUpInside)
+            let button = UIButton(type: .system)
+            button.backgroundColor = .clear
+            button.layer.cornerRadius = 23
+            button.layer.borderWidth = 2
+            button.layer.borderColor = UIColor.teal10.cgColor
+            button.heightAnchor.constraint(equalToConstant: 46).isActive = true
+            button.addTarget(self, action: action, for: .touchUpInside)
 
-        let label = StandardLabel(
-            labelText: title,
-            labelFont: .sfPro,
-            labelType: .callOut,
-            labelColor: .teal10,
-            labelWeight: .medium
-        )
-        label.translatesAutoresizingMaskIntoConstraints = false
+            let label = StandardLabel(
+                labelText: title,
+                labelFont: .sfPro,
+                labelType: .callOut,
+                labelColor: .teal10,
+                labelWeight: .medium
+            )
+            label.translatesAutoresizingMaskIntoConstraints = false
 
-        button.addSubview(label)
-        NSLayoutConstraint.activate([
-            label.centerXAnchor.constraint(equalTo: button.centerXAnchor),
-            label.centerYAnchor.constraint(equalTo: button.centerYAnchor)
-        ])
+            button.addSubview(label)
+            NSLayoutConstraint.activate([
+                label.centerXAnchor.constraint(equalTo: button.centerXAnchor),
+                label.centerYAnchor.constraint(equalTo: button.centerYAnchor)
+            ])
 
-        return button
-    }
+            return button
+        }
+
 
     private func addTap(to view: UIView, action: Selector) {
         view.isUserInteractionEnabled = true

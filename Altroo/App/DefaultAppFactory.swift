@@ -105,6 +105,11 @@ extension DefaultAppFactory {
         return vc
     }
     
+    
+}
+
+//MARK: SymptomFactory
+extension DefaultAppFactory {
     func makeAddSymptomViewController() -> UIViewController {
         let vm = AddSymptomViewModel(careRecipientFacade: dependencies.careRecipientFacade, userService: dependencies.userService)
         let vc = AddSymptomViewController(viewModel: vm)
@@ -115,6 +120,13 @@ extension DefaultAppFactory {
         let vc = SymptomDetailViewController(symptom: symptom)
         return vc
     }
+    
+    func makeEditSymptom(from symptom: Symptom) -> UIViewController {
+        let vm = EditSymptomViewModel(careRecipientFacade: dependencies.careRecipientFacade, userService: dependencies.userService, symptom: symptom)
+        let vc = EditSymptomViewController(viewModel: vm)
+        return vc
+    }
+
 }
 
 //MARK: - ProfileFactory

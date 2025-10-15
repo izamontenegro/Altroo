@@ -9,6 +9,7 @@ import Foundation
 
 protocol SymptomProtocol {
     func addSymptom(name: String, symptomDescription: String, date: Date, in careRecipient: CareRecipient)
+    func editSymptom(symptom: Symptom, name: String, symptomDescription: String, date: Date)
     func deleteSymptom(symptomRecord: Symptom, from careRecipient: CareRecipient)
     func fetchAllSymptoms(from careRecipient: CareRecipient) -> [Symptom]
     func fetchAllSymptomForDate(_ date: Date, from careRecipient: CareRecipient) -> [Symptom]
@@ -26,6 +27,15 @@ extension CareRecipientFacade: SymptomProtocol {
         
         let symptoms = careRecipient.mutableSetValue(forKey: "symptoms")
         symptoms.add(newSymptom)
+        
+        persistenceService.save()
+    }
+    
+    func editSymptom(symptom: Symptom, name: String, symptomDescription: String, date: Date) {
+                
+        symptom.name = name
+        symptom.symptomDescription = symptomDescription
+        symptom.date = date
         
         persistenceService.save()
     }

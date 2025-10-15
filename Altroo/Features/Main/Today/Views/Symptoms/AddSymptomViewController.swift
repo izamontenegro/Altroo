@@ -44,8 +44,6 @@ class AddSymptomViewController: GradientNavBarViewController {
     
     override func viewDidLoad() {
         super.viewDidLoad()
-
-        view.backgroundColor = .white
         
         setupUI()
         bindViewModel()
@@ -68,6 +66,8 @@ class AddSymptomViewController: GradientNavBarViewController {
 
     
     func setupUI() {
+        view.backgroundColor = .white
+
         view.addSubview(titleLabel)
         view.addSubview(addButton)
         
