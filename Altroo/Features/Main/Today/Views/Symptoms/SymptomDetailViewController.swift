@@ -15,7 +15,7 @@ class SymptomDetailViewController: UIViewController {
         let stackView = UIStackView(arrangedSubviews: [])
         stackView.axis = .vertical
         stackView.distribution = .fill
-        stackView.spacing = 16
+        stackView.spacing = Layout.mediumSpacing
         
         stackView.translatesAutoresizingMaskIntoConstraints = false
         return stackView
@@ -50,10 +50,9 @@ class SymptomDetailViewController: UIViewController {
         view.addSubview(vStack)
         
         NSLayoutConstraint.activate([
-            vStack.topAnchor.constraint(equalTo: view.topAnchor, constant: 16),
-            vStack.leadingAnchor.constraint(equalTo: view.leadingAnchor, constant: 16),
-            vStack.trailingAnchor.constraint(equalTo: view.trailingAnchor, constant: -16),
-            
+            vStack.topAnchor.constraint(equalTo: view.safeAreaLayoutGuide.topAnchor, constant: Layout.mediumSpacing),
+            vStack.leadingAnchor.constraint(equalTo: view.leadingAnchor, constant: Layout.mediumSpacing),
+            vStack.trailingAnchor.constraint(equalTo: view.trailingAnchor, constant: -Layout.mediumSpacing),
         ])
     }
     

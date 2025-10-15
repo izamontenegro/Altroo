@@ -42,6 +42,34 @@ class EditSymptomViewController: SymptomFormViewController {
             .compactMap { ($0.object as? UITextField)?.text }
             .assign(to: \.note, on: viewModel)
             .store(in: &cancellables)
+        
+        viewModel.$name
+            .receive(on: DispatchQueue.main)
+            .sink { [weak self] name in
+                self?.nameTexfield.text = name
+            }
+            .store(in: &cancellables)
+        
+        viewModel.$note
+            .receive(on: DispatchQueue.main)
+            .sink { [weak self] note in
+                self?.noteTexfield.text = note
+            }
+            .store(in: &cancellables)
+        
+        viewModel.$date
+            .receive(on: DispatchQueue.main)
+            .sink { [weak self] date in
+                self?.datePicker.date = date
+            }
+            .store(in: &cancellables)
+        
+        viewModel.$time
+            .receive(on: DispatchQueue.main)
+            .sink { [weak self] time in
+                self?.timePicker.date = time
+            }
+            .store(in: &cancellables)
     }
     
     

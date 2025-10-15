@@ -24,7 +24,7 @@ class SymptomsCard: UIView {
         let stackView = UIStackView(arrangedSubviews: [])
         stackView.axis = .vertical
         stackView.distribution = .fill
-        stackView.spacing = 16
+        stackView.spacing = Layout.verySmallSpacing
         
         stackView.translatesAutoresizingMaskIntoConstraints = false
         return stackView
@@ -55,6 +55,7 @@ class SymptomsCard: UIView {
 
         if symptoms.isEmpty {
             makeEmptyState()
+
         } else {
             makeContent()
         }
@@ -65,53 +66,56 @@ class SymptomsCard: UIView {
             vStack.topAnchor.constraint(equalTo: topAnchor, constant: Layout.viewPadding),
             vStack.bottomAnchor.constraint(equalTo: bottomAnchor, constant: -Layout.viewPadding),
         ])
-        
+                
     }
     
     func makeContent() {
         for (index, symptom) in symptoms.enumerated() {
-            let row = makeSymptomLine(for: symptom)
+            let row = makeSymptomRow(for: symptom)
             row.tag = index
-            row.addTarget(self, action: #selector(symptomTapped(_:)), for: .touchUpInside)
+            if let button = row.subviews.first as? UIButton {
+                    button.addTarget(self, action: #selector(symptomTapped(_:)), for: .touchUpInside)
+                    button.tag = index
+                }
             vStack.addArrangedSubview(row)
             row.widthAnchor.constraint(equalTo: vStack.widthAnchor).isActive = true
-            
-            let divider = UIView()
-            divider.backgroundColor = .white70
-            divider.translatesAutoresizingMaskIntoConstraints = false
-            divider.heightAnchor.constraint(equalToConstant: 1).isActive = true
-            vStack.addArrangedSubview(divider)
-            vStack.setCustomSpacing(0, after: row)
         }
         
         vStack.alignment = .fill
     }
     
     func makeEmptyState() {
+        
         let text = StandardLabel(labelText: "Nenhuma intercorrência reportada", labelFont: .sfPro, labelType: .callOut, labelColor: .black30)
         vStack.addArrangedSubview(text)
         vStack.alignment = .center
     }
     
-    func makeSymptomLine(for symptom: Symptom) -> UIButton {
+    func makeSymptomRow(for symptom: Symptom) -> UIView {
+        let container = UIView()
+        container.translatesAutoresizingMaskIntoConstraints = false
+
+        let button = UIButton(type: .system)
+        button.backgroundColor = .clear
+        button.translatesAutoresizingMaskIntoConstraints = false
+
         let name = StandardLabel(labelText: symptom.name ?? "Intercorrência", labelFont: .sfPro, labelType: .callOut, labelColor: .black10)
-        
+
         let icon = UIImageView(image: UIImage(systemName: "exclamationmark.triangle.fill"))
         icon.tintColor = .black10
         icon.contentMode = .scaleAspectFit
         icon.translatesAutoresizingMaskIntoConstraints = false
         icon.setContentHuggingPriority(.required, for: .horizontal)
         icon.setContentCompressionResistancePriority(.required, for: .horizontal)
-        
+
         let time = StandardLabel(labelText: DateFormatterHelper.hourFormatter(date: symptom.date ?? .now), labelFont: .sfPro, labelType: .callOut, labelColor: .black30)
         time.setContentHuggingPriority(.required, for: .horizontal)
-        
+
         let spacer = UIView()
         spacer.translatesAutoresizingMaskIntoConstraints = false
         spacer.setContentHuggingPriority(.defaultLow, for: .horizontal)
         spacer.setContentCompressionResistancePriority(.defaultLow, for: .horizontal)
-        
-        
+
         let hStack = UIStackView(arrangedSubviews: [icon, name, spacer, time])
         hStack.axis = .horizontal
         hStack.alignment = .leading
@@ -119,12 +123,9 @@ class SymptomsCard: UIView {
         hStack.spacing = CGFloat(Layout.verySmallSpacing)
         hStack.translatesAutoresizingMaskIntoConstraints = false
         hStack.isUserInteractionEnabled = false
-        
-        let button = UIButton(type: .system)
+
         button.addSubview(hStack)
-        button.backgroundColor = .clear
-        button.translatesAutoresizingMaskIntoConstraints = false
-        
+
         NSLayoutConstraint.activate([
             hStack.leadingAnchor.constraint(equalTo: button.leadingAnchor),
             hStack.trailingAnchor.constraint(equalTo: button.trailingAnchor),
@@ -132,9 +133,28 @@ class SymptomsCard: UIView {
             hStack.bottomAnchor.constraint(equalTo: button.bottomAnchor)
         ])
 
-        return button
+        container.addSubview(button)
+
+        let divider = UIView()
+        divider.backgroundColor = .white70
+        divider.translatesAutoresizingMaskIntoConstraints = false
+        container.addSubview(divider)
+
+        NSLayoutConstraint.activate([
+            button.topAnchor.constraint(equalTo: container.topAnchor),
+            button.leadingAnchor.constraint(equalTo: container.leadingAnchor),
+            button.trailingAnchor.constraint(equalTo: container.trailingAnchor),
+
+            divider.topAnchor.constraint(equalTo: button.bottomAnchor),
+            divider.leadingAnchor.constraint(equalTo: container.leadingAnchor),
+            divider.trailingAnchor.constraint(equalTo: container.trailingAnchor),
+            divider.heightAnchor.constraint(equalToConstant: 1),
+            divider.bottomAnchor.constraint(equalTo: container.bottomAnchor)
+        ])
+
+        return container
     }
-    
+
     @objc private func symptomTapped(_ sender: UIButton) {
         let index = sender.tag
         let symptom = symptoms[index]
@@ -146,7 +166,7 @@ class SymptomsCard: UIView {
         
         vStack.arrangedSubviews.forEach { $0.removeFromSuperview() }
 
-        makeContent()
+        setupUI()
     }
 }
 

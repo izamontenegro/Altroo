@@ -41,6 +41,7 @@ class EditSymptomViewModel {
         self.userService = userService
         
         updateFields()
+        fetchCareRecipient()
     }
     
     private func updateFields() {
