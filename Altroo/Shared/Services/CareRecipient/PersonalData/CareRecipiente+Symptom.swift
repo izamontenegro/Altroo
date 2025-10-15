@@ -8,7 +8,7 @@
 import Foundation
 
 protocol SymptomProtocol {
-    func addSymptom(name: String, symptomDescription: String, date: Date, in careRecipient: CareRecipient)
+    func addSymptom(name: String, symptomDescription: String, date: Date, in careRecipient: CareRecipient) -> Symptom?
     func editSymptom(symptom: Symptom, name: String, symptomDescription: String, date: Date)
     func deleteSymptom(symptomRecord: Symptom, from careRecipient: CareRecipient)
     func fetchAllSymptoms(from careRecipient: CareRecipient) -> [Symptom]
@@ -16,9 +16,10 @@ protocol SymptomProtocol {
 }
 
 extension CareRecipientFacade: SymptomProtocol {
-    func addSymptom(name: String, symptomDescription: String, date: Date, in careRecipient: CareRecipient) {
+    @discardableResult
+    func addSymptom(name: String, symptomDescription: String, date: Date, in careRecipient: CareRecipient) -> Symptom? {
         
-        guard let context = careRecipient.managedObjectContext else { return }
+        guard let context = careRecipient.managedObjectContext else { return nil }
         
         let newSymptom = Symptom(context: context)
         newSymptom.name = name
@@ -29,10 +30,11 @@ extension CareRecipientFacade: SymptomProtocol {
         symptoms.add(newSymptom)
         
         persistenceService.save()
+        
+        return newSymptom
     }
     
     func editSymptom(symptom: Symptom, name: String, symptomDescription: String, date: Date) {
-                
         symptom.name = name
         symptom.symptomDescription = symptomDescription
         symptom.date = date
