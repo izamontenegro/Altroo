@@ -17,13 +17,12 @@ protocol SymptomsCardDelegate: AnyObject {
 }
 
 class SymptomsCard: UIView {
-    let symptoms: [Symptom]
+    var symptoms: [Symptom]
     weak var delegate: SymptomsCardDelegate?
     
     let vStack: UIStackView = {
         let stackView = UIStackView(arrangedSubviews: [])
         stackView.axis = .vertical
-        stackView.alignment = .fill
         stackView.distribution = .fill
         stackView.spacing = 16
         
@@ -76,20 +75,22 @@ class SymptomsCard: UIView {
             row.addTarget(self, action: #selector(symptomTapped(_:)), for: .touchUpInside)
             vStack.addArrangedSubview(row)
             row.widthAnchor.constraint(equalTo: vStack.widthAnchor).isActive = true
-
             
             let divider = UIView()
             divider.backgroundColor = .white70
             divider.translatesAutoresizingMaskIntoConstraints = false
             divider.heightAnchor.constraint(equalToConstant: 1).isActive = true
             vStack.addArrangedSubview(divider)
-            vStack.setCustomSpacing(Layout.verySmallSpacing, after: row)
+            vStack.setCustomSpacing(0, after: row)
         }
+        
+        vStack.alignment = .fill
     }
     
     func makeEmptyState() {
         let text = StandardLabel(labelText: "Nenhuma intercorrência reportada", labelFont: .sfPro, labelType: .callOut, labelColor: .black30)
         vStack.addArrangedSubview(text)
+        vStack.alignment = .center
     }
     
     func makeSymptomLine(for symptom: Symptom) -> UIButton {
@@ -138,6 +139,14 @@ class SymptomsCard: UIView {
         let index = sender.tag
         let symptom = symptoms[index]
         delegate?.tappedSymptom(symptom, on: self)
+    }
+    
+    func updateSymptoms(_ symptoms: [Symptom]) {
+        self.symptoms = symptoms
+        
+        vStack.arrangedSubviews.forEach { $0.removeFromSuperview() }
+
+        makeContent()
     }
 }
 

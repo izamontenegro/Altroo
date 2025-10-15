@@ -70,6 +70,12 @@ class TodayViewController: UIViewController {
         addSections()
     }
     
+    override func viewWillAppear(_ animated: Bool) {
+        viewModel.fetchAllTodaySymptoms()
+        symptomsCard.updateSymptoms(viewModel.todaySymptoms)
+        print(viewModel.todaySymptoms.last?.name)
+    }
+    
     private func addSections() {
             // Profile & Edit
             vStack.addArrangedSubview(makeSection(title: "Profile", buttons: [("Abrir", #selector(didTapProfileView))]))

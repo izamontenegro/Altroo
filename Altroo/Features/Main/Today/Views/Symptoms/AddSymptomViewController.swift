@@ -10,6 +10,7 @@ import Combine
 
 class AddSymptomViewController: GradientNavBarViewController {
     var viewModel: AddSymptomViewModel
+    var coordinator: Coordinator?
     private var cancellables = Set<AnyCancellable>()
 
     let titleLabel = StandardLabel(labelText: "Adicionar Intercorrência", labelFont: .sfPro, labelType: .title2, labelColor: .black, labelWeight: .semibold)
@@ -124,7 +125,9 @@ class AddSymptomViewController: GradientNavBarViewController {
     
     
     @objc func didFinishCreating() {
-        viewModel.createSymptom()
+        guard viewModel.createSymptom() else { return }
+        
+        coordinator?.goToRoot()
     }
     
     @objc func dateChanged(_ picker: UIDatePicker) {
