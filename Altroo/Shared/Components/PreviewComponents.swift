@@ -28,13 +28,11 @@ class ComponentPreviewViewController: UIViewController {
         return label
     }()
 
-
     override func viewDidLoad() {
         super.viewDidLoad()
         setupView()
         previewComponents()
     }
-
 
     private func setupView() {
         view.backgroundColor = .systemBackground
@@ -53,16 +51,31 @@ class ComponentPreviewViewController: UIViewController {
         ])
     }
 
-
     private func previewComponents() {
         // TEXTFIELD
-        let textField = StandardTextfield()
-        textField.placeholder = "Digite algo..."
-        textField.borderStyle = .roundedRect
+        let textField = StandardTextfield(
+            width: 250,
+            height: 45,
+            title: StandardLabel(labelText: "Nome",
+                                 labelFont: .sfPro,
+                                 labelType: .title3,
+                                 labelColor: UIColor(resource: .black10),
+                                 labelWeight: .medium
+                                ),
+            placeholder: "Maria Clara"
+        )
 
         // SEGMENTEDCONTROL
-        let segmentedControl = StandardSegmentedControl(items: ["Opção 1", "Opção 2", "Opção 3"])
-        segmentedControl.selectedSegmentIndex = 0
+        let segmentedControl = StandardSegmentedControl(
+            items: ["F", "M"],
+            width: 113,
+            height: 35,
+            backgroundColor: UIColor(resource: .white70),
+            selectedColor: UIColor(resource: .teal20),
+            selectedFontColor: UIColor(resource: .black0),
+            unselectedFontColor: UIColor(resource: .black0),
+            cornerRadius: 8
+        )
 
         // TOGGLE
         let toggleSwitch = StandardToggle()
@@ -79,14 +92,18 @@ class ComponentPreviewViewController: UIViewController {
 
         let button6 = PlusButton()
 
-        
         //CAPSULES
         //these are views, not buttons
         //to make a capsule button add it as the button's view
-        let capsule1 = CapsuleWithCircleView(iconName: "pencil", text: "Editar Seções", mainColor: UIColor(resource: .teal80), accentColor: UIColor(resource: .teal20))
-        let capsule2 = CapsuleIconView(iconName: "drop.fill", text: "250ml")
+        let capsule1 = CapsuleIconView(iconName: "drop.fill",
+                                       text: "250ml")
         
-        
+        let capsule2 = CapsuleWithCircleView(text: "Editar",
+                                             textColor: .teal20,
+                                             nameIcon: "pencil",
+                                             nameIconColor: .pureWhite,
+                                             circleIconColor: .teal20)
+
         stackView.addArrangedSubview(textField)
         stackView.addArrangedSubview(segmentedControl)
         stackView.addArrangedSubview(toggleSwitch)
@@ -98,7 +115,6 @@ class ComponentPreviewViewController: UIViewController {
         stackView.addArrangedSubview(button6)
         stackView.addArrangedSubview(capsule1)
         stackView.addArrangedSubview(capsule2)
-
     }
 }
 
@@ -109,7 +125,6 @@ struct ComponentPreviewViewController_Preview: UIViewControllerRepresentable {
     }
 
     func updateUIViewController(_ uiViewController: ComponentPreviewViewController, context: Context) {
-        // Não é necessário fazer nada aqui para este caso
     }
 }
 

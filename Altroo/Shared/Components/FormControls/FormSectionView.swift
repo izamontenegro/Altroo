@@ -10,7 +10,7 @@ final class FormSectionView: UIStackView {
     init(title: String, content: UIView) {
         super.init(frame: .zero)
         axis = .vertical
-        spacing = 4
+        spacing = 8
         translatesAutoresizingMaskIntoConstraints = false
 
         let titleLabel = StandardLabel(
