@@ -58,7 +58,7 @@ class ArrowWideRectangleButton: WideRectangleButton {
         titleEdgeInsets = .zero
         imageEdgeInsets = .zero
         
-        layer.cornerRadius = 6
+        layer.cornerRadius = 8
         clipsToBounds = true
     }
     
