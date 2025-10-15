@@ -125,7 +125,6 @@ struct ComponentPreviewViewController_Preview: UIViewControllerRepresentable {
     }
 
     func updateUIViewController(_ uiViewController: ComponentPreviewViewController, context: Context) {
-        // Não é necessário fazer nada aqui para este caso
     }
 }
 
