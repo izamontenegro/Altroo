@@ -9,12 +9,19 @@ import Combine
 
 class AddSymptomViewModel {
     let careRecipientFacade: CareRecipientFacade
+    let userService: UserServiceProtocol
+    
     var currentCareRecipient: CareRecipient?
     
     @Published var name: String = ""
+    @Published var nameError: String?
     @Published var time: Date = .now
     @Published var date: Date = .now
+    @Published var dateError: String?
+
     @Published var note: String = ""
+    
+    private let validator = FormValidator()
     
     var fullDate: Date {
         let calendar = Calendar.current
@@ -27,21 +34,24 @@ class AddSymptomViewModel {
         return newDate
     }
     
-    init(careRecipientFacade: CareRecipientFacade) {
+    init(careRecipientFacade: CareRecipientFacade, userService: UserServiceProtocol) {
         self.careRecipientFacade = careRecipientFacade
+        self.userService = userService
         
-        //FIXME: Change to real patient
-        self.currentCareRecipient = CoreDataService(stack: CoreDataStack.shared)
-            .fetchAllCareRecipients()
-            .first(where: { $0.personalData?.name == "Mrs. Parente" })!
+        fetchCareRecipient()
     }
-
     
-    func createSymptom() {
-        print("Symptoms on record before add: \(careRecipientFacade.fetchAllSymptoms(from: currentCareRecipient!).count)")
+    private func fetchCareRecipient() {
+        currentCareRecipient = userService.fetchCurrentPatient()
+    }
+    
+    
+    func createSymptom() -> Bool {
+        guard validator.isEmpty(name, fieldName: "Nome", error: &nameError) else { return false }
+        guard validator.checkFutureDate(fullDate, error: &dateError) else { return false }
         
         careRecipientFacade.addSymptom(name: name, symptomDescription: note, date: fullDate, in: currentCareRecipient!)
         
-        print("Symptoms on record after add: \(careRecipientFacade.fetchAllSymptoms(from: currentCareRecipient!).count)")
+        return true
     }
 }
