@@ -12,7 +12,11 @@ class TaskCard: InnerShadowView {
     
     var cardTapAction: (() -> Void)?
 
-    let titleLabel = StandardLabel(labelText: "", labelFont: .sfPro, labelType: .callOut, labelColor: .black, labelWeight: .medium)
+    let titleLabel = StandardLabel(labelText: "",
+                                   labelFont: .sfPro,
+                                   labelType: .callOut,
+                                   labelColor: UIColor(resource: .black10),
+                                   labelWeight: .medium)
     
     var wasChecked = false
     
@@ -37,14 +41,12 @@ class TaskCard: InnerShadowView {
         self.task = task
         super.init(frame: .zero, color: .blue80)
         setupUI()
-
     }
     
     required init?(coder: NSCoder) {
         fatalError("init(coder:) has not been implemented")
     }
 
-    
     func setupUI() {
         backgroundColor = .white
         layer.cornerRadius = 10
@@ -72,7 +74,6 @@ class TaskCard: InnerShadowView {
             checkButton.topAnchor.constraint(equalTo: topAnchor, constant: 12),
             checkButton.heightAnchor.constraint(equalToConstant: 18),
             checkButton.widthAnchor.constraint(equalTo: checkButton.heightAnchor),
-
         ])
     }
     
@@ -140,7 +141,6 @@ class TaskCard: InnerShadowView {
         cardTapAction?()
     }
 }
-
 
 //#Preview {
 //    let task = MockTask(
