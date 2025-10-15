@@ -10,13 +10,13 @@ import UIKit
 final class MainCoordinator: Coordinator {
     
     var childCoordinators: [Coordinator] = []
-    private let rootNavigation: UINavigationController
+    var navigation: UINavigationController
     private let factory: AppFactory
     
     var onLogout: (() -> Void)?
     
     init(navigation: UINavigationController, factory: AppFactory) {
-        self.rootNavigation = navigation
+        self.navigation = navigation
         self.factory = factory
     }
     
@@ -65,7 +65,7 @@ final class MainCoordinator: Coordinator {
         
         tabBar.viewControllers = [todayNav, analysisNav, settingsNav]
         
-        rootNavigation.setNavigationBarHidden(true, animated: false)
-        rootNavigation.setViewControllers([tabBar], animated: false)
+        navigation.setNavigationBarHidden(true, animated: false)
+        navigation.setViewControllers([tabBar], animated: false)
     }
 }

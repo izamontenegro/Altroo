@@ -9,7 +9,7 @@ import CloudKit
 
 final class ProfileCoordinator: Coordinator {
     var childCoordinators: [Coordinator] = []
-    private let navigation: UINavigationController
+    var navigation: UINavigationController
     private let factory: AppFactory
     
     private var cloudSharingCoordinator: CloudSharingCoordinator?

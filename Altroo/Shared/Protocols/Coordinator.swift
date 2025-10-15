@@ -8,7 +8,9 @@ import UIKit
 
 protocol Coordinator: AnyObject {
     var childCoordinators: [Coordinator] { get set }
+    var navigation: UINavigationController { get set }
     func start()
+    func goToRoot()
 }
 
 extension Coordinator {
@@ -35,4 +37,8 @@ extension Coordinator {
             
             navigation.present(vc, animated: animated)
         }
+    
+    func goToRoot() {
+        navigation.popToRootViewController(animated: true)
+    }
 }

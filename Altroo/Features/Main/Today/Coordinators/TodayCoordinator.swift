@@ -9,7 +9,7 @@ import UIKit
 
 final class TodayCoordinator: Coordinator {
     var childCoordinators: [Coordinator] = []
-    private let navigation: UINavigationController
+    var navigation: UINavigationController
     private let factory: AppFactory
     
     var onRequestLogout: (() -> Void)?
@@ -48,8 +48,10 @@ final class TodayCoordinator: Coordinator {
         case .seeAllEvents: return factory.makeAllEventsViewController()
         case .addNewEvent: return factory.makeAddEventViewController()
         case .editSection: return factory.makeEditSectionsViewController()
-        case .addSymptom: return factory.makeAddSymptomViewController()
-            
+        case .addSymptom:
+            let vc = factory.makeAddSymptomViewController() as! AddSymptomViewController
+            vc.coordinator = self
+            return vc
         case .careRecipientProfile:
             let profileCoord = ProfileCoordinator(navigation: navigation, factory: factory)
             add(child: profileCoord)
@@ -99,17 +101,15 @@ extension TodayCoordinator: TodayViewControllerDelegate {
     
     func goToSymptomDetail(with symptom: Symptom) {
         let vc = factory.makeSymptomDetailViewController(from: symptom)
-        vc.modalPresentationStyle = .pageSheet
         
-        if let sheet = vc.sheetPresentationController {
+        let nav = UINavigationController(rootViewController: vc)
+        nav.modalPresentationStyle = .pageSheet
+        
+        if let sheet = nav.sheetPresentationController {
             sheet.detents = [.medium()]
             sheet.prefersGrabberVisible = true
         }
-        navigation.present(vc, animated: true)
-    }
-    
-    func goBackToRoot() {
-        navigation.popToRootViewController(animated: false)
+        navigation.present(nav, animated: true)
     }
     
 
