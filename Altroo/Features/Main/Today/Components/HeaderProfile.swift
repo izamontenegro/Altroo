@@ -38,6 +38,7 @@ class HeaderProfile: UIView {
         horizontalStack.axis = .horizontal
         horizontalStack.spacing = 12
         horizontalStack.alignment = .center
+        horizontalStack.distribution = .fill
         horizontalStack.translatesAutoresizingMaskIntoConstraints = false
         
         horizontalStack.addArrangedSubview(profileView)
@@ -46,10 +47,10 @@ class HeaderProfile: UIView {
         return horizontalStack
     }
 
-    init(name: String, careRecipient: CareRecipient? = nil, frame: CGRect = .zero) {
+    init(name: String, careRecipient: CareRecipient? = nil) {
         self.profileName = name
         self.careRecipient = careRecipient
-        super.init(frame: frame)
+        super.init(frame: .zero)
         setupLayout()
     }
     
@@ -60,6 +61,11 @@ class HeaderProfile: UIView {
     private func setupLayout() {
         let finalLayout = makeCombinedLayout()
         addSubview(finalLayout)
+        
+        NSLayoutConstraint.activate([
+            profileView.widthAnchor.constraint(equalToConstant: 70),
+            profileView.heightAnchor.constraint(equalToConstant: 70)
+        ])
 
         NSLayoutConstraint.activate([
             finalLayout.topAnchor.constraint(equalTo: self.topAnchor, constant: 12),
@@ -71,5 +77,5 @@ class HeaderProfile: UIView {
 }
 
 #Preview {
-    HeaderProfile(name: "Karlisson Oliveira", frame: CGRect(x: 0, y: 0, width: 300, height: 90))
+    HeaderProfile(name: "Karlisson Oliveira")
 }
