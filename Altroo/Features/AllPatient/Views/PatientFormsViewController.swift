@@ -11,15 +11,11 @@ class PatientFormsViewController: UIViewController {
     
     weak var delegate: AssociatePatientViewControllerDelegate?
     private let viewModel: AddPatientViewModel
-    
     private var contactsList: [ContactDraft] = []
     
     private let genderSegmentedControl: StandardSegmentedControl = {
         let items = ["F", "M"]
         let control = StandardSegmentedControl(items: items)
-        control.backgroundColor = .white70
-        control.selectedSegmentTintColor = .teal20
-        control.selectedSegmentIndex = 0
         return control
     }()
     
@@ -31,6 +27,7 @@ class PatientFormsViewController: UIViewController {
         tf.translatesAutoresizingMaskIntoConstraints = false
         return tf
     }()
+    
     private lazy var heightTextField: StandardTextfield = {
         let tf = StandardTextfield()
         tf.placeholder = ""
@@ -40,6 +37,7 @@ class PatientFormsViewController: UIViewController {
         tf.translatesAutoresizingMaskIntoConstraints = false
         return tf
     }()
+    
     private lazy var heightInputStack: UIStackView = {
         let label = StandardLabel(
             labelText: "cm",
@@ -66,6 +64,7 @@ class PatientFormsViewController: UIViewController {
         
         return tf
     }()
+    
     private lazy var weightInputStack: UIStackView = {
         let label = StandardLabel(
             labelText: "kg",
@@ -90,6 +89,7 @@ class PatientFormsViewController: UIViewController {
         tf.translatesAutoresizingMaskIntoConstraints = false
         return tf
     }()
+    
     private lazy var contactTextField: StandardTextfield = {
         let tf = StandardTextfield()
         tf.placeholder = "Número ou email"
@@ -98,6 +98,7 @@ class PatientFormsViewController: UIViewController {
         tf.translatesAutoresizingMaskIntoConstraints = false
         return tf
     }()
+    
     private let datePicker: UIDatePicker = {
         let picker = UIDatePicker()
         picker.datePickerMode = .date
@@ -178,8 +179,6 @@ class PatientFormsViewController: UIViewController {
     
     private func setupUI() {
         view.backgroundColor = .pureWhite
-//        navigationItem.title = "Perfil do Assistido"
-        
         view.addSubview(formStack)
         
         NSLayoutConstraint.activate([
@@ -215,7 +214,7 @@ class PatientFormsViewController: UIViewController {
     }
     
     @objc
-    func didTapNextStepButton(_ sender: UISegmentedControl) {
+    func didTapNextStepButton(_ sender: UIButton) {
         guard let name = nameTextField.text, !name.isEmpty,
               let heightText = heightTextField.text, let height = Double(heightText),
               let weightText = weightTextField.text, let weight = Double(weightText),
@@ -224,12 +223,12 @@ class PatientFormsViewController: UIViewController {
             showAlert(message: "Preencha todos os campos corretamente.")
             return
         }
-
+        
         let selectedIndex = genderSegmentedControl.selectedSegmentIndex
         let gender = selectedIndex == 0 ? "female" : "male"
-
+        
         let dateOfBirth = datePicker.date
-
+        
         viewModel.updatePersonalData(
             name: name,
             gender: gender,
@@ -238,13 +237,14 @@ class PatientFormsViewController: UIViewController {
             weight: weight,
             address: address
         )
-
+        
         for c in contactsList {
             viewModel.addContact(name: c.name, contactDescription: c.description, contactMethod: c.method)
         }
-
+        
         delegate?.goToComorbiditiesForms()
     }
+
 
     @objc
     private func updateAgeLabel() {
@@ -284,5 +284,5 @@ extension PatientFormsViewController: UITextFieldDelegate {
 //#Preview {
 //    let mockService = UserServiceSession(context: AppDependencies().coreDataService.stack.context)
 //
-//    ComorbiditiesFormsViewController(viewModel: AddPatientViewModel(careRecipientFacade: CareRecipientFacade(basicNeedsFacade: BasicNeedsFacadeMock(), routineActivitiesFacade: RoutineActivitiesFacadeMock(), persistenceService: CoreDataServiceMock()), userService: mockService))
+//    PatientFormsViewController(viewModel: AddPatientViewModel(careRecipientFacade: CareRecipientFacade(basicNeedsFacade: BasicNeedsFacadeMock(), routineActivitiesFacade: RoutineActivitiesFacadeMock(), persistenceService: CoreDataServiceMock()), userService: mockService))
 //}
