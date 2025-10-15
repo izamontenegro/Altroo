@@ -63,7 +63,7 @@ final class MainCoordinator: Coordinator {
         
         // MARK: - TAB BAR CONFIGURATION
         
-        tabBar.viewControllers = [todayNav, analysisNav, settingsNav]
+        tabBar.viewControllers = [todayNav, histNav, analysisNav, settingsNav]
         
         rootNavigation.setNavigationBarHidden(true, animated: false)
         rootNavigation.setViewControllers([tabBar], animated: false)
