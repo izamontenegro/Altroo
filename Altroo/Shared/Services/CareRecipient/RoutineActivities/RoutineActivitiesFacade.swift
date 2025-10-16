@@ -42,10 +42,12 @@ class RoutineActivitiesFacade: RoutineActivitiesFacadeProtocol {
         return routineTaskService.fetchInstanceRoutineTasks(for: careRecipient)
     }
     
-    func markInstanceAsDone(_ instance: TaskInstance) {
-        routineTaskService.markInstanceAsDone(instance)
+    func toggleInstanceIsDone(_ instance: TaskInstance) {
+        print("Task is done: \(instance.isDone)")
+        routineTaskService.toggleInstanceIsDone(instance)
         
         persistenceService.save()
+        print("Task is done: \(instance.isDone)")
     }
     
     func addInstanceRoutineTask(from template: RoutineTask, on date: Date) {

@@ -23,8 +23,8 @@ protocol RoutineTaskServiceProtocol {
     
     func addInstanceRoutineTask(from template: RoutineTask, on date: Date)
     
-    func markInstanceAsDone(_ instance: TaskInstance)
-    
+    func toggleInstanceIsDone(_ instance: TaskInstance)
+        
     func deleteInstanceRoutineTask(_ instance: TaskInstance)
     
 }
@@ -87,8 +87,8 @@ class RoutineTaskService: RoutineTaskServiceProtocol {
         }
     }
     
-    func markInstanceAsDone(_ instance: TaskInstance) {
-        instance.isDone = true
+    func toggleInstanceIsDone(_ instance: TaskInstance) {
+        instance.isDone.toggle()
     }
 
     func fetchInstanceRoutineTasks(for careRecipient: CareRecipient) -> [TaskInstance] {

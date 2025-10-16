@@ -100,9 +100,8 @@ class AllTasksViewController: GradientNavBarViewController {
         let tasks = viewModel.filterTasksByPeriod(period)
         for task in tasks {
             let card = TaskCard(task: task)
-            card.cardTapAction = { [weak self] in
-                self?.onTaskSelected?(task)
-            }
+            card.delegate = self
+
             
             card.translatesAutoresizingMaskIntoConstraints = false
             cardStack.addArrangedSubview(card)
@@ -114,6 +113,16 @@ class AllTasksViewController: GradientNavBarViewController {
         }
         
         return cardStack
+    }
+}
+
+extension AllTasksViewController: TaskCardDelegate {
+    func taskCardDidSelect(_ task: TaskInstance) {
+        onTaskSelected?(task)
+    }
+    
+    func taskCardDidMarkAsDone(_ task: TaskInstance) {
+        viewModel.markAsDone(task)
     }
 }
 

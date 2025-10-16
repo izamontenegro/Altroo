@@ -8,13 +8,13 @@ import Foundation
 import Combine
 
 class AllTasksViewModel {
-    var taskService: RoutineActivitiesFacadeProtocol
+    var taskService: RoutineActivitiesFacade
     var currentCareRecipient: CareRecipient?
     let userService: UserServiceProtocol
 
     @Published var tasks: [TaskInstance] = []
   
-    init(taskService: RoutineActivitiesFacadeProtocol, userService: UserServiceProtocol) {
+    init(taskService: RoutineActivitiesFacade, userService: UserServiceProtocol) {
         self.taskService = taskService
         self.userService = userService
 
@@ -70,6 +70,6 @@ class AllTasksViewModel {
     }
     
     func markAsDone(_ instance: TaskInstance) {
-        taskService.markInstanceAsDone(instance)
+        taskService.toggleInstanceIsDone(instance)
     }
 }
