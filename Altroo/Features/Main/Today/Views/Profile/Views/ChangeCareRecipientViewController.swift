@@ -6,12 +6,29 @@
 //
 import UIKit
 
-final class ChangeCareRecipientViewController: UIViewController {
+protocol ChangeCareRecipientViewControllerDelegate: AnyObject {
+    func changeCareRecipientWantsStartAssociate(_ controller: UIViewController)
+}
 
+final class ChangeCareRecipientViewController: UIViewController {
+    let viewModel: ChangeCareRecipientViewModel
+    
+    weak var delegate: ChangeCareRecipientViewControllerDelegate?
+    
+       init(viewModel: ChangeCareRecipientViewModel) {
+           self.viewModel = viewModel
+           super.init(nibName: nil, bundle: nil) 
+       }
+
+       @available(*, unavailable)
+       required init?(coder: NSCoder) {
+           fatalError("Use init(viewModel:) instead of init(coder:)")
+       }
+    
     // MARK: - Lifecycle
     override func viewDidLoad() {
         super.viewDidLoad()
-        view.backgroundColor = .systemBackground
+        view.backgroundColor = .pureWhite
         configureNavigation()
         buildLayout()
     }
@@ -138,14 +155,16 @@ final class ChangeCareRecipientViewController: UIViewController {
         stack.spacing = 14
         stack.translatesAutoresizingMaskIntoConstraints = false
 
-        let data: [(String, Int, String)] = [
-            ("Karlisson Oliveira", 68, "KO"),
-            ("Karlisson Oliveira", 68, "KO"),
-            ("Karlisson Oliveira", 68, "KO")
-        ]
+        let data = viewModel.fetchAvailableCareRecipients()
 
-        data.forEach { name, age, initials in
-            stack.addArrangedSubview(makeRecipientCard(name: name, age: age, initials: initials))
+        for (index, careRecipient) in data.enumerated() {
+            let card = makeRecipientCard(
+                name: careRecipient.personalData?.name ?? "Nome não informado",
+                age: careRecipient.personalData?.age ?? 0,
+                initials: initialsFromName(careRecipient.personalData?.name ?? "")
+            )
+            card.tag = index
+            stack.addArrangedSubview(card)
         }
 
         return stack
@@ -230,24 +249,36 @@ final class ChangeCareRecipientViewController: UIViewController {
         return circle
     }
 
+    func initialsFromName(_ name: String) -> String {
+        let comps = name.split(separator: " ")
+        let initials = comps.prefix(2).compactMap { $0.first?.uppercased() }.joined()
+        return initials.isEmpty ? "?" : initials
+    }
+    
     // MARK: - Actions
     @objc private func closeTapped() {
         dismiss(animated: true)
     }
 
     @objc private func addTapped() {
-        print("Add tapped")
+        delegate?.changeCareRecipientWantsStartAssociate(self)
     }
 
     @objc private func linkTapped() {
-        print("Link tapped")
+        print("Link tappd")
     }
 
     @objc private func cardTapped(_ gesture: UITapGestureRecognizer) {
-        print("Card tapped")
+        guard let view = gesture.view else { return }
+        let allRecipients = viewModel.fetchAvailableCareRecipients()
+        guard view.tag < allRecipients.count else { return }
+
+        let selected = allRecipients[view.tag]
+        viewModel.changeCurrentCareRecipient(newCurrentPatient: selected)
+        dismiss(animated: true)
     }
 }
 
-#Preview {
-    ChangeCareRecipientViewController()
-}
+//#Preview {
+//    ChangeCareRecipientViewController()
+//}

@@ -75,8 +75,9 @@ extension DefaultAppFactory {
     }
     
     func makeTodayViewController(delegate: TodayViewControllerDelegate) -> UIViewController {
-        let vm = TodayViewModel(userService: dependencies.userService)
+        let vm = TodayViewModel(careRecipientFacade: dependencies.careRecipientFacade, userService: dependencies.userService)
         let vc = TodayViewController(viewModel: vm)
+        vc.title = "Today"
         vc.delegate = delegate
         return vc
     }
@@ -102,32 +103,59 @@ extension DefaultAppFactory {
         return vc
     }
     
+    
+}
+
+//MARK: SymptomFactory
+extension DefaultAppFactory {
     func makeAddSymptomViewController() -> UIViewController {
-        let vc = AddSymptomViewController()
+        let vm = AddSymptomViewModel(careRecipientFacade: dependencies.careRecipientFacade, userService: dependencies.userService)
+        let vc = AddSymptomViewController(viewModel: vm)
         return vc
     }
+    
+    func makeSymptomDetailViewController(from symptom: Symptom) -> UIViewController {
+        let vc = SymptomDetailViewController(symptom: symptom)
+        return vc
+    }
+    
+    func makeEditSymptom(from symptom: Symptom) -> UIViewController {
+        let vm = EditSymptomViewModel(careRecipientFacade: dependencies.careRecipientFacade, userService: dependencies.userService, symptom: symptom)
+        let vc = EditSymptomViewController(viewModel: vm)
+        return vc
+    }
+
 }
 
 //MARK: - ProfileFactory
 extension DefaultAppFactory {
     func makeProfileViewController(delegate: ProfileViewControllerDelegate) -> UIViewController {
-        let vc = CareRecipientProfileViewController()
+        let vm = CareRecipientProfileViewModel(userService: dependencies.userService, coreDataService: dependencies.coreDataService)
+        let vc = CareRecipientProfileViewController(viewModel: vm)
         vc.delegate = delegate
         return vc
     }
     
-    func makeChangeCaregiverViewController() -> UIViewController {
-        let vc = ChangeCareRecipientViewController()
-        return vc
-    }
+    func makeChangeCareRecipientViewController(delegate: ChangeCareRecipientViewControllerDelegate) -> UIViewController {
+        let vm = ChangeCareRecipientViewModel(userService: dependencies.userService, coreDataService: dependencies.coreDataService)
+            let vc = ChangeCareRecipientViewController(viewModel: vm)
+            (vc as? ChangeCareRecipientViewController)?.delegate = delegate
+            return vc
+        }
     
-    func makeEditCaregiverViewController() -> UIViewController {
-        let vc = EditCaregiverViewController()
-        return vc
-    }
+//    func makeEditCaregiverViewController() -> UIViewController {
+//        let vc = EditCaregiverViewController()
+//        return vc
+//    }
     
+//    func makeEditCaregiverViewController() -> UIViewController {
+//        let vc = EditCaregiverViewController()
+//        return vc
+//    }
+//    
     func makeMedicalRecordViewController() -> UIViewController {
-        let vc = MedicalRecordViewController()
+        let vm = MedicalRecordViewModel(userService: dependencies.userService)
+        let vc = MedicalRecordViewController(viewModel: vm)
         return vc
     }
 }

@@ -10,7 +10,7 @@ final class AppDependencies {
     let basicNeedsFacade: BasicNeedsFacade
     let routineActivitiesFacade: RoutineActivitiesFacade
     let careRecipientFacade: CareRecipientFacade
-    let userService: UserServiceProtocol
+    let userService: UserServiceSession
 
     init() {
         self.coreDataService = CoreDataService()

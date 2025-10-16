@@ -11,7 +11,7 @@ import UIKit
 
 final class SettingsCoordinator: Coordinator {
     var childCoordinators: [Coordinator] = []
-    private let navigation: UINavigationController
+    var navigation: UINavigationController
     private let factory: AppFactory
 
     init(navigation: UINavigationController, factory: AppFactory) {

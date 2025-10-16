@@ -8,35 +8,12 @@
 import UIKit
 
 protocol TodayViewControllerDelegate: AnyObject {
-    func goToCareRecipientProfileView()
-    func goToEditSectionView()
-    
-    func goToRecordFeeding()
-    func goToRecordHydration()
-    func goToRecordStool()
-    func goToRecordUrine()
-    
-    func goToRecordHeartRate()
-    func goToRecordGlycemia()
-    func goToRecordBloodPressure()
-    func goToRecordTemperature()
-    func goToRecordSaturation()
-    
-    func goToSeeAllTasks()
-    func goToAddNewTask()
-    
-    func goToSeeAllMedication()
-    func goToAddNewMedication()
-    func goToCheckMedicationDone()
-    
-    func goToSeeAllEvents()
-    func goToAddNewEvent()
-    
-    func goToAddNewSymptom()
+    func goTo(_ destination: TodayDestination)
+    func goToSymptomDetail(with symptom: Symptom)
 }
 
 class TodayViewController: UIViewController {
-    
+    var viewModel: TodayViewModel
     weak var delegate: TodayViewControllerDelegate?
     let viewModel: TodayViewModel
     
@@ -63,6 +40,21 @@ class TodayViewController: UIViewController {
         stackView.translatesAutoresizingMaskIntoConstraints = false
         return stackView
     }()
+    
+    var symptomsCard: SymptomsCard
+    
+    init(viewModel: TodayViewModel) {
+        //TODO: Feed real symptoms
+        self.viewModel = viewModel
+        self.symptomsCard = SymptomsCard(symptoms: viewModel.todaySymptoms)
+        super.init(nibName: nil, bundle: nil)
+
+        self.symptomsCard.delegate = self
+    }
+    
+    required init?(coder: NSCoder) {
+        fatalError("init(coder:) has not been implemented")
+    }
     
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -107,6 +99,12 @@ class TodayViewController: UIViewController {
         addSections()
     }
     
+    override func viewWillAppear(_ animated: Bool) {
+        viewModel.fetchAllTodaySymptoms()
+        symptomsCard.updateSymptoms(viewModel.todaySymptoms)
+        print(viewModel.todaySymptoms.last?.name)
+    }
+    
     private func addSections() {
             // Basic Needs
             vStack.addArrangedSubview(makeSection(title: "Necessidades Básicas", buttons: [
@@ -126,6 +124,7 @@ class TodayViewController: UIViewController {
             vStack.addArrangedSubview(makeSection(title: "Sintomas", buttons: [
                 ("Adicionar Sintoma", #selector(didTapAddNewSymptom))
             ]))
+            vStack.addArrangedSubview(symptomsCard)
         }
 
         // MARK: - Section Factory
@@ -175,17 +174,69 @@ class TodayViewController: UIViewController {
         }
     
     // MARK: - BUTTON ACTIONS
-    @objc private func didTapProfileView() { delegate?.goToCareRecipientProfileView() }
-    @objc private func didTapEditSectionView() { delegate?.goToEditSectionView() }
-    @objc private func didTapRecordFeeding() { delegate?.goToRecordFeeding() }
-    @objc private func didTapRecordHydration() { delegate?.goToRecordHydration() }
-    @objc private func didTapRecordStool() { delegate?.goToRecordStool() }
-    @objc private func didTapRecordUrine() { delegate?.goToRecordUrine() }
-    
-    @objc private func didTapAddNewTask() { delegate?.goToAddNewTask() }
-    @objc private func didTapSeeAllTasks() { delegate?.goToSeeAllTasks() }
-    
-    @objc private func didTapAddNewSymptom() { delegate?.goToAddNewSymptom() }
+    @objc private func didTapProfileView() {
+           delegate?.goTo(.careRecipientProfile)
+       }
+       @objc private func didTapEditSectionView() {
+           delegate?.goTo(.editSection)
+       }
+       @objc private func didTapRecordFeeding() {
+           delegate?.goTo(.recordFeeding)
+       }
+       @objc private func didTapRecordHydration() {
+           delegate?.goTo(.recordHydration)
+       }
+       @objc private func didTapRecordStool() {
+           delegate?.goTo(.recordStool)
+       }
+       @objc private func didTapRecordUrine() {
+           delegate?.goTo(.recordUrine)
+       }
+       @objc private func didTapRecordHeartRate() {
+           delegate?.goTo(.recordHeartRate)
+       }
+       @objc private func didTapRecordGlycemia() {
+           delegate?.goTo(.recordGlycemia)
+       }
+       @objc private func didTapRecordBloodPressure() {
+           delegate?.goTo(.recordBloodPressure)
+       }
+       @objc private func didTapRecordTemperature() {
+           delegate?.goTo(.recordTemperature)
+       }
+       @objc private func didTapRecordSaturation() {
+           delegate?.goTo(.recordSaturation)
+       }
+       @objc private func didTapSeeAllTasks() {
+           delegate?.goTo(.seeAllTasks)
+       }
+       @objc private func didTapAddNewTask() {
+           delegate?.goTo(.addNewTask)
+       }
+       @objc private func didTapSeeAllMedication() {
+           delegate?.goTo(.seeAllMedication)
+       }
+       @objc private func didTapAddNewMedication() {
+           delegate?.goTo(.addNewMedication)
+       }
+       @objc private func didTapCheckMedicationDone() {
+           delegate?.goTo(.checkMedicationDone)
+       }
+       @objc private func didTapSeeAllEvents() {
+           delegate?.goTo(.seeAllEvents)
+       }
+       @objc private func didTapAddNewEvent() {
+           delegate?.goTo(.addNewEvent)
+       }
+       @objc private func didTapAddNewSymptom() {
+           delegate?.goTo(.addSymptom)
+       }
+}
+
+extension TodayViewController: SymptomsCardDelegate {
+    func tappedSymptom(_ symptom: Symptom, on card: SymptomsCard) {
+        delegate?.goToSymptomDetail(with: symptom)
+    }
 }
 
 //#Preview {

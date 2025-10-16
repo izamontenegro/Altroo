@@ -9,14 +9,18 @@ import CloudKit
 
 final class ProfileCoordinator: Coordinator {
     var childCoordinators: [Coordinator] = []
-    private let navigation: UINavigationController
+    
+    private let associateFactory: AssociatePatientFactory
+
+    var navigation: UINavigationController
     private let factory: AppFactory
     
     private var cloudSharingCoordinator: CloudSharingCoordinator?
     
-    init(navigation: UINavigationController, factory: AppFactory) {
+    init(navigation: UINavigationController, factory: AppFactory, associateFactory: AssociatePatientFactory) {
         self.factory = factory
         self.navigation = navigation
+        self.associateFactory = associateFactory
     }
     
     func start() {
@@ -45,25 +49,50 @@ extension ProfileCoordinator: ProfileViewControllerDelegate {
         sharingCoordinator.presentSharingSheet()
     }
     
-    func openChangeCaregiversSheet() {
-        let vc = factory.makeChangeCaregiverViewController()
+
+    func openChangeCareRecipientSheet() {
+        let vc = factory.makeChangeCareRecipientViewController(delegate: self)
         vc.modalPresentationStyle = .pageSheet
-        
         if let sheet = vc.sheetPresentationController {
             sheet.detents = [.medium()]
             sheet.prefersGrabberVisible = true
         }
         navigation.present(vc, animated: true)
     }
-    
-    func openEditCaregiversSheet() {
-        let vc = factory.makeEditCaregiverViewController()
-        vc.modalPresentationStyle = .pageSheet
-        
-        if let sheet = vc.sheetPresentationController {
-            sheet.detents = [.medium()]
-            sheet.prefersGrabberVisible = true
+}
+
+extension ProfileCoordinator {
+    func goToAssociatePatientViewController() {
+        let associate = AssociatePatientCoordinator(
+            navigation: navigation,
+            factory: associateFactory
+        )
+        childCoordinators.append(associate)
+
+        associate.onFinish = { [weak self, weak associate] in
+            guard let self, let associate else { return }
+            self.childCoordinators.removeAll { $0 === associate }
+            // self.navigation.popToViewController(<profileVC>, animated: true)
         }
-        navigation.present(vc, animated: true)
+
+        associate.start()
+    }
+}
+
+extension ProfileCoordinator: ChangeCareRecipientViewControllerDelegate {
+    func changeCareRecipientWantsStartAssociate(_ controller: UIViewController) {
+        controller.dismiss(animated: true) { [weak self] in
+            guard let self else { return }
+            let associate = AssociatePatientCoordinator(
+                navigation: self.navigation,
+                factory: self.associateFactory
+            )
+            self.add(child: associate)
+            associate.onFinish = { [weak self, weak associate] in
+                guard let self, let associate else { return }
+                self.remove(child: associate)
+            }
+            associate.start()
+        }
     }
 }

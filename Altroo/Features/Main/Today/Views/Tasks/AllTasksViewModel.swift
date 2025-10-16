@@ -26,26 +26,7 @@ class AllTasksViewModel {
     func loadTasks() {
         taskService.generateInstancesForToday(for: currentCareRecipient)
         let allTasks = taskService.fetchAllInstanceRoutineTasks(from: currentCareRecipient)
-        
-        print("DEBUG: fetchAllInstanceRoutineTasks returned \(allTasks.count) instances total")
-            for inst in allTasks {
-                let tmplName = inst.template?.name ?? "NO_TEMPLATE"
-                let tmplStart = inst.template?.startDate?.description(with: .current) ?? "nil"
-                let tmplEnd = inst.template?.endDate?.description(with: .current) ?? "nil"
-                let tmplWeekdays = inst.template?.weekdays ?? []
-                let instTime = inst.time?.description(with: .current) ?? "nil"
-                print("DEBUG: instance '\(tmplName)' — instance.time: \(instTime) — template.start: \(tmplStart) — template.end: \(tmplEnd) — weekdays: \(tmplWeekdays)")
-            }
-        
         tasks = filterTasksByDay(allTasks)
-        
-        if tasks.isEmpty {
-            print("Nao tem tasks hj")
-        } else {
-            for t in tasks {
-                print("Instância: \(t.template!.name ?? "") às \(t.time ?? Date())")
-            }
-        }
     }
     
     func filterTasksByPeriod(_ period: PeriodEnum) -> [TaskInstance] {
@@ -70,10 +51,6 @@ class AllTasksViewModel {
 
             return isAfterStart && isBeforeEnd
 
-        }
-        for t in intervalTasks {
-            print("🚨🚨 INTERVAL TASKS")
-            print("Instância: \(t.template!.name ?? "") às \(t.time ?? Date())")
         }
         
         //filter by weekday
