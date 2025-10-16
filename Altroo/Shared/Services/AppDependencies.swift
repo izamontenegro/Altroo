@@ -10,6 +10,7 @@ final class AppDependencies {
     let basicNeedsFacade: BasicNeedsFacade
     let routineActivitiesFacade: RoutineActivitiesFacade
     let careRecipientFacade: CareRecipientFacade
+    let userService: UserServiceProtocol
 
     init() {
         self.coreDataService = CoreDataService()
@@ -33,6 +34,8 @@ final class AppDependencies {
             routineActivitiesFacade: routineActivitiesFacade,
             persistenceService: coreDataService
         )
+        
+        self.userService = UserServiceSession(context: coreDataService.stack.context)
     }
 }
 

@@ -19,7 +19,7 @@ final class AppCoordinator: Coordinator {
     init(rootNavigation: UINavigationController) {
         self.rootNavigation = rootNavigation
         self.userService = UserServiceSession(context: dependencies.coreDataService.stack.context)
-        self.factory = DefaultAppFactory(dependencies: dependencies, userService: userService)
+        self.factory = DefaultAppFactory(dependencies: dependencies)
         rootNavigation.setNavigationBarHidden(true, animated: false)
     }
 
