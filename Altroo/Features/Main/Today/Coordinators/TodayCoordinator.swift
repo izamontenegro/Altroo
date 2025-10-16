@@ -140,9 +140,11 @@ final class TodayCoordinator: Coordinator {
             navigation.pushViewController(vc, animated: true)
             
         case .careRecipientProfile:
-            let profileCoord = ProfileCoordinator(
-                navigation: navigation, factory: factory
+            let profileCoord = ProfileCoordinator(navigation: navigation, factory: factory, associateFactory: factory
             )
+//            let profileCoord = ProfileCoordinator(
+//                navigation: navigation, factory: factory
+//            )
             add(child: profileCoord); profileCoord.start()
             
         case .addSymptom:

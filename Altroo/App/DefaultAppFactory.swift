@@ -113,23 +113,32 @@ extension DefaultAppFactory {
 //MARK: - ProfileFactory
 extension DefaultAppFactory {
     func makeProfileViewController(delegate: ProfileViewControllerDelegate) -> UIViewController {
-        let vc = CareRecipientProfileViewController()
+        let vm = CareRecipientProfileViewModel(userService: dependencies.userService, coreDataService: dependencies.coreDataService)
+        let vc = CareRecipientProfileViewController(viewModel: vm)
         vc.delegate = delegate
         return vc
     }
     
-    func makeChangeCaregiverViewController() -> UIViewController {
-        let vc = ChangeCareRecipientViewController()
-        return vc
-    }
+    func makeChangeCareRecipientViewController(delegate: ChangeCareRecipientViewControllerDelegate) -> UIViewController {
+        let vm = ChangeCareRecipientViewModel(userService: dependencies.userService, coreDataService: dependencies.coreDataService)
+            let vc = ChangeCareRecipientViewController(viewModel: vm)
+            (vc as? ChangeCareRecipientViewController)?.delegate = delegate
+            return vc
+        }
     
-    func makeEditCaregiverViewController() -> UIViewController {
-        let vc = EditCaregiverViewController()
-        return vc
-    }
+//    func makeEditCaregiverViewController() -> UIViewController {
+//        let vc = EditCaregiverViewController()
+//        return vc
+//    }
     
+//    func makeEditCaregiverViewController() -> UIViewController {
+//        let vc = EditCaregiverViewController()
+//        return vc
+//    }
+//    
     func makeMedicalRecordViewController() -> UIViewController {
-        let vc = MedicalRecordViewController()
+        let vm = MedicalRecordViewModel(userService: dependencies.userService)
+        let vc = MedicalRecordViewController(viewModel: vm)
         return vc
     }
 }
