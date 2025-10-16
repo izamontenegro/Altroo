@@ -61,20 +61,40 @@ class RoutineActivitiesFacade: RoutineActivitiesFacadeProtocol {
     }
     
     func generateInstancesForToday(for careRecipient: CareRecipient) {
-        let today = Date()
         let calendar = Calendar.current
+        let today = calendar.startOfDay(for: Date()) //midnight normalization
         let todayWeek = Locale.Weekday.from(calendarWeekday: Calendar.current.component(.weekday, from: today))
-        let templates = fetchAllTemplateRoutineTasks(from: careRecipient)
-        print("Templates encontrados: \(templates.count)")
         
+        let templates = fetchAllTemplateRoutineTasks(from: careRecipient)
+
         for template in templates {
             guard let allTimes = template.allTimes else { continue }
+            print("[GENERATEINSTANCE] Template \(template.name ?? "") Start: \(template.startDate).")
+
+            //check interval
+            guard let start = template.startDate, start <= today else { continue }
+            
+            print("Template \(template.name ?? "") passou do start.")
+
+            if let end = template.endDate, end < today { continue }
+            print("Template \(template.name ?? "") passou do end.")
+
+            //check day of the week
             guard let todayWeek, template.weekdays.contains(todayWeek) else {
                 print("Pulando template \(template.name ?? "") — não é hoje.")
                 continue
             }
-            
+
             for time in allTimes {
+                //today day + template hour/minutes
+                guard let instanceTime = calendar.date(
+                                bySettingHour: time.hour!,
+                                minute: time.minute!,
+                                second: 0,
+                                of: today
+                            ) else { continue }
+                
+                
                 let exists = fetchAllInstanceRoutineTasks(from: careRecipient)
                                 .contains { instance in
                                     instance.template == template && calendar.isDate(instance.time!, inSameDayAs: today) &&
@@ -83,11 +103,10 @@ class RoutineActivitiesFacade: RoutineActivitiesFacadeProtocol {
                                 }
                 
                 if !exists {
-                    print("Criando instância para \(template.name ?? "") às \(time)")
-                    addInstanceRoutineTask(from: template, on: today)
+                    print("Template \(template.name ?? "") foi pra criacao.")
+                    addInstanceRoutineTask(from: template, on: instanceTime)
                 }
             }
-
             
         }
         persistenceService.save()

@@ -41,7 +41,7 @@ class AllTasksViewModel {
     }
     
     func filterTasksByDay(_ tasks: [TaskInstance]) -> [TaskInstance] {
-        let today = Date()
+        let today = Calendar.current.startOfDay(for: Date())
         let todayDayOfTheWeek = Locale.Weekday.from(calendarWeekday: Calendar.current.component(.weekday, from: today))
         
         //filter by task interval

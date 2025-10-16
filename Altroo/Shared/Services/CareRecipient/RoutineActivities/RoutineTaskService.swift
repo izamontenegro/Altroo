@@ -41,7 +41,7 @@ class RoutineTaskService: RoutineTaskServiceProtocol {
         guard let context = careRecipient.managedObjectContext else { return }
         
         //normalization for instance making
-        let todayStart = Calendar.current.startOfDay(for: Date())
+        let todayStart = Calendar.current.startOfDay(for: startDate)
         
         let newRoutineTask = RoutineTask(context: context)
         newRoutineTask.name = name
@@ -81,14 +81,9 @@ class RoutineTaskService: RoutineTaskServiceProtocol {
         
         for timeComp in allTimes {
             let instance = TaskInstance(context: context)
-            instance.time = Calendar.current.date(
-                bySettingHour: timeComp.hour!,
-                minute: timeComp.minute!,
-                second: 0,
-                of: date
-            )!
-            instance.isDone = false
-            instance.template = template
+                instance.time = date
+                instance.isDone = false
+                instance.template = template
         }
     }
     
