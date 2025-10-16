@@ -53,9 +53,12 @@ final class TodayCoordinator: Coordinator {
             vc.coordinator = self
             return vc
         case .careRecipientProfile:
-            let profileCoord = ProfileCoordinator(navigation: navigation, factory: factory)
-            add(child: profileCoord)
-            profileCoord.start()
+            let profileCoord = ProfileCoordinator(navigation: navigation, factory: factory, associateFactory: factory
+                        )
+            //            let profileCoord = ProfileCoordinator(
+            //                navigation: navigation, factory: factory
+            //            )
+                        add(child: profileCoord); profileCoord.start()
             return nil
             
         case .checkMedicationDone:
