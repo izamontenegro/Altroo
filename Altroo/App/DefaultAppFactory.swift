@@ -207,9 +207,8 @@ extension DefaultAppFactory {
         return vc
     }
     func makeUrineRecordViewController() -> UIViewController {
-//        let vm = UrineRecordViewModel(urineService: dependencies.basicNeedsFacade, coreDataService: dependencies.coreDataService)
-//        let vc = UrineRecordViewController(viewModel: vm)
-        let vc = UrineRecordViewController()
+        let vm = UrineRecordViewModel(urineService: dependencies.basicNeedsFacade, coreDataService: dependencies.coreDataService, userService: dependencies.userService)
+        let vc = UrineRecordViewController(viewModel: vm)
 
         return vc
     }

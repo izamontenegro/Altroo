@@ -63,12 +63,12 @@ class BasicNeedsFacade: BasicNeedsFacadeProtocol {
     }
     
     // MARK: - URINE ACTIONS
-    func addUrine(period: PeriodEnum, date: Date, color: String, in careRecipient: CareRecipient, hadPain: Bool, urineCharacteristics: UrineCharacteristicsEnum?, observation: String?) {
+    func addUrine(period: PeriodEnum, date: Date, color: String, in careRecipient: CareRecipient, urineCharacteristics: [UrineCharacteristicsEnum], observation: String?) {
         urineService.addUrineRecord(
             period: period,
             date: date,
             color: color,
-            characteristic: urineCharacteristics,
+            characteristics: urineCharacteristics,
             observation: observation,
             to: careRecipient)
         

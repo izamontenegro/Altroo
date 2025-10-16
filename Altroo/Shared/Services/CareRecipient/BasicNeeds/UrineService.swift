@@ -14,7 +14,7 @@ protocol UrineServiceProtocol {
         period: PeriodEnum,
         date: Date,
         color: String,
-        characteristic: UrineCharacteristicsEnum?,
+        characteristics: [UrineCharacteristicsEnum],
         observation: String?,
         to careRecipient: CareRecipient
     ) -> UrineRecord?
@@ -24,7 +24,7 @@ protocol UrineServiceProtocol {
         period: PeriodEnum?,
         date: Date?,
         color: String?,
-        characteristic: UrineCharacteristicsEnum?,
+        characteristics: [UrineCharacteristicsEnum]?,
         observation: String?
     )
 
@@ -41,26 +41,25 @@ final class UrineService: UrineServiceProtocol {
         period: PeriodEnum,
         date: Date,
         color: String,
-        characteristic: UrineCharacteristicsEnum?,
+        characteristics: [UrineCharacteristicsEnum],
         observation: String?,
         to careRecipient: CareRecipient
     ) -> UrineRecord? {
-
         guard let context = careRecipient.managedObjectContext else { return nil }
-        let newUrineRecord = UrineRecord(context: context)
 
-        newUrineRecord.id = UUID()
-        newUrineRecord.color = color
-        newUrineRecord.date = date
-        newUrineRecord.period = period.rawValue
-        newUrineRecord.urineCharacteristics = characteristic?.rawValue
-        newUrineRecord.urineObservation = observation
+        let record = UrineRecord(context: context)
+        record.id = UUID()
+        record.color = color
+        record.date = date
+        record.period = period.rawValue
+        record.urineCharacteristics = encode(characteristics)
+        record.urineObservation = observation
 
         if let basicNeeds = careRecipient.basicNeeds {
             let set = basicNeeds.mutableSetValue(forKey: "urine")
-            set.add(newUrineRecord)
+            set.add(record)
         }
-        return newUrineRecord
+        return record
     }
 
     // MARK: - Update
@@ -69,27 +68,22 @@ final class UrineService: UrineServiceProtocol {
         period: PeriodEnum? = nil,
         date: Date? = nil,
         color: String? = nil,
-        characteristic: UrineCharacteristicsEnum? = nil,
+        characteristics: [UrineCharacteristicsEnum]? = nil,
         observation: String? = nil
     ) {
-        guard let context = record.managedObjectContext else { return }
-
         if let period { record.period = period.rawValue }
         if let date { record.date = date }
         if let color { record.color = color }
-        if let characteristic { record.urineCharacteristics = characteristic.rawValue }
+        if let characteristics { record.urineCharacteristics = encode(characteristics) }
         if let observation { record.urineObservation = observation }
     }
 
-    // MARK: - Delete
+    // MARK: - Delete (remove só do relacionamento, igual seu padrão)
     func deleteUrineRecord(_ record: UrineRecord, from careRecipient: CareRecipient) {
-        guard let basicNeeds = careRecipient.basicNeeds
-        else { return }
-
+        guard let basicNeeds = careRecipient.basicNeeds else { return }
         let set = basicNeeds.mutableSetValue(forKey: "urine")
         set.remove(record)
     }
-    
 
     // MARK: - Fetch by id
     func urineRecord(with id: UUID, for careRecipient: CareRecipient) -> UrineRecord? {
@@ -97,5 +91,19 @@ final class UrineService: UrineServiceProtocol {
             return nil
         }
         return urine.first(where: { $0.id == id })
+    }
+}
+
+// MARK: - Encoding helpers
+private extension UrineService {
+    func encode(_ list: [UrineCharacteristicsEnum]) -> String {
+        list.map(\.rawValue).joined(separator: ",")
+    }
+
+    func decode(_ string: String?) -> [UrineCharacteristicsEnum] {
+        guard let string, !string.isEmpty else { return [] }
+        return string
+            .split(separator: ",")
+            .compactMap { UrineCharacteristicsEnum(rawValue: String($0)) }
     }
 }
