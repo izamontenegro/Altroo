@@ -17,6 +17,13 @@ class CapsuleWithCircleView: UIView {
     
     override init(frame: CGRect) {
         super.init(frame: frame)
+        
+        self.translatesAutoresizingMaskIntoConstraints = false
+        NSLayoutConstraint.activate([
+            self.widthAnchor.constraint(equalToConstant: 137),
+            self.heightAnchor.constraint(equalToConstant: 31)
+        ])
+
     }
     
     convenience init(text: String, textColor: UIColor, nameIcon: String, nameIconColor: UIColor, circleIconColor: UIColor) {
@@ -53,8 +60,8 @@ class CapsuleWithCircleView: UIView {
         NSLayoutConstraint.activate([
             stackView.topAnchor.constraint(equalTo: self.topAnchor, constant: 4),
             stackView.bottomAnchor.constraint(equalTo: self.bottomAnchor, constant: -4),
-            stackView.leadingAnchor.constraint(equalTo: self.leadingAnchor, constant: 16),
-            stackView.trailingAnchor.constraint(equalTo: self.trailingAnchor, constant: -4)
+            stackView.leadingAnchor.constraint(equalTo: self.leadingAnchor, constant: 12),
+            stackView.trailingAnchor.constraint(equalTo: self.trailingAnchor, constant: -5)
         ])
         
         //label
@@ -63,14 +70,18 @@ class CapsuleWithCircleView: UIView {
                                   labelType: .subHeadline,
                                   labelColor: textColor,
                                   labelWeight: .medium)
+        
+        label.adjustsFontSizeToFitWidth = true
+        label.minimumScaleFactor = 0.95
+        label.lineBreakMode = .byTruncatingTail
         stackView.addArrangedSubview(label)
         
         //circle
         let circle = CircleView()
         circle.fillColor = circleIconColor
         circle.translatesAutoresizingMaskIntoConstraints = false
-        circle.widthAnchor.constraint(equalToConstant: 30).isActive = true
-        circle.heightAnchor.constraint(equalToConstant: 30).isActive = true
+        circle.widthAnchor.constraint(equalToConstant: 26).isActive = true
+        circle.heightAnchor.constraint(equalToConstant: 26).isActive = true
         
         //icon
         let icon = UIImageView(image: UIImage(systemName: nameIcon))
@@ -86,8 +97,8 @@ class CapsuleWithCircleView: UIView {
         container.addSubview(icon)
         
         NSLayoutConstraint.activate([
-            container.widthAnchor.constraint(equalToConstant: 30),
-            container.heightAnchor.constraint(equalToConstant: 30),
+            container.widthAnchor.constraint(equalToConstant: 21),
+            container.heightAnchor.constraint(equalToConstant: 21),
             
             circle.centerXAnchor.constraint(equalTo: container.centerXAnchor),
             circle.centerYAnchor.constraint(equalTo: container.centerYAnchor),

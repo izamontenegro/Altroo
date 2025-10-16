@@ -18,7 +18,7 @@ class GradientArcView: UIView {
         layer.sublayers?.forEach { $0.removeFromSuperlayer() }
         
         let width = bounds.width
-        let height: CGFloat = 200
+        let height: CGFloat = 160
         let curveHeight: CGFloat = 15
         
         // Arc path
@@ -38,7 +38,7 @@ class GradientArcView: UIView {
         shadowLayer.path = path.cgPath
         shadowLayer.fillColor = UIColor.blue50.cgColor
         shadowLayer.shadowColor = UIColor.black.cgColor
-        shadowLayer.shadowOpacity = 0.05
+        shadowLayer.shadowOpacity = 0.1
         shadowLayer.shadowOffset = CGSize(width: 0, height: 5)
         shadowLayer.shadowRadius = 10
         layer.addSublayer(shadowLayer)

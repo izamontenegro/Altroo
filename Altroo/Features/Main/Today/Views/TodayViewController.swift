@@ -38,6 +38,17 @@ protocol TodayViewControllerDelegate: AnyObject {
 class TodayViewController: UIViewController {
     
     weak var delegate: TodayViewControllerDelegate?
+    let viewModel: TodayViewModel
+    
+    init(delegate: TodayViewControllerDelegate? = nil, viewModel: TodayViewModel) {
+        self.delegate = delegate
+        self.viewModel = viewModel
+        super.init(nibName: nil, bundle: nil)
+    }
+    
+    required init?(coder: NSCoder) {
+        fatalError("init(coder:) has not been implemented")
+    }
     
     let scrollView: UIScrollView = {
         let scrollView = UIScrollView()
@@ -55,32 +66,48 @@ class TodayViewController: UIViewController {
     
     override func viewDidLoad() {
         super.viewDidLoad()
-        view.backgroundColor = UIColor(named: "blue80")
+        view.backgroundColor = .blue80
         
+        guard let careRecipient = viewModel.loadCareRecipient() else { return }
+
+        let profileToolbar = ProfileToolbarContainer(careRecipient: careRecipient)
+        profileToolbar.translatesAutoresizingMaskIntoConstraints = false
+        profileToolbar.onProfileTap = { [weak self] in
+            self?.delegate?.goToCareRecipientProfileView()
+        }
+
+        profileToolbar.onEditTap = { [weak self] in
+            self?.delegate?.goToEditSectionView()
+        }
+
+        view.addSubview(profileToolbar)
         view.addSubview(scrollView)
         scrollView.addSubview(vStack)
         
         NSLayoutConstraint.activate([
-            scrollView.topAnchor.constraint(equalTo: view.safeAreaLayoutGuide.topAnchor),
+            profileToolbar.topAnchor.constraint(equalTo: view.topAnchor),
+            profileToolbar.leadingAnchor.constraint(equalTo: view.leadingAnchor),
+            profileToolbar.trailingAnchor.constraint(equalTo: view.trailingAnchor),
+            profileToolbar.heightAnchor.constraint(equalToConstant: 174)
+        ])
+        
+        NSLayoutConstraint.activate([
+            scrollView.topAnchor.constraint(equalTo: profileToolbar.bottomAnchor),
             scrollView.bottomAnchor.constraint(equalTo: view.safeAreaLayoutGuide.bottomAnchor),
-            scrollView.leadingAnchor.constraint(equalTo: view.safeAreaLayoutGuide.leadingAnchor),
-            scrollView.trailingAnchor.constraint(equalTo: view.safeAreaLayoutGuide.trailingAnchor),
+            scrollView.leadingAnchor.constraint(equalTo: view.leadingAnchor),
+            scrollView.trailingAnchor.constraint(equalTo: view.trailingAnchor),
             
             vStack.topAnchor.constraint(equalTo: scrollView.topAnchor, constant: 20),
             vStack.bottomAnchor.constraint(equalTo: scrollView.bottomAnchor, constant: -20),
             vStack.leadingAnchor.constraint(equalTo: scrollView.leadingAnchor, constant: 20),
             vStack.trailingAnchor.constraint(equalTo: scrollView.trailingAnchor, constant: -20),
-            vStack.widthAnchor.constraint(equalTo: scrollView.widthAnchor, constant: -40),
+            vStack.widthAnchor.constraint(equalTo: scrollView.widthAnchor, constant: -40)
         ])
         
         addSections()
     }
     
     private func addSections() {
-            // Profile & Edit
-            vStack.addArrangedSubview(makeSection(title: "Profile", buttons: [("Abrir", #selector(didTapProfileView))]))
-            vStack.addArrangedSubview(makeSection(title: "Edit Sections", buttons: [("Abrir", #selector(didTapEditSectionView))]))
-
             // Basic Needs
             vStack.addArrangedSubview(makeSection(title: "Necessidades Básicas", buttons: [
                 ("Alimentação", #selector(didTapRecordFeeding)),
@@ -160,3 +187,20 @@ class TodayViewController: UIViewController {
     
     @objc private func didTapAddNewSymptom() { delegate?.goToAddNewSymptom() }
 }
+
+//#Preview {
+//    // Mock UserServiceSession
+//    class MockUserService: UserServiceSession {
+//        func fetchCurrentPatient() -> CareRecipient? {
+//            let recipient = CareRecipient()
+//            recipient.personalData = PersonalData()
+//            recipient.personalData?.name = "Karlisson Oliveira"
+//            return recipient
+//        }
+//    }
+//    
+//    let viewModel = TodayViewModel(userService: MockUserService())
+//    
+//    TodayViewController(viewModel: viewModel)
+//}
+
