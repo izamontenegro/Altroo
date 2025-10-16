@@ -10,14 +10,14 @@ import UIKit
 final class AppCoordinator: Coordinator {
 
     var childCoordinators: [Coordinator] = []
-    private let rootNavigation: UINavigationController
+    var navigation: UINavigationController
     private let factory: AppFactory
     
     let dependencies = AppDependencies()
     private var userService: UserServiceProtocol
 
     init(rootNavigation: UINavigationController) {
-        self.rootNavigation = rootNavigation
+        self.navigation = rootNavigation
         self.userService = UserServiceSession(context: dependencies.coreDataService.stack.context)
         self.factory = DefaultAppFactory(dependencies: dependencies, userService: userService)
         rootNavigation.setNavigationBarHidden(true, animated: false)
@@ -38,7 +38,7 @@ final class AppCoordinator: Coordinator {
     }
 
     private func showOnboardingFlow() {
-        let onboardingCoordinator = OnboardingCoordinator(navigation: rootNavigation,
+        let onboardingCoordinator = OnboardingCoordinator(navigation: navigation,
                                                           factory: factory)
         onboardingCoordinator.onFinish = { [weak self, weak onboardingCoordinator] in
             guard let self, let onboardingCoordinator else { return }
@@ -50,13 +50,13 @@ final class AppCoordinator: Coordinator {
     }
 
     private func showMainFlow() {
-        let mainCoordinator = MainCoordinator(navigation: rootNavigation,
+        let mainCoordinator = MainCoordinator(navigation: navigation,
                                               factory: factory)
         mainCoordinator.onLogout = { [weak self, weak mainCoordinator] in
             guard let self, let mainCoordinator else { return }
             self.remove(child: mainCoordinator)
             self.userService.removeCurrentPatient()
-            self.rootNavigation.viewControllers = []
+            self.navigation.viewControllers = []
             self.showMainFlow()
         }
         add(child: mainCoordinator)
@@ -64,7 +64,7 @@ final class AppCoordinator: Coordinator {
     }
 
     private func showAllPatientsFlow() {
-        let associatePatientCoordinator = AssociatePatientCoordinator(navigation: rootNavigation,
+        let associatePatientCoordinator = AssociatePatientCoordinator(navigation: navigation,
                                               factory: factory)
         associatePatientCoordinator.onFinish = { [weak self, weak associatePatientCoordinator] in
             guard let self, let associatePatientCoordinator else { return }

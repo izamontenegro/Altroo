@@ -7,7 +7,7 @@
 import Foundation
 
 enum Layout {
-    static let verySmallSpacing = 6
+    static let verySmallSpacing: CGFloat = 6
     static let smallSpacing: CGFloat = 8 //top card padding
     static let standardSpacing: CGFloat = 12 //side card padding
     static let mediumSpacing: CGFloat = 16 //side view padding, in between components

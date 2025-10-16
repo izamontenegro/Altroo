@@ -9,7 +9,7 @@ import UIKit
 
 final class MedicationDetailCoordinator: Coordinator {
     var childCoordinators: [Coordinator] = []
-    private let navigation: UINavigationController
+    var navigation: UINavigationController
     private let factory: AppFactory
 
     init(navigation: UINavigationController, factory: AppFactory) {

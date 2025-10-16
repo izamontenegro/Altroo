@@ -12,7 +12,7 @@ final class ProfileCoordinator: Coordinator {
     
     private let associateFactory: AssociatePatientFactory
 
-    private let navigation: UINavigationController
+    var navigation: UINavigationController
     private let factory: AppFactory
     
     private var cloudSharingCoordinator: CloudSharingCoordinator?

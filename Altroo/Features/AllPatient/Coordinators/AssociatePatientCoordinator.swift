@@ -9,7 +9,7 @@ import UIKit
 
 final class AssociatePatientCoordinator: Coordinator {
     var childCoordinators: [Coordinator] = []
-    private let navigation: UINavigationController
+    var navigation: UINavigationController
     private let factory: AssociatePatientFactory
 
     var onFinish: (() -> Void)?
