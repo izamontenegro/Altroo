@@ -1,44 +1,11 @@
 //
-//  AppTabBarController.swift
+//  Custom.swift
 //  Altroo
 //
-//  Created by Izadora de Oliveira Albuquerque Montenegro on 22/09/25.
+//  Created by Marcelle Ribeiro Queiroz on 15/10/25.
 //
 
 import UIKit
-
-final class AppTabBarController: UITabBarController {
-    
-    override func viewDidLoad() {
-        super.viewDidLoad()
-        setupAppearance()
-//        tabBar.isHidden = true
-    }
-    
-    private func setupAppearance() {
-        let appearance = UITabBarAppearance()
-        appearance.configureWithTransparentBackground()
-        appearance.backgroundColor = .clear
-        
-        // Ícones e textos
-        appearance.stackedLayoutAppearance.selected.iconColor = UIColor(named: "blue30")
-        appearance.stackedLayoutAppearance.selected.titleTextAttributes = [
-            .foregroundColor: UIColor(named: "blue30") ?? .systemBlue,
-            .font: UIFont.systemFont(ofSize: 12, weight: .bold)
-        ]
-        
-        appearance.stackedLayoutAppearance.normal.iconColor = UIColor(named: "pureWhite")
-        appearance.stackedLayoutAppearance.normal.titleTextAttributes = [
-            .foregroundColor: UIColor(named: "pureWhite") ?? .white,
-            .font: UIFont.systemFont(ofSize: 12, weight: .regular)
-        ]
-        
-        tabBar.standardAppearance = appearance
-        tabBar.scrollEdgeAppearance = appearance
-        tabBar.backgroundColor = .clear
-    }
-}
-
 import SwiftUI
 
 enum Tab: String, CaseIterable {
@@ -142,42 +109,6 @@ struct CustomTabBar: View {
     }
 }
 
-struct ContentView: View {
-    
-    @State var currentTab: Tab = .today
-    
-    init() {
-        UITabBar.appearance().isHidden = true
-    }
-    
-    var body: some View {
-        NavigationView {
-            VStack(spacing: 0) {
-                TabView(selection: $currentTab) {
-                    ZStack {
-                        Color(.red)
-                            .ignoresSafeArea()
-                        Text("hoje")
-                    }
-                    .tag(Tab.today)
-                    
-                    Text("histórico")
-                        .tag(Tab.history)
-                    
-                    Text("análise")
-                        .tag(Tab.report)
-                    
-                    Text("ajustes")
-                        .tag(Tab.settings)
-                }
-                
-                CustomTabBar(currentTab: $currentTab)
-            }
-            .ignoresSafeArea()
-        }
-    }
-}
-
-#Preview {
-    ContentView()
+#Preview("CustomTabBar") {
+    CustomTabBar(currentTab: .constant(.today))
 }
