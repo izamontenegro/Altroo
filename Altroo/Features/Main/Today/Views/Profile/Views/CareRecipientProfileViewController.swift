@@ -30,7 +30,7 @@ final class CareRecipientProfileViewController: GradientNavBarViewController {
     
     @available(*, unavailable)
     required init?(coder: NSCoder) {
-        fatalError("Use init(viewModel:) em vez de init(coder:)")
+        fatalError("Use init(viewModel:) instead of init(coder:)")
     }
     
     // MARK: - Lifecycle
@@ -254,9 +254,10 @@ final class CareRecipientProfileViewController: GradientNavBarViewController {
     @objc private func didTapHeader() { delegate?.goToMedicalRecordViewController() }
     @objc private func didTapChangeCareRecipientButton() { delegate?.openChangeCareRecipientSheet() }
     @objc private func didTapShareCareRecipientButton() {
-        guard let p = viewModel.currentCareRecipient() else { return }
-        delegate?.openShareCareRecipientSheet(p)
+        guard let careRecipient = viewModel.currentCareRecipient() else { return }
+        delegate?.openShareCareRecipientSheet(careRecipient)
     }
+    
     @objc private func didTapEndCareButton() {
         viewModel.finishCare()
     }

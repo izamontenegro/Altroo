@@ -62,12 +62,12 @@ extension CoreDataService {
     }
     
     func participantsWithCategory(for object: NSManagedObject) -> [ParticipantsAccess] {
-        guard let parts = fetchParticipants(for: object) else { return [] }
+        guard let participants = fetchParticipants(for: object) else { return [] }
         
-        let ctx = stack.persistentContainer.viewContext
+        let context = stack.persistentContainer.viewContext
         let users: [User] = {
-            let req = User.fetchRequest()
-            return (try? ctx.fetch(req)) ?? []
+            let request = User.fetchRequest()
+            return (try? context.fetch(request)) ?? []
         }()
         
         var byEmail: [String: User] = [:]
@@ -77,15 +77,15 @@ extension CoreDataService {
         for u in users {
             if let email = u.email?.lowercased() { byEmail[email] = u }
             if let phone = u.phone?.onlyDigits() { byPhone[phone] = u }
-            if let rec = u.cloudKitRecordName { byRecordName[rec] = u }
+            if let recordName = u.cloudKitRecordName { byRecordName[recordName] = u }
         }
         
         var result: [ParticipantsAccess] = []
         
-        for p in parts {
-            let email = p.userIdentity.lookupInfo?.emailAddress?.lowercased()
-            let phone = p.userIdentity.lookupInfo?.phoneNumber?.onlyDigits()
-            let recordName = p.userIdentity.userRecordID?.recordName
+        for part in participants {
+            let email = part.userIdentity.lookupInfo?.emailAddress?.lowercased()
+            let phone = part.userIdentity.lookupInfo?.phoneNumber?.onlyDigits()
+            let recordName = part.userIdentity.userRecordID?.recordName
 
             let matchedUser =
                 (email.flatMap { byEmail[$0] }) ??
@@ -94,54 +94,54 @@ extension CoreDataService {
 
             let isOwner: Bool
             if #available(iOS 15.0, *) {
-                isOwner = (p.role == .owner)
+                isOwner = (part.role == .owner)
             } else {
-                isOwner = (p.userIdentity.lookupInfo == nil)
+                isOwner = (part.userIdentity.lookupInfo == nil)
             }
 
            
-            let nameFromCK = p.userIdentity.nameComponents?.formatted(.name(style: .long)).trimmingCharacters(in: .whitespacesAndNewlines)
+            let nameFromCK = part.userIdentity.nameComponents?.formatted(.name(style: .long)).trimmingCharacters(in: .whitespacesAndNewlines)
             let nameFromUser = (matchedUser?.value(forKey: "name") as? String)?.trimmingCharacters(in: .whitespacesAndNewlines)
             let displayName: String = {
-                if let n = nameFromCK, !n.isEmpty { return n }
-                if let n = nameFromUser, !n.isEmpty { return n }
+                if let nameFromCK = nameFromCK, !nameFromCK.isEmpty { return nameFromCK }
+                if let nameFromUser = nameFromUser, !nameFromUser.isEmpty { return nameFromUser }
                 if isOwner { return "Você" }
-                if let e = email, !e.isEmpty { return e }
-                if let ph = phone, !ph.isEmpty { return ph }
+                if let email = email, !email.isEmpty { return email }
+                if let phone = phone, !phone.isEmpty { return phone }
                 return "Usuário do iCloud"
             }()
 
             let category = matchedUser?.category ?? "—"
-            let perm = p.permission
+            let permission = part.permission
 
-            result.append(.init(name: displayName, category: category, permission: perm))
+            result.append(.init(name: displayName, category: category, permission: permission))
         }
         return result
     }
     
-    func matchUser(for participant: CKShare.Participant, in ctx: NSManagedObjectContext) -> User? {
+    func matchUser(for participant: CKShare.Participant, in context: NSManagedObjectContext) -> User? {
         let email = participant.userIdentity.lookupInfo?.emailAddress?.lowerTrimmed
         let phone = participant.userIdentity.lookupInfo?.phoneNumber?.onlyDigits()
         let recordName = participant.userIdentity.userRecordID?.recordName
         
-        let req = User.fetchRequest()
-        var preds: [NSPredicate] = []
+        let request = User.fetchRequest()
+        var predicates: [NSPredicate] = []
         
         if let email {
-            preds.append(NSPredicate(format: "email == %@", email))
+            predicates.append(NSPredicate(format: "email == %@", email))
         }
         if let phone {
-            preds.append(NSPredicate(format: "phone == %@", phone))
+            predicates.append(NSPredicate(format: "phone == %@", phone))
         }
         if let recordName {
-            preds.append(NSPredicate(format: "cloudKitRecordName == %@", recordName))
+            predicates.append(NSPredicate(format: "cloudKitRecordName == %@", recordName))
         }
         
-        guard !preds.isEmpty else { return nil }
+        guard !predicates.isEmpty else { return nil }
         
-        req.predicate = NSCompoundPredicate(orPredicateWithSubpredicates: preds)
-        req.fetchLimit = 1
+        request.predicate = NSCompoundPredicate(orPredicateWithSubpredicates: predicates)
+        request.fetchLimit = 1
         
-        return try? ctx.fetch(req).first
+        return try? context.fetch(request).first
     }
 }

@@ -59,23 +59,6 @@ extension ProfileCoordinator: ProfileViewControllerDelegate {
         }
         navigation.present(vc, animated: true)
     }
-    
-//    func goToAssociatePatientViewController() {
-//        let vc =  factory.makeAssociatePatientViewController(delegate: AssociatePatientViewControllerDelegate)
-//        
-//        navigation.pushViewController(vc, animated: true)
-//    }
-    
-//    func openEditCaregiversSheet() {
-//        let vc = factory.makeEditCaregiverViewController()
-//        vc.modalPresentationStyle = .pageSheet
-//        
-//        if let sheet = vc.sheetPresentationController {
-//            sheet.detents = [.medium()]
-//            sheet.prefersGrabberVisible = true
-//        }
-//        navigation.present(vc, animated: true)
-//    }
 }
 
 extension ProfileCoordinator {

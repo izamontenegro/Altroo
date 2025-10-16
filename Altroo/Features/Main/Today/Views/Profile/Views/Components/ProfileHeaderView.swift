@@ -209,10 +209,10 @@ private extension ProfileHeader {
 // MARK: - PREVIEW
 
 private func makePreviewRecipient() -> CareRecipient {
-    let ctx = previewContextViaContainer()
+    let context = previewContextViaContainer()
 
-    let recipient = CareRecipient(context: ctx)
-    let personal = PersonalData(context: ctx)
+    let recipient = CareRecipient(context: context)
+    let personal = PersonalData(context: context)
 
     personal.name = "Karlison Oliveira"
     personal.dateOfBirth = Calendar.current.date(byAdding: .year, value: -86, to: Date())
@@ -222,8 +222,8 @@ private func makePreviewRecipient() -> CareRecipient {
     recipient.personalData = personal
     personal.careRecipient = recipient
     
-    try? ctx.save()
-    ctx.processPendingChanges()
+    try? context.save()
+    context.processPendingChanges()
 
     return recipient
 }

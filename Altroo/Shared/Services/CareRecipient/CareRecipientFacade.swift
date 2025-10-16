@@ -11,23 +11,8 @@ import CoreData
 protocol BasicNeedsFacadeProtocol {}
 
 protocol RoutineActivitiesFacadeProtocol {
-//    func fetchAllTemplateRoutineTasks(from careRecipient: CareRecipient) -> [RoutineTask]
-//       func addTemplateRoutineTask(
-//           name: String,
-//           allTimes: [DateComponents],
-//           daysOfTheWeek: [Locale.Weekday],
-//           startDate: Date,
-//           endDate: Date?,
-//           reminder: Bool,
-//           note: String,
-//           in careRecipient: CareRecipient
-//       )
-//       func deleteRoutineTask(routineTask: RoutineTask, from careRecipient: CareRecipient)
-       
        func fetchAllInstanceRoutineTasks(from careRecipient: CareRecipient) -> [TaskInstance]
-//       func addInstanceRoutineTask(from template: RoutineTask, on date: Date)
        func markInstanceAsDone(_ instance: TaskInstance)
-//       func deleteInstanceRoutineTask(_ instance: TaskInstance)
        
        func generateInstancesForToday(for careRecipient: CareRecipient)
 }

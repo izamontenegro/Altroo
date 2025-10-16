@@ -22,7 +22,7 @@ final class ChangeCareRecipientViewController: UIViewController {
 
        @available(*, unavailable)
        required init?(coder: NSCoder) {
-           fatalError("Use init(viewModel:) em vez de init(coder:)")
+           fatalError("Use init(viewModel:) instead of init(coder:)")
        }
     
     // MARK: - Lifecycle

@@ -30,48 +30,47 @@ final class CareRecipientProfileViewModel {
     }
     
     func finishCare() {
-        guard let r = currentCareRecipient() else { return }
-        coreDataService.deleteCareRecipient(r)
+        guard let recipient = currentCareRecipient() else { return }
+        coreDataService.deleteCareRecipient(recipient)
     }
     
     func caregiversForCurrentRecipient() -> [ParticipantsAccess] {
-        guard let r = currentCareRecipient() else { return []}
-        return coreDataService.participantsWithCategory(for: r)
+        guard let recipient = currentCareRecipient() else { return []}
+        return coreDataService.participantsWithCategory(for: recipient)
     }
     
     func currentShare() -> CKShare? {
-        guard let r = currentCareRecipient() else { return nil }
-        return coreDataService.getShare(r)
+        guard let recipient = currentCareRecipient() else { return nil }
+        return coreDataService.getShare(recipient)
     }
     
     private func calcCompletion() -> CGFloat {
         guard let person = currentCareRecipient() else {
-            print("nao tem carereficinet")
             completionPercent = 0
             return 0.0
         }
-        let r = person
+        let recipient = person
         var total = 0, filled = 0
-        func check(_ v: String?) { total += 1; if let x = v, !x.trimmingCharacters(in: .whitespaces).isEmpty { filled += 1 } }
-        func checkD(_ v: Date?) { total += 1; if v != nil { filled += 1 } }
-        func checkDbl(_ v: Double?) { total += 1; if let x = v, !x.isNaN { filled += 1 } }
-        func checkArr(_ v: Any?) { total += 1; if let a = v as? [Any], !a.isEmpty { filled += 1 } }
+        func checkString(_ v: String?) { total += 1; if let x = v, !x.trimmingCharacters(in: .whitespaces).isEmpty { filled += 1 } }
+        func checkDate(_ v: Date?) { total += 1; if v != nil { filled += 1 } }
+        func checkDouble(_ v: Double?) { total += 1; if let x = v, !x.isNaN { filled += 1 } }
+        func checkArray(_ v: Any?) { total += 1; if let a = v as? [Any], !a.isEmpty { filled += 1 } }
 
-        let pd = r.personalData
-        check(pd?.name); check(pd?.address); check(pd?.gender)
-        checkD(pd?.dateOfBirth); checkDbl(pd?.height); checkDbl(pd?.weight)
+        let personalData = recipient.personalData
+        checkString(personalData?.name); checkString(personalData?.address); checkString(personalData?.gender)
+        checkDate(personalData?.dateOfBirth); checkDouble(personalData?.height); checkDouble(personalData?.weight)
 
-        let hp = r.healthProblems
-        check(hp?.observation); checkArr(hp?.allergies); checkArr(hp?.surgery)
+        let healthProblems = recipient.healthProblems
+        checkString(healthProblems?.observation); checkArray(healthProblems?.allergies); checkArray(healthProblems?.surgery)
 
-        let m = r.mentalState
-        check(m?.cognitionState); check(m?.emotionalState); check(m?.memoryState); check(m?.orientationState)
+        let mentalState = recipient.mentalState
+        checkString(mentalState?.cognitionState); checkString(mentalState?.emotionalState); checkString(mentalState?.memoryState); checkString(mentalState?.orientationState)
 
-        let ph = r.physicalState
-        check(ph?.mobilityState); check(ph?.hearingState); check(ph?.visionState); check(ph?.oralHealthState)
+        let physicalState = recipient.physicalState
+        checkString(physicalState?.mobilityState); checkString(physicalState?.hearingState); checkString(physicalState?.visionState); checkString(physicalState?.oralHealthState)
 
-        let pc = r.personalCare
-        check(pc?.bathState); check(pc?.hygieneState); check(pc?.excretionState); check(pc?.feedingState); check(pc?.equipmentState)
+        let personalCare = recipient.personalCare
+        checkString(personalCare?.bathState); checkString(personalCare?.hygieneState); checkString(personalCare?.excretionState); checkString(personalCare?.feedingState); checkString(personalCare?.equipmentState)
 
         guard total > 0 else { return 0.0 }
         return CGFloat(Double(filled) / Double(total))

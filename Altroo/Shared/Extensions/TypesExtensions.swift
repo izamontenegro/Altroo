@@ -13,3 +13,10 @@ extension String {
     
     var lowerTrimmed: String { trimmingCharacters(in: .whitespacesAndNewlines).lowercased() }
 }
+
+public extension Double {
+    var clean: String {
+        let s = String(format: "%.2f", self)
+        return s.replacingOccurrences(of: ".", with: ",")
+    }
+}

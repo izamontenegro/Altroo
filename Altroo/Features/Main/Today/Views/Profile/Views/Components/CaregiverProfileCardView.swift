@@ -163,8 +163,8 @@ private extension CaregiverProfileCardView {
         return initials.isEmpty ? "?" : initials
     }
 
-    func permissionLabel(_ p: CKShare.ParticipantPermission) -> String {
-        switch p {
+    func permissionLabel(_ participantPermission: CKShare.ParticipantPermission) -> String {
+        switch participantPermission {
         case .readOnly:  return "Pode visualizar"
         case .readWrite: return "Pode editar"
         case .none:      return "Sem acesso"
