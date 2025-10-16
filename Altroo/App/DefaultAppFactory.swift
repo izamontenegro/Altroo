@@ -204,12 +204,12 @@ extension DefaultAppFactory {
 // MARK: - TaskFactory
 extension DefaultAppFactory {
     func makeAllTasksViewController(onTaskSelected: ((TaskInstance) -> Void)? = nil) -> UIViewController {
-        let vm = AllTasksViewModel(taskService: dependencies.routineActivitiesFacade)
+        let vm = AllTasksViewModel(taskService: dependencies.routineActivitiesFacade, userService: dependencies.userService)
         let vc = AllTasksViewController(viewModel: vm, onTaskSelected: onTaskSelected)
         return vc
     }
     func makeAddTaskViewController() -> UIViewController {
-        let vm = AddTaskViewModel(taskService: dependencies.routineActivitiesFacade)
+        let vm = AddTaskViewModel(taskService: dependencies.routineActivitiesFacade, userService: dependencies.userService)
         let vc = AddTaskViewController(viewModel: vm)
         return vc
     }

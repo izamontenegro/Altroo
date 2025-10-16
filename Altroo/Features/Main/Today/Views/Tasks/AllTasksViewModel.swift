@@ -9,43 +9,30 @@ import Combine
 
 class AllTasksViewModel {
     var taskService: RoutineActivitiesFacadeProtocol
-    var currentCareRecipient: CareRecipient
-    
+    var currentCareRecipient: CareRecipient?
+    let userService: UserServiceProtocol
+
     @Published var tasks: [TaskInstance] = []
   
-    init(taskService: RoutineActivitiesFacadeProtocol,
-         currentCareRecipient: CareRecipient =  CoreDataService(stack: CoreDataStack.shared).fetchAllCareRecipients().first(where: { $0.personalData?.name == "Mrs. Parente" })!) {
+    init(taskService: RoutineActivitiesFacadeProtocol, userService: UserServiceProtocol) {
         self.taskService = taskService
-        
-        //FIXME: SWAP FOR REAL INJECTED CARERECIPIENT
-        self.currentCareRecipient = currentCareRecipient
-        
+        self.userService = userService
+
+        fetchCareRecipient()
         loadTasks()
     }
     
+    func fetchCareRecipient() {
+        currentCareRecipient = userService.fetchCurrentPatient()
+    }
+    
     func loadTasks() {
-        taskService.generateInstancesForToday(for: currentCareRecipient)
-        let allTasks = taskService.fetchAllInstanceRoutineTasks(from: currentCareRecipient)
+        guard let careRecipient = currentCareRecipient else { return }
         
-        print("DEBUG: fetchAllInstanceRoutineTasks returned \(allTasks.count) instances total")
-            for inst in allTasks {
-                let tmplName = inst.template?.name ?? "NO_TEMPLATE"
-                let tmplStart = inst.template?.startDate?.description(with: .current) ?? "nil"
-                let tmplEnd = inst.template?.endDate?.description(with: .current) ?? "nil"
-                let tmplWeekdays = inst.template?.weekdays ?? []
-                let instTime = inst.time?.description(with: .current) ?? "nil"
-                print("DEBUG: instance '\(tmplName)' — instance.time: \(instTime) — template.start: \(tmplStart) — template.end: \(tmplEnd) — weekdays: \(tmplWeekdays)")
-            }
+        taskService.generateInstancesForToday(for: careRecipient)
+        let allTasks = taskService.fetchAllInstanceRoutineTasks(from: careRecipient)
         
         tasks = filterTasksByDay(allTasks)
-        
-        if tasks.isEmpty {
-            print("Nao tem tasks hj")
-        } else {
-            for t in tasks {
-                print("Instância: \(t.template!.name ?? "") às \(t.time ?? Date())")
-            }
-        }
     }
     
     func filterTasksByPeriod(_ period: PeriodEnum) -> [TaskInstance] {
@@ -70,10 +57,6 @@ class AllTasksViewModel {
 
             return isAfterStart && isBeforeEnd
 
-        }
-        for t in intervalTasks {
-            print("🚨🚨 INTERVAL TASKS")
-            print("Instância: \(t.template!.name ?? "") às \(t.time ?? Date())")
         }
         
         //filter by weekday
