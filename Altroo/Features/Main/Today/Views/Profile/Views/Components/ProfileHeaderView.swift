@@ -39,19 +39,23 @@ private extension ProfileHeader {
         let headerStack = setupHeaderSection()
         addSubview(headerStack)
 
-        let medicalRecordCard = setupMedicalRecordCard()
-        addSubview(medicalRecordCard)
+//        let medicalRecordCard = setupMedicalRecordCard()
+//        addSubview(medicalRecordCard)
 
         NSLayoutConstraint.activate([
             headerStack.topAnchor.constraint(equalTo: topAnchor, constant: 12),
             headerStack.leadingAnchor.constraint(equalTo: leadingAnchor, constant: 12),
             headerStack.trailingAnchor.constraint(equalTo: trailingAnchor, constant: -12),
 
-            medicalRecordCard.topAnchor.constraint(equalTo: headerStack.bottomAnchor, constant: 10),
-            medicalRecordCard.leadingAnchor.constraint(equalTo: leadingAnchor),
-            medicalRecordCard.trailingAnchor.constraint(equalTo: trailingAnchor),
-            medicalRecordCard.bottomAnchor.constraint(equalTo: bottomAnchor)
+//            medicalRecordCard.topAnchor.constraint(equalTo: headerStack.bottomAnchor, constant: 10),
+//            medicalRecordCard.leadingAnchor.constraint(equalTo: leadingAnchor),
+//            medicalRecordCard.trailingAnchor.constraint(equalTo: trailingAnchor),
+//            medicalRecordCard.bottomAnchor.constraint(equalTo: bottomAnchor)
         ])
+        
+        let bottom = headerStack.bottomAnchor.constraint(equalTo: bottomAnchor, constant: -12)
+                    bottom.priority = .required
+                    bottom.isActive = true
     }
 
     func setupHeaderSection() -> UIStackView {
@@ -204,36 +208,4 @@ private extension ProfileHeader {
         guard let height else { return "—" }
         return String(format: "%.2f m", height)
     }
-}
-
-// MARK: - PREVIEW
-
-private func makePreviewRecipient() -> CareRecipient {
-    let context = previewContextViaContainer()
-
-    let recipient = CareRecipient(context: context)
-    let personal = PersonalData(context: context)
-
-    personal.name = "Karlison Oliveira"
-    personal.dateOfBirth = Calendar.current.date(byAdding: .year, value: -86, to: Date())
-    personal.height = 1.98
-    personal.weight = 45
-
-    recipient.personalData = personal
-    personal.careRecipient = recipient
-    
-    try? context.save()
-    context.processPendingChanges()
-
-    return recipient
-}
-private func previewContextViaContainer() -> NSManagedObjectContext {
-    let container = NSPersistentContainer(name: "AltrooDataModel")
-    let desc = NSPersistentStoreDescription()
-    desc.type = NSInMemoryStoreType
-    container.persistentStoreDescriptions = [desc]
-    container.loadPersistentStores { _, error in
-        if let error { assertionFailure("Preview Core Data error: \(error)") }
-    }
-    return container.viewContext
 }

@@ -10,7 +10,6 @@ import CloudKit
 
 protocol ProfileViewControllerDelegate: AnyObject {
     func openChangeCareRecipientSheet()
-//    func openEditCaregiversSheet()
     func openShareCareRecipientSheet(_ careRecipient: CareRecipient)
     func goToMedicalRecordViewController()
 }
