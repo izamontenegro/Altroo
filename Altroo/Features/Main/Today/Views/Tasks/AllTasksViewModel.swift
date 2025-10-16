@@ -27,11 +27,8 @@ class AllTasksViewModel {
     }
     
     func loadTasks() {
-        guard let careRecipient = currentCareRecipient else { return }
-        
-        taskService.generateInstancesForToday(for: careRecipient)
-        let allTasks = taskService.fetchAllInstanceRoutineTasks(from: careRecipient)
-        
+        taskService.generateInstancesForToday(for: currentCareRecipient)
+        let allTasks = taskService.fetchAllInstanceRoutineTasks(from: currentCareRecipient)
         tasks = filterTasksByDay(allTasks)
     }
     

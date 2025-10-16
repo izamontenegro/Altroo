@@ -38,7 +38,7 @@ class StandardLabel: UILabel {
     public private(set) var labelText: String
     public private(set) var labelFont: FontStyle
     public private(set) var labelType: LabelType
-    public private(set) var labelColor: UIColor
+    public var labelColor: UIColor
     public private(set) var labelWeight: FontWeight
     
     
@@ -62,9 +62,8 @@ class StandardLabel: UILabel {
         fatalError("init(coder:) has not been implemented")
     }
     
-    private func configureLabelColor() {
+    func configureLabelColor() {
         self.textColor = labelColor
-        
     }
     
     private func configureLabelStyle() {

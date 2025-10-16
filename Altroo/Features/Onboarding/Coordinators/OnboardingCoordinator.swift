@@ -10,7 +10,7 @@ import UIKit
 final class OnboardingCoordinator: Coordinator {
     
     var childCoordinators: [Coordinator] = []
-    private let navigation: UINavigationController
+    var navigation: UINavigationController
     private let factory: AppFactory
 
     var onFinish: (() -> Void)?
