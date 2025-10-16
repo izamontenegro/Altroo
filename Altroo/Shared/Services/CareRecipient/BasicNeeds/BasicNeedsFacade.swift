@@ -63,14 +63,20 @@ class BasicNeedsFacade: BasicNeedsFacadeProtocol {
     }
     
     // MARK: - URINE ACTIONS
-    func addUrine(period: PeriodEnum, date: Date, color: String, in careRecipient: CareRecipient, hadPain: Bool) {
-        urineService.addUrineRecord(period: period, date: date, hadPain: hadPain, color: color, in: careRecipient)
+    func addUrine(period: PeriodEnum, date: Date, color: String, in careRecipient: CareRecipient, hadPain: Bool, urineCharacteristics: UrineCharacteristicsEnum?, observation: String?) {
+        urineService.addUrineRecord(
+            period: period,
+            date: date,
+            color: color,
+            characteristic: urineCharacteristics,
+            observation: observation,
+            to: careRecipient)
         
         persistenceService.save()
     }
 
     func deleteUrine(urineRecord: UrineRecord, from careRecipient: CareRecipient) {
-        urineService.deleteUrineRecord(urineRecord: urineRecord, from: careRecipient)
+        urineService.deleteUrineRecord(urineRecord, from: careRecipient)
         
         persistenceService.save()
     }

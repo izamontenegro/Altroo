@@ -7,11 +7,9 @@
 
 // MARK: - URINE
 
-enum UrineCharacteristicsEnum: String {
+enum UrineCharacteristicsEnum: String, CaseIterable {
     case pain
     case excessFoam
     case incontinence
     case unusualOdor
 }
-
-// MARK: - STOOL
