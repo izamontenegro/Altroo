@@ -10,18 +10,13 @@ import UIKit
 protocol TodayViewControllerDelegate: AnyObject {
     func goTo(_ destination: TodayDestination)
     func goToSymptomDetail(with symptom: Symptom)
+    func goToCareRecipientProfileView()
+    func goToEditSectionView()
 }
 
 class TodayViewController: UIViewController {
     var viewModel: TodayViewModel
     weak var delegate: TodayViewControllerDelegate?
-    let viewModel: TodayViewModel
-    
-    init(delegate: TodayViewControllerDelegate? = nil, viewModel: TodayViewModel) {
-        self.delegate = delegate
-        self.viewModel = viewModel
-        super.init(nibName: nil, bundle: nil)
-    }
     
     required init?(coder: NSCoder) {
         fatalError("init(coder:) has not been implemented")
@@ -43,8 +38,10 @@ class TodayViewController: UIViewController {
     
     var symptomsCard: SymptomsCard
     
-    init(viewModel: TodayViewModel) {
+    init(delegate: TodayViewControllerDelegate? = nil, viewModel: TodayViewModel) {
         //TODO: Feed real symptoms
+        self.delegate = delegate
+
         self.viewModel = viewModel
         self.symptomsCard = SymptomsCard(symptoms: viewModel.todaySymptoms)
         super.init(nibName: nil, bundle: nil)
@@ -52,16 +49,11 @@ class TodayViewController: UIViewController {
         self.symptomsCard.delegate = self
     }
     
-    required init?(coder: NSCoder) {
-        fatalError("init(coder:) has not been implemented")
-    }
-    
     override func viewDidLoad() {
         super.viewDidLoad()
         view.backgroundColor = .blue80
         
-        guard let careRecipient = viewModel.loadCareRecipient() else { return }
-
+        guard let careRecipient = viewModel.currentCareRecipient else { return }
         let profileToolbar = ProfileToolbarContainer(careRecipient: careRecipient)
         profileToolbar.translatesAutoresizingMaskIntoConstraints = false
         profileToolbar.onProfileTap = { [weak self] in
