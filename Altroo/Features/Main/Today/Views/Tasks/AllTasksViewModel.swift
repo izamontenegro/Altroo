@@ -27,8 +27,10 @@ class AllTasksViewModel {
     }
     
     func loadTasks() {
-        taskService.generateInstancesForToday(for: currentCareRecipient)
-        let allTasks = taskService.fetchAllInstanceRoutineTasks(from: currentCareRecipient)
+        guard let careRecipient = currentCareRecipient else { return }
+
+        taskService.generateInstancesForToday(for: careRecipient)
+        let allTasks = taskService.fetchAllInstanceRoutineTasks(from: careRecipient)
         tasks = filterTasksByDay(allTasks)
     }
     
@@ -44,16 +46,18 @@ class AllTasksViewModel {
         
         //filter by task interval
         let intervalTasks = tasks.filter { task in
+            
             guard let start = task.template?.startDate else {
                 return false
             }
             
             let end = task.template?.endDate //will be nil if continuous
+            print("\(task.template!.name): Start-\(start) and End-\(end)")
+
             let isAfterStart = start <= today
             let isBeforeEnd = end == nil || end! >= today
 
             return isAfterStart && isBeforeEnd
-
         }
         
         //filter by weekday
