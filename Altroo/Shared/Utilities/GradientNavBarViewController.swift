@@ -65,7 +65,7 @@ class GradientNavBarViewController: UIViewController {
         layer.cornerRadius = 10
 
         let renderer = UIGraphicsImageRenderer(size: size)
-        return renderer.image { ctx in layer.render(in: ctx.cgContext) }
+        return renderer.image { context in layer.render(in: context.cgContext) }
     }
 }
 

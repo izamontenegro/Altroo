@@ -54,7 +54,3 @@ final class DateFormatterHelper {
         return "\(dateString) (\(age) anos)"
     }
 }
-
-
-
-

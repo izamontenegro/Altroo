@@ -11,9 +11,11 @@ import SwiftUI
 
 final class ProfileHeader: InnerShadowView {
     var careRecipient: CareRecipient
+    let percent: Double
     
-    init(careRecipient: CareRecipient) {
+    init(careRecipient: CareRecipient, percent: Double) {
         self.careRecipient = careRecipient
+        self.percent = percent
         super.init(frame: .zero, color: UIColor.blue70)
         setupUI()
     }
@@ -22,8 +24,9 @@ final class ProfileHeader: InnerShadowView {
         fatalError("init(coder:) has not been implemented")
     }
 
-    required init?(coder: NSCoder, careRecipient: CareRecipient) {
+    required init?(coder: NSCoder, careRecipient: CareRecipient, percent: Double) {
         self.careRecipient = careRecipient
+        self.percent = percent
         super.init(coder: coder)
     }
 }
@@ -36,19 +39,23 @@ private extension ProfileHeader {
         let headerStack = setupHeaderSection()
         addSubview(headerStack)
 
-        let medicalRecordCard = setupMedicalRecordCard()
-        addSubview(medicalRecordCard)
+//        let medicalRecordCard = setupMedicalRecordCard()
+//        addSubview(medicalRecordCard)
 
         NSLayoutConstraint.activate([
             headerStack.topAnchor.constraint(equalTo: topAnchor, constant: 12),
             headerStack.leadingAnchor.constraint(equalTo: leadingAnchor, constant: 12),
             headerStack.trailingAnchor.constraint(equalTo: trailingAnchor, constant: -12),
 
-            medicalRecordCard.topAnchor.constraint(equalTo: headerStack.bottomAnchor, constant: 10),
-            medicalRecordCard.leadingAnchor.constraint(equalTo: leadingAnchor),
-            medicalRecordCard.trailingAnchor.constraint(equalTo: trailingAnchor),
-            medicalRecordCard.bottomAnchor.constraint(equalTo: bottomAnchor)
+//            medicalRecordCard.topAnchor.constraint(equalTo: headerStack.bottomAnchor, constant: 10),
+//            medicalRecordCard.leadingAnchor.constraint(equalTo: leadingAnchor),
+//            medicalRecordCard.trailingAnchor.constraint(equalTo: trailingAnchor),
+//            medicalRecordCard.bottomAnchor.constraint(equalTo: bottomAnchor)
         ])
+        
+        let bottom = headerStack.bottomAnchor.constraint(equalTo: bottomAnchor, constant: -12)
+                    bottom.priority = .required
+                    bottom.isActive = true
     }
 
     func setupHeaderSection() -> UIStackView {
@@ -147,9 +154,9 @@ private extension ProfileHeader {
         fill.backgroundColor = .pureWhite
         fill.layer.cornerRadius = 5
         track.addSubview(fill)
-
+        
         let percentageLabel = StandardLabel(
-            labelText: "80%",
+            labelText: "\(Int(round(percent * 100)))%",
             labelFont: .sfPro,
             labelType: .callOut,
             labelColor: .pureWhite,
@@ -179,9 +186,7 @@ private extension ProfileHeader {
             fill.leadingAnchor.constraint(equalTo: track.leadingAnchor),
             fill.centerYAnchor.constraint(equalTo: track.centerYAnchor),
             fill.heightAnchor.constraint(equalTo: track.heightAnchor),
-            
-            // TODO: CHANGE HERE WHEN HAVE THE PROPER FUNCTION
-            fill.widthAnchor.constraint(equalTo: track.widthAnchor, multiplier: 0.70),
+            fill.widthAnchor.constraint(equalTo: track.widthAnchor, multiplier: percent),
 
             chevron.widthAnchor.constraint(equalToConstant: 10),
             chevron.heightAnchor.constraint(equalToConstant: 16)
@@ -203,47 +208,4 @@ private extension ProfileHeader {
         guard let height else { return "—" }
         return String(format: "%.2f m", height)
     }
-}
-
-// MARK: - PREVIEW
-private struct ProfileCardWrapper: UIViewRepresentable {
-    let recipient: CareRecipient
-    func makeUIView(context: Context) -> ProfileHeader { ProfileHeader(careRecipient: recipient) }
-    func updateUIView(_ uiView: ProfileHeader, context: Context) {}
-}
-
-private func makePreviewRecipient() -> CareRecipient {
-    let ctx = previewContextViaContainer()
-
-    let recipient = CareRecipient(context: ctx)
-    let personal = PersonalData(context: ctx)
-
-    personal.name = "Karlison Oliveira"
-    personal.dateOfBirth = Calendar.current.date(byAdding: .year, value: -86, to: Date())
-    personal.height = 1.98
-    personal.weight = 45
-
-    recipient.personalData = personal
-    personal.careRecipient = recipient
-    
-    try? ctx.save()
-    ctx.processPendingChanges()
-
-    return recipient
-}
-
-#Preview() {
-    ProfileCardWrapper(recipient: makePreviewRecipient())
-        .padding()
-}
-
-private func previewContextViaContainer() -> NSManagedObjectContext {
-    let container = NSPersistentContainer(name: "AltrooDataModel")
-    let desc = NSPersistentStoreDescription()
-    desc.type = NSInMemoryStoreType
-    container.persistentStoreDescriptions = [desc]
-    container.loadPersistentStores { _, error in
-        if let error { assertionFailure("Preview Core Data error: \(error)") }
-    }
-    return container.viewContext
 }
