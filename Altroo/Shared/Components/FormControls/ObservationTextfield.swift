@@ -15,12 +15,12 @@ final class ObservationView: UIView, UITextViewDelegate {
     
     weak var delegate: ObservationViewDelegate?
     
-    private let titleLabel: StandardLabel = StandardLabel(
-        labelText: "Observação",
-        labelFont: .sfPro,
-        labelType: .title3,
-        labelColor: UIColor(resource: .black10),
-        labelWeight: .semibold)
+//    private let titleLabel: StandardLabel = StandardLabel(
+//        labelText: "Observação",
+//        labelFont: .sfPro,
+//        labelType: .title3,
+//        labelColor: UIColor(resource: .black10),
+//        labelWeight: .semibold)
     
     let textView: UITextView = {
         let textView = UITextView()
@@ -48,14 +48,14 @@ final class ObservationView: UIView, UITextViewDelegate {
     }
     
     private func setupLayout() {
-        addSubview(titleLabel)
+//        addSubview(titleLabel)
         addSubview(textView)
         
         NSLayoutConstraint.activate([
-            titleLabel.topAnchor.constraint(equalTo: topAnchor),
-            titleLabel.leadingAnchor.constraint(equalTo: leadingAnchor),
+//            titleLabel.topAnchor.constraint(equalTo: topAnchor),
+//            titleLabel.leadingAnchor.constraint(equalTo: leadingAnchor),
             
-            textView.topAnchor.constraint(equalTo: titleLabel.bottomAnchor, constant: 8),
+//            textView.topAnchor.constraint(equalTo: titleLabel.bottomAnchor, constant: 8),
             textView.widthAnchor.constraint(equalToConstant: 371),
             textView.heightAnchor.constraint(equalToConstant: 72)
         ])
