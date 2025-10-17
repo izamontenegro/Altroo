@@ -32,7 +32,7 @@ enum Tab: String, CaseIterable {
 
 struct CustomTabBar: View {
     
-    @Binding var currentTab: Tab
+    @ObservedObject var model: TabModel
     
     var backgroundColor = [Color.blue20, Color.blue40]
     var selectedBackgroundColor = [Color.pureWhite, Color.blue60]
@@ -46,44 +46,53 @@ struct CustomTabBar: View {
                 ForEach(Tab.allCases, id: \.rawValue) { tab in
                     Button {
                         withAnimation(.easeInOut) {
-                            currentTab = tab
+                            model.currentTab = tab
                         }
                     } label: {
                         VStack(spacing: 8) {
                             Image(systemName: tab.tabIcon)
                                 .resizable()
                                 .scaledToFit()
-                                .frame(maxWidth: .infinity, maxHeight: 24)
+                                .frame(maxWidth: .infinity, maxHeight: 20)
                             
                             Text(tab.tabName)
-                                .font(Font.custom("Comfortaa", size: 14))
-//                                .fontWeight(currentTab == tab ? .bold : .regular)
+                                .font(Font.custom("Comfortaa", size: 12))
                         }
                         .frame(maxWidth: .infinity)
-                        .foregroundStyle(currentTab == tab ? .blue30 : .pureWhite)
-                        .offset(y: currentTab == tab ? -15 : 0)
+                        .foregroundStyle(model.currentTab == tab ?
+                            .blue30 : .pureWhite)
+                        .offset(y: model.currentTab == tab ? -15 : 0)
                     }
                 }
             }
             .frame(maxWidth: .infinity)
             .background(alignment: .leading) {
-                UnevenRoundedRectangle(topLeadingRadius: 10, bottomLeadingRadius: 0, bottomTrailingRadius: 0, topTrailingRadius: 10, style: .continuous)
+                UnevenRoundedRectangle(topLeadingRadius: 10,
+                                       bottomLeadingRadius: 0,
+                                       bottomTrailingRadius: 0,
+                                       topTrailingRadius: 10,
+                                       style: .continuous)
                     .fill(LinearGradient(colors: selectedBackgroundColor,
                                          startPoint: .top, endPoint: .bottom))
-                    .frame(width: buttonWidth, height: 120, alignment: .bottom)
+                    .frame(width: buttonWidth, height: 90, alignment: .bottom)
                     .shadow(color: .blue40.opacity(0.1), radius: 15, x: 2, y: 4)
                     .offset(x: indicatorOffset(width: width), y: 0)
             }
         }
-        .frame(height: 85)
+        .frame(height: 70)
         .padding(.top, 17)
         .padding(.horizontal, 16)
         .background() {
-            UnevenRoundedRectangle(topLeadingRadius: 10, bottomLeadingRadius: 0, bottomTrailingRadius: 0, topTrailingRadius: 10, style: .continuous)
+            UnevenRoundedRectangle(topLeadingRadius: 10,
+                                   bottomLeadingRadius: 0,
+                                   bottomTrailingRadius: 0,
+                                   topTrailingRadius: 10,
+                                   style: .continuous)
                 .fill(LinearGradient(colors: backgroundColor,
                                      startPoint: .top, endPoint: .bottom))
                 .shadow(color: .blue70, radius: 15, x: 0, y: -4)
         }
+        .ignoresSafeArea()
     }
     
     func indicatorOffset(width: CGFloat) -> CGFloat {
@@ -96,7 +105,7 @@ struct CustomTabBar: View {
     }
     
     func getIndex() -> Int {
-        switch currentTab {
+        switch model.currentTab {
         case .today:
             return 0
         case .history:
@@ -110,5 +119,6 @@ struct CustomTabBar: View {
 }
 
 #Preview("CustomTabBar") {
-    CustomTabBar(currentTab: .constant(.today))
+    @Previewable @StateObject var model = TabModel()
+    CustomTabBar(model: model)
 }

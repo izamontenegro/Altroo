@@ -7,11 +7,30 @@
 
 import UIKit
 import SwiftUI
+import Combine
+
+class TabModel: ObservableObject {
+    @Published var currentTab: Tab = .today
+}
 
 final class AppTabBarController: UITabBarController, UITabBarControllerDelegate {
     
-    private var hostingController: UIHostingController<CustomTabBar>?
-    @State private var currentTab: Tab = .today
+    let model = TabModel()
+    
+    lazy var customTabBar: UIView = {
+        let configuration = UIHostingConfiguration {
+            CustomTabBar(model: model)
+                .ignoresSafeArea()
+        }
+            .margins(.all, 0)
+            .makeContentView()
+        
+//        let view = configuration.makeContentView()
+        view.translatesAutoresizingMaskIntoConstraints = false
+        return view
+    }()
+    
+    var cancallable: AnyCancellable?
     
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -26,33 +45,27 @@ final class AppTabBarController: UITabBarController, UITabBarControllerDelegate 
     }
     
     private func setupCustomTabBar() {
-        let binding = Binding<Tab>(
-            get: { self.currentTab },
-            set: { [weak self] newTab in
-                withAnimation(.easeInOut(duration: 0.25)) {
-                    self?.selectTab(newTab)
-                }
-            }
-        )
+        view.addSubview(customTabBar)
+        customTabBar.translatesAutoresizingMaskIntoConstraints = false
         
-        let customTabBar = CustomTabBar(currentTab: binding)
-        let host = UIHostingController(rootView: customTabBar)
-        addChild(host)
-        view.addSubview(host.view)
-        host.didMove(toParent: self)
-        hostingController = host
-        
-        host.view.translatesAutoresizingMaskIntoConstraints = false
         NSLayoutConstraint.activate([
-            host.view.leadingAnchor.constraint(equalTo: view.leadingAnchor),
-            host.view.trailingAnchor.constraint(equalTo: view.trailingAnchor),
-            host.view.bottomAnchor.constraint(equalTo: view.safeAreaLayoutGuide.bottomAnchor),
-            host.view.heightAnchor.constraint(equalToConstant: 85)
+            customTabBar.leadingAnchor.constraint(equalTo: view.leadingAnchor),
+            customTabBar.trailingAnchor.constraint(equalTo: view.trailingAnchor),
+//            customTabBar.bottomAnchor.constraint(equalTo: view.bottomAnchor, constant: 12),
+            customTabBar.heightAnchor.constraint(equalToConstant: 70)
         ])
+        
+        cancallable = model.$currentTab.sink { [weak self] value in
+            guard let self else { return }
+            self.selectTab(value)
+        }
+    }
+    
+    override func viewDidAppear(_ animated: Bool) {
+        super.viewDidAppear(animated)
     }
     
     private func selectTab(_ tab: Tab) {
-        currentTab = tab
         switch tab {
         case .today: selectedIndex = 0
         case .history: selectedIndex = 1
@@ -72,8 +85,7 @@ final class AppTabBarController: UITabBarController, UITabBarControllerDelegate 
         }
         
         withAnimation(.easeInOut(duration: 0.25)) {
-            currentTab = newTab
-            hostingController?.rootView.currentTab = newTab
+            model.currentTab = newTab
         }
     }
 }
