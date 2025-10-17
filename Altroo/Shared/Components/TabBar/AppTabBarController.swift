@@ -20,12 +20,10 @@ final class AppTabBarController: UITabBarController, UITabBarControllerDelegate 
     lazy var customTabBar: UIView = {
         let configuration = UIHostingConfiguration {
             CustomTabBar(model: model)
-                .ignoresSafeArea()
         }
             .margins(.all, 0)
-            .makeContentView()
         
-//        let view = configuration.makeContentView()
+        let view = configuration.makeContentView()
         view.translatesAutoresizingMaskIntoConstraints = false
         return view
     }()
@@ -51,7 +49,7 @@ final class AppTabBarController: UITabBarController, UITabBarControllerDelegate 
         NSLayoutConstraint.activate([
             customTabBar.leadingAnchor.constraint(equalTo: view.leadingAnchor),
             customTabBar.trailingAnchor.constraint(equalTo: view.trailingAnchor),
-//            customTabBar.bottomAnchor.constraint(equalTo: view.bottomAnchor, constant: 12),
+            customTabBar.bottomAnchor.constraint(equalTo: view.bottomAnchor, constant: 12),
             customTabBar.heightAnchor.constraint(equalToConstant: 70)
         ])
         
