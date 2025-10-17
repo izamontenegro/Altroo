@@ -37,12 +37,25 @@ final class UrineRecordViewModel {
         let colorHex = uiColor.hexString
         
         urineService.addUrine(
-            period: .morning,
+            period: PeriodEnum.current,
             date: Date(),
             color: colorHex,
             in: careRecipient,
             urineCharacteristics: selectedCharacteristics,
             observation: urineObservation
         )
+    }
+    
+    func getNameFromCharacteristicsOptions(characteristics: UrineCharacteristicsEnum) -> String {
+        switch characteristics {
+        case .excessFoam:
+            return "Excesso de espuma"
+        case .pain:
+            return "Dor"
+        case .incontinence:
+            return "Incontinência"
+        case .unusualOdor:
+            return "Cheiro Anormal"
+        }
     }
 }

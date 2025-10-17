@@ -149,7 +149,7 @@ final class UrineRecordViewController: GradientNavBarViewController {
         let maxWidth = UIScreen.main.bounds.width - 32
         
         for characteristic in UrineCharacteristicsEnum.allCases {
-            let button = PrimaryStyleButton(title: characteristic.rawValue.capitalized)
+            let button = PrimaryStyleButton(title: viewModel.getNameFromCharacteristicsOptions(characteristics: characteristic))
             button.backgroundColor = .black40
             button.setTitleColor(.white, for: .normal)
             button.addTarget(self, action: #selector(characteristicTapped(_:)), for: .touchUpInside)
