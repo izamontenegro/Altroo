@@ -348,7 +348,7 @@ final class BasicNeedsFacadeTests: XCTestCase {
     func test_updateUrine_callsService() {
         let (sut, _, _, _, urineSpy, coreDataSpy) = makeSUT()
         let care = DummyCareRecipient()
-        let record = DummyUrineRecord() 
+        let record = DummyUrineRecord()
 
         sut.updateUrine(
             record,

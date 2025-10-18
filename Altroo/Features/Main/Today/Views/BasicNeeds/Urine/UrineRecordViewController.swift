@@ -12,7 +12,6 @@ protocol UrineRecordNavigationDelegate: AnyObject {
     func didFinishAddingUrineRecord()
 }
 
-
 final class UrineRecordViewController: GradientNavBarViewController {
     weak var delegate: UrineRecordNavigationDelegate?
 
