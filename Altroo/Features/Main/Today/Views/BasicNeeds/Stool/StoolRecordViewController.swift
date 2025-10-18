@@ -161,7 +161,7 @@ final class StoolRecordViewController: GradientNavBarViewController {
 
         button.addSubview(contentStack)
         NSLayoutConstraint.activate([
-            button.widthAnchor.constraint(greaterThanOrEqualToConstant: 110),
+            button.widthAnchor.constraint(equalToConstant: 120),
             button.heightAnchor.constraint(equalToConstant: 120),
 
             contentStack.leadingAnchor.constraint(equalTo: button.leadingAnchor, constant: 12),
@@ -172,8 +172,12 @@ final class StoolRecordViewController: GradientNavBarViewController {
             imageView.heightAnchor.constraint(greaterThanOrEqualToConstant: 56)
         ])
 
-        button.addTarget(self, action: #selector(typeTapped(_:)), for: .touchUpInside)
+       
+        contentStack.isUserInteractionEnabled = false
+        imageView.isUserInteractionEnabled = false
+        titleLabel.isUserInteractionEnabled = false
 
+        button.addTarget(self, action: #selector(typeTapped(_:)), for: .touchUpInside)
         return button
     }
     
@@ -186,40 +190,40 @@ final class StoolRecordViewController: GradientNavBarViewController {
             labelWeight: .semibold
         )
 
-        let container = UIStackView()
-        container.axis = .vertical
-        container.spacing = 12
+        let scrollView = UIScrollView()
+        scrollView.showsHorizontalScrollIndicator = false
+        scrollView.translatesAutoresizingMaskIntoConstraints = false
 
-        var row = UIStackView()
+        let row = UIStackView()
         row.axis = .horizontal
         row.alignment = .fill
-        row.distribution = .fillEqually
         row.spacing = 12
+        row.translatesAutoresizingMaskIntoConstraints = false
+
+        scrollView.addSubview(row)
+        NSLayoutConstraint.activate([
+            row.leadingAnchor.constraint(equalTo: scrollView.contentLayoutGuide.leadingAnchor, constant: 2),
+            row.trailingAnchor.constraint(equalTo: scrollView.contentLayoutGuide.trailingAnchor, constant: -2),
+            row.topAnchor.constraint(equalTo: scrollView.contentLayoutGuide.topAnchor),
+            row.bottomAnchor.constraint(equalTo: scrollView.contentLayoutGuide.bottomAnchor),
+
+            row.heightAnchor.constraint(equalTo: scrollView.frameLayoutGuide.heightAnchor)
+        ])
 
         for (index, type) in StoolTypesEnum.allCases.enumerated() {
             let button = makeStoolTypeButton(type: type, index: index)
             stoolTypesButtons.append(button)
             row.addArrangedSubview(button)
-
-            if (index + 1) % 3 == 0 {
-                container.addArrangedSubview(row)
-                row = UIStackView()
-                row.axis = .horizontal
-                row.alignment = .fill
-                row.distribution = .fillEqually
-                row.spacing = 12
-            }
-        }
-        if row.arrangedSubviews.isEmpty == false {
-            container.addArrangedSubview(row)
         }
 
-        let section = UIStackView(arrangedSubviews: [title, container])
+        let section = UIStackView(arrangedSubviews: [title, scrollView])
         section.axis = .vertical
-        section.spacing = 16
+        section.spacing = 12
+
+        scrollView.heightAnchor.constraint(equalToConstant: 120).isActive = true
+
         return section
     }
-
     private func makeStoolNotesSection() -> UIView {
         let title = StandardLabel(
             labelText: "Observação",
