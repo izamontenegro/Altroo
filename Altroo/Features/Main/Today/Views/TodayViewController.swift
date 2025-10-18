@@ -41,11 +41,11 @@ class TodayViewController: UIViewController {
     init(delegate: TodayViewControllerDelegate? = nil, viewModel: TodayViewModel) {
         //TODO: Feed real symptoms
         self.delegate = delegate
-
+        
         self.viewModel = viewModel
         self.symptomsCard = SymptomsCard(symptoms: viewModel.todaySymptoms)
         super.init(nibName: nil, bundle: nil)
-
+        
         self.symptomsCard.delegate = self
     }
     
@@ -59,11 +59,11 @@ class TodayViewController: UIViewController {
         profileToolbar.onProfileTap = { [weak self] in
             self?.delegate?.goToCareRecipientProfileView()
         }
-
+        
         profileToolbar.onEditTap = { [weak self] in
             self?.delegate?.goToEditSectionView()
         }
-
+        
         view.addSubview(profileToolbar)
         view.addSubview(scrollView)
         scrollView.addSubview(vStack)
@@ -94,135 +94,153 @@ class TodayViewController: UIViewController {
     override func viewWillAppear(_ animated: Bool) {
         viewModel.fetchAllTodaySymptoms()
         symptomsCard.updateSymptoms(viewModel.todaySymptoms)
-        print(viewModel.todaySymptoms.last?.name)
     }
     
     private func addSections() {
-            // Basic Needs
-            vStack.addArrangedSubview(makeSection(title: "Necessidades Básicas", buttons: [
-                ("Alimentação", #selector(didTapRecordFeeding)),
-                ("Hidratação", #selector(didTapRecordHydration)),
-                ("Fezes", #selector(didTapRecordStool)),
-                ("Urina", #selector(didTapRecordUrine))
-            ]))
-
-            // Tasks
-            vStack.addArrangedSubview(makeSection(title: "Tarefas", buttons: [
-                ("Adicionar Tarefa", #selector(didTapAddNewTask)),
-                ("Ver Todas", #selector(didTapSeeAllTasks))
-            ]))
-
-            // Symptoms
-            vStack.addArrangedSubview(makeSection(title: "Sintomas", buttons: [
-                ("Adicionar Sintoma", #selector(didTapAddNewSymptom))
-            ]))
-            vStack.addArrangedSubview(symptomsCard)
+        // Basic Needs
+        let basicNeedsTitle = StandardLabel(labelText: "Necessidades Básicas", labelFont: .sfPro, labelType: .title2, labelColor: .black10, labelWeight: .semibold)
+        let feedingCard = RecordCard(title: "Alimentação", iconName: "takeoutbag.and.cup.and.straw.fill", contentView: FeedingCardRecord(title: "Café da manhã", status: .partial))
+        let hidrationCard = RecordCard(title: "Hidratação", iconName: "waterbottle.fill", showPlusButton: false, contentView: WaterRecord(currentQuantity: "0,5", goalQuantity: "2L"))
+        let stoolCard = RecordCard(title: "Fezes", iconName: "toilet.fill", contentView: QuantityRecordContent(quantity: 1))
+        let urineCard = RecordCard(title: "Urina", iconName: "toilet.fill", contentView: QuantityRecordContent(quantity: 3))
+        
+        feedingCard.onAddButtonTap = { [weak self] in
+            self?.delegate?.goTo(.recordFeeding)
         }
-
-        // MARK: - Section Factory
-        private func makeSection(title: String, buttons: [(String, Selector)]) -> UIView {
-            let section = UIView()
-            section.translatesAutoresizingMaskIntoConstraints = false
-
-            let titleLabel = UILabel()
-            titleLabel.text = title
-            titleLabel.font = UIFont.boldSystemFont(ofSize: 18)
-            titleLabel.translatesAutoresizingMaskIntoConstraints = false
-
-            section.addSubview(titleLabel)
-            NSLayoutConstraint.activate([
-                titleLabel.topAnchor.constraint(equalTo: section.topAnchor),
-                titleLabel.leadingAnchor.constraint(equalTo: section.leadingAnchor),
-                titleLabel.trailingAnchor.constraint(equalTo: section.trailingAnchor)
-            ])
-
-            let stack = UIStackView()
-            stack.axis = .vertical
-            stack.spacing = 12
-            stack.translatesAutoresizingMaskIntoConstraints = false
-            section.addSubview(stack)
-
-            NSLayoutConstraint.activate([
-                stack.topAnchor.constraint(equalTo: titleLabel.bottomAnchor, constant: 10),
-                stack.leadingAnchor.constraint(equalTo: section.leadingAnchor),
-                stack.trailingAnchor.constraint(equalTo: section.trailingAnchor),
-                stack.bottomAnchor.constraint(equalTo: section.bottomAnchor)
-            ])
-
-            for (title, selector) in buttons {
-                let button = UIButton(type: .system)
-                button.setTitle(title, for: .normal)
-                button.backgroundColor = .teal20
-                button.setTitleColor(.white, for: .normal)
-                button.layer.cornerRadius = 8
-                button.titleLabel?.font = UIFont.systemFont(ofSize: 16, weight: .medium)
-                button.addTarget(self, action: selector, for: .touchUpInside)
-                button.translatesAutoresizingMaskIntoConstraints = false
-                button.heightAnchor.constraint(equalToConstant: 44).isActive = true
-                stack.addArrangedSubview(button)
-            }
-
-            return section
+        hidrationCard.onAddButtonTap = { [weak self] in
+            self?.delegate?.goTo(.recordHydration)
         }
+        stoolCard.onAddButtonTap = { [weak self] in
+            self?.delegate?.goTo(.recordStool)
+        }
+        urineCard.onAddButtonTap = { [weak self] in
+            self?.delegate?.goTo(.recordUrine)
+        }
+        
+        let bottomRow = UIStackView(arrangedSubviews: [stoolCard, urineCard])
+        bottomRow.axis = .horizontal
+        bottomRow.spacing = 16
+        bottomRow.distribution = .fillEqually
+        bottomRow.translatesAutoresizingMaskIntoConstraints = false
+        
+        let basicNeedsStack = UIStackView(arrangedSubviews: [feedingCard, hidrationCard, bottomRow])
+        basicNeedsStack.axis = .vertical
+        basicNeedsStack.spacing = 16
+        basicNeedsStack.translatesAutoresizingMaskIntoConstraints = false
+        
+        vStack.addArrangedSubview(basicNeedsTitle)
+        vStack.addArrangedSubview(basicNeedsStack)
+        
+        // Tasks
+        let taskHeader = TaskHeader()
+        taskHeader.delegate = self
+        vStack.addArrangedSubview(taskHeader)
+        
+        // Symptoms
+        let symptomHeader = IntercurrenceHeader()
+        symptomHeader.delegate = self
+        vStack.addArrangedSubview(symptomHeader)
+        vStack.addArrangedSubview(symptomsCard)
+    }
+    
+    // MARK: - Section Factory
+    private func makeSection(title: String, buttons: [(String, Selector)]) -> UIView {
+        let section = UIView()
+        section.translatesAutoresizingMaskIntoConstraints = false
+        
+        let titleLabel = UILabel()
+        titleLabel.text = title
+        titleLabel.font = UIFont.boldSystemFont(ofSize: 18)
+        titleLabel.translatesAutoresizingMaskIntoConstraints = false
+        
+        section.addSubview(titleLabel)
+        NSLayoutConstraint.activate([
+            titleLabel.topAnchor.constraint(equalTo: section.topAnchor),
+            titleLabel.leadingAnchor.constraint(equalTo: section.leadingAnchor),
+            titleLabel.trailingAnchor.constraint(equalTo: section.trailingAnchor)
+        ])
+        
+        let stack = UIStackView()
+        stack.axis = .vertical
+        stack.spacing = 12
+        stack.translatesAutoresizingMaskIntoConstraints = false
+        section.addSubview(stack)
+        
+        NSLayoutConstraint.activate([
+            stack.topAnchor.constraint(equalTo: titleLabel.bottomAnchor, constant: 10),
+            stack.leadingAnchor.constraint(equalTo: section.leadingAnchor),
+            stack.trailingAnchor.constraint(equalTo: section.trailingAnchor),
+            stack.bottomAnchor.constraint(equalTo: section.bottomAnchor)
+        ])
+        
+        for (title, selector) in buttons {
+            let button = UIButton(type: .system)
+            button.setTitle(title, for: .normal)
+            button.backgroundColor = .teal20
+            button.setTitleColor(.white, for: .normal)
+            button.layer.cornerRadius = 8
+            button.titleLabel?.font = UIFont.systemFont(ofSize: 16, weight: .medium)
+            button.addTarget(self, action: selector, for: .touchUpInside)
+            button.translatesAutoresizingMaskIntoConstraints = false
+            button.heightAnchor.constraint(equalToConstant: 44).isActive = true
+            stack.addArrangedSubview(button)
+        }
+        
+        return section
+    }
     
     // MARK: - BUTTON ACTIONS
     @objc private func didTapProfileView() {
-           delegate?.goTo(.careRecipientProfile)
-       }
-       @objc private func didTapEditSectionView() {
-           delegate?.goTo(.editSection)
-       }
-       @objc private func didTapRecordFeeding() {
-           delegate?.goTo(.recordFeeding)
-       }
-       @objc private func didTapRecordHydration() {
-           delegate?.goTo(.recordHydration)
-       }
-       @objc private func didTapRecordStool() {
-           delegate?.goTo(.recordStool)
-       }
-       @objc private func didTapRecordUrine() {
-           delegate?.goTo(.recordUrine)
-       }
-       @objc private func didTapRecordHeartRate() {
-           delegate?.goTo(.recordHeartRate)
-       }
-       @objc private func didTapRecordGlycemia() {
-           delegate?.goTo(.recordGlycemia)
-       }
-       @objc private func didTapRecordBloodPressure() {
-           delegate?.goTo(.recordBloodPressure)
-       }
-       @objc private func didTapRecordTemperature() {
-           delegate?.goTo(.recordTemperature)
-       }
-       @objc private func didTapRecordSaturation() {
-           delegate?.goTo(.recordSaturation)
-       }
-       @objc private func didTapSeeAllTasks() {
-           delegate?.goTo(.seeAllTasks)
-       }
-       @objc private func didTapAddNewTask() {
-           delegate?.goTo(.addNewTask)
-       }
-       @objc private func didTapSeeAllMedication() {
-           delegate?.goTo(.seeAllMedication)
-       }
-       @objc private func didTapAddNewMedication() {
-           delegate?.goTo(.addNewMedication)
-       }
-       @objc private func didTapCheckMedicationDone() {
-           delegate?.goTo(.checkMedicationDone)
-       }
-       @objc private func didTapSeeAllEvents() {
-           delegate?.goTo(.seeAllEvents)
-       }
-       @objc private func didTapAddNewEvent() {
-           delegate?.goTo(.addNewEvent)
-       }
-       @objc private func didTapAddNewSymptom() {
-           delegate?.goTo(.addSymptom)
-       }
+        delegate?.goTo(.careRecipientProfile)
+    }
+    @objc private func didTapEditSectionView() {
+        delegate?.goTo(.editSection)
+    }
+    @objc private func didTapRecordFeeding() {
+        delegate?.goTo(.recordFeeding)
+    }
+    @objc private func didTapRecordHydration() {
+        delegate?.goTo(.recordHydration)
+    }
+    @objc private func didTapRecordStool() {
+        delegate?.goTo(.recordStool)
+    }
+    @objc private func didTapRecordUrine() {
+        delegate?.goTo(.recordUrine)
+    }
+    @objc private func didTapRecordHeartRate() {
+        delegate?.goTo(.recordHeartRate)
+    }
+    @objc private func didTapRecordGlycemia() {
+        delegate?.goTo(.recordGlycemia)
+    }
+    @objc private func didTapRecordBloodPressure() {
+        delegate?.goTo(.recordBloodPressure)
+    }
+    @objc private func didTapRecordTemperature() {
+        delegate?.goTo(.recordTemperature)
+    }
+    @objc private func didTapRecordSaturation() {
+        delegate?.goTo(.recordSaturation)
+    }
+    @objc private func didTapSeeAllMedication() {
+        delegate?.goTo(.seeAllMedication)
+    }
+    @objc private func didTapAddNewMedication() {
+        delegate?.goTo(.addNewMedication)
+    }
+    @objc private func didTapCheckMedicationDone() {
+        delegate?.goTo(.checkMedicationDone)
+    }
+    @objc private func didTapSeeAllEvents() {
+        delegate?.goTo(.seeAllEvents)
+    }
+    @objc private func didTapAddNewEvent() {
+        delegate?.goTo(.addNewEvent)
+    }
+    @objc private func didTapAddNewSymptom() {
+        delegate?.goTo(.addSymptom)
+    }
 }
 
 extension TodayViewController: SymptomsCardDelegate {
@@ -231,19 +249,18 @@ extension TodayViewController: SymptomsCardDelegate {
     }
 }
 
-//#Preview {
-//    // Mock UserServiceSession
-//    class MockUserService: UserServiceSession {
-//        func fetchCurrentPatient() -> CareRecipient? {
-//            let recipient = CareRecipient()
-//            recipient.personalData = PersonalData()
-//            recipient.personalData?.name = "Karlisson Oliveira"
-//            return recipient
-//        }
-//    }
-//    
-//    let viewModel = TodayViewModel(userService: MockUserService())
-//    
-//    TodayViewController(viewModel: viewModel)
-//}
+extension TodayViewController: TaskHeaderDelegate {
+    func didTapAddTask() {
+        delegate?.goTo(.addNewTask)
+    }
+    
+    func didTapSeeTask() {
+        delegate?.goTo(.seeAllTasks)
+    }
+}
 
+extension TodayViewController: IntercurrenceHeaderDelegate {
+    func didTapAddIntercurrence() {
+        delegate?.goTo(.addSymptom)
+    }
+}
