@@ -27,6 +27,7 @@ final class StoolRecordViewModel {
     }
     
     func createStoolRecord() {
+        
         guard
             let careRecipient = getCurrentCareRecipient()
         else { return }

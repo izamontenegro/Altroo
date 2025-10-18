@@ -46,7 +46,9 @@ final class StoolRecordViewController: GradientNavBarViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
         view.backgroundColor = .pureWhite
+        
         setupLayout()
+        setupTapToDismiss()
         bindViewModel()
     }
     
@@ -301,6 +303,16 @@ final class StoolRecordViewController: GradientNavBarViewController {
         viewModel.createStoolRecord()
         
         delegate?.didFinishAddingStoolRecord()
+    }
+    
+    private func setupTapToDismiss() {
+        let tap = UITapGestureRecognizer(target: self, action: #selector(dismissKeyboard))
+        tap.cancelsTouchesInView = false   // não intercepta toques dos botões
+        view.addGestureRecognizer(tap)
+    }
+
+    @objc private func dismissKeyboard() {
+        view.endEditing(true)
     }
 
     
