@@ -10,13 +10,11 @@ class StandardTextfield: UITextField {
     
     private var textfieldWidth: CGFloat
     private var textfieldHeight: CGFloat
-//    private var textfieldTitle: StandardLabel
     private var containerView = UIView()
     
     init(width: CGFloat, height: CGFloat, placeholder: String) {
         self.textfieldWidth = width
         self.textfieldHeight = height
-//        self.textfieldTitle = title
         super.init(frame: .zero)
         
         self.placeholder = placeholder
@@ -62,14 +60,9 @@ class StandardTextfield: UITextField {
         ])
     
         containerView.translatesAutoresizingMaskIntoConstraints = false
-//        containerView.addSubview(textfieldTitle)
         containerView.addSubview(self)
         
         NSLayoutConstraint.activate([
-//            textfieldTitle.topAnchor.constraint(equalTo: containerView.topAnchor),
-//            textfieldTitle.leadingAnchor.constraint(equalTo: containerView.leadingAnchor),
-//            textfieldTitle.trailingAnchor.constraint(equalTo: containerView.trailingAnchor),
-            
             self.topAnchor.constraint(equalTo: containerView.topAnchor),
             self.leadingAnchor.constraint(equalTo: containerView.leadingAnchor),
             self.trailingAnchor.constraint(equalTo: containerView.trailingAnchor),
@@ -89,7 +82,6 @@ private struct TextfieldPreviewWrapper: UIViewRepresentable {
         let field = StandardTextfield(
             width: 370,
             height: 38,
-//            title: title,
             placeholder: "Maria Clara"
         )
         
