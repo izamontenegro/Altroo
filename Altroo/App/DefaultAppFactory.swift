@@ -77,7 +77,6 @@ extension DefaultAppFactory {
     func makeTodayViewController(delegate: TodayViewControllerDelegate) -> UIViewController {
         let vm = TodayViewModel(careRecipientFacade: dependencies.careRecipientFacade, userService: dependencies.userService)
         let vc = TodayViewController(viewModel: vm)
-        vc.title = "Today"
         vc.delegate = delegate
         return vc
     }
@@ -221,12 +220,12 @@ extension DefaultAppFactory {
 // MARK: - TaskFactory
 extension DefaultAppFactory {
     func makeAllTasksViewController(onTaskSelected: ((TaskInstance) -> Void)? = nil) -> UIViewController {
-        let vm = AllTasksViewModel(taskService: dependencies.routineActivitiesFacade)
+        let vm = AllTasksViewModel(taskService: dependencies.routineActivitiesFacade, currentCareRecipient: dependencies.userService.fetchCurrentPatient() ?? .init())
         let vc = AllTasksViewController(viewModel: vm, onTaskSelected: onTaskSelected)
         return vc
     }
     func makeAddTaskViewController() -> UIViewController {
-        let vm = AddTaskViewModel(taskService: dependencies.routineActivitiesFacade)
+        let vm = AddTaskViewModel(taskService: dependencies.routineActivitiesFacade, currentCareRecipient: dependencies.userService.fetchCurrentPatient() ?? .init())
         let vc = AddTaskViewController(viewModel: vm)
         return vc
     }

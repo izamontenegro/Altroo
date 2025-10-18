@@ -29,12 +29,9 @@ class AddTaskViewModel {
         }
     }
     
-    init(taskService: RoutineActivitiesFacade) {
+    init(taskService: RoutineActivitiesFacade, currentCareRecipient: CareRecipient) {
         self.taskService = taskService
-        
-        currentCareRecipient = CoreDataService(stack: CoreDataStack.shared)
-            .fetchAllCareRecipients()
-            .first(where: { $0.personalData?.name == "Mrs. Parente" })!
+        self.currentCareRecipient = currentCareRecipient
     }
     
     //MARK: VALIDATION

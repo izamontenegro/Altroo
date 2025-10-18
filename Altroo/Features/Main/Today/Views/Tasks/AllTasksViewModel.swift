@@ -14,12 +14,9 @@ class AllTasksViewModel {
     @Published var tasks: [TaskInstance] = []
   
     init(taskService: RoutineActivitiesFacadeProtocol,
-         currentCareRecipient: CareRecipient =  CoreDataService(stack: CoreDataStack.shared).fetchAllCareRecipients().first(where: { $0.personalData?.name == "Mrs. Parente" })!) {
-        self.taskService = taskService
-        
-        //FIXME: SWAP FOR REAL INJECTED CARERECIPIENT
+         currentCareRecipient: CareRecipient) {
         self.currentCareRecipient = currentCareRecipient
-        
+        self.taskService = taskService
         loadTasks()
     }
     
