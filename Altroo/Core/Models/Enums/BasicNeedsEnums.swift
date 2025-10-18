@@ -13,3 +13,15 @@ enum UrineCharacteristicsEnum: String, CaseIterable {
     case incontinence
     case unusualOdor
 }
+
+// MARK: - STOOL
+
+enum StoolTypesEnum: String, CaseIterable {
+    case lumpy
+    case clumpy
+    case sausageCracks
+    case smoothSausage
+    case softPieces
+    case mushy
+    case watery
+}
