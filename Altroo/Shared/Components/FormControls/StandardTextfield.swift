@@ -13,9 +13,7 @@ class StandardTextfield: UITextField {
 //    private var textfieldTitle: StandardLabel
     private var containerView = UIView()
     
-    init(width: CGFloat, height: CGFloat,
-//         title: StandardLabel,
-         placeholder: String) {
+    init(width: CGFloat, height: CGFloat, placeholder: String) {
         self.textfieldWidth = width
         self.textfieldHeight = height
 //        self.textfieldTitle = title
@@ -30,10 +28,7 @@ class StandardTextfield: UITextField {
     }
     
     convenience init() {
-        let defaultTitle = StandardLabel(labelText: "", labelFont: .comfortaa, labelType: .body, labelColor: .black0)
-        self.init(width: 370, height: 38,
-//                  title: defaultTitle,
-                  placeholder: "")
+        self.init(width: 370, height: 38, placeholder: "")
     }
 
     override func textRect(forBounds bounds: CGRect) -> CGRect {
@@ -65,9 +60,7 @@ class StandardTextfield: UITextField {
             self.widthAnchor.constraint(equalToConstant: textfieldWidth),
             self.heightAnchor.constraint(equalToConstant: textfieldHeight)
         ])
-        
-//        textfieldTitle.translatesAutoresizingMaskIntoConstraints = false
-
+    
         containerView.translatesAutoresizingMaskIntoConstraints = false
 //        containerView.addSubview(textfieldTitle)
         containerView.addSubview(self)
@@ -93,14 +86,6 @@ import SwiftUI
 
 private struct TextfieldPreviewWrapper: UIViewRepresentable {
     func makeUIView(context: Context) -> UIView {
-        let title = StandardLabel(
-            labelText: "Nome",
-            labelFont: .sfPro,
-            labelType: .title3,
-            labelColor: UIColor(resource: .black10),
-            labelWeight: .semibold
-        )
-        
         let field = StandardTextfield(
             width: 370,
             height: 38,
