@@ -73,7 +73,6 @@ class TodayViewController: UIViewController {
     override func viewWillAppear(_ animated: Bool) {
         viewModel.fetchAllTodaySymptoms()
         symptomsCard.updateSymptoms(viewModel.todaySymptoms)
-        print(viewModel.todaySymptoms.last?.name)
     }
     
     private func addSections() {

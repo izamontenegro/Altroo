@@ -81,7 +81,7 @@ class TaskCard: InnerShadowView {
             
             checkButton.trailingAnchor.constraint(equalTo: trailingAnchor, constant: -12),
             checkButton.topAnchor.constraint(equalTo: topAnchor, constant: 12),
-            checkButton.heightAnchor.constraint(equalToConstant: 18),
+            checkButton.heightAnchor.constraint(equalToConstant: 20),
             checkButton.widthAnchor.constraint(equalTo: checkButton.heightAnchor),
         ])
         

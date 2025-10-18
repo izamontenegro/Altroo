@@ -31,6 +31,10 @@ class AllTasksViewModel {
 
         taskService.generateInstancesForToday(for: careRecipient)
         let allTasks = taskService.fetchAllInstanceRoutineTasks(from: careRecipient)
+        print("INSTANCIAS NO FETCH DA ALLTASKSVIEWMODEL:")
+        for instance in allTasks {
+            print("\(instance.template?.name) - Time: \(instance.time)")
+        }
         tasks = filterTasksByDay(allTasks)
     }
     
@@ -46,13 +50,9 @@ class AllTasksViewModel {
         
         //filter by task interval
         let intervalTasks = tasks.filter { task in
-            
-            guard let start = task.template?.startDate else {
-                return false
-            }
+            guard let start = task.template?.startDate else { return false }
             
             let end = task.template?.endDate //will be nil if continuous
-            print("\(task.template!.name): Start-\(start) and End-\(end)")
 
             let isAfterStart = start <= today
             let isBeforeEnd = end == nil || end! >= today

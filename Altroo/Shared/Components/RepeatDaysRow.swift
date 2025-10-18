@@ -8,6 +8,8 @@ import UIKit
 
 final class RepeatDaysRow: UIStackView {
     var didSelectDay: ((Locale.Weekday, Bool) -> Void)?
+    private var dayButtons: [PrimaryStyleButton] = []
+    
     
     init(selectedDays: [Locale.Weekday] = []) {
         super.init(frame: .zero)
@@ -21,6 +23,7 @@ final class RepeatDaysRow: UIStackView {
             button.associatedData = day
             button.addTarget(self, action: #selector(didTapDay(_:)), for: .touchUpInside)
             addArrangedSubview(button)
+            dayButtons.append(button)
         }
     }
 
@@ -30,6 +33,14 @@ final class RepeatDaysRow: UIStackView {
         sender.backgroundColor = isSelected ? .black40 : .teal20
         didSelectDay?(day, !isSelected)
     }
+    
+    func updateSelectedDays(_ days: [Locale.Weekday]) {
+        for button in dayButtons {
+            guard let day = button.associatedData as? Locale.Weekday else { continue }
+            button.backgroundColor = days.contains(day) ? .teal20 : .black40
+        }
+    }
+
 
     required init(coder: NSCoder) { fatalError("init(coder:) has not been implemented") }
 }

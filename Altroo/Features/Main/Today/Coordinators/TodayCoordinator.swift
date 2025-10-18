@@ -76,7 +76,11 @@ final class TodayCoordinator: Coordinator {
     }
     
     private func openTaskDetail(for task: TaskInstance)  {
-        let vc = factory.makeTaskDetailViewController(task: task)
+        let vc = factory.makeTaskDetailViewController(task: task) as! TaskDetailViewController
+        vc.onEditTapped = {[weak self] task in
+            guard let taskTemplate = task.template else { return }
+            self?.goToEditTask(taskTemplate)
+        }
         
         let nav = UINavigationController(rootViewController: vc)
         nav.modalPresentationStyle = .pageSheet
@@ -90,6 +94,12 @@ final class TodayCoordinator: Coordinator {
     
     private func goToEditSymptom(_ symptom: Symptom) {
         let vc = factory.makeEditSymptom(from: symptom) as! EditSymptomViewController
+        vc.coordinator = self
+        navigation.pushViewController(vc, animated: true)
+    }
+    
+    private func goToEditTask(_ task: RoutineTask) {
+        let vc = factory.makeEditTaskViewController(task: task) as! EditTaskViewController
         vc.coordinator = self
         navigation.pushViewController(vc, animated: true)
     }

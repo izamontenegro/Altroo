@@ -12,13 +12,14 @@ class AllTasksViewController: GradientNavBarViewController {
     let viewModel: AllTasksViewModel
     var onTaskSelected: ((TaskInstance) -> Void)?
     
-    let titleLabel = StandardLabel(labelText: "Shifts", labelFont: .sfPro, labelType: .title2, labelColor: .black, labelWeight: .semibold)
+    let titleLabel = StandardLabel(labelText: "Tarefas", labelFont: .sfPro, labelType: .title2, labelColor: .black, labelWeight: .semibold)
     
     let descriptionLabel = StandardLabel(labelText: "Confira os tarefas cadastradas no sistema ou adicione uma nova tarefa para visualizá-la aqui.", labelFont: .sfPro, labelType: .body, labelColor: .black, labelWeight: .regular)
     
     let scrollView: UIScrollView = {
         let scrollView = UIScrollView()
         scrollView.translatesAutoresizingMaskIntoConstraints = false
+        scrollView.showsVerticalScrollIndicator = false
         return scrollView
     }()
     
@@ -88,6 +89,7 @@ class AllTasksViewController: GradientNavBarViewController {
     
     func makeCardByPeriod(_ period: PeriodEnum) -> UIStackView {
         let periodTag = CapsuleIconView(iconName: period.iconName, text: period.rawValue.capitalized)
+        periodTag.backgroundColor = .blue30
         
         let cardStack = UIStackView()
         cardStack.axis = .vertical
