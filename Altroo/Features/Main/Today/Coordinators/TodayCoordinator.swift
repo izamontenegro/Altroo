@@ -28,11 +28,14 @@ final class TodayCoordinator: Coordinator {
         switch destination {
         case .recordFeeding: return factory.makeMealRecordViewController()
         case .recordHydration: return factory.makeHydrationRecordSheet()
-        case .recordStool: return factory.makeStoolRecordViewController()
-                case .recordUrine:
+        case .recordUrine:
                     let vc = factory.makeUrineRecordViewController() as! UrineRecordViewController
                     vc.delegate = self
                     return vc
+        case .recordStool:
+            let vc = factory.makeStoolRecordViewController() as! StoolRecordViewController
+            vc.delegate = self
+            return vc
         case .recordHeartRate: return factory.makeRecordHeartRateSheet()
         case .recordGlycemia: return factory.makerRecordGlycemiaSheet()
         case .recordBloodPressure: return factory.makeRecordBloodPressureSheet()
@@ -160,6 +163,14 @@ extension TodayCoordinator: AddTaskNavigationDelegate {
 
 extension TodayCoordinator: UrineRecordNavigationDelegate {
     func didFinishAddingUrineRecord() {
+        if let todayVC = navigation.viewControllers.first {
+            navigation.setViewControllers([todayVC], animated: true)
+        }
+    }
+}
+
+extension TodayCoordinator: StoolRecordNavigationDelegate {
+    func didFinishAddingStoolRecord() {
         if let todayVC = navigation.viewControllers.first {
             navigation.setViewControllers([todayVC], animated: true)
         }
