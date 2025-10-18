@@ -92,26 +92,70 @@ final class StoolServiceSpy: StoolServiceProtocol {
 }
 
 final class UrineServiceSpy: UrineServiceProtocol {
+
     struct AddCaptured {
         var period: PeriodEnum?
         var date: Date?
-        var hadPain: Bool?
         var color: String?
+        var characteristics: [UrineCharacteristicsEnum]?
+        var observation: String?
         var careRecipient: CareRecipient?
     }
-    private(set) var addCalled = 0
-    private(set) var deleteCalled = 0
-    private(set) var lastAdd: AddCaptured?
-    private(set) var lastDeleted: (UrineRecord, CareRecipient)?
 
-    func addUrineRecord(period: PeriodEnum, date: Date, hadPain: Bool, color: String, in careRecipient: CareRecipient) {
-        addCalled += 1
-        lastAdd = .init(period: period, date: date, hadPain: hadPain, color: color, careRecipient: careRecipient)
+    struct UpdateCaptured {
+        var record: UrineRecord?
+        var period: PeriodEnum??
+        var date: Date??
+        var color: String??
+        var characteristics: [UrineCharacteristicsEnum]??
+        var observation: String??
     }
 
-    func deleteUrineRecord(urineRecord: UrineRecord, from careRecipient: CareRecipient) {
+    private(set) var addCalled = 0
+    private(set) var updateCalled = 0
+    private(set) var deleteCalled = 0
+    private(set) var fetchCalled = 0
+
+    private(set) var lastAdd: AddCaptured?
+    private(set) var lastUpdate: UpdateCaptured?
+    private(set) var lastDeleted: (UrineRecord, CareRecipient)?
+    private(set) var lastFetch: (UUID, CareRecipient)?
+
+    @discardableResult
+    func addUrineRecord(
+        period: PeriodEnum,
+        date: Date,
+        color: String,
+        characteristics: [UrineCharacteristicsEnum],
+        observation: String?,
+        to careRecipient: CareRecipient
+    ) -> UrineRecord? {
+        addCalled += 1
+        lastAdd = .init(period: period, date: date, color: color, characteristics: characteristics, observation: observation, careRecipient: careRecipient)
+        return nil
+    }
+
+    func updateUrineRecord(
+        _ record: UrineRecord,
+        period: PeriodEnum?,
+        date: Date?,
+        color: String?,
+        characteristics: [UrineCharacteristicsEnum]?,
+        observation: String?
+    ) {
+        updateCalled += 1
+        lastUpdate = .init(record: record, period: period, date: date, color: color, characteristics: characteristics, observation: observation)
+    }
+
+    func deleteUrineRecord(_ record: UrineRecord, from careRecipient: CareRecipient) {
         deleteCalled += 1
-        lastDeleted = (urineRecord, careRecipient)
+        lastDeleted = (record, careRecipient)
+    }
+
+    func urineRecord(with id: UUID, for careRecipient: CareRecipient) -> UrineRecord? {
+        fetchCalled += 1
+        lastFetch = (id, careRecipient)
+        return nil
     }
 }
 
@@ -263,7 +307,7 @@ final class BasicNeedsFacadeTests: XCTestCase {
         XCTAssertTrue(stoolSpy.lastDeleted?.1 === care)
     }
 
-    // MARK: Urine
+    // MARK: Urine (atualizado)
     func test_addUrine_callsService_andSaves() {
         let (sut, _, _, _, urineSpy, coreDataSpy) = makeSUT()
         let care = DummyCareRecipient()
@@ -273,8 +317,8 @@ final class BasicNeedsFacadeTests: XCTestCase {
             period: .night,
             date: now,
             color: "Light yellow",
-            in: care,
-            hadPain: true
+            in: care, urineCharacteristics: [],
+            observation: "slight odor"
         )
 
         XCTAssertEqual(urineSpy.addCalled, 1)
@@ -283,7 +327,8 @@ final class BasicNeedsFacadeTests: XCTestCase {
         XCTAssertEqual(urineSpy.lastAdd?.period, .night)
         XCTAssertEqual(urineSpy.lastAdd?.date, now)
         XCTAssertEqual(urineSpy.lastAdd?.color, "Light yellow")
-        XCTAssertEqual(urineSpy.lastAdd?.hadPain, true)
+        XCTAssertEqual(urineSpy.lastAdd?.characteristics?.isEmpty, true)
+        XCTAssertEqual(urineSpy.lastAdd?.observation, "slight odor")
         XCTAssertTrue(urineSpy.lastAdd?.careRecipient === care)
     }
 
@@ -298,5 +343,34 @@ final class BasicNeedsFacadeTests: XCTestCase {
         XCTAssertEqual(coreDataSpy.saveContextCalled, 1)
         XCTAssertTrue(urineSpy.lastDeleted?.0 === record)
         XCTAssertTrue(urineSpy.lastDeleted?.1 === care)
+    }
+
+    func test_updateUrine_callsService() {
+        let (sut, _, _, _, urineSpy, coreDataSpy) = makeSUT()
+        let care = DummyCareRecipient()
+        let record = DummyUrineRecord() 
+
+        sut.updateUrine(
+            record,
+            period: .morning,
+            date: Date(),
+            color: "Yellow",
+            characteristics: [],
+            observation: nil
+        )
+
+        XCTAssertEqual(urineSpy.updateCalled, 1)
+        XCTAssertEqual(coreDataSpy.saveContextCalled, 1)
+    }
+    func test_fetchUrineById_callsService() {
+        let (sut, _, _, _, urineSpy, _) = makeSUT()
+        let care = DummyCareRecipient()
+        let id = UUID()
+
+        _ = sut.urineRecord(with: id, for: care)
+
+        XCTAssertEqual(urineSpy.fetchCalled, 1)
+        XCTAssertEqual(urineSpy.lastFetch?.0, id)
+        XCTAssertTrue(urineSpy.lastFetch?.1 === care)
     }
 }
