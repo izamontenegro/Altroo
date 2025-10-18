@@ -148,7 +148,6 @@ class EditTaskViewController: TaskFormViewController {
         }
         
         addTimeButton.addTarget(self, action: #selector(addTimeButtonTapped(_:)), for: .touchUpInside)
-
     }
     
     func addTimeAction(date: Date = .now, isInitial: Bool = false) {
@@ -164,19 +163,25 @@ class EditTaskViewController: TaskFormViewController {
         } else {
             hourStack.addArrangedSubview(newPicker)
         }
-        
         hourPickers.append(newPicker)
     }
     
     @objc func timeChanged(_ sender: UIDatePicker) {
         let index = sender.tag
-        guard index < viewModel.times.count else { return }
-        viewModel.addTime(from: sender.date, at: index)
+        
+        if index < viewModel.times.count {
+            // update existing time
+            viewModel.addTime(from: sender.date, at: index)
+        } else if index == viewModel.times.count {
+            // add new time
+            viewModel.addTime(from: sender.date)
+        } else { return }
     }
     
     @objc func addTimeButtonTapped(_ sender: UIButton) {
         addTimeAction()
     }
+    
     @objc private func saveChanges() {
         guard viewModel.updateTask() else { return }
         coordinator?.goToRoot()

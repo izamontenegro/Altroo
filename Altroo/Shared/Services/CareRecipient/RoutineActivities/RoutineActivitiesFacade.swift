@@ -62,7 +62,6 @@ class RoutineActivitiesFacade: RoutineActivitiesFacadeProtocol {
     
     func deleteInstanceRoutineTask(_ instance: TaskInstance) {
         routineTaskService.deleteInstanceRoutineTask(instance)
-        print("Deleting instance at time: \(instance.time ?? .now)")
         persistenceService.save()
     }
     
@@ -133,13 +132,9 @@ class RoutineActivitiesFacade: RoutineActivitiesFacadeProtocol {
         //delete obsolete instances, in case of editing
         for instance in existingInstances {
             let instanceTime = convertDateToComponents(from: instance.time!)
-            print("Checking instance: \(instanceTime)")
-            print("Template times:", templateTimes)
-            
             
             if !templateTimes.contains(where: { $0 == instanceTime}) {
                 deleteInstanceRoutineTask(instance)
-                print("❌ Deleted obsolete instance at \(instanceTime)")
             }
         }
     }

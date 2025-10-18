@@ -31,10 +31,6 @@ class AllTasksViewModel {
 
         taskService.generateInstancesForToday(for: careRecipient)
         let allTasks = taskService.fetchAllInstanceRoutineTasks(from: careRecipient)
-        print("INSTANCIAS NO FETCH DA ALLTASKSVIEWMODEL:")
-        for instance in allTasks {
-            print("\(instance.template?.name) - Time: \(instance.time)")
-        }
         tasks = filterTasksByDay(allTasks)
     }
     

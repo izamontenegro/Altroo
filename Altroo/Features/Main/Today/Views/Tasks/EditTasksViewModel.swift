@@ -74,9 +74,7 @@ class EditTaskViewModel {
     
     func updateTask() -> Bool {
         guard validator.isEmpty(name, fieldName: "Nome", error: &nameError) else { return false }
-        
-        print("NA EDITVM: \(times)")
-        
+                
         taskService.editTemplateRoutineTask(task: task, name: name, allTimes: times, daysOfTheWeek: repeatingDays, startDate: startDate, endDate: endDate, reminder: false, note: note)
         
         return true
