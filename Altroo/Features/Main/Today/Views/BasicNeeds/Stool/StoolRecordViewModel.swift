@@ -18,7 +18,7 @@ final class StoolRecordViewModel {
     @Published var selectedStoolType: StoolTypesEnum? = nil
     @Published var selectedStoolColor: UIColor? = nil
     @Published var selectedCharacteristics: [UrineCharacteristicsEnum] = []
-    @Published var urineObservation: String = ""
+    @Published var notes: String = ""
     
     init(stoolService: BasicNeedsFacade, coreDataService: CoreDataService, userService: UserServiceSession) {
         self.stoolService = stoolService
@@ -31,14 +31,7 @@ final class StoolRecordViewModel {
             let careRecipient = getCurrentCareRecipient()
         else { return }
         
-//        urineService.addUrine(
-//            period: PeriodEnum.current,
-//            date: Date(),
-//            color: selectedUrineColor?.hexString ?? "",
-//            in: careRecipient,
-//            urineCharacteristics: selectedCharacteristics,
-//            observation: urineObservation
-//        )
+        stoolService.addStool(period: PeriodEnum.current, date: Date(), format: selectedStoolType?.rawValue ?? "", notes: notes, color: selectedStoolColor?.hexString ?? "", in: careRecipient)
         
         checkSavedRecord()
     }
@@ -80,8 +73,8 @@ final class StoolRecordViewModel {
             return "water_stool_illustration"
         }
     }
-    // MARK: - PRIVATE FUNCTIONS
     
+    // MARK: - PRIVATE FUNCTIONS
     private func checkSavedRecord() {
     // MARK: - 🔍 Debug: verify that the record was actually saved in Core Data
     // This block fetches all stool records from the context and prints the last one.

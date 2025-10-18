@@ -193,7 +193,8 @@ extension DefaultAppFactory {
 // MARK: - BasicNeedsFactory
 extension DefaultAppFactory {
     func makeStoolRecordViewController() -> UIViewController {
-        let vc = StoolRecordViewController()
+        let vm = StoolRecordViewModel(stoolService: dependencies.basicNeedsFacade, coreDataService: dependencies.coreDataService, userService: dependencies.userService)
+        let vc = StoolRecordViewController(viewModel: vm)
         return vc
     }
     func makeUrineRecordViewController() -> UIViewController {
