@@ -31,7 +31,7 @@ final class TodayCoordinator: Coordinator {
         case .recordStool: return factory.makeStoolRecordViewController()
                 case .recordUrine:
                     let vc = factory.makeUrineRecordViewController() as! UrineRecordViewController
-                    vc.delegate = self // <-- AQUI você coloca o delegate
+                    vc.delegate = self
                     return vc
         case .recordHeartRate: return factory.makeRecordHeartRateSheet()
         case .recordGlycemia: return factory.makerRecordGlycemiaSheet()
@@ -58,9 +58,6 @@ final class TodayCoordinator: Coordinator {
         case .careRecipientProfile:
             let profileCoord = ProfileCoordinator(navigation: navigation, factory: factory, associateFactory: factory
                         )
-            //            let profileCoord = ProfileCoordinator(
-            //                navigation: navigation, factory: factory
-            //            )
                         add(child: profileCoord); profileCoord.start()
             return nil
             
