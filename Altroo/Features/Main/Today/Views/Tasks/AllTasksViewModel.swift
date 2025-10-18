@@ -9,20 +9,28 @@ import Combine
 
 class AllTasksViewModel {
     var taskService: RoutineActivitiesFacadeProtocol
-    var currentCareRecipient: CareRecipient
-    
+    var currentCareRecipient: CareRecipient?
+    let userService: UserServiceProtocol
+
     @Published var tasks: [TaskInstance] = []
   
-    init(taskService: RoutineActivitiesFacadeProtocol,
-         currentCareRecipient: CareRecipient) {
-        self.currentCareRecipient = currentCareRecipient
+    init(taskService: RoutineActivitiesFacadeProtocol, userService: UserServiceProtocol) {
         self.taskService = taskService
+        self.userService = userService
+
+        fetchCareRecipient()
         loadTasks()
     }
     
+    func fetchCareRecipient() {
+        currentCareRecipient = userService.fetchCurrentPatient()
+    }
+    
     func loadTasks() {
-        taskService.generateInstancesForToday(for: currentCareRecipient)
-        let allTasks = taskService.fetchAllInstanceRoutineTasks(from: currentCareRecipient)
+        guard let careRecipient = currentCareRecipient else { return }
+
+        taskService.generateInstancesForToday(for: careRecipient)
+        let allTasks = taskService.fetchAllInstanceRoutineTasks(from: careRecipient)
         tasks = filterTasksByDay(allTasks)
     }
     
@@ -38,16 +46,18 @@ class AllTasksViewModel {
         
         //filter by task interval
         let intervalTasks = tasks.filter { task in
+            
             guard let start = task.template?.startDate else {
                 return false
             }
             
             let end = task.template?.endDate //will be nil if continuous
+            print("\(task.template!.name): Start-\(start) and End-\(end)")
+
             let isAfterStart = start <= today
             let isBeforeEnd = end == nil || end! >= today
 
             return isAfterStart && isBeforeEnd
-
         }
         
         //filter by weekday

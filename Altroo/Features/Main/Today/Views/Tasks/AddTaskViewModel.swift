@@ -10,7 +10,8 @@ import UIKit
 
 class AddTaskViewModel {
     var taskService: RoutineActivitiesFacade
-    var currentCareRecipient: CareRecipient
+    var currentCareRecipient: CareRecipient?
+    let userService: UserServiceProtocol
     
     @Published var name: String = ""
     @Published var times: [DateComponents] = []
@@ -29,15 +30,16 @@ class AddTaskViewModel {
         }
     }
     
-    init(taskService: RoutineActivitiesFacade, currentCareRecipient: CareRecipient) {
+    init(taskService: RoutineActivitiesFacade, userService: UserServiceProtocol) {
         self.taskService = taskService
-        self.currentCareRecipient = currentCareRecipient
+        self.userService = userService
+
+        fetchCareRecipient()
     }
-    
-    //MARK: VALIDATION
-    //    func isTexfieldEmpty() -> Bool {
-    //
-    //    }
+
+    func fetchCareRecipient() {
+        currentCareRecipient = userService.fetchCurrentPatient()
+    }
     
     var finalEndDate: Date? {
         isContinuous ? nil : endDate
@@ -66,6 +68,8 @@ class AddTaskViewModel {
     
     //MARK: CREATION
     func createTask() {
+        guard let careRecipient = currentCareRecipient else { return }
+        
         checkRepeatingDays()
         
         taskService.addTemplateRoutineTask(
@@ -76,6 +80,6 @@ class AddTaskViewModel {
             endDate: finalEndDate,
             reminder: false,
             note: note,
-            in: currentCareRecipient)
+            in: careRecipient)
     }
 }
