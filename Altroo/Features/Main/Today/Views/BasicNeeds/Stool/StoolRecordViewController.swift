@@ -307,7 +307,7 @@ final class StoolRecordViewController: GradientNavBarViewController {
     
     private func setupTapToDismiss() {
         let tap = UITapGestureRecognizer(target: self, action: #selector(dismissKeyboard))
-        tap.cancelsTouchesInView = false   // não intercepta toques dos botões
+        tap.cancelsTouchesInView = false
         view.addGestureRecognizer(tap)
     }
 
