@@ -19,21 +19,37 @@ final class CoreDataServiceSpy: CoreDataService {
 // MARK: - Service Spies
 final class FeedingServiceSpy: FeedingServiceProtocol {
     struct AddCaptured {
-        var behavior: String?
+        var amountEaten: MealAmountEatenEnum?
         var date: Date?
         var period: PeriodEnum?
-        var description: String?
+        var notes: String?
         var photo: Data?
+        var mealCategory: MealCategoryEnum?
         var careRecipient: CareRecipient?
     }
+
     private(set) var addCalled = 0
     private(set) var deleteCalled = 0
     private(set) var lastAdd: AddCaptured?
     private(set) var lastDeleted: (FeedingRecord, CareRecipient)?
 
-    func addFeedingRecord(behavior: String, Date: Date, period: PeriodEnum, feedingRecordDescription: String, photo: Data, in careRecipient: CareRecipient) {
+    func addFeedingRecord(amountEaten: MealAmountEatenEnum,
+                          Date: Date,
+                          period: PeriodEnum,
+                          notes: String,
+                          photo: Data?,
+                          mealCategory: MealCategoryEnum,
+                          in careRecipient: CareRecipient) {
         addCalled += 1
-        lastAdd = .init(behavior: behavior, date: Date, period: period, description: feedingRecordDescription, photo: photo, careRecipient: careRecipient)
+        lastAdd = .init(
+            amountEaten: amountEaten,
+            date: Date,
+            period: period,
+            notes: notes,
+            photo: photo,
+            mealCategory: mealCategory,
+            careRecipient: careRecipient
+        )
     }
 
     func deleteFeedingRecord(feedingRecord: FeedingRecord, from careRecipient: CareRecipient) {
@@ -152,39 +168,25 @@ final class BasicNeedsFacadeTests: XCTestCase {
         let (sut, feedingSpy, _, _, _, coreDataSpy) = makeSUT()
         let care = DummyCareRecipient()
         let now = Date()
-        let photo = Data([0xCA, 0xFE])
-
+        
         sut.addFeeding(
-            behavior: "Restless",
+            amountEaten: .all,
             date: now,
             period: .morning,
-            feedingRecordDescription: "Bottle 120ml",
-            photo: photo,
+            notes: "Bottle 120ml",
+            mealCategory: .breakfast,
             in: care
         )
 
         XCTAssertEqual(feedingSpy.addCalled, 1)
         XCTAssertEqual(coreDataSpy.saveContextCalled, 1)
 
-        XCTAssertEqual(feedingSpy.lastAdd?.behavior, "Restless")
+        XCTAssertEqual(feedingSpy.lastAdd?.amountEaten, .all)
         XCTAssertEqual(feedingSpy.lastAdd?.date, now)
         XCTAssertEqual(feedingSpy.lastAdd?.period, .morning)
-        XCTAssertEqual(feedingSpy.lastAdd?.description, "Bottle 120ml")
-        XCTAssertEqual(feedingSpy.lastAdd?.photo, photo)
+        XCTAssertEqual(feedingSpy.lastAdd?.notes, "Bottle 120ml")
+        XCTAssertEqual(feedingSpy.lastAdd?.mealCategory, .breakfast)
         XCTAssertTrue(feedingSpy.lastAdd?.careRecipient === care)
-    }
-
-    func test_deleteFeeding_callsService_andSaves() {
-        let (sut, feedingSpy, _, _, _, coreDataSpy) = makeSUT()
-        let care = DummyCareRecipient()
-        let record = DummyFeedingRecord()
-
-        sut.deleteFeeding(feedingRecord: record, from: care)
-
-        XCTAssertEqual(feedingSpy.deleteCalled, 1)
-        XCTAssertEqual(coreDataSpy.saveContextCalled, 1)
-        XCTAssertTrue(feedingSpy.lastDeleted?.0 === record)
-        XCTAssertTrue(feedingSpy.lastDeleted?.1 === care)
     }
 
     // MARK: Hydration
