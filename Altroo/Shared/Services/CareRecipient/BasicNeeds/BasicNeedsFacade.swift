@@ -24,8 +24,8 @@ class BasicNeedsFacade: BasicNeedsFacadeProtocol {
     }
     
     // MARK: - FEEDING ACTIONS
-    func addFeeding(behavior: String, date: Date, period: PeriodEnum, feedingRecordDescription: String, photo: Data, in careRecipient: CareRecipient) {
-        feedingService.addFeedingRecord(behavior: behavior, Date: date, period: period, feedingRecordDescription: feedingRecordDescription, photo: photo, in: careRecipient)
+    func addFeeding(amountEaten: MealAmountEatenEnum, date: Date, period: PeriodEnum, notes: String, mealCategory: MealCategoryEnum, in careRecipient: CareRecipient) {
+        feedingService.addFeedingRecord(amountEaten: amountEaten, Date: date, period: period, notes: notes, photo: nil, mealCategory: mealCategory, in: careRecipient)
         
         persistenceService.save()
     }

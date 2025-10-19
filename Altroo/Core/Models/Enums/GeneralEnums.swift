@@ -98,3 +98,56 @@ enum StatusEnum: String {
     case afterLunch
     case other
 }
+
+// FIXME: PUT IN THE BASIC NEEDS ENUMS WHEN MERGED
+
+enum MealAmountEatenEnum: String, CaseIterable {
+    case all
+    case half
+    case none
+    
+    var displayText: String {
+        switch self {
+        case .all:
+            return "Tudo"
+        case .half:
+            return "Parcialmente"
+        case .none:
+            return "Nada"
+        }
+    }
+    
+    var displaySymbol: String {
+        switch self {
+        case .all:
+            return "circle.fill"
+        case .half:
+            return "circle.righthalf.filled.inverse"
+        case .none:
+            return "circle.dashed"
+        }
+    }
+}
+
+enum MealCategoryEnum: String, CaseIterable {
+    case breakfast
+       case lunch
+       case snack
+       case dinner
+       case supper
+
+    var displayText: String {
+        switch self {
+        case .breakfast:
+            return "Café da Manhã"
+        case .lunch:
+            return "Almoço"
+        case .snack:
+            return "Lanche"
+        case .dinner:
+            return "Janta"
+        case .supper:
+            return "Ceia"
+        }
+    }
+}

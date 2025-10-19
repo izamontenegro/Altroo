@@ -211,7 +211,8 @@ extension DefaultAppFactory {
         return vc
     }
     func makeMealRecordViewController() -> UIViewController {
-        let vc = MealRecordViewController()
+        let vm = MealRecordViewModel(feedingService: dependencies.basicNeedsFacade, coreDataService: dependencies.coreDataService, userService: dependencies.userService)
+        let vc = MealRecordViewController(viewModel: vm)
         return vc
     }
     func makeHydrationRecordSheet() -> UIViewController {
