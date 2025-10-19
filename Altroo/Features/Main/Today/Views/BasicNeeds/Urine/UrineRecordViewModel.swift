@@ -42,19 +42,6 @@ final class UrineRecordViewModel {
         checkSavedRecord()
     }
     
-    func getNameFromCharacteristicsOptions(characteristics: UrineCharacteristicsEnum) -> String {
-        switch characteristics {
-        case .excessFoam:
-            return "Excesso de espuma"
-        case .pain:
-            return "Dor"
-        case .incontinence:
-            return "Incontinência"
-        case .unusualOdor:
-            return "Cheiro Anormal"
-        }
-    }
-    
     // MARK: - PRIVATE FUNCTIONS
     
     private func checkSavedRecord() {
