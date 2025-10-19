@@ -35,6 +35,10 @@ final class AppTabBarController: UITabBarController, UITabBarControllerDelegate 
         delegate = self
         setupAppearance()
         setupCustomTabBar()
+        
+        //FIXME: Take this out when there is more thing for the tabbar
+        customTabBar.isHidden = true
+
     }
     
     private func setupAppearance() {
