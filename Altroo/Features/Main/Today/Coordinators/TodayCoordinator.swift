@@ -26,7 +26,10 @@ final class TodayCoordinator: Coordinator {
     
     private func makeViewController(for destination: TodayDestination) -> UIViewController? {
         switch destination {
-        case .recordFeeding: return factory.makeMealRecordViewController()
+        case .recordFeeding:
+        let vc = factory.makeMealRecordViewController() as! MealRecordViewController
+        vc.delegate = self
+        return vc
         case .recordHydration: return factory.makeHydrationRecordSheet()
         case .recordStool: return factory.makeStoolRecordViewController()
         case .recordUrine: return factory.makeUrineRecordViewController()
@@ -155,5 +158,14 @@ extension TodayCoordinator: AddTaskNavigationDelegate {
             self?.openTaskDetail(for: task)
         }
         navigation.setViewControllers([superVC, vc], animated: true)
+    }
+}
+
+extension TodayCoordinator: MealRecordNavigationDelegate {
+    
+    func didFinishAddingMealRecord() {
+        if let todayVC = navigation.viewControllers.first {
+            navigation.setViewControllers([todayVC], animated: true)
+        }
     }
 }

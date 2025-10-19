@@ -105,6 +105,7 @@ enum MealAmountEatenEnum: String, CaseIterable {
     case all
     case half
     case none
+    case dontKnow
     
     var displayText: String {
         switch self {
@@ -114,6 +115,8 @@ enum MealAmountEatenEnum: String, CaseIterable {
             return "Parcialmente"
         case .none:
             return "Nada"
+        case .dontKnow:
+            return "Não sei"
         }
     }
     
@@ -124,6 +127,8 @@ enum MealAmountEatenEnum: String, CaseIterable {
         case .half:
             return "circle.righthalf.filled.inverse"
         case .none:
+            return "circle.dashed"
+        case .dontKnow:
             return "circle.dashed"
         }
     }
