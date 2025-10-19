@@ -144,12 +144,12 @@ final class StoolRecordViewController: GradientNavBarViewController {
         contentStack.spacing = 8
         contentStack.translatesAutoresizingMaskIntoConstraints = false
 
-        let imageView = UIImageView(image: UIImage(named: viewModel.getImageFromStoolTypes(type: type)))
+        let imageView = UIImageView(image: UIImage(named: type.displayImage))
         imageView.contentMode = .scaleAspectFit
         imageView.setContentHuggingPriority(.required, for: .vertical)
 
         let titleLabel = StandardLabel(
-            labelText: viewModel.getNameFromStoolTypes(type: type),
+            labelText: type.displayText,
             labelFont: .sfPro,
             labelType: .footnote,
             labelColor: .blue20,

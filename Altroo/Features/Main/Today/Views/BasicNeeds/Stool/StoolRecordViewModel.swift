@@ -37,44 +37,6 @@ final class StoolRecordViewModel {
         checkSavedRecord()
     }
     
-    func getNameFromStoolTypes(type: StoolTypesEnum) -> String {
-        switch type {
-        case .lumpy:
-            return "Caroços"
-        case .clumpy:
-            return "Grumos"
-        case .sausageCracks:
-            return "Salsicha com Fissuras"
-        case .smoothSausage:
-            return "Salsicha Lisa"
-        case .softPieces:
-            return "Pedaços"
-        case .mushy:
-            return "Pastosa"
-        case .watery:
-            return "Líquida"
-        }
-    }
-    
-    func getImageFromStoolTypes(type: StoolTypesEnum) -> String {
-        switch type {
-        case .lumpy:
-            return "lumpy_stool_illustration"
-        case .clumpy:
-            return "clumpy_stool_illustration"
-        case .sausageCracks:
-            return "sausageCracks_stool_illustration"
-        case .smoothSausage:
-            return "smoothSausage_stool_illustration"
-        case .softPieces:
-            return "softPieces_stool_illustration"
-        case .mushy:
-            return "mushy_stool_illustration"
-        case .watery:
-            return "water_stool_illustration"
-        }
-    }
-    
     // MARK: - PRIVATE FUNCTIONS
     private func checkSavedRecord() {
     // MARK: - 🔍 Debug: verify that the record was actually saved in Core Data
