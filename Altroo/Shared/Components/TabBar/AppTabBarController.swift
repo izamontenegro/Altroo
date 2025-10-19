@@ -41,8 +41,17 @@ final class AppTabBarController: UITabBarController, UITabBarControllerDelegate 
 
     }
     
+    //FIXME: Investigate if this will work when there is custom tabbar
+    override func viewWillLayoutSubviews() {
+        super.viewWillLayoutSubviews()
+        tabBar.isHidden = true
+        tabBar.frame = .zero
+    }
+    
     private func setupAppearance() {
         tabBar.isHidden = true
+        tabBar.frame = .zero
+        tabBar.layer.opacity = 0
         view.backgroundColor = .clear
     }
     
