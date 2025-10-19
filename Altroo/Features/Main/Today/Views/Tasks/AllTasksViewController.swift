@@ -88,7 +88,7 @@ class AllTasksViewController: GradientNavBarViewController {
     }
     
     func makeCardByPeriod(_ period: PeriodEnum) -> UIStackView {
-        let periodTag = CapsuleIconView(iconName: period.iconName, text: period.rawValue.capitalized)
+        let periodTag = CapsuleIconView(iconName: period.iconName, text: period.name)
         periodTag.backgroundColor = .blue30
         
         let cardStack = UIStackView()
