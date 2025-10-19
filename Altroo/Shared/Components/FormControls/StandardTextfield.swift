@@ -10,13 +10,11 @@ class StandardTextfield: UITextField {
     
     private var textfieldWidth: CGFloat
     private var textfieldHeight: CGFloat
-    private var textfieldTitle: StandardLabel
     private var containerView = UIView()
     
-    init(width: CGFloat, height: CGFloat, title: StandardLabel, placeholder: String) {
+    init(width: CGFloat, height: CGFloat, placeholder: String) {
         self.textfieldWidth = width
         self.textfieldHeight = height
-        self.textfieldTitle = title
         super.init(frame: .zero)
         
         self.placeholder = placeholder
@@ -28,8 +26,7 @@ class StandardTextfield: UITextField {
     }
     
     convenience init() {
-        let defaultTitle = StandardLabel(labelText: "", labelFont: .comfortaa, labelType: .body, labelColor: .black0)
-        self.init(width: 370, height: 38, title: defaultTitle, placeholder: "")
+        self.init(width: 370, height: 38, placeholder: "")
     }
 
     override func textRect(forBounds bounds: CGRect) -> CGRect {
@@ -61,19 +58,11 @@ class StandardTextfield: UITextField {
             self.widthAnchor.constraint(equalToConstant: textfieldWidth),
             self.heightAnchor.constraint(equalToConstant: textfieldHeight)
         ])
-        
-        textfieldTitle.translatesAutoresizingMaskIntoConstraints = false
-
+    
         containerView.translatesAutoresizingMaskIntoConstraints = false
-        containerView.addSubview(textfieldTitle)
         containerView.addSubview(self)
         
         NSLayoutConstraint.activate([
-            textfieldTitle.topAnchor.constraint(equalTo: containerView.topAnchor),
-            textfieldTitle.leadingAnchor.constraint(equalTo: containerView.leadingAnchor),
-            textfieldTitle.trailingAnchor.constraint(equalTo: containerView.trailingAnchor),
-            
-            self.topAnchor.constraint(equalTo: textfieldTitle.bottomAnchor, constant: 8),
             self.leadingAnchor.constraint(equalTo: containerView.leadingAnchor),
             self.trailingAnchor.constraint(equalTo: containerView.trailingAnchor),
             self.bottomAnchor.constraint(equalTo: containerView.bottomAnchor)
@@ -89,18 +78,9 @@ import SwiftUI
 
 private struct TextfieldPreviewWrapper: UIViewRepresentable {
     func makeUIView(context: Context) -> UIView {
-        let title = StandardLabel(
-            labelText: "Nome",
-            labelFont: .sfPro,
-            labelType: .title3,
-            labelColor: UIColor(resource: .black10),
-            labelWeight: .semibold
-        )
-        
         let field = StandardTextfield(
             width: 370,
             height: 38,
-            title: title,
             placeholder: "Maria Clara"
         )
         
