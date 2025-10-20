@@ -62,20 +62,26 @@ final class HydrationServiceSpy: HydrationServiceProtocol {
     struct AddCaptured {
         var period: PeriodEnum?
         var date: Date?
-        var behavior: String?
         var waterQuantity: Double?
         var careRecipient: CareRecipient?
     }
+    
     private(set) var addCalled = 0
     private(set) var deleteCalled = 0
     private(set) var lastAdd: AddCaptured?
     private(set) var lastDeleted: (HydrationRecord, CareRecipient)?
-
-    func addHydrationRecord(period: PeriodEnum, date: Date, behavior: String, waterQuantity: Double, in careRecipient: CareRecipient) {
+    
+    func addHydrationRecord(period: PeriodEnum,
+                            date: Date,
+                            waterQuantity: Double,
+                            in careRecipient: CareRecipient) {
         addCalled += 1
-        lastAdd = .init(period: period, date: date, behavior: behavior, waterQuantity: waterQuantity, careRecipient: careRecipient)
+        lastAdd = .init(period: period,
+                        date: date,
+                        waterQuantity: waterQuantity,
+                        careRecipient: careRecipient)
     }
-
+    
     func deleteHydrationRecord(hydrationRecord: HydrationRecord, from careRecipient: CareRecipient) {
         deleteCalled += 1
         lastDeleted = (hydrationRecord, careRecipient)
@@ -184,7 +190,7 @@ final class DummyUrineRecord: UrineRecord {}
 
 // MARK: - Tests
 final class BasicNeedsFacadeTests: XCTestCase {
-
+    
     private func makeSUT() -> (sut: BasicNeedsFacade,
                                feeding: FeedingServiceSpy,
                                hydration: HydrationServiceSpy,
@@ -196,7 +202,7 @@ final class BasicNeedsFacadeTests: XCTestCase {
         let hydrationSpy = HydrationServiceSpy()
         let stoolSpy = StoolServiceSpy()
         let urineSpy = UrineServiceSpy()
-
+        
         let sut = BasicNeedsFacade(
             feedingService: feedingSpy,
             hydrationService: hydrationSpy,
@@ -206,7 +212,7 @@ final class BasicNeedsFacadeTests: XCTestCase {
         )
         return (sut, feedingSpy, hydrationSpy, stoolSpy, urineSpy, coreDataSpy)
     }
-
+    
     // MARK: Feeding
     func test_addFeeding_callsService_andSaves() {
         let (sut, feedingSpy, _, _, _, coreDataSpy) = makeSUT()
@@ -221,10 +227,10 @@ final class BasicNeedsFacadeTests: XCTestCase {
             mealCategory: .breakfast,
             in: care
         )
-
+        
         XCTAssertEqual(feedingSpy.addCalled, 1)
         XCTAssertEqual(coreDataSpy.saveContextCalled, 1)
-
+        
         XCTAssertEqual(feedingSpy.lastAdd?.amountEaten, .all)
         XCTAssertEqual(feedingSpy.lastAdd?.date, now)
         XCTAssertEqual(feedingSpy.lastAdd?.period, .morning)
@@ -232,50 +238,49 @@ final class BasicNeedsFacadeTests: XCTestCase {
         XCTAssertEqual(feedingSpy.lastAdd?.mealCategory, .breakfast)
         XCTAssertTrue(feedingSpy.lastAdd?.careRecipient === care)
     }
-
+    
     // MARK: Hydration
     func test_addHydration_callsService_andSaves() {
         let (sut, _, hydrationSpy, _, _, coreDataSpy) = makeSUT()
         let care = DummyCareRecipient()
         let now = Date()
-
+        
         sut.addHydration(
             period: .afternoon,
             date: now,
-            behavior: "Normal",
             waterQuantity: 0.25,
             in: care
         )
-
+        
         XCTAssertEqual(hydrationSpy.addCalled, 1)
         XCTAssertEqual(coreDataSpy.saveContextCalled, 1)
-
+        
         XCTAssertEqual(hydrationSpy.lastAdd?.period, .afternoon)
         XCTAssertEqual(hydrationSpy.lastAdd?.date, now)
-        XCTAssertEqual(hydrationSpy.lastAdd?.behavior, "Normal")
+        
         XCTAssertEqual(hydrationSpy.lastAdd?.waterQuantity, 0.25)
         XCTAssertTrue(hydrationSpy.lastAdd?.careRecipient === care)
     }
-
+    
     func test_deleteHydration_callsService_andSaves() {
         let (sut, _, hydrationSpy, _, _, coreDataSpy) = makeSUT()
         let care = DummyCareRecipient()
         let record = DummyHydrationRecord()
-
+        
         sut.deleteHydration(hydrationRecord: record, from: care)
-
+        
         XCTAssertEqual(hydrationSpy.deleteCalled, 1)
         XCTAssertEqual(coreDataSpy.saveContextCalled, 1)
         XCTAssertTrue(hydrationSpy.lastDeleted?.0 === record)
         XCTAssertTrue(hydrationSpy.lastDeleted?.1 === care)
     }
-
+    
     // MARK: Stool
     func test_addStool_callsService_andSaves() {
         let (sut, _, _, stoolSpy, _, coreDataSpy) = makeSUT()
         let care = DummyCareRecipient()
         let now = Date()
-
+        
         sut.addStool(
             period: .overnight,
             date: now,
@@ -284,10 +289,10 @@ final class BasicNeedsFacadeTests: XCTestCase {
             color: "Brown",
             in: care
         )
-
+        
         XCTAssertEqual(stoolSpy.addCalled, 1)
         XCTAssertEqual(coreDataSpy.saveContextCalled, 1)
-
+        
         XCTAssertEqual(stoolSpy.lastAdd?.period, .overnight)
         XCTAssertEqual(stoolSpy.lastAdd?.date, now)
         XCTAssertEqual(stoolSpy.lastAdd?.format, "Solid")
@@ -295,26 +300,26 @@ final class BasicNeedsFacadeTests: XCTestCase {
         XCTAssertEqual(stoolSpy.lastAdd?.color, "Brown")
         XCTAssertTrue(stoolSpy.lastAdd?.careRecipient === care)
     }
-
+    
     func test_deleteStool_callsService_andSaves() {
         let (sut, _, _, stoolSpy, _, coreDataSpy) = makeSUT()
         let care = DummyCareRecipient()
         let record = DummyStoolRecord()
-
+        
         sut.deleteStool(stoolRecord: record, from: care)
-
+        
         XCTAssertEqual(stoolSpy.deleteCalled, 1)
         XCTAssertEqual(coreDataSpy.saveContextCalled, 1)
         XCTAssertTrue(stoolSpy.lastDeleted?.0 === record)
         XCTAssertTrue(stoolSpy.lastDeleted?.1 === care)
     }
-
+    
     // MARK: Urine
     func test_addUrine_callsService_andSaves() {
         let (sut, _, _, _, urineSpy, coreDataSpy) = makeSUT()
         let care = DummyCareRecipient()
         let now = Date()
-
+        
         sut.addUrine(
             period: .night,
             date: now,
@@ -322,10 +327,10 @@ final class BasicNeedsFacadeTests: XCTestCase {
             in: care, urineCharacteristics: [],
             observation: "slight odor"
         )
-
+        
         XCTAssertEqual(urineSpy.addCalled, 1)
         XCTAssertEqual(coreDataSpy.saveContextCalled, 1)
-
+        
         XCTAssertEqual(urineSpy.lastAdd?.period, .night)
         XCTAssertEqual(urineSpy.lastAdd?.date, now)
         XCTAssertEqual(urineSpy.lastAdd?.color, "Light yellow")
@@ -333,25 +338,25 @@ final class BasicNeedsFacadeTests: XCTestCase {
         XCTAssertEqual(urineSpy.lastAdd?.observation, "slight odor")
         XCTAssertTrue(urineSpy.lastAdd?.careRecipient === care)
     }
-
+    
     func test_deleteUrine_callsService_andSaves() {
         let (sut, _, _, _, urineSpy, coreDataSpy) = makeSUT()
         let care = DummyCareRecipient()
         let record = DummyUrineRecord()
-
+        
         sut.deleteUrine(urineRecord: record, from: care)
-
+        
         XCTAssertEqual(urineSpy.deleteCalled, 1)
         XCTAssertEqual(coreDataSpy.saveContextCalled, 1)
         XCTAssertTrue(urineSpy.lastDeleted?.0 === record)
         XCTAssertTrue(urineSpy.lastDeleted?.1 === care)
     }
-
+    
     func test_updateUrine_callsService() {
         let (sut, _, _, _, urineSpy, coreDataSpy) = makeSUT()
         let care = DummyCareRecipient()
         let record = DummyUrineRecord()
-
+        
         sut.updateUrine(
             record,
             period: .morning,
@@ -360,18 +365,18 @@ final class BasicNeedsFacadeTests: XCTestCase {
             characteristics: [],
             observation: nil
         )
-
+        
         XCTAssertEqual(urineSpy.updateCalled, 1)
         XCTAssertEqual(coreDataSpy.saveContextCalled, 1)
     }
-
+    
     func test_fetchUrineById_callsService() {
         let (sut, _, _, _, urineSpy, _) = makeSUT()
         let care = DummyCareRecipient()
         let id = UUID()
-
+        
         _ = sut.urineRecord(with: id, for: care)
-
+        
         XCTAssertEqual(urineSpy.fetchCalled, 1)
         XCTAssertEqual(urineSpy.lastFetch?.0, id)
         XCTAssertTrue(urineSpy.lastFetch?.1 === care)
