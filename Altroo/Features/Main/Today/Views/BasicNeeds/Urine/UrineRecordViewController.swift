@@ -53,7 +53,7 @@ final class UrineRecordViewController: GradientNavBarViewController {
     // MARK: - View Layout
     
     private func setupLayout() {
-        let viewTitle = StandardLabel(labelText: "Adicionar urina", labelFont: .sfPro, labelType: .title2, labelColor: .black10, labelWeight: .semibold)
+        let viewTitle = StandardLabel(labelText: "Registrar urina", labelFont: .sfPro, labelType: .title2, labelColor: .black10, labelWeight: .semibold)
         
         let content = UIStackView()
         content.axis = .vertical
@@ -196,7 +196,7 @@ final class UrineRecordViewController: GradientNavBarViewController {
     }
     
     private func configureAddButton() -> UIView {
-        let button = StandardConfirmationButton(title: "Adicionar")
+        let button = StandardConfirmationButton(title: "Registrar")
         button.addTarget(self, action: #selector(createUrineRecord), for: .touchUpInside)
         button.translatesAutoresizingMaskIntoConstraints = false
         return button

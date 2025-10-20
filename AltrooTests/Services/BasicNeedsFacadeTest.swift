@@ -71,7 +71,7 @@ final class StoolServiceSpy: StoolServiceProtocol {
         var period: PeriodEnum?
         var date: Date?
         var format: String?
-        var hadPain: Bool?
+        var notes: String?
         var color: String?
         var careRecipient: CareRecipient?
     }
@@ -80,9 +80,9 @@ final class StoolServiceSpy: StoolServiceProtocol {
     private(set) var lastAdd: AddCaptured?
     private(set) var lastDeleted: (StoolRecord, CareRecipient)?
 
-    func addStoolRecord(period: PeriodEnum, date: Date, format: String, hadPain: Bool, color: String, in careRecipient: CareRecipient) {
+    func addStoolRecord(period: PeriodEnum, date: Date, format: String, notes: String, color: String, in careRecipient: CareRecipient) {
         addCalled += 1
-        lastAdd = .init(period: period, date: date, format: format, hadPain: hadPain, color: color, careRecipient: careRecipient)
+        lastAdd = .init(period: period, date: date, format: format, notes: notes, color: color, careRecipient: careRecipient)
     }
 
     func deleteStoolRecord(stoolRecord: StoolRecord, from careRecipient: CareRecipient) {
@@ -278,7 +278,7 @@ final class BasicNeedsFacadeTests: XCTestCase {
             period: .overnight,
             date: now,
             format: "Solid",
-            hadPain: false,
+            notes: "No pain, normal effort",
             color: "Brown",
             in: care
         )
@@ -289,7 +289,7 @@ final class BasicNeedsFacadeTests: XCTestCase {
         XCTAssertEqual(stoolSpy.lastAdd?.period, .overnight)
         XCTAssertEqual(stoolSpy.lastAdd?.date, now)
         XCTAssertEqual(stoolSpy.lastAdd?.format, "Solid")
-        XCTAssertEqual(stoolSpy.lastAdd?.hadPain, false)
+        XCTAssertEqual(stoolSpy.lastAdd?.notes, "No pain, normal effort")
         XCTAssertEqual(stoolSpy.lastAdd?.color, "Brown")
         XCTAssertTrue(stoolSpy.lastAdd?.careRecipient === care)
     }
@@ -307,7 +307,7 @@ final class BasicNeedsFacadeTests: XCTestCase {
         XCTAssertTrue(stoolSpy.lastDeleted?.1 === care)
     }
 
-    // MARK: Urine (atualizado)
+    // MARK: Urine
     func test_addUrine_callsService_andSaves() {
         let (sut, _, _, _, urineSpy, coreDataSpy) = makeSUT()
         let care = DummyCareRecipient()
@@ -362,6 +362,7 @@ final class BasicNeedsFacadeTests: XCTestCase {
         XCTAssertEqual(urineSpy.updateCalled, 1)
         XCTAssertEqual(coreDataSpy.saveContextCalled, 1)
     }
+
     func test_fetchUrineById_callsService() {
         let (sut, _, _, _, urineSpy, _) = makeSUT()
         let care = DummyCareRecipient()
