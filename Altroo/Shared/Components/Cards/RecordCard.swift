@@ -16,7 +16,7 @@ class RecordCard: InnerShadowView {
     
     var addButtonPosition: Position = .none
     let addButton = PlusButton()
-    let waterCapsule = CapsuleIconView(iconName: "drop.fill", text: "250ml")
+    let waterCapsule = WaterCapsule(text: "250ml")
     var onAddButtonTap: (() -> Void)? //call closure using [weak self]
     
     let padding = 8.0

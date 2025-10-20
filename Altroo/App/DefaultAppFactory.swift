@@ -75,7 +75,7 @@ extension DefaultAppFactory {
     }
     
     func makeTodayViewController(delegate: TodayViewControllerDelegate) -> UIViewController {
-        let vm = TodayViewModel(careRecipientFacade: dependencies.careRecipientFacade, userService: dependencies.userService)
+        let vm = TodayViewModel(careRecipientFacade: dependencies.careRecipientFacade, userService: dependencies.userService, taskService: dependencies.routineActivitiesFacade)
         let vc = TodayViewController(viewModel: vm)
         vc.delegate = delegate
         return vc

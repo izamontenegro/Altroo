@@ -7,10 +7,14 @@
 
 import UIKit
 
+protocol ProfileToolbarDelegate: AnyObject {
+    func didTapProfileView()
+    func didTapEditCapsuleView()
+}
+
 class ProfileToolbarContainer: UIView {
     
-    var onProfileTap: (() -> Void)?
-    var onEditTap: (() -> Void)?
+    weak var delegate: ProfileToolbarDelegate?
 
     private lazy var headerProfile = HeaderProfile(name: careRecipient.personalData?.name ?? "Assistido")
     private let careRecipient: CareRecipient
@@ -71,11 +75,11 @@ class ProfileToolbarContainer: UIView {
     }
     
     @objc private func didTapProfileView() {
-        onProfileTap?()
+        delegate?.didTapProfileView()
     }
     
     @objc private func didTapEditCapsuleView() {
-        onEditTap?()
+        delegate?.didTapEditCapsuleView()
     }
 }
 
