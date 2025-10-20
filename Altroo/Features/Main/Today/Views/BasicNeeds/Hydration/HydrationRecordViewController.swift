@@ -39,6 +39,7 @@ final class HydrationRecordViewController: GradientNavBarViewController {
         view.backgroundColor = .pureWhite
         setupLayout()
         bindViewModel()
+        setupTapToDismiss()
     }
 
     // MARK: - Layout
@@ -184,6 +185,16 @@ final class HydrationRecordViewController: GradientNavBarViewController {
         UIView.animate(withDuration: 0.2) {
             self.confirmationButton.backgroundColor = enabled ? .teal20 : .black40
         }
+    }
+    
+    private func setupTapToDismiss() {
+        let tap = UITapGestureRecognizer(target: self, action: #selector(dismissKeyboard))
+        tap.cancelsTouchesInView = false
+        view.addGestureRecognizer(tap)
+    }
+    
+    @objc private func dismissKeyboard() {
+        view.endEditing(true)
     }
 
     // MARK: - Combine Binding

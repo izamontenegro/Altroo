@@ -48,6 +48,7 @@ final class MealRecordViewController: GradientNavBarViewController {
         view.backgroundColor = .pureWhite
         setupLayout()
         bindViewModel()
+        setupTapToDismiss()
     }
     
     // MARK: - Layout
@@ -298,6 +299,16 @@ final class MealRecordViewController: GradientNavBarViewController {
     @objc private func createFeedingRecord() {
         viewModel.createFeedingRecord()
         delegate?.didFinishAddingMealRecord()
+    }
+    
+    private func setupTapToDismiss() {
+        let tap = UITapGestureRecognizer(target: self, action: #selector(dismissKeyboard))
+        tap.cancelsTouchesInView = false
+        view.addGestureRecognizer(tap)
+    }
+    
+    @objc private func dismissKeyboard() {
+        view.endEditing(true)
     }
     
     // MARK: - Combine Bindings

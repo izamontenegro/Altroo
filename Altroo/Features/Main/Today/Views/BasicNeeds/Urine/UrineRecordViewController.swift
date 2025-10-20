@@ -48,6 +48,7 @@ final class UrineRecordViewController: GradientNavBarViewController {
         view.backgroundColor = .pureWhite
         setupLayout()
         bindViewModel()
+        setupTapToDismiss()
     }
     
     // MARK: - View Layout
@@ -257,6 +258,16 @@ final class UrineRecordViewController: GradientNavBarViewController {
         viewModel.createUrineRecord()
         
         delegate?.didFinishAddingUrineRecord()
+    }
+    
+    private func setupTapToDismiss() {
+        let tap = UITapGestureRecognizer(target: self, action: #selector(dismissKeyboard))
+        tap.cancelsTouchesInView = false
+        view.addGestureRecognizer(tap)
+    }
+    
+    @objc private func dismissKeyboard() {
+        view.endEditing(true)
     }
 
     
