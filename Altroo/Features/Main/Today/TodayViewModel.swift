@@ -10,7 +10,7 @@ import Foundation
 class TodayViewModel {
     let careRecipientFacade: CareRecipientFacade
     let userService: UserServiceProtocol
-    var taskService: RoutineActivitiesFacadeProtocol
+    var taskService: RoutineActivitiesFacade
     
     var currentCareRecipient: CareRecipient?
     
@@ -20,7 +20,7 @@ class TodayViewModel {
     @Published var todayStoolQuantity: Int = 0
     @Published var todayUrineQuantity: Int = 0
     
-    init(careRecipientFacade: CareRecipientFacade, userService: UserServiceProtocol, taskService: RoutineActivitiesFacadeProtocol) {
+    init(careRecipientFacade: CareRecipientFacade, userService: UserServiceProtocol, taskService: RoutineActivitiesFacade) {
         self.careRecipientFacade = careRecipientFacade
         self.userService = userService
         self.taskService = taskService
@@ -87,5 +87,9 @@ class TodayViewModel {
         }
         
         todayStoolQuantity = todayStool?.count ?? 0
+    }
+    
+    func markAsDone(_ instance: TaskInstance) {
+        taskService.toggleInstanceIsDone(instance)
     }
 }

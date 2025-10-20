@@ -15,6 +15,7 @@ protocol TodayViewControllerDelegate: AnyObject {
 class TodayViewController: UIViewController {
     var viewModel: TodayViewModel
     weak var delegate: TodayViewControllerDelegate?
+    var onTaskSelected: ((TaskInstance) -> Void)?
     
     required init?(coder: NSCoder) {
         fatalError("init(coder:) has not been implemented")
@@ -37,7 +38,7 @@ class TodayViewController: UIViewController {
     var symptomsCard: SymptomsCard
     var tasksCard: TasksCard
     
-    init(delegate: TodayViewControllerDelegate? = nil, viewModel: TodayViewModel) {
+    init(delegate: TodayViewControllerDelegate? = nil, viewModel: TodayViewModel, onTaskSelected: ((TaskInstance) -> Void)? = nil) {
         self.delegate = delegate
         
         self.viewModel = viewModel
@@ -46,7 +47,7 @@ class TodayViewController: UIViewController {
         super.init(nibName: nil, bundle: nil)
         
         self.symptomsCard.delegate = self
-        self.tasksCard.delegate = self
+        self.onTaskSelected = onTaskSelected
     }
     
     override func viewDidLoad() {
@@ -146,8 +147,81 @@ class TodayViewController: UIViewController {
         return section
     }
     
+    func makeCardByPeriod() -> UIStackView {
+        let cardStack = UIStackView()
+        cardStack.axis = .vertical
+        cardStack.spacing = 16
+        cardStack.alignment = .leading
+        cardStack.translatesAutoresizingMaskIntoConstraints = false
+        
+        let tasks = viewModel.periodTasks
+        
+        if tasks.isEmpty {
+            let emptyLabel = StandardLabel(
+                labelText: "Nenhuma tarefa disponível",
+                labelFont: .sfPro,
+                labelType: .callOut,
+                labelColor: .black30
+            )
+            emptyLabel.textAlignment = .center
+            cardStack.addArrangedSubview(emptyLabel)
+            
+            emptyLabel.translatesAutoresizingMaskIntoConstraints = false
+            NSLayoutConstraint.activate([
+                emptyLabel.leadingAnchor.constraint(equalTo: cardStack.leadingAnchor),
+                emptyLabel.trailingAnchor.constraint(equalTo: cardStack.trailingAnchor)
+            ])
+            
+            cardStack.alignment = .fill
+        } else {
+            for task in tasks {
+                let card = TaskCard(task: task)
+                card.delegate = self
+                card.translatesAutoresizingMaskIntoConstraints = false
+                cardStack.addArrangedSubview(card)
+                
+                NSLayoutConstraint.activate([
+                    card.leadingAnchor.constraint(equalTo: cardStack.leadingAnchor),
+                    card.trailingAnchor.constraint(equalTo: cardStack.trailingAnchor)
+                ])
+            }
+        }
+        
+        return cardStack
+    }
+    
     private func addSections() {
-        let configs = TodaySectionManager.shared.load()
+        var configs = TodaySectionManager.shared.load()
+
+        if configs.isEmpty || configs.first(where: { $0.type == .basicNeeds })?.subitems == nil {
+            let defaultSubitems = [
+                SubitemConfig(title: "Alimentação", isVisible: true),
+                SubitemConfig(title: "Hidratação", isVisible: true),
+                SubitemConfig(title: "Fezes", isVisible: true),
+                SubitemConfig(title: "Urina", isVisible: true)
+            ]
+            let basicNeedsConfig = TodaySectionConfig(
+                type: .basicNeeds,
+                isVisible: true,
+                order: 0,
+                subitems: defaultSubitems
+            )
+            let tasksConfig = TodaySectionConfig(
+                type: .tasks,
+                isVisible: true,
+                order: 1,
+                subitems: nil
+            )
+            let intercurrencesConfig = TodaySectionConfig(
+                type: .intercurrences,
+                isVisible: true,
+                order: 2,
+                subitems: nil
+            )
+            configs = [basicNeedsConfig, tasksConfig, intercurrencesConfig]
+            TodaySectionManager.shared.save(configs)
+        }
+
         vStack.arrangedSubviews.forEach {
             vStack.removeArrangedSubview($0)
             $0.removeFromSuperview()
@@ -192,7 +266,8 @@ class TodayViewController: UIViewController {
                 let taskHeader = TaskHeader()
                 taskHeader.delegate = self
                 vStack.addArrangedSubview(taskHeader)
-                vStack.addArrangedSubview(tasksCard)
+                
+                vStack.addArrangedSubview(makeCardByPeriod())
 
             case .intercurrences:
                 let symptomHeader = IntercurrenceHeader()
@@ -202,7 +277,7 @@ class TodayViewController: UIViewController {
             }
         }
     }
-    
+
     private func addBasicNeedsSection() {
         // Basic Needs
         let basicNeedsTitle = StandardLabel(labelText: "Necessidades Básicas", labelFont: .sfPro, labelType: .title2, labelColor: .black10, labelWeight: .semibold)
@@ -308,9 +383,13 @@ extension TodayViewController: SymptomsCardDelegate {
     }
 }
 
-extension TodayViewController: TasksCardDelegate {
-    func didTapTask(_ task: TaskInstance, on card: TasksCard) {
-//        delegate?.go(with: symptom)
+extension TodayViewController: TaskCardDelegate {
+    func taskCardDidSelect(_ task: TaskInstance) {
+        onTaskSelected?(task)
+    }
+    
+    func taskCardDidMarkAsDone(_ task: TaskInstance) {
+        viewModel.markAsDone(task)
     }
 }
 

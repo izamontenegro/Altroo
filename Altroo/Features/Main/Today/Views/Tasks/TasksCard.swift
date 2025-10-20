@@ -67,10 +67,10 @@ class TasksCard: UIView {
         for (index, task) in tasks.enumerated() {
             let taskCard = TaskCard(task: task)
             taskCard.tag = index
-            taskCard.cardTapAction = { [weak self] in
-                guard let self else { return }
-                self.delegate?.didTapTask(task, on: self)
-            }
+//            taskCard.cardTapAction = { [weak self] in
+//                guard let self else { return }
+//                self.delegate?.didTapTask(task, on: self)
+//            }
             vStack.addArrangedSubview(taskCard)
         }
     }

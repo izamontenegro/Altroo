@@ -91,34 +91,6 @@ class TaskHeader: UIView {
     }
 }
 
-// MARK: - PeriodEnum
-extension PeriodEnum {
-    static var current: PeriodEnum {
-        let hour = Calendar.current.component(.hour, from: Date())
-        
-        switch hour {
-        case 0..<6: return .overnight
-        case 6..<12: return .morning
-        case 12..<18: return .afternoon
-        case 18..<24: return .night
-        default: return .night
-        }
-    }
-    
-    var displayName: String {
-        switch self {
-        case .overnight: return "Madrugada"
-        case .morning:   return "Manhã"
-        case .afternoon: return "Tarde"
-        case .night:     return "Noite"
-        }
-    }
-    
-    var localizedCapitalized: String {
-        return displayName.capitalized
-    }
-}
-
 #Preview {
     TaskHeader()
 }
