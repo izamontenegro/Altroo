@@ -21,7 +21,7 @@ class AddTaskViewModel {
     @Published var note: String = ""
     
     @Published var isContinuous: Bool = true
-    let continuousOptions = ["Continuous", "End Date"]
+    let continuousOptions = ["Contínuo", "Data Final"]
     var continuousButtonTitle: String {
         if isContinuous {
             continuousOptions[0]

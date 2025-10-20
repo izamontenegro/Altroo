@@ -137,21 +137,11 @@ extension DefaultAppFactory {
     
     func makeChangeCareRecipientViewController(delegate: ChangeCareRecipientViewControllerDelegate) -> UIViewController {
         let vm = ChangeCareRecipientViewModel(userService: dependencies.userService, coreDataService: dependencies.coreDataService)
-            let vc = ChangeCareRecipientViewController(viewModel: vm)
-            (vc as? ChangeCareRecipientViewController)?.delegate = delegate
-            return vc
-        }
-    
-//    func makeEditCaregiverViewController() -> UIViewController {
-//        let vc = EditCaregiverViewController()
-//        return vc
-//    }
-    
-//    func makeEditCaregiverViewController() -> UIViewController {
-//        let vc = EditCaregiverViewController()
-//        return vc
-//    }
-//    
+        let vc = ChangeCareRecipientViewController(viewModel: vm)
+        (vc as? ChangeCareRecipientViewController)?.delegate = delegate
+        return vc
+    }
+   
     func makeMedicalRecordViewController() -> UIViewController {
         let vm = MedicalRecordViewModel(userService: dependencies.userService)
         let vc = MedicalRecordViewController(viewModel: vm)
@@ -204,7 +194,9 @@ extension DefaultAppFactory {
         return vc
     }
     func makeUrineRecordViewController() -> UIViewController {
-        let vc = UrineRecordViewController()
+        let vm = UrineRecordViewModel(urineService: dependencies.basicNeedsFacade, coreDataService: dependencies.coreDataService, userService: dependencies.userService)
+        let vc = UrineRecordViewController(viewModel: vm)
+
         return vc
     }
     func makeMealRecordViewController() -> UIViewController {
@@ -229,6 +221,13 @@ extension DefaultAppFactory {
         let vc = AddTaskViewController(viewModel: vm)
         return vc
     }
+    
+    func makeEditTaskViewController(task: RoutineTask) -> UIViewController {
+        let vm = EditTaskViewModel(task: task, taskService: dependencies.routineActivitiesFacade, userService: dependencies.userService)
+        let vc = EditTaskViewController(viewModel: vm)
+        return vc
+    }
+
     func makeTaskDetailViewController(task: TaskInstance) -> UIViewController {
         let vc = TaskDetailViewController(task: task)
         vc.title = "Task"

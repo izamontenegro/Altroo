@@ -29,7 +29,10 @@ final class TodayCoordinator: Coordinator {
         case .recordFeeding: return factory.makeMealRecordViewController()
         case .recordHydration: return factory.makeHydrationRecordSheet()
         case .recordStool: return factory.makeStoolRecordViewController()
-        case .recordUrine: return factory.makeUrineRecordViewController()
+                case .recordUrine:
+                    let vc = factory.makeUrineRecordViewController() as! UrineRecordViewController
+                    vc.delegate = self
+                    return vc
         case .recordHeartRate: return factory.makeRecordHeartRateSheet()
         case .recordGlycemia: return factory.makerRecordGlycemiaSheet()
         case .recordBloodPressure: return factory.makeRecordBloodPressureSheet()
@@ -55,9 +58,6 @@ final class TodayCoordinator: Coordinator {
         case .careRecipientProfile:
             let profileCoord = ProfileCoordinator(navigation: navigation, factory: factory, associateFactory: factory
                         )
-            //            let profileCoord = ProfileCoordinator(
-            //                navigation: navigation, factory: factory
-            //            )
                         add(child: profileCoord); profileCoord.start()
             return nil
             
@@ -76,7 +76,11 @@ final class TodayCoordinator: Coordinator {
     }
     
     private func openTaskDetail(for task: TaskInstance)  {
-        let vc = factory.makeTaskDetailViewController(task: task)
+        let vc = factory.makeTaskDetailViewController(task: task) as! TaskDetailViewController
+        vc.onEditTapped = {[weak self] task in
+            guard let taskTemplate = task.template else { return }
+            self?.goToEditTask(taskTemplate)
+        }
         
         let nav = UINavigationController(rootViewController: vc)
         nav.modalPresentationStyle = .pageSheet
@@ -90,6 +94,12 @@ final class TodayCoordinator: Coordinator {
     
     private func goToEditSymptom(_ symptom: Symptom) {
         let vc = factory.makeEditSymptom(from: symptom) as! EditSymptomViewController
+        vc.coordinator = self
+        navigation.pushViewController(vc, animated: true)
+    }
+    
+    private func goToEditTask(_ task: RoutineTask) {
+        let vc = factory.makeEditTaskViewController(task: task) as! EditTaskViewController
         vc.coordinator = self
         navigation.pushViewController(vc, animated: true)
     }
@@ -163,5 +173,13 @@ extension TodayCoordinator: AddTaskNavigationDelegate {
             self?.openTaskDetail(for: task)
         }
         navigation.setViewControllers([superVC, vc], animated: true)
+    }
+}
+
+extension TodayCoordinator: UrineRecordNavigationDelegate {
+    func didFinishAddingUrineRecord() {
+        if let todayVC = navigation.viewControllers.first {
+            navigation.setViewControllers([todayVC], animated: true)
+        }
     }
 }

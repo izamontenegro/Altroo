@@ -15,6 +15,24 @@ class GradientNavBarViewController: UIViewController {
         view.backgroundColor = .pureWhite
         configureNavBar()
     }
+    
+    override func viewWillDisappear(_ animated: Bool) {
+        desconfigureNavBar()
+    }
+    
+    private func desconfigureNavBar() {
+        guard let nav = navigationController else { return }
+
+        let appearance = UINavigationBarAppearance()
+        appearance.configureWithDefaultBackground()
+        appearance.titleTextAttributes = [.foregroundColor: UIColor.label]
+        appearance.largeTitleTextAttributes = [.foregroundColor: UIColor.label]
+
+        nav.navigationBar.standardAppearance = appearance
+        nav.navigationBar.scrollEdgeAppearance = appearance
+        nav.navigationBar.compactAppearance = appearance
+        nav.navigationBar.tintColor = .systemBlue
+    }
 
     override var preferredStatusBarStyle: UIStatusBarStyle { .lightContent }
 

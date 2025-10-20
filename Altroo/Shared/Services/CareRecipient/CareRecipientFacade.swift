@@ -10,19 +10,7 @@ import CoreData
 
 protocol BasicNeedsFacadeProtocol {}
 
-protocol RoutineActivitiesFacadeProtocol {
-       func fetchAllInstanceRoutineTasks(from careRecipient: CareRecipient) -> [TaskInstance]
-       func markInstanceAsDone(_ instance: TaskInstance)
-       
-       func generateInstancesForToday(for careRecipient: CareRecipient)
-}
-
-extension RoutineActivitiesFacadeProtocol {
-    func fetchAllInstanceRoutineTasks(from careRecipient: CareRecipient) -> [TaskInstance] { return [] }
-    func generateInstancesForToday(for careRecipient: CareRecipient) {}
-    func markInstanceAsDone(_ instance: TaskInstance) {}
-
-}
+protocol RoutineActivitiesFacadeProtocol {}
 
 class CareRecipientFacade {
     let persistenceService: CoreDataService

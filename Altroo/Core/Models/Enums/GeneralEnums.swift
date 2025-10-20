@@ -84,6 +84,8 @@ enum PeriodEnum: String, CaseIterable {
         let ordered: [PeriodEnum] = [.morning, .afternoon, .night, .overnight]
         return Array(Set(periods)).sorted { ordered.firstIndex(of: $0)! < ordered.firstIndex(of: $1)! }
     }
+    
+    
 }
 
 enum FrequencyEnum: String {

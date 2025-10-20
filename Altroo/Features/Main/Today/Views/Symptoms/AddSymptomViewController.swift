@@ -84,7 +84,7 @@ class AddSymptomViewController: GradientNavBarViewController {
             contentStack.leadingAnchor.constraint(equalTo: view.safeAreaLayoutGuide.leadingAnchor, constant: 16),
             contentStack.trailingAnchor.constraint(equalTo: view.safeAreaLayoutGuide.trailingAnchor, constant: -16),
             
-            addButton.bottomAnchor.constraint(equalTo: view.bottomAnchor, constant: -16),
+            addButton.bottomAnchor.constraint(equalTo: view.bottomAnchor, constant: -Layout.bigButtonBottomPadding),
             addButton.centerXAnchor.constraint(equalTo: view.centerXAnchor),
             
         ])

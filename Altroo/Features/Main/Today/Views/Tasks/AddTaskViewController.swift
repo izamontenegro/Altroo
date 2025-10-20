@@ -27,9 +27,19 @@ class AddTaskViewController: GradientNavBarViewController {
     
     let nameTexfield = StandardTextfield(width: 370,
                                          height: 38,
+//                                         title: StandardLabel(labelText: "Nome",
+//                                                              labelFont: .sfPro,
+//                                                              labelType: .title3,
+//                                                              labelColor: UIColor(resource: .black10),
+//                                                              labelWeight: .semibold),
                                          placeholder: "Nome")
     let noteTexfield = StandardTextfield(width: 370,
                                          height: 38,
+//                                         title: StandardLabel(labelText: "Observação",
+//                                                              labelFont: .sfPro,
+//                                                              labelType: .title3,
+//                                                              labelColor: UIColor(resource: .black10),
+//                                                              labelWeight: .semibold),
                                          placeholder: "Observação")
     
     var hourPickers: [UIDatePicker] = []
@@ -135,7 +145,7 @@ class AddTaskViewController: GradientNavBarViewController {
             contentStack.leadingAnchor.constraint(equalTo: view.safeAreaLayoutGuide.leadingAnchor, constant: 16),
             contentStack.trailingAnchor.constraint(equalTo: view.safeAreaLayoutGuide.trailingAnchor, constant: -16),
             
-            addButton.bottomAnchor.constraint(equalTo: view.bottomAnchor, constant: -16),
+            addButton.bottomAnchor.constraint(equalTo: view.bottomAnchor, constant: -Layout.bigButtonBottomPadding),
             addButton.centerXAnchor.constraint(equalTo: view.centerXAnchor),
         ])
     }
@@ -251,13 +261,13 @@ class AddTaskViewController: GradientNavBarViewController {
     }
 }
 
+
 extension AddTaskViewController: UITextFieldDelegate {
     func textFieldShouldReturn(_ textField: UITextField) -> Bool {
         textField.resignFirstResponder()
         return true
     }
 }
-
 
 //import SwiftUI
 //struct MyViewControllerPreview: UIViewControllerRepresentable {

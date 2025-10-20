@@ -11,6 +11,7 @@ class TaskDetailViewController: UIViewController {
     var taskInstance: TaskInstance
     var taskTemplate: RoutineTask
 
+    var onEditTapped: ((TaskInstance) -> Void)?
     
     let vStack: UIStackView = {
         let stackView = UIStackView(arrangedSubviews: [])
@@ -60,9 +61,9 @@ class TaskDetailViewController: UIViewController {
         view.addSubview(vStack)
         
         NSLayoutConstraint.activate([
-            vStack.topAnchor.constraint(equalTo: view.topAnchor, constant: 16),
-            vStack.leadingAnchor.constraint(equalTo: view.leadingAnchor, constant: 16),
-            vStack.trailingAnchor.constraint(equalTo: view.trailingAnchor, constant: -16),
+            vStack.topAnchor.constraint(equalTo: view.safeAreaLayoutGuide.topAnchor, constant: Layout.mediumSpacing),
+            vStack.leadingAnchor.constraint(equalTo: view.leadingAnchor, constant: Layout.mediumSpacing),
+            vStack.trailingAnchor.constraint(equalTo: view.trailingAnchor, constant: -Layout.mediumSpacing),
             
         ])
     }
@@ -74,7 +75,7 @@ class TaskDetailViewController: UIViewController {
         closeButton.tintColor = .blue10
         navigationItem.leftBarButtonItem = closeButton
         
-        let editButton = UIBarButtonItem(title: "Edit", style: .plain, target: self, action: #selector(closeTapped))
+        let editButton = UIBarButtonItem(title: "Edit", style: .plain, target: self, action: #selector(editTapped))
         editButton.tintColor = .blue10
         navigationItem.rightBarButtonItem = editButton
         
@@ -126,6 +127,8 @@ class TaskDetailViewController: UIViewController {
     
     @objc func editTapped() {
         dismiss(animated: true)
+        onEditTapped?(taskInstance)
+
     }
 }
 

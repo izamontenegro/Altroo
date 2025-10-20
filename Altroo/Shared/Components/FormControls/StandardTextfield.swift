@@ -63,6 +63,7 @@ class StandardTextfield: UITextField {
         containerView.addSubview(self)
         
         NSLayoutConstraint.activate([
+            self.topAnchor.constraint(equalTo: containerView.topAnchor),
             self.leadingAnchor.constraint(equalTo: containerView.leadingAnchor),
             self.trailingAnchor.constraint(equalTo: containerView.trailingAnchor),
             self.bottomAnchor.constraint(equalTo: containerView.bottomAnchor)
