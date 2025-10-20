@@ -209,7 +209,8 @@ extension DefaultAppFactory {
         return vc
     }
     func makeHydrationRecordSheet() -> UIViewController {
-        let vc = HydrationRecordViewController()
+        let vm = HydrationRecordViewModel(basicNeedsFacade: dependencies.basicNeedsFacade, userService: dependencies.userService)
+        let vc = HydrationRecordViewController(viewModel: vm)
         return vc
     }
 }
