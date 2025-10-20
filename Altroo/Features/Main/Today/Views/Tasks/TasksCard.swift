@@ -54,7 +54,7 @@ class TasksCard: UIView {
     private func makeContent() {
         if tasks.isEmpty {
             let emptyLabel = StandardLabel(
-                labelText: "Nenhuma tarefa disponível",
+                labelText: "Nenhuma tarefa registrada.",
                 labelFont: .sfPro,
                 labelType: .callOut,
                 labelColor: .black30

@@ -17,7 +17,7 @@ class IntercurrenceHeader: UIView {
     
     private let titleLabel: StandardLabel = {
         let label = StandardLabel(
-            labelText: "Intercorrência",
+            labelText: "Intercorrências",
             labelFont: .sfPro,
             labelType: .title2,
             labelColor: .black10,

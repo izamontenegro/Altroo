@@ -103,14 +103,12 @@ class WelcomeOnboardingViewController: UIViewController, UICollectionViewDataSou
         return collectionView.bounds.size
     }
 
-    // Atualiza o pageControl quando desliza
     func scrollViewDidEndDecelerating(_ scrollView: UIScrollView) {
         let width = max(1, collectionView.bounds.width)
         let pageIndex = Int(round(scrollView.contentOffset.x / width))
         pageControl.currentPage = pageIndex
     }
 
-    // Botão Próximo
     @objc private func didTapNextButton() {
         let width = max(1, collectionView.bounds.width)
         let visibleIndex = Int(round(collectionView.contentOffset.x / width))
