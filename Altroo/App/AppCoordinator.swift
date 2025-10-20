@@ -29,7 +29,8 @@ final class AppCoordinator: Coordinator {
         }
         
         if UserDefaults.standard.isFirstLaunch {
-            showOnboardingFlow()
+//            showOnboardingFlow()
+            showAllPatientsFlow()
         } else if userService.fetchCurrentPatient() == nil {
             showAllPatientsFlow()
         } else {
