@@ -19,6 +19,7 @@ class TodayViewModel {
     
     @Published var todayStoolQuantity: Int = 0
     @Published var todayUrineQuantity: Int = 0
+    @Published var WaterQuantity: Double = 0
     
     init(careRecipientFacade: CareRecipientFacade, userService: UserServiceProtocol, taskService: RoutineActivitiesFacade) {
         self.careRecipientFacade = careRecipientFacade
@@ -82,11 +83,30 @@ class TodayViewModel {
         let calendar = Calendar.current
         let today = Date()
         
-        let todayStool = currentCareRecipient.basicNeeds?.urine?.filter { stoolRecord in
+        let todayStool = currentCareRecipient.basicNeeds?.stool?.filter { stoolRecord in
             calendar.isDate((stoolRecord as AnyObject).date ?? Date(), inSameDayAs: today)
         }
-        
+                
         todayStoolQuantity = todayStool?.count ?? 0
+    }
+    
+    func fetchFeedingRecords() {
+        guard let currentCareRecipient = currentCareRecipient else { return }
+
+        let records = currentCareRecipient.basicNeeds?.feeding
+    }
+    
+    func fetchWaterQuantity() {
+        guard let currentCareRecipient = currentCareRecipient else { return }
+        
+        let calendar = Calendar.current
+        let today = Date()
+        
+        let todayHydration = currentCareRecipient.basicNeeds?.hydration?.filter { hydrationRecord in
+            calendar.isDate((hydrationRecord as AnyObject).date ?? Date(), inSameDayAs: today)
+        }
+        
+//        WaterQuantity = todayHydration ?? 0
     }
     
     func markAsDone(_ instance: TaskInstance) {
