@@ -176,7 +176,7 @@ final class HydrationRecordViewController: GradientNavBarViewController {
 
     @objc private func saveHydrationRecord() {
         viewModel.saveHydrationRecord()
-        navigationController?.popViewController(animated: true)
+        dismiss(animated: true)
     }
 
     private func updateConfirmationButtonState(enabled: Bool) {
