@@ -51,9 +51,10 @@
         <relationship name="medication" optional="YES" maxCount="1" deletionRule="Nullify" destinationEntity="Medication" inverseName="doses" inverseEntity="Medication"/>
     </entity>
     <entity name="FeedingRecord" representedClassName="FeedingRecord" syncable="YES" codeGenerationType="class">
-        <attribute name="behavior" optional="YES" attributeType="String"/>
+        <attribute name="amountEaten" optional="YES" attributeType="String"/>
         <attribute name="date" optional="YES" attributeType="Date" usesScalarValueType="NO"/>
-        <attribute name="feedingRecordDescription" optional="YES" attributeType="String"/>
+        <attribute name="mealCategory" optional="YES" attributeType="String"/>
+        <attribute name="notes" optional="YES" attributeType="String"/>
         <attribute name="period" optional="YES" attributeType="String"/>
         <attribute name="photo" optional="YES" attributeType="Binary"/>
         <relationship name="basicNeeds" optional="YES" maxCount="1" deletionRule="Nullify" destinationEntity="BasicNeeds" inverseName="feeding" inverseEntity="BasicNeeds"/>
