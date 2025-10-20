@@ -83,9 +83,9 @@ class PrimaryStyleButton: UIButton {
 
 }
 
-#Preview {
-    let bt = PrimaryStyleButton()
-    bt.setTitle("Default", for: .normal)
-    
-    return bt
-}
+//#Preview {
+//    let bt = PrimaryStyleButton()
+//    bt.setTitle("Default", for: .normal)
+//    
+//    return bt
+//}

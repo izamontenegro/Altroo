@@ -32,7 +32,9 @@ final class AppTabBarController: UITabBarController, UITabBarControllerDelegate 
     
     override func viewDidLoad() {
         super.viewDidLoad()
-        self.traitOverrides.horizontalSizeClass = .compact
+        if #available(iOS 17.0, *) {
+            self.traitOverrides.horizontalSizeClass = .compact
+        } else { }
         delegate = self
         setupAppearance()
         setupCustomTabBar()

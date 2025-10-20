@@ -105,6 +105,6 @@ final class GradientNavBarPreviewViewController: GradientNavBarViewController {
     }
 }
 
-#Preview {
-    UINavigationController(rootViewController: GradientNavBarPreviewViewController())
-}
+//#Preview {
+//    UINavigationController(rootViewController: GradientNavBarPreviewViewController())
+//}

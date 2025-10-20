@@ -120,11 +120,11 @@ class CapsuleWithCircleView: UIView {
 //    }
 }
 
-#Preview {
-    let button = CapsuleWithCircleView(text: "Editar Seções",
-                                       textColor: .teal20,
-                                       nameIcon: "pencil",
-                                       nameIconColor: .pureWhite,
-                                       circleIconColor: .teal20)
-    return button
-}
+//#Preview {
+//    let button = CapsuleWithCircleView(text: "Editar Seções",
+//                                       textColor: .teal20,
+//                                       nameIcon: "pencil",
+//                                       nameIconColor: .pureWhite,
+//                                       circleIconColor: .teal20)
+//    return button
+//}

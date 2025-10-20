@@ -119,7 +119,7 @@ class StandardLabel: UILabel {
     }
 }
 
-#Preview {
-    let label = StandardLabel(labelText: "Maria Clara", labelFont: .sfPro, labelType: .title3, labelColor: UIColor.black40, labelWeight: .bold)
-    return label
-}
+//#Preview {
+//    let label = StandardLabel(labelText: "Maria Clara", labelFont: .sfPro, labelType: .title3, labelColor: UIColor.black40, labelWeight: .bold)
+//    return label
+//}

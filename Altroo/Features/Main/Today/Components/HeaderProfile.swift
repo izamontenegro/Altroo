@@ -76,6 +76,6 @@ class HeaderProfile: UIView {
     }
 }
 
-#Preview {
-    HeaderProfile(name: "Karlisson Oliveira")
-}
+//#Preview {
+//    HeaderProfile(name: "Karlisson Oliveira")
+//}

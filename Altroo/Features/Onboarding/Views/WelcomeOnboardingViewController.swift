@@ -125,6 +125,6 @@ class WelcomeOnboardingViewController: UIViewController, UICollectionViewDataSou
 
 
 
-#Preview {
-    WelcomeOnboardingViewController()
-}
+//#Preview {
+//    WelcomeOnboardingViewController()
+//}

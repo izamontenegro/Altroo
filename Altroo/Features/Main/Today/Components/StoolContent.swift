@@ -55,6 +55,6 @@ class QuantityRecordContent: UIView {
     }
 }
 
-#Preview {
-    QuantityRecordContent(quantity: 3)
-}
+//#Preview {
+//    QuantityRecordContent(quantity: 3)
+//}
