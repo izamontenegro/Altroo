@@ -224,6 +224,13 @@ extension DefaultAppFactory {
         let vc = AddTaskViewController(viewModel: vm)
         return vc
     }
+    
+    func makeEditTaskViewController(task: RoutineTask) -> UIViewController {
+        let vm = EditTaskViewModel(task: task, taskService: dependencies.routineActivitiesFacade, userService: dependencies.userService)
+        let vc = EditTaskViewController(viewModel: vm)
+        return vc
+    }
+
     func makeTaskDetailViewController(task: TaskInstance) -> UIViewController {
         let vc = TaskDetailViewController(task: task)
         vc.title = "Task"

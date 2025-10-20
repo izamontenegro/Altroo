@@ -17,11 +17,6 @@ class TodayViewModel {
     init(careRecipientFacade: CareRecipientFacade, userService: UserServiceProtocol) {
         self.careRecipientFacade = careRecipientFacade
         self.userService = userService
-
-//        //FIXME: Change to real patient
-//        self.currentCareRecipient = CoreDataService(stack: CoreDataStack.shared)
-//            .fetchAllCareRecipients()
-//            .first(where: { $0.personalData?.name == "Mrs. Parente" })!
         
         fetchCareRecipient()
         fetchAllTodaySymptoms()

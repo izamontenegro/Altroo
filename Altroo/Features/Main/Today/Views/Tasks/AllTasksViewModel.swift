@@ -8,13 +8,13 @@ import Foundation
 import Combine
 
 class AllTasksViewModel {
-    var taskService: RoutineActivitiesFacadeProtocol
+    var taskService: RoutineActivitiesFacade
     var currentCareRecipient: CareRecipient?
     let userService: UserServiceProtocol
 
     @Published var tasks: [TaskInstance] = []
   
-    init(taskService: RoutineActivitiesFacadeProtocol, userService: UserServiceProtocol) {
+    init(taskService: RoutineActivitiesFacade, userService: UserServiceProtocol) {
         self.taskService = taskService
         self.userService = userService
 
@@ -41,18 +41,14 @@ class AllTasksViewModel {
     }
     
     func filterTasksByDay(_ tasks: [TaskInstance]) -> [TaskInstance] {
-        let today = Date()
+        let today = Calendar.current.startOfDay(for: Date())
         let todayDayOfTheWeek = Locale.Weekday.from(calendarWeekday: Calendar.current.component(.weekday, from: today))
         
         //filter by task interval
         let intervalTasks = tasks.filter { task in
-            
-            guard let start = task.template?.startDate else {
-                return false
-            }
+            guard let start = task.template?.startDate else { return false }
             
             let end = task.template?.endDate //will be nil if continuous
-            print("\(task.template!.name): Start-\(start) and End-\(end)")
 
             let isAfterStart = start <= today
             let isBeforeEnd = end == nil || end! >= today
@@ -70,6 +66,6 @@ class AllTasksViewModel {
     }
     
     func markAsDone(_ instance: TaskInstance) {
-        taskService.markInstanceAsDone(instance)
+        taskService.toggleInstanceIsDone(instance)
     }
 }

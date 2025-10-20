@@ -13,6 +13,8 @@ protocol RoutineTaskServiceProtocol {
     //template
     func addTemplateRoutineTask(name: String, allTimes: [DateComponents], daysOfTheWeek: [Locale.Weekday], startDate: Date, endDate: Date?, reminder: Bool, note: String, in careRecipient: CareRecipient)
     
+    func editTemplateRoutineTask(task: RoutineTask, name: String, allTimes: [DateComponents], daysOfTheWeek: [Locale.Weekday], startDate: Date, endDate: Date?, reminder: Bool, note: String)
+    
     func deleteRoutineTask(routineTask: RoutineTask, from careRecipient: CareRecipient)
     
     func fetchRoutineTasks(for careRecipient: CareRecipient) -> [RoutineTask]
@@ -23,8 +25,8 @@ protocol RoutineTaskServiceProtocol {
     
     func addInstanceRoutineTask(from template: RoutineTask, on date: Date)
     
-    func markInstanceAsDone(_ instance: TaskInstance)
-    
+    func toggleInstanceIsDone(_ instance: TaskInstance)
+        
     func deleteInstanceRoutineTask(_ instance: TaskInstance)
     
 }
@@ -41,7 +43,7 @@ class RoutineTaskService: RoutineTaskServiceProtocol {
         guard let context = careRecipient.managedObjectContext else { return }
         
         //normalization for instance making
-        let todayStart = Calendar.current.startOfDay(for: Date())
+        let todayStart = Calendar.current.startOfDay(for: startDate)
         
         let newRoutineTask = RoutineTask(context: context)
         newRoutineTask.name = name
@@ -58,9 +60,29 @@ class RoutineTaskService: RoutineTaskServiceProtocol {
         }
     }
     
+    func editTemplateRoutineTask(task: RoutineTask,
+                                name: String,
+                                allTimes: [DateComponents],
+                                daysOfTheWeek: [Locale.Weekday],
+                                startDate: Date,
+                                endDate: Date?, //optional end for continous tasks
+                                reminder: Bool,
+                                note: String) {
+        //normalization for instance making
+        let todayStart = Calendar.current.startOfDay(for: startDate)
+        
+        task.name = name
+        task.allTimes = allTimes
+        task.startDate = todayStart
+        task.endDate = endDate
+        task.reminder = reminder
+        task.weekdays = daysOfTheWeek
+        task.note = note
+    }
+    
     func deleteRoutineTask(routineTask: RoutineTask, from careRecipient: CareRecipient) {
         //TODO: understand why was relationship and not coredata instance deleted
-        if let routineActivities = careRecipient.routineActivities?.tasks {
+        if let routineActivities = careRecipient.routineActivities {
             let mutableRoutineTask = routineActivities.mutableSetValue(forKey: "tasks")
             mutableRoutineTask.remove(routineTask)
         }
@@ -77,23 +99,15 @@ class RoutineTaskService: RoutineTaskServiceProtocol {
     
     func addInstanceRoutineTask(from template: RoutineTask, on date: Date) {
         guard let context = template.managedObjectContext else { return }
-        guard let allTimes = template.allTimes else { return }
-        
-        for timeComp in allTimes {
+
             let instance = TaskInstance(context: context)
-            instance.time = Calendar.current.date(
-                bySettingHour: timeComp.hour!,
-                minute: timeComp.minute!,
-                second: 0,
-                of: date
-            )!
-            instance.isDone = false
-            instance.template = template
-        }
+                instance.time = date
+                instance.isDone = false
+                instance.template = template
     }
     
-    func markInstanceAsDone(_ instance: TaskInstance) {
-        instance.isDone = true
+    func toggleInstanceIsDone(_ instance: TaskInstance) {
+        instance.isDone.toggle()
     }
 
     func fetchInstanceRoutineTasks(for careRecipient: CareRecipient) -> [TaskInstance] {

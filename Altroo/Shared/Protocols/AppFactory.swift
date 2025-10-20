@@ -96,6 +96,7 @@ protocol BasicNeedsFactory {
 protocol RoutineActivitiesFactory {
     func makeAllTasksViewController(onTaskSelected: ((TaskInstance) -> Void)?) -> UIViewController
     func makeAddTaskViewController() -> UIViewController
+    func makeEditTaskViewController(task: RoutineTask) -> UIViewController
     func makeTaskDetailViewController(task: TaskInstance) -> UIViewController
 }
 
