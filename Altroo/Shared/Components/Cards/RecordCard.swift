@@ -157,15 +157,15 @@ class RecordCard: InnerShadowView {
     }
 }
 
-#Preview {
-    let waterRecord = WaterRecord(currentQuantity: "0,5", goalQuantity: "2L")
-    let card = RecordCard(
-        title: "Hidratação",
-        iconName: "waterbottle.fill",
-        showPlusButton: false,
-        addButtonPosition: .top,
-        contentView: waterRecord
-    )
-    
-    return card
-}
+//#Preview {
+//    let waterRecord = WaterRecord(currentQuantity: "0,5", goalQuantity: "2L")
+//    let card = RecordCard(
+//        title: "Hidratação",
+//        iconName: "waterbottle.fill",
+//        showPlusButton: false,
+//        addButtonPosition: .top,
+//        contentView: waterRecord
+//    )
+//    
+//    return card
+//}

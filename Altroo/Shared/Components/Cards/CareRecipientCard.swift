@@ -76,6 +76,6 @@ class CareRecipientCard: UIView {
     }
 }
 
-#Preview {
-    CareRecipientCard(name: "Karlisson Oliveira", age: 68, frame: CGRect(x: 0, y: 0, width: 300, height: 90))
-}
+//#Preview {
+//    CareRecipientCard(name: "Karlisson Oliveira", age: 68, frame: CGRect(x: 0, y: 0, width: 300, height: 90))
+//}

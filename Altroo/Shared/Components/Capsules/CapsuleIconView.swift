@@ -128,10 +128,10 @@ class CapsuleIconView: UIView {
     }
 }
 
-#Preview {
-    CapsuleIconView(
-        iconName: "circle.fill",
-        text: "Compacto",
-        contentInsets: UIEdgeInsets(top: 3.5, left: 6, bottom: 3.5, right: 6)
-    )
-}
+//#Preview {
+//    CapsuleIconView(
+//        iconName: "circle.fill",
+//        text: "Compacto",
+//        contentInsets: UIEdgeInsets(top: 3.5, left: 6, bottom: 3.5, right: 6)
+//    )
+//}

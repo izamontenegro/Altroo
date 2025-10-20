@@ -94,7 +94,7 @@ class ProfileCareRecipient: UIView {
         ])
     }
 }
-
-#Preview {
-    ProfileCareRecipient(name: "Karlisson Oliveira")
-}
+//
+//#Preview {
+//    ProfileCareRecipient(name: "Karlisson Oliveira")
+//}

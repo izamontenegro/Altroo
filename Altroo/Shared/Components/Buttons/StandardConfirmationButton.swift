@@ -60,6 +60,6 @@ final class StandardConfirmationButton: PrimaryStyleButton {
 
 }
 
-#Preview {
-    StandardConfirmationButton(title: "Adicionar")
-}
+//#Preview {
+//    StandardConfirmationButton(title: "Adicionar")
+//}

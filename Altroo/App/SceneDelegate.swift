@@ -24,8 +24,8 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
         let appCoordinator = AppCoordinator(rootNavigation: navigation)
         appCoordinator.start()
         
+        window.overrideUserInterfaceStyle = .light
         window.rootViewController = navigation
-//        window.rootViewController =  AllTasksViewController(viewModel: AllTasksViewModel())
         window.makeKeyAndVisible()
         
         self.window = window

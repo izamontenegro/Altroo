@@ -90,6 +90,6 @@ enum FeedingStatus {
     }
 }
 
-#Preview {
-    FeedingCardRecord(title: "Café da manhã", status: .partial)
-}
+//#Preview {
+//    FeedingCardRecord(title: "Café da manhã", status: .partial)
+//}
