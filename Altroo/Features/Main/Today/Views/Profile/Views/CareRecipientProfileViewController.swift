@@ -250,7 +250,9 @@ final class CareRecipientProfileViewController: GradientNavBarViewController {
         view.addGestureRecognizer(UITapGestureRecognizer(target: self, action: action))
     }
     
-    @objc private func didTapHeader() { delegate?.goToMedicalRecordViewController() }
+    @objc private func didTapHeader() {
+//        delegate?.goToMedicalRecordViewController()
+    }
     @objc private func didTapChangeCareRecipientButton() { delegate?.openChangeCareRecipientSheet() }
     @objc private func didTapShareCareRecipientButton() {
         guard let careRecipient = viewModel.currentCareRecipient() else { return }
