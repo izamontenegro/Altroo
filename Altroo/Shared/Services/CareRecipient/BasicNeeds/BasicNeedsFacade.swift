@@ -42,8 +42,8 @@ final class BasicNeedsFacade: BasicNeedsFacadeProtocol {
     }
     
     // MARK: - HYDRATION ACTIONS
-    func addHydration(period: PeriodEnum, date: Date, behavior: String, waterQuantity: Double, in careRecipient: CareRecipient) {
-        hydrationService.addHydrationRecord(period: period, date: date, behavior: behavior, waterQuantity: waterQuantity, in: careRecipient)
+    func addHydration(period: PeriodEnum, date: Date, waterQuantity: Double, in careRecipient: CareRecipient) {
+        hydrationService.addHydrationRecord(period: period, date: date, waterQuantity: waterQuantity, in: careRecipient)
         persistenceService.save()
     }
     

@@ -68,7 +68,6 @@
         <relationship name="diseases" optional="YES" toMany="YES" deletionRule="Nullify" destinationEntity="Disease" inverseName="healthProblems" inverseEntity="Disease"/>
     </entity>
     <entity name="HydrationRecord" representedClassName="HydrationRecord" syncable="YES" codeGenerationType="class">
-        <attribute name="behavior" optional="YES" attributeType="String"/>
         <attribute name="date" optional="YES" attributeType="Date" usesScalarValueType="NO"/>
         <attribute name="period" optional="YES" attributeType="String"/>
         <attribute name="waterQuantity" optional="YES" attributeType="Double" defaultValueString="0.0" usesScalarValueType="YES"/>
