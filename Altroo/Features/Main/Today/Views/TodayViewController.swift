@@ -10,8 +10,6 @@ import UIKit
 protocol TodayViewControllerDelegate: AnyObject {
     func goTo(_ destination: TodayDestination)
     func goToSymptomDetail(with symptom: Symptom)
-    func goToCareRecipientProfileView()
-    func goToEditSectionView()
 }
 
 class TodayViewController: UIViewController {
@@ -37,16 +35,18 @@ class TodayViewController: UIViewController {
     }()
     
     var symptomsCard: SymptomsCard
+    var tasksCard: TasksCard
     
     init(delegate: TodayViewControllerDelegate? = nil, viewModel: TodayViewModel) {
-        //TODO: Feed real symptoms
         self.delegate = delegate
         
         self.viewModel = viewModel
         self.symptomsCard = SymptomsCard(symptoms: viewModel.todaySymptoms)
+        self.tasksCard = TasksCard(tasks: viewModel.periodTasks)
         super.init(nibName: nil, bundle: nil)
         
         self.symptomsCard.delegate = self
+        self.tasksCard.delegate = self
     }
     
     override func viewDidLoad() {
@@ -56,13 +56,8 @@ class TodayViewController: UIViewController {
         guard let careRecipient = viewModel.currentCareRecipient else { return }
         let profileToolbar = ProfileToolbarContainer(careRecipient: careRecipient)
         profileToolbar.translatesAutoresizingMaskIntoConstraints = false
-        profileToolbar.onProfileTap = { [weak self] in
-            self?.delegate?.goToCareRecipientProfileView()
-        }
-        
-        profileToolbar.onEditTap = { [weak self] in
-            self?.delegate?.goToEditSectionView()
-        }
+        profileToolbar.delegate = self
+
         
         view.addSubview(profileToolbar)
         view.addSubview(scrollView)
@@ -76,71 +71,33 @@ class TodayViewController: UIViewController {
         ])
         
         NSLayoutConstraint.activate([
-            scrollView.topAnchor.constraint(equalTo: profileToolbar.bottomAnchor),
-            scrollView.bottomAnchor.constraint(equalTo: view.safeAreaLayoutGuide.bottomAnchor),
+            scrollView.topAnchor.constraint(equalTo: profileToolbar.bottomAnchor, constant: -30),
+            scrollView.bottomAnchor.constraint(equalTo: view.safeAreaLayoutGuide.bottomAnchor, constant: -45),
             scrollView.leadingAnchor.constraint(equalTo: view.leadingAnchor),
             scrollView.trailingAnchor.constraint(equalTo: view.trailingAnchor),
             
-            vStack.topAnchor.constraint(equalTo: scrollView.topAnchor, constant: 20),
+            vStack.topAnchor.constraint(equalTo: scrollView.topAnchor, constant: 40),
             vStack.bottomAnchor.constraint(equalTo: scrollView.bottomAnchor, constant: -20),
             vStack.leadingAnchor.constraint(equalTo: scrollView.leadingAnchor, constant: 20),
             vStack.trailingAnchor.constraint(equalTo: scrollView.trailingAnchor, constant: -20),
             vStack.widthAnchor.constraint(equalTo: scrollView.widthAnchor, constant: -40)
         ])
         
-        addSections()
+        view.bringSubviewToFront(profileToolbar)
     }
     
     override func viewWillAppear(_ animated: Bool) {
+        super.viewWillAppear(animated)
+        navigationController?.setNavigationBarHidden(true, animated: false)
         viewModel.fetchAllTodaySymptoms()
         symptomsCard.updateSymptoms(viewModel.todaySymptoms)
+        tasksCard.updateTasks(viewModel.periodTasks)
+        addSections()
     }
-    
-    private func addSections() {
-        // Basic Needs
-        let basicNeedsTitle = StandardLabel(labelText: "Necessidades Básicas", labelFont: .sfPro, labelType: .title2, labelColor: .black10, labelWeight: .semibold)
-        let feedingCard = RecordCard(title: "Alimentação", iconName: "takeoutbag.and.cup.and.straw.fill", contentView: FeedingCardRecord(title: "Café da manhã", status: .partial))
-        let hidrationCard = RecordCard(title: "Hidratação", iconName: "waterbottle.fill", showPlusButton: false, contentView: WaterRecord(currentQuantity: "0,5", goalQuantity: "2L"))
-        let stoolCard = RecordCard(title: "Fezes", iconName: "toilet.fill", contentView: QuantityRecordContent(quantity: 1))
-        let urineCard = RecordCard(title: "Urina", iconName: "toilet.fill", contentView: QuantityRecordContent(quantity: 3))
-        
-        feedingCard.onAddButtonTap = { [weak self] in
-            self?.delegate?.goTo(.recordFeeding)
-        }
-        hidrationCard.onAddButtonTap = { [weak self] in
-            self?.delegate?.goTo(.recordHydration)
-        }
-        stoolCard.onAddButtonTap = { [weak self] in
-            self?.delegate?.goTo(.recordStool)
-        }
-        urineCard.onAddButtonTap = { [weak self] in
-            self?.delegate?.goTo(.recordUrine)
-        }
-        
-        let bottomRow = UIStackView(arrangedSubviews: [stoolCard, urineCard])
-        bottomRow.axis = .horizontal
-        bottomRow.spacing = 16
-        bottomRow.distribution = .fillEqually
-        bottomRow.translatesAutoresizingMaskIntoConstraints = false
-        
-        let basicNeedsStack = UIStackView(arrangedSubviews: [feedingCard, hidrationCard, bottomRow])
-        basicNeedsStack.axis = .vertical
-        basicNeedsStack.spacing = 16
-        basicNeedsStack.translatesAutoresizingMaskIntoConstraints = false
-        
-        vStack.addArrangedSubview(basicNeedsTitle)
-        vStack.addArrangedSubview(basicNeedsStack)
-        
-        // Tasks
-        let taskHeader = TaskHeader()
-        taskHeader.delegate = self
-        vStack.addArrangedSubview(taskHeader)
-        
-        // Symptoms
-        let symptomHeader = IntercurrenceHeader()
-        symptomHeader.delegate = self
-        vStack.addArrangedSubview(symptomHeader)
-        vStack.addArrangedSubview(symptomsCard)
+
+    override func viewWillDisappear(_ animated: Bool) {
+        super.viewWillDisappear(animated)
+        navigationController?.setNavigationBarHidden(false, animated: false)
     }
     
     // MARK: - Section Factory
@@ -189,10 +146,115 @@ class TodayViewController: UIViewController {
         return section
     }
     
-    // MARK: - BUTTON ACTIONS
-    @objc private func didTapProfileView() {
-        delegate?.goTo(.careRecipientProfile)
+    private func addSections() {
+        let configs = TodaySectionManager.shared.load()
+        vStack.arrangedSubviews.forEach {
+            vStack.removeArrangedSubview($0)
+            $0.removeFromSuperview()
+        }
+
+        for config in configs.sorted(by: { $0.order < $1.order }) {
+            guard config.isVisible else { continue }
+
+            switch config.type {
+            case .basicNeeds:
+                let visibleItems = config.subitems?.filter(\.isVisible).map(\.title) ?? []
+                let title = StandardLabel(labelText: "Necessidades Básicas", labelFont: .sfPro, labelType: .title2, labelColor: .black10, labelWeight: .semibold)
+                
+                let sectionStack = UIStackView()
+                sectionStack.axis = .vertical
+                sectionStack.spacing = 16
+                
+                if visibleItems.contains("Alimentação") {
+                    sectionStack.addArrangedSubview(RecordCard(title: "Alimentação", iconName: "takeoutbag.and.cup.and.straw.fill", contentView: FeedingCardRecord(title: "Café da manhã", status: .partial)))
+                }
+                if visibleItems.contains("Hidratação") {
+                    sectionStack.addArrangedSubview(RecordCard(title: "Hidratação", iconName: "waterbottle.fill", showPlusButton: false, contentView: WaterRecord(currentQuantity: "0,5", goalQuantity: "2L")))
+                }
+                if visibleItems.contains("Fezes") || visibleItems.contains("Urina") {
+                    let bottomRow = UIStackView()
+                    bottomRow.axis = .horizontal
+                    bottomRow.spacing = 16
+                    bottomRow.distribution = .fillEqually
+                    if visibleItems.contains("Fezes") {
+                        bottomRow.addArrangedSubview(RecordCard(title: "Fezes", iconName: "toilet.fill", contentView: QuantityRecordContent(quantity: viewModel.todayStoolQuantity)))
+                    }
+                    if visibleItems.contains("Urina") {
+                        bottomRow.addArrangedSubview(RecordCard(title: "Urina", iconName: "toilet.fill", contentView: QuantityRecordContent(quantity: viewModel.todayUrineQuantity)))
+                    }
+                    sectionStack.addArrangedSubview(bottomRow)
+                }
+
+                vStack.addArrangedSubview(title)
+                vStack.addArrangedSubview(sectionStack)
+
+            case .tasks:
+                let taskHeader = TaskHeader()
+                taskHeader.delegate = self
+                vStack.addArrangedSubview(taskHeader)
+                vStack.addArrangedSubview(tasksCard)
+
+            case .intercurrences:
+                let symptomHeader = IntercurrenceHeader()
+                symptomHeader.delegate = self
+                vStack.addArrangedSubview(symptomHeader)
+                vStack.addArrangedSubview(symptomsCard)
+            }
+        }
     }
+    
+    private func addBasicNeedsSection() {
+        // Basic Needs
+        let basicNeedsTitle = StandardLabel(labelText: "Necessidades Básicas", labelFont: .sfPro, labelType: .title2, labelColor: .black10, labelWeight: .semibold)
+        let feedingCard = RecordCard(title: "Alimentação", iconName: "takeoutbag.and.cup.and.straw.fill", contentView: FeedingCardRecord(title: "Café da manhã", status: .partial))
+        let hidrationCard = RecordCard(title: "Hidratação", iconName: "waterbottle.fill", showPlusButton: false, contentView: WaterRecord(currentQuantity: "0,5", goalQuantity: "2L"))
+        let stoolCard = RecordCard(title: "Fezes", iconName: "toilet.fill", contentView: QuantityRecordContent(quantity: 1))
+        let urineCard = RecordCard(title: "Urina", iconName: "toilet.fill", contentView: QuantityRecordContent(quantity: 3))
+        
+        feedingCard.onAddButtonTap = { [weak self] in
+            self?.delegate?.goTo(.recordFeeding)
+        }
+        hidrationCard.onAddButtonTap = { [weak self] in
+            self?.delegate?.goTo(.recordHydration)
+        }
+        stoolCard.onAddButtonTap = { [weak self] in
+            self?.delegate?.goTo(.recordStool)
+        }
+        urineCard.onAddButtonTap = { [weak self] in
+            self?.delegate?.goTo(.recordUrine)
+        }
+        
+        let bottomRow = UIStackView(arrangedSubviews: [stoolCard, urineCard])
+        bottomRow.axis = .horizontal
+        bottomRow.spacing = 16
+        bottomRow.distribution = .fillEqually
+        bottomRow.translatesAutoresizingMaskIntoConstraints = false
+        
+        let basicNeedsStack = UIStackView(arrangedSubviews: [feedingCard, hidrationCard, bottomRow])
+        basicNeedsStack.axis = .vertical
+        basicNeedsStack.spacing = 16
+        basicNeedsStack.translatesAutoresizingMaskIntoConstraints = false
+        
+        vStack.addArrangedSubview(basicNeedsTitle)
+        vStack.addArrangedSubview(basicNeedsStack)
+    }
+    private func addTasksSection() {
+        // Tasks
+        let taskHeader = TaskHeader()
+        taskHeader.delegate = self
+        vStack.addArrangedSubview(taskHeader)
+        vStack.addArrangedSubview(tasksCard)
+    }
+    private func addSymptomsSection() {
+        let symptomHeader = IntercurrenceHeader()
+        symptomHeader.delegate = self
+        vStack.addArrangedSubview(symptomHeader)
+        vStack.addArrangedSubview(symptomsCard)
+    }
+
+
+    
+    // MARK: - BUTTON ACTIONS
     @objc private func didTapEditSectionView() {
         delegate?.goTo(.editSection)
     }
@@ -238,14 +300,17 @@ class TodayViewController: UIViewController {
     @objc private func didTapAddNewEvent() {
         delegate?.goTo(.addNewEvent)
     }
-    @objc private func didTapAddNewSymptom() {
-        delegate?.goTo(.addSymptom)
-    }
 }
 
 extension TodayViewController: SymptomsCardDelegate {
     func tappedSymptom(_ symptom: Symptom, on card: SymptomsCard) {
         delegate?.goToSymptomDetail(with: symptom)
+    }
+}
+
+extension TodayViewController: TasksCardDelegate {
+    func didTapTask(_ task: TaskInstance, on card: TasksCard) {
+//        delegate?.go(with: symptom)
     }
 }
 
@@ -262,5 +327,15 @@ extension TodayViewController: TaskHeaderDelegate {
 extension TodayViewController: IntercurrenceHeaderDelegate {
     func didTapAddIntercurrence() {
         delegate?.goTo(.addSymptom)
+    }
+}
+
+extension TodayViewController: ProfileToolbarDelegate {
+    func didTapProfileView() {
+        delegate?.goTo(.careRecipientProfile)
+    }
+    
+    func didTapEditCapsuleView() {
+        delegate?.goTo(.editSection)
     }
 }

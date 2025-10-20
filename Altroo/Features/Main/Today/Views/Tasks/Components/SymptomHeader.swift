@@ -68,7 +68,7 @@ class IntercurrenceHeader: UIView {
             hStack.leadingAnchor.constraint(equalTo: leadingAnchor, constant: 0),
             hStack.trailingAnchor.constraint(lessThanOrEqualTo: trailingAnchor, constant: -0),
             hStack.topAnchor.constraint(equalTo: topAnchor, constant: 12),
-            hStack.bottomAnchor.constraint(equalTo: bottomAnchor, constant: -12)
+            hStack.bottomAnchor.constraint(equalTo: bottomAnchor, constant: 5)
         ])
     }
     
