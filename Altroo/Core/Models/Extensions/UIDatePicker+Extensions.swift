@@ -12,7 +12,10 @@ extension UIDatePicker {
         picker.preferredDatePickerStyle = style
         picker.datePickerMode = mode
         picker.tintColor = tint
-        picker.translatesAutoresizingMaskIntoConstraints = true
+        picker.translatesAutoresizingMaskIntoConstraints = false
         return picker
     }
 }
+
+
+
