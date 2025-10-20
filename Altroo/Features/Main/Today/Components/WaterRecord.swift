@@ -65,6 +65,6 @@ class WaterRecord: UIView {
     }
 }
 
-#Preview {
-    WaterRecord(currentQuantity: "0,5", goalQuantity: "2L")
-}
+//#Preview {
+//    WaterRecord(currentQuantity: "0,5", goalQuantity: "2L")
+//}

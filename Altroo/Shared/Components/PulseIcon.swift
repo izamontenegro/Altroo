@@ -114,18 +114,18 @@ class PulseIcon: UIView {
     }
 }
 
-#Preview {
-    let iconView = PulseIcon(iconName: "stethoscope",
-                             color: UIColor(resource: .red0),
-                             iconColor: UIColor(resource: .black0),
-                             shadowColor: UIColor(resource: .pureWhite))
-    
-    iconView.translatesAutoresizingMaskIntoConstraints = false
-    
-    NSLayoutConstraint.activate([
-        iconView.widthAnchor.constraint(equalToConstant: 320),
-        iconView.heightAnchor.constraint(equalTo: iconView.widthAnchor)
-    ])
-    
-    return iconView
-}
+//#Preview {
+//    let iconView = PulseIcon(iconName: "stethoscope",
+//                             color: UIColor(resource: .red0),
+//                             iconColor: UIColor(resource: .black0),
+//                             shadowColor: UIColor(resource: .pureWhite))
+//    
+//    iconView.translatesAutoresizingMaskIntoConstraints = false
+//    
+//    NSLayoutConstraint.activate([
+//        iconView.widthAnchor.constraint(equalToConstant: 320),
+//        iconView.heightAnchor.constraint(equalTo: iconView.widthAnchor)
+//    ])
+//    
+//    return iconView
+//}

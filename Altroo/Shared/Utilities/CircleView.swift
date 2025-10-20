@@ -102,10 +102,10 @@ class CircleView: UIView {
 }
 
 
-#Preview {
-    let circle = CircleView()
-    circle.innerShadowColor = .blue
-    circle.innerShadowOpacity = 0.9
-    
-    return circle
-}
+//#Preview {
+//    let circle = CircleView()
+//    circle.innerShadowColor = .blue
+//    circle.innerShadowOpacity = 0.9
+//    
+//    return circle
+//}

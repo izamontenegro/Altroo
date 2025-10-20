@@ -108,7 +108,7 @@ class WaterCapsule: InnerShadowView {
     }
 }
 
-#Preview {
-    let button = WaterCapsule(text: "250ml")
-    return button
-}
+//#Preview {
+//    let button = WaterCapsule(text: "250ml")
+//    return button
+//}

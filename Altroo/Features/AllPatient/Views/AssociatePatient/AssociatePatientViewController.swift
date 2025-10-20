@@ -168,8 +168,8 @@ class AssociatePatientViewController: UIViewController {
     @objc func didTapAddExistingPatientButton() { delegate?.goToTutorialAddSheet() }
 }
 
-#Preview {
-    let mockService = UserServiceSession(context: AppDependencies().coreDataService.stack.context)
-    let viewModel = AssociatePatientViewModel(userService: mockService)
-    AssociatePatientViewController(viewModel: viewModel)
-}
+//#Preview {
+//    let mockService = UserServiceSession(context: AppDependencies().coreDataService.stack.context)
+//    let viewModel = AssociatePatientViewModel(userService: mockService)
+//    AssociatePatientViewController(viewModel: viewModel)
+//}

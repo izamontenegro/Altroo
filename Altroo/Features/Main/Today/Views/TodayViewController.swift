@@ -256,12 +256,25 @@ class TodayViewController: UIViewController {
                     sectionStack.addArrangedSubview(feedingCard)
                 }
                 if visibleItems.contains("Hidratação") {
-                    let hidrationCard = RecordCard(title: "Hidratação", iconName: "waterbottle.fill", showPlusButton: false, contentView: WaterRecord(currentQuantity: "0,5", goalQuantity: "2L"))
+                    let iconName: String
+                    if #available(iOS 17.0, *) {
+                        iconName = "waterbottle.fill"
+                    } else {
+                        iconName = "drop.fill"
+                    }
+
+                    let hidrationCard = RecordCard(
+                        title: "Hidratação",
+                        iconName: iconName,
+                        showPlusButton: false,
+                        contentView: WaterRecord(currentQuantity: "0,5", goalQuantity: "2L")
+                    )
                     hidrationCard.onAddButtonTap = { [weak self] in
                         self?.delegate?.goTo(.recordHydration)
                     }
                     sectionStack.addArrangedSubview(hidrationCard)
                 }
+
                 if visibleItems.contains("Fezes") || visibleItems.contains("Urina") {
                     let bottomRow = UIStackView()
                     bottomRow.axis = .horizontal
@@ -302,42 +315,6 @@ class TodayViewController: UIViewController {
                 vStack.addArrangedSubview(symptomsCard)
             }
         }
-    }
-
-    private func addBasicNeedsSection() {
-        // Basic Needs
-        let basicNeedsTitle = StandardLabel(labelText: "Necessidades Básicas", labelFont: .sfPro, labelType: .title2, labelColor: .black10, labelWeight: .semibold)
-        let feedingCard = RecordCard(title: "Alimentação", iconName: "takeoutbag.and.cup.and.straw.fill", contentView: FeedingCardRecord(title: "Café da manhã", status: .partial))
-        let hidrationCard = RecordCard(title: "Hidratação", iconName: "waterbottle.fill", showPlusButton: false, contentView: WaterRecord(currentQuantity: "0,5", goalQuantity: "2L"))
-        let stoolCard = RecordCard(title: "Fezes", iconName: "toilet.fill", contentView: QuantityRecordContent(quantity: 1))
-        let urineCard = RecordCard(title: "Urina", iconName: "toilet.fill", contentView: QuantityRecordContent(quantity: 3))
-        
-        feedingCard.onAddButtonTap = { [weak self] in
-            self?.delegate?.goTo(.recordFeeding)
-        }
-        hidrationCard.onAddButtonTap = { [weak self] in
-            self?.delegate?.goTo(.recordHydration)
-        }
-        stoolCard.onAddButtonTap = { [weak self] in
-            self?.delegate?.goTo(.recordStool)
-        }
-        urineCard.onAddButtonTap = { [weak self] in
-            self?.delegate?.goTo(.recordUrine)
-        }
-        
-        let bottomRow = UIStackView(arrangedSubviews: [stoolCard, urineCard])
-        bottomRow.axis = .horizontal
-        bottomRow.spacing = 16
-        bottomRow.distribution = .fillEqually
-        bottomRow.translatesAutoresizingMaskIntoConstraints = false
-        
-        let basicNeedsStack = UIStackView(arrangedSubviews: [feedingCard, hidrationCard, bottomRow])
-        basicNeedsStack.axis = .vertical
-        basicNeedsStack.spacing = 16
-        basicNeedsStack.translatesAutoresizingMaskIntoConstraints = false
-        
-        vStack.addArrangedSubview(basicNeedsTitle)
-        vStack.addArrangedSubview(basicNeedsStack)
     }
     
     private func addTasksSection() {

@@ -83,13 +83,13 @@ class ProfileToolbarContainer: UIView {
     }
 }
 
-#Preview {
-    let stack = CoreDataStack.shared
-    let mock = CareRecipient(context: stack.context)
-    let personalData = PersonalData(context: stack.context)
-    personalData.name = "Raissa Parente"
-    mock.personalData = personalData
-
-    return ProfileToolbarContainer(careRecipient: mock)
-}
+//#Preview {
+//    let stack = CoreDataStack.shared
+//    let mock = CareRecipient(context: stack.context)
+//    let personalData = PersonalData(context: stack.context)
+//    personalData.name = "Raissa Parente"
+//    mock.personalData = personalData
+//
+//    return ProfileToolbarContainer(careRecipient: mock)
+//}
 

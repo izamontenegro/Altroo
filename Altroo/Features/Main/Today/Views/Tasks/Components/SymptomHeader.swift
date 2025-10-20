@@ -77,6 +77,6 @@ class IntercurrenceHeader: UIView {
     }
 }
 
-#Preview {
-    IntercurrenceHeader()
-}
+//#Preview {
+//    IntercurrenceHeader()
+//}
