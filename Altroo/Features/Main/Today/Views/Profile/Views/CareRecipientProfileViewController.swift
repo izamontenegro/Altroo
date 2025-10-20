@@ -12,6 +12,7 @@ protocol ProfileViewControllerDelegate: AnyObject {
     func openChangeCareRecipientSheet()
     func openShareCareRecipientSheet(_ careRecipient: CareRecipient)
     func goToMedicalRecordViewController()
+    func careRecipientProfileWantsChangeAssociate(_ controller: UIViewController)
 }
 
 final class CareRecipientProfileViewController: GradientNavBarViewController {
@@ -250,7 +251,9 @@ final class CareRecipientProfileViewController: GradientNavBarViewController {
         view.addGestureRecognizer(UITapGestureRecognizer(target: self, action: action))
     }
     
-    @objc private func didTapHeader() { delegate?.goToMedicalRecordViewController() }
+    @objc private func didTapHeader() {
+//        delegate?.goToMedicalRecordViewController()
+    }
     @objc private func didTapChangeCareRecipientButton() { delegate?.openChangeCareRecipientSheet() }
     @objc private func didTapShareCareRecipientButton() {
         guard let careRecipient = viewModel.currentCareRecipient() else { return }
@@ -258,7 +261,24 @@ final class CareRecipientProfileViewController: GradientNavBarViewController {
     }
     
     @objc private func didTapEndCareButton() {
-        viewModel.finishCare()
+        let alertController = UIAlertController(
+            title: "Tem certeza?",
+            message: "Essa ação é irreversível.",
+            preferredStyle: .alert
+        )
+        
+        let confirmAction = UIAlertAction(title: "Encerrar", style: .destructive) { [weak self] _ in
+            guard let self = self else { return } 
+            self.viewModel.finishCare()
+            self.delegate?.careRecipientProfileWantsChangeAssociate(self)
+        }
+        
+        let cancelAction = UIAlertAction(title: "Cancelar", style: .cancel, handler: nil)
+        
+        alertController.addAction(cancelAction)
+        alertController.addAction(confirmAction)
+        
+        present(alertController, animated: true, completion: nil)
     }
     //    @objc private func didTapEditCaregiverButton() { delegate?.openEditCaregiversSheet() }
 }

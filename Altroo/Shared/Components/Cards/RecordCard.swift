@@ -11,22 +11,30 @@ class RecordCard: InnerShadowView {
     
     let title: String
     let iconName: String
-    let addButtonPosition: Position = .none
+    let showPlusButton: Bool
+    let contentContainer = UIView()
     
+    var addButtonPosition: Position = .none
     let addButton = PlusButton()
+    let waterCapsule = WaterCapsule(text: "250ml")
     var onAddButtonTap: (() -> Void)? //call closure using [weak self]
     
-    let padding = 12.0
+    let padding = 8.0
+    let contentView: UIView?
     
-    init(frame: CGRect = .zero, title: String, iconName: String) {
+    init(frame: CGRect = .zero, title: String, iconName: String, showPlusButton: Bool = true, addButtonPosition: Position = .top, contentView: UIView? = nil) {
         self.title = title
         self.iconName = iconName
+        self.showPlusButton = showPlusButton
+        self.addButtonPosition = addButtonPosition
+        self.contentView = contentView
         
         super.init(frame: frame, color: .blue70)
         
         setupBackground()
         setupShadows()
         setupPlusButton()
+        setupContentContainer()
     }
     
     convenience init(frame: CGRect) {
@@ -52,7 +60,7 @@ class RecordCard: InnerShadowView {
         
         NSLayoutConstraint.activate([
             header.leadingAnchor.constraint(equalTo: leadingAnchor, constant: padding),
-            header.topAnchor.constraint(equalTo: topAnchor, constant: padding),
+            header.topAnchor.constraint(equalTo: topAnchor, constant: padding + 2),
         ])
     }
     
@@ -64,23 +72,29 @@ class RecordCard: InnerShadowView {
     }
     
     func setupPlusButton() {
-        guard addButtonPosition != .none else { return }
+        let actionView: UIView = showPlusButton ? addButton : waterCapsule
         
-        addSubview(addButton)
-        addButton.translatesAutoresizingMaskIntoConstraints = false
+        addSubview(actionView)
+        actionView.translatesAutoresizingMaskIntoConstraints = false
         
         NSLayoutConstraint.activate([
-            addButton.trailingAnchor.constraint(equalTo: trailingAnchor, constant: -padding),
-            addButton.heightAnchor.constraint(equalToConstant: 30)
+            actionView.trailingAnchor.constraint(equalTo: trailingAnchor, constant: -10),
+            actionView.heightAnchor.constraint(equalToConstant: 27)
         ])
         
         if addButtonPosition == .bottom {
-            addButton.bottomAnchor.constraint(equalTo: bottomAnchor, constant: -padding).isActive = true
+            actionView.bottomAnchor.constraint(equalTo: bottomAnchor, constant: -padding).isActive = true
         } else {
-            addButton.topAnchor.constraint(equalTo: topAnchor, constant: padding).isActive = true
+            actionView.topAnchor.constraint(equalTo: topAnchor, constant: padding).isActive = true
         }
         
-        addButton.addTarget(self, action: #selector(buttonWasTapped), for: .touchUpInside)
+        if showPlusButton {
+            addButton.addTarget(self, action: #selector(buttonWasTapped), for: .touchUpInside)
+        } else {
+            let tap = UITapGestureRecognizer(target: self, action: #selector(buttonWasTapped))
+            waterCapsule.isUserInteractionEnabled = true
+            waterCapsule.addGestureRecognizer(tap)
+        }
     }
     
     func makeHeader() -> UIStackView {
@@ -90,10 +104,16 @@ class RecordCard: InnerShadowView {
                                   labelColor: .blue40,
                                   labelWeight: .medium)
         
-        let icon = PulseIcon(iconName: "waterbottle.fill",
+        let icon = PulseIcon(iconName: iconName,
                              color: UIColor(resource: .blue30),
                              iconColor: UIColor(resource: .pureWhite),
                              shadowColor: UIColor(resource: .blue60))
+        
+        icon.translatesAutoresizingMaskIntoConstraints = false
+        NSLayoutConstraint.activate([
+            icon.widthAnchor.constraint(equalToConstant: 33),
+            icon.heightAnchor.constraint(equalToConstant: 33)
+        ])
         
         let stack = UIStackView()
         stack.spacing = 8
@@ -102,6 +122,30 @@ class RecordCard: InnerShadowView {
         stack.addArrangedSubview(label)
         
         return stack
+    }
+    
+    private func setupContentContainer() {
+        guard let contentView = contentView else { return }
+        
+        addSubview(contentContainer)
+        contentContainer.translatesAutoresizingMaskIntoConstraints = false
+        
+        NSLayoutConstraint.activate([
+            contentContainer.topAnchor.constraint(equalTo: topAnchor, constant: 40),
+            contentContainer.leadingAnchor.constraint(equalTo: leadingAnchor, constant: padding),
+            contentContainer.trailingAnchor.constraint(equalTo: trailingAnchor, constant: -padding),
+            contentContainer.bottomAnchor.constraint(equalTo: bottomAnchor, constant: -padding)
+        ])
+        
+        contentContainer.addSubview(contentView)
+        contentView.translatesAutoresizingMaskIntoConstraints = false
+        
+        NSLayoutConstraint.activate([
+            contentView.leadingAnchor.constraint(equalTo: contentContainer.leadingAnchor, constant: 0),
+            contentView.trailingAnchor.constraint(lessThanOrEqualTo: contentContainer.trailingAnchor, constant: -10),
+            contentView.bottomAnchor.constraint(equalTo: contentContainer.bottomAnchor, constant: -4),
+            contentView.topAnchor.constraint(equalTo: contentContainer.topAnchor, constant: 10)
+        ])
     }
     
     @objc private func buttonWasTapped() {
@@ -113,30 +157,15 @@ class RecordCard: InnerShadowView {
     }
 }
 
-//class RecordCardPreview: UIViewController {
-//    let card = RecordCard(title: "Hidratação", iconName: "waterbottle.fill")
-//
-//
-//    override func viewDidLoad() {
-//        view.backgroundColor = .blue80
-//
-//        view.addSubview(card)
-//
-//        card.translatesAutoresizingMaskIntoConstraints = false
-//
-//        NSLayoutConstraint.activate([
-//            card.centerXAnchor.constraint(equalTo: view.centerXAnchor),
-//            card.centerYAnchor.constraint(equalTo: view.centerYAnchor),
-//            card.widthAnchor.constraint(equalToConstant: 370)
-//        ])
-//
-//    }
-//}
-
 #Preview {
-    let card = RecordCard(title: "Hidratação", iconName: "waterbottle.fill")
+    let waterRecord = WaterRecord(currentQuantity: "0,5", goalQuantity: "2L")
+    let card = RecordCard(
+        title: "Hidratação",
+        iconName: "waterbottle.fill",
+        showPlusButton: false,
+        addButtonPosition: .top,
+        contentView: waterRecord
+    )
     
     return card
-    
-    //    RecordCardPreview()
 }

@@ -10,13 +10,11 @@ import UIKit
 final class DefaultAppFactory: AppFactory {
     
     private let dependencies: AppDependencies
-    private let userService: UserServiceProtocol
     private let addPatientViewModel: AddPatientViewModel
     
-    init(dependencies: AppDependencies, userService: UserServiceProtocol) {
+    init(dependencies: AppDependencies) {
         self.dependencies = dependencies
-        self.userService = userService
-        self.addPatientViewModel = AddPatientViewModel(careRecipientFacade: dependencies.careRecipientFacade, userService: userService)
+        self.addPatientViewModel = AddPatientViewModel(careRecipientFacade: dependencies.careRecipientFacade, userService: dependencies.userService)
     }
 }
 
@@ -34,7 +32,7 @@ extension DefaultAppFactory {
 extension DefaultAppFactory {
     
     func makeAssociatePatientViewController(delegate: AssociatePatientViewControllerDelegate) -> UIViewController {
-        let vc = AssociatePatientViewController(viewModel: AssociatePatientViewModel(userService: userService))
+        let vc = AssociatePatientViewController(viewModel: AssociatePatientViewModel(userService: dependencies.userService))
         vc.delegate = delegate
         vc.title = "Associate Patient View"
         return vc
@@ -77,9 +75,8 @@ extension DefaultAppFactory {
     }
     
     func makeTodayViewController(delegate: TodayViewControllerDelegate) -> UIViewController {
-        let vm = TodayViewModel(careRecipientFacade: dependencies.careRecipientFacade, userService: dependencies.userService)
+        let vm = TodayViewModel(careRecipientFacade: dependencies.careRecipientFacade, userService: dependencies.userService, taskService: dependencies.routineActivitiesFacade)
         let vc = TodayViewController(viewModel: vm)
-        vc.title = "Today"
         vc.delegate = delegate
         return vc
     }

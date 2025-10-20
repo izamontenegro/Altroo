@@ -1,44 +1,32 @@
 //
-//  CapsuleView.swift
+//  WaterCapsule.swift
 //  Altroo
 //
-//  Created by Raissa Parente on 30/09/25.
+//  Created by Layza Maria Rodrigues Carneiro on 20/10/25.
 //
+
 import UIKit
 
-class CapsuleWithCircleView: UIView {
+class WaterCapsule: InnerShadowView {
     
-    var text: String!
-    var textColor: UIColor = UIColor(resource: .teal20)
-   
-    var nameIcon: String!
-    var nameIconColor: UIColor = UIColor(resource: .pureWhite)
-    var circleIconColor: UIColor = UIColor(resource: .teal20)
+    var text: String
     
-    override init(frame: CGRect) {
-        super.init(frame: frame)
-        
+    init(frame: CGRect) {
+        self.text = ""
+        super.init(frame: frame, color: .teal50.withAlphaComponent(0.85))
         self.translatesAutoresizingMaskIntoConstraints = false
-        NSLayoutConstraint.activate([
-            self.widthAnchor.constraint(equalToConstant: 137),
-            self.heightAnchor.constraint(equalToConstant: 31)
-        ])
-
     }
     
-    convenience init(text: String, textColor: UIColor, nameIcon: String, nameIconColor: UIColor, circleIconColor: UIColor) {
-        
+    convenience init(text: String) {
         self.init(frame: .zero)
         self.text = text
-        self.textColor = textColor
-        self.nameIcon = nameIcon
-        self.nameIconColor = nameIconColor
-        self.circleIconColor = circleIconColor
         
         makeCapsule()
     }
     
-    required init?(coder: NSCoder) { super.init(coder: coder) }
+    required init?(coder: NSCoder) {
+        fatalError("init(coder:) has not been implemented")
+    }
     
     override func layoutSubviews() {
         super.layoutSubviews()
@@ -60,35 +48,42 @@ class CapsuleWithCircleView: UIView {
         NSLayoutConstraint.activate([
             stackView.topAnchor.constraint(equalTo: self.topAnchor, constant: 4),
             stackView.bottomAnchor.constraint(equalTo: self.bottomAnchor, constant: -4),
-            stackView.leadingAnchor.constraint(equalTo: self.leadingAnchor, constant: 12),
-            stackView.trailingAnchor.constraint(equalTo: self.trailingAnchor, constant: -5)
+            stackView.leadingAnchor.constraint(equalTo: self.leadingAnchor, constant: 8),
+            stackView.trailingAnchor.constraint(equalTo: self.trailingAnchor, constant: -4)
         ])
+        
+        let leftIcon = UIImageView(image: UIImage(systemName: "drop.fill"))
+        leftIcon.tintColor = .teal20
+        leftIcon.contentMode = .scaleAspectFit
+        leftIcon.translatesAutoresizingMaskIntoConstraints = false
+        leftIcon.widthAnchor.constraint(equalToConstant: 18).isActive = true
+        leftIcon.heightAnchor.constraint(equalToConstant: 18).isActive = true
+        stackView.addArrangedSubview(leftIcon)
+        stackView.setCustomSpacing(6, after: leftIcon)
         
         //label
         let label = StandardLabel(labelText: text,
                                   labelFont: .sfPro,
                                   labelType: .subHeadline,
-                                  labelColor: textColor,
-                                  labelWeight: .medium)
+                                  labelColor: .teal20,
+                                  labelWeight: .regular)
         
         label.adjustsFontSizeToFitWidth = true
-        label.minimumScaleFactor = 0.95
+        label.minimumScaleFactor = 1
         label.lineBreakMode = .byTruncatingTail
         stackView.addArrangedSubview(label)
         
         //circle
         let circle = CircleView()
-        circle.fillColor = circleIconColor
+        circle.fillColor = .teal20
         circle.translatesAutoresizingMaskIntoConstraints = false
-        circle.widthAnchor.constraint(equalToConstant: 26).isActive = true
-        circle.heightAnchor.constraint(equalToConstant: 26).isActive = true
         
         //icon
-        let icon = UIImageView(image: UIImage(systemName: nameIcon))
-        icon.tintColor = nameIconColor
+        let icon = UIImageView(image: UIImage(systemName: "plus"))
+        icon.tintColor = .pureWhite
         icon.contentMode = .scaleAspectFit
         icon.translatesAutoresizingMaskIntoConstraints = false
-        icon.widthAnchor.constraint(equalToConstant: 30).isActive = true
+        icon.widthAnchor.constraint(equalToConstant: 16).isActive = true
         
         // Container for circle+icon
         let container = UIView()
@@ -100,6 +95,9 @@ class CapsuleWithCircleView: UIView {
             container.widthAnchor.constraint(equalToConstant: 21),
             container.heightAnchor.constraint(equalToConstant: 21),
             
+            circle.widthAnchor.constraint(equalTo: container.widthAnchor, multiplier: 1.3),
+            circle.heightAnchor.constraint(equalTo: container.heightAnchor, multiplier: 1.3),
+            
             circle.centerXAnchor.constraint(equalTo: container.centerXAnchor),
             circle.centerYAnchor.constraint(equalTo: container.centerYAnchor),
             icon.centerXAnchor.constraint(equalTo: container.centerXAnchor),
@@ -108,23 +106,9 @@ class CapsuleWithCircleView: UIView {
         
         stackView.addArrangedSubview(container)
     }
-    
-//    private func setupInnerShadow() {
-//        let shadow = InnerShadowView(frame: bounds,
-//                                     color: UIColor.blue40,
-//                                     opacity: 0.15)
-//        shadow.isUserInteractionEnabled = false
-//        shadow.layer.cornerRadius = layer.cornerRadius
-//        addSubview(shadow)
-//        innerShadowView = shadow
-//    }
 }
 
 #Preview {
-    let button = CapsuleWithCircleView(text: "Editar Seções",
-                                       textColor: .teal20,
-                                       nameIcon: "pencil",
-                                       nameIconColor: .pureWhite,
-                                       circleIconColor: .teal20)
+    let button = WaterCapsule(text: "250ml")
     return button
 }
