@@ -82,10 +82,12 @@ final class HydrationRecordViewController: GradientNavBarViewController {
         container.axis = .vertical
         container.spacing = 12
 
-        let currentRow = UIStackView()
+        var currentRow = UIStackView()
         currentRow.axis = .horizontal
         currentRow.spacing = 12
         currentRow.distribution = .fillEqually
+
+        var buttonsInCurrentRow = 0
 
         for (index, option) in HydrationAmountEnum.allCases.enumerated() {
             let button = PrimaryStyleButton(title: option.displayText)
@@ -93,11 +95,27 @@ final class HydrationRecordViewController: GradientNavBarViewController {
             button.setTitleColor(.white, for: .normal)
             button.tag = index
             button.addTarget(self, action: #selector(amountTapped(_:)), for: .touchUpInside)
+
+           
             amountButtons.append(button)
+
             currentRow.addArrangedSubview(button)
+            buttonsInCurrentRow += 1
+
+            if buttonsInCurrentRow == 2 {
+                container.addArrangedSubview(currentRow)
+                currentRow = UIStackView()
+                currentRow.axis = .horizontal
+                currentRow.spacing = 12
+                currentRow.distribution = .fillProportionally 
+                buttonsInCurrentRow = 0
+            }
         }
 
-        container.addArrangedSubview(currentRow)
+        if buttonsInCurrentRow > 0 {
+            container.addArrangedSubview(currentRow)
+        }
+
         let section = UIStackView(arrangedSubviews: [title, container])
         section.axis = .vertical
         section.spacing = 16
@@ -164,7 +182,7 @@ final class HydrationRecordViewController: GradientNavBarViewController {
     private func updateConfirmationButtonState(enabled: Bool) {
         confirmationButton.isUserInteractionEnabled = enabled
         UIView.animate(withDuration: 0.2) {
-            self.confirmationButton.backgroundColor = enabled ? .teal20 : .black20
+            self.confirmationButton.backgroundColor = enabled ? .teal20 : .black40
         }
     }
 
