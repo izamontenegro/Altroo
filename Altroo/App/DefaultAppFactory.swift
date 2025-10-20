@@ -190,7 +190,8 @@ extension DefaultAppFactory {
 // MARK: - BasicNeedsFactory
 extension DefaultAppFactory {
     func makeStoolRecordViewController() -> UIViewController {
-        let vc = StoolRecordViewController()
+        let vm = StoolRecordViewModel(stoolService: dependencies.basicNeedsFacade, coreDataService: dependencies.coreDataService, userService: dependencies.userService)
+        let vc = StoolRecordViewController(viewModel: vm)
         return vc
     }
     func makeUrineRecordViewController() -> UIViewController {
@@ -200,11 +201,13 @@ extension DefaultAppFactory {
         return vc
     }
     func makeMealRecordViewController() -> UIViewController {
-        let vc = MealRecordViewController()
+        let vm = MealRecordViewModel(feedingService: dependencies.basicNeedsFacade, coreDataService: dependencies.coreDataService, userService: dependencies.userService)
+        let vc = MealRecordViewController(viewModel: vm)
         return vc
     }
     func makeHydrationRecordSheet() -> UIViewController {
-        let vc = HydrationRecordViewController()
+        let vm = HydrationRecordViewModel(basicNeedsFacade: dependencies.basicNeedsFacade, userService: dependencies.userService)
+        let vc = HydrationRecordViewController(viewModel: vm)
         return vc
     }
 }

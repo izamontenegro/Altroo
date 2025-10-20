@@ -29,15 +29,10 @@ final class BasicNeedsFacade: BasicNeedsFacadeProtocol {
     }
     
     // MARK: - FEEDING ACTIONS
-    func addFeeding(behavior: String, date: Date, period: PeriodEnum, feedingRecordDescription: String, photo: Data, in careRecipient: CareRecipient) {
-        feedingService.addFeedingRecord(
-            behavior: behavior,
-            Date: date,
-            period: period,
-            feedingRecordDescription: feedingRecordDescription,
-            photo: photo,
-            in: careRecipient
-        )
+    
+    func addFeeding(amountEaten: MealAmountEatenEnum, date: Date, period: PeriodEnum, notes: String, mealCategory: MealCategoryEnum, in careRecipient: CareRecipient) {
+        feedingService.addFeedingRecord(amountEaten: amountEaten, Date: date, period: period, notes: notes, photo: nil, mealCategory: mealCategory, in: careRecipient)
+        
         persistenceService.save()
     }
     
@@ -47,8 +42,8 @@ final class BasicNeedsFacade: BasicNeedsFacadeProtocol {
     }
     
     // MARK: - HYDRATION ACTIONS
-    func addHydration(period: PeriodEnum, date: Date, behavior: String, waterQuantity: Double, in careRecipient: CareRecipient) {
-        hydrationService.addHydrationRecord(period: period, date: date, behavior: behavior, waterQuantity: waterQuantity, in: careRecipient)
+    func addHydration(period: PeriodEnum, date: Date, waterQuantity: Double, in careRecipient: CareRecipient) {
+        hydrationService.addHydrationRecord(period: period, date: date, waterQuantity: waterQuantity, in: careRecipient)
         persistenceService.save()
     }
     
@@ -58,8 +53,8 @@ final class BasicNeedsFacade: BasicNeedsFacadeProtocol {
     }
     
     // MARK: - STOOL ACTIONS
-    func addStool(period: PeriodEnum, date: Date, format: String, hadPain: Bool, color: String, in careRecipient: CareRecipient) {
-        stoolService.addStoolRecord(period: period, date: date, format: format, hadPain: hadPain, color: color, in: careRecipient)
+    func addStool(period: PeriodEnum, date: Date, format: String, notes: String, color: String, in careRecipient: CareRecipient) {
+        stoolService.addStoolRecord(period: period, date: date, format: format, notes: notes, color: color, in: careRecipient)
         persistenceService.save()
     }
 
