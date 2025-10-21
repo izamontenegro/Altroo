@@ -13,8 +13,13 @@ class GradientNavBarViewController: UIViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
         view.backgroundColor = .pureWhite
+    }
+    
+    override func viewWillAppear(_ animated: Bool) {
+        super.viewWillAppear(animated)
         configureNavBar()
     }
+
     
     override func viewWillDisappear(_ animated: Bool) {
         desconfigureNavBar()

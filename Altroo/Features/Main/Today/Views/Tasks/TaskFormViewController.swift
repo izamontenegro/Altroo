@@ -16,8 +16,8 @@ class TaskFormViewController: GradientNavBarViewController {
     let deleteButton = OutlineButton(title: "Deletar", color: .red20)
     private var confirmBottomConstraint: NSLayoutConstraint?
 
-    let nameTexfield = StandardTextfield(width: 370, height: 38, placeholder: "Nome")
-    let noteTexfield = StandardTextfield(width: 370, height: 38, placeholder: "Observação")
+    let nameTexfield = TestTextfield(placeholder: "Nome")
+    let noteTexfield = TestTextfield(placeholder: "Observação")
 
     var hourPickers: [UIDatePicker] = []
     let addTimeButton = PrimaryStyleButton(title: "Novo Horário")
@@ -53,7 +53,6 @@ class TaskFormViewController: GradientNavBarViewController {
         stackView.translatesAutoresizingMaskIntoConstraints = false
         return stackView
     }()
-
 
     var endDateSection: UIView!
     var continuousButton: PopupMenuButton!
