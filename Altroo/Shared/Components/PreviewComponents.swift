@@ -118,17 +118,17 @@ class ComponentPreviewViewController: UIViewController {
     }
 }
 
-#if DEBUG
-struct ComponentPreviewViewController_Preview: UIViewControllerRepresentable {
-    func makeUIViewController(context: Context) -> ComponentPreviewViewController {
-        return ComponentPreviewViewController()
-    }
-
-    func updateUIViewController(_ uiViewController: ComponentPreviewViewController, context: Context) {
-    }
-}
-
-#Preview {
-    ComponentPreviewViewController_Preview()
-}
-#endif
+//#if DEBUG
+//struct ComponentPreviewViewController_Preview: UIViewControllerRepresentable {
+//    func makeUIViewController(context: Context) -> ComponentPreviewViewController {
+//        return ComponentPreviewViewController()
+//    }
+//
+//    func updateUIViewController(_ uiViewController: ComponentPreviewViewController, context: Context) {
+//    }
+//}
+//
+//#Preview {
+//    ComponentPreviewViewController_Preview()
+//}
+//#endif

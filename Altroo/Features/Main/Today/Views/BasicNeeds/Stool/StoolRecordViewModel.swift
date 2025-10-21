@@ -51,15 +51,15 @@ final class StoolRecordViewModel {
             let request: NSFetchRequest<StoolRecord> = StoolRecord.fetchRequest()
             do {
                 let results = try context.fetch(request)
-                print("🚽 [DEBUG] Total stool records found: \(results.count)")
+//                print("🚽 [DEBUG] Total stool records found: \(results.count)")
                 if let last = results.last {
-                    print("🚽 [DEBUG] Last saved stool record:")
-                    print("• ID:", last.id?.uuidString ?? "nil")
-                    print("• Date:", last.date ?? Date())
-                    print("• Period:", last.period ?? "—")
-                    print("• Color:", last.color ?? "—")
-                    print("• Notes:", last.notes ?? "—")
-                    print("• Type:", last.format ?? "—")
+//                    print("🚽 [DEBUG] Last saved stool record:")
+//                    print("• ID:", last.id?.uuidString ?? "nil")
+//                    print("• Date:", last.date ?? Date())
+//                    print("• Period:", last.period ?? "—")
+//                    print("• Color:", last.color ?? "—")
+//                    print("• Notes:", last.notes ?? "—")
+//                    print("• Type:", last.format ?? "—")
                 }
             } catch {
                 print("⚠️ [DEBUG] Failed to fetch StoolRecord:", error.localizedDescription)

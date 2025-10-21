@@ -45,14 +45,14 @@ final class HydrationRecordViewModel {
             let request: NSFetchRequest<HydrationRecord> = HydrationRecord.fetchRequest()
             do {
                 let results = try context.fetch(request)
-                print("💧 [DEBUG] Total hydration records encontrados: \(results.count)")
-                if let last = results.last {
-                    print("💧 [DEBUG] Last Record:")
-                    print("• ID:", last.id)
-                    print("• Date:", last.date ?? Date())
-                    print("• Period:", last.period ?? "—")
-                    print("• Quantity:", last.waterQuantity)
-                }
+//                print("💧 [DEBUG] Total hydration records encontrados: \(results.count)")
+//                if let last = results.last {
+//                    print("💧 [DEBUG] Last Record:")
+//                    print("• ID:", last.id)
+//                    print("• Date:", last.date ?? Date())
+//                    print("• Period:", last.period ?? "—")
+//                    print("• Quantity:", last.waterQuantity)
+//                }
             } catch {
                 print("⚠️ [DEBUG] Error fetching HydrationRecord:", error.localizedDescription)
             }

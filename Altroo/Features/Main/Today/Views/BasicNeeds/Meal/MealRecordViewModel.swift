@@ -56,16 +56,16 @@ final class MealRecordViewModel {
                 let request: NSFetchRequest<FeedingRecord> = FeedingRecord.fetchRequest()
                 do {
                     let results = try context.fetch(request)
-                    print("🍽️ [DEBUG] Total feeding records found: \(results.count)")
-                    if let last = results.last {
-                        print("🍽️ [DEBUG] Last saved feeding record:")
-                        print("• ID:", last.id)
-                        print("• Date:", last.date ?? Date())
-                        print("• Period:", last.period ?? "—")
-                        print("• Category:", last.mealCategory ?? "—")
-                        print("• Amount Eaten:", last.amountEaten ?? "—")
-                        print("• Notes:", last.notes ?? "—")
-                    }
+//                    print("🍽️ [DEBUG] Total feeding records found: \(results.count)")
+//                    if let last = results.last {
+//                        print("🍽️ [DEBUG] Last saved feeding record:")
+//                        print("• ID:", last.id)
+//                        print("• Date:", last.date ?? Date())
+//                        print("• Period:", last.period ?? "—")
+//                        print("• Category:", last.mealCategory ?? "—")
+//                        print("• Amount Eaten:", last.amountEaten ?? "—")
+//                        print("• Notes:", last.notes ?? "—")
+//                    }
                 } catch {
                     print("⚠️ [DEBUG] Failed to fetch FeedingRecord:", error.localizedDescription)
                 }

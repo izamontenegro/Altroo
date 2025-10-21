@@ -106,7 +106,7 @@ private struct SegmentedControlPreviewWrapper: UIViewRepresentable {
     }
 }
 
-#Preview {
-    SegmentedControlPreviewWrapper()
-        .padding()
-}
+//#Preview {
+//    SegmentedControlPreviewWrapper()
+//        .padding()
+//}

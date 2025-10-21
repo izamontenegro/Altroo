@@ -77,8 +77,7 @@ class CapsuleIconView: UIView {
 
         topConstraint = stackView.topAnchor.constraint(equalTo: self.topAnchor, constant: contentInsets.top)
         bottomConstraint = stackView.bottomAnchor.constraint(equalTo: self.bottomAnchor, constant: -contentInsets.bottom)
-        leadingConstraint = stackView.leadingAnchor.constraint(equalTo: self.leadingAnchor, constant: 8) // 8px fixed
-        // Não precisamos do trailingConstraint, assim a largura é dinâmica conforme o conteúdo
+        leadingConstraint = stackView.leadingAnchor.constraint(equalTo: self.leadingAnchor, constant: 8)
 
         NSLayoutConstraint.activate([topConstraint!, bottomConstraint!, leadingConstraint!])
 
@@ -110,7 +109,6 @@ class CapsuleIconView: UIView {
 
         stackView.addArrangedSubview(label)
 
-        // Ajusta a largura do capsule para caber o conteúdo + insets
         let intrinsicWidth = stackView.systemLayoutSizeFitting(UIView.layoutFittingCompressedSize).width
         self.widthAnchor.constraint(equalToConstant: intrinsicWidth + 8 + contentInsets.right).isActive = true
     }
