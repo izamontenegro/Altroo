@@ -57,9 +57,9 @@ class TodayViewController: UIViewController {
         profileToolbar.translatesAutoresizingMaskIntoConstraints = false
         profileToolbar.delegate = self
         
-        view.addSubview(profileToolbar)
         view.addSubview(scrollView)
         scrollView.addSubview(vStack)
+        view.addSubview(profileToolbar)
         
         NSLayoutConstraint.activate([
             profileToolbar.topAnchor.constraint(equalTo: view.topAnchor),
@@ -80,8 +80,6 @@ class TodayViewController: UIViewController {
             vStack.trailingAnchor.constraint(equalTo: scrollView.trailingAnchor, constant: -20),
             vStack.widthAnchor.constraint(equalTo: scrollView.widthAnchor, constant: -40)
         ])
-        
-        view.bringSubviewToFront(profileToolbar)
     }
     
     override func viewWillAppear(_ animated: Bool) {
@@ -95,7 +93,7 @@ class TodayViewController: UIViewController {
         viewModel.fetchAllPeriodTasks()
         viewModel.fetchWaterQuantity()
         
-        feedingRecords = viewModel.fetchFeedingRecords()
+        self.feedingRecords = viewModel.fetchFeedingRecords()
         
         symptomsCard.updateSymptoms(viewModel.todaySymptoms)
         addSections()
@@ -207,12 +205,22 @@ class TodayViewController: UIViewController {
                 sectionStack.spacing = 16
                 
                 if visibleItems.contains("Alimentação") {
-                    let feedingCard = RecordCard(title: "Alimentação", iconName: "takeoutbag.and.cup.and.straw.fill", contentView: FeedingCardRecord(title: "Café da manhã", status: .partial))
+                    let feedingListView = FeedingRecordList()
+                    feedingListView.update(with: feedingRecords)
+                    
+                    let feedingCard = RecordCard(
+                        title: "Alimentação",
+                        iconName: "takeoutbag.and.cup.and.straw.fill",
+                        contentView: feedingListView
+                    )
+                    
                     feedingCard.onAddButtonTap = { [weak self] in
                         self?.delegate?.goTo(.recordFeeding)
                     }
+
                     sectionStack.addArrangedSubview(feedingCard)
                 }
+                
                 if visibleItems.contains("Hidratação") {
                     let iconName: String
                     if #available(iOS 17.0, *) {
@@ -227,6 +235,7 @@ class TodayViewController: UIViewController {
                         showPlusButton: false,
                         contentView: WaterRecord(currentQuantity: "\(viewModel.waterQuantity)", goalQuantity: "2L")
                     )
+                    
                     viewModel.onWaterQuantityUpdated = { [weak self] newValue in
                         DispatchQueue.main.async {
                             (hydrationCard.contentView as? WaterRecord)?.updateQuantity("\(newValue)")

@@ -65,32 +65,33 @@ class CapsuleIconView: UIView {
     private func makeCapsule() {
         self.backgroundColor = mainColor
         self.translatesAutoresizingMaskIntoConstraints = false
-        
+
         stackView = UIStackView()
         stackView.axis = .horizontal
-        stackView.alignment = .center
         stackView.spacing = labelIconSpacing
         stackView.translatesAutoresizingMaskIntoConstraints = false
-        
+        stackView.distribution = .fill
+        stackView.alignment = .center
+
         addSubview(stackView)
-        
+
         topConstraint = stackView.topAnchor.constraint(equalTo: self.topAnchor, constant: contentInsets.top)
         bottomConstraint = stackView.bottomAnchor.constraint(equalTo: self.bottomAnchor, constant: -contentInsets.bottom)
-        leadingConstraint = stackView.leadingAnchor.constraint(equalTo: self.leadingAnchor, constant: contentInsets.left)
-        trailingConstraint = stackView.trailingAnchor.constraint(equalTo: self.trailingAnchor, constant: -contentInsets.right)
-        
-        NSLayoutConstraint.activate([topConstraint!, bottomConstraint!, leadingConstraint!, trailingConstraint!])
-        
+        leadingConstraint = stackView.leadingAnchor.constraint(equalTo: self.leadingAnchor, constant: 8) // 8px fixed
+        // Não precisamos do trailingConstraint, assim a largura é dinâmica conforme o conteúdo
+
+        NSLayoutConstraint.activate([topConstraint!, bottomConstraint!, leadingConstraint!])
+
         let icon = UIImageView(image: UIImage(systemName: iconName))
         icon.tintColor = accentColor
         icon.contentMode = .scaleAspectFit
         icon.translatesAutoresizingMaskIntoConstraints = false
         stackView.addArrangedSubview(icon)
-        
+
         NSLayoutConstraint.activate([
             icon.widthAnchor.constraint(equalTo: icon.heightAnchor)
         ])
-        
+
         let label = StandardLabel(
             labelText: text,
             labelFont: .sfPro,
@@ -103,10 +104,17 @@ class CapsuleIconView: UIView {
         label.lineBreakMode = .byTruncatingTail
         label.adjustsFontSizeToFitWidth = true
         label.minimumScaleFactor = 0.85
-        
+
+        label.setContentHuggingPriority(.required, for: .horizontal)
+        label.setContentCompressionResistancePriority(.required, for: .horizontal)
+
         stackView.addArrangedSubview(label)
+
+        // Ajusta a largura do capsule para caber o conteúdo + insets
+        let intrinsicWidth = stackView.systemLayoutSizeFitting(UIView.layoutFittingCompressedSize).width
+        self.widthAnchor.constraint(equalToConstant: intrinsicWidth + 8 + contentInsets.right).isActive = true
     }
-    
+
     private func updateConstraintsForInsets() {
         topConstraint?.constant = contentInsets.top
         bottomConstraint?.constant = -contentInsets.bottom

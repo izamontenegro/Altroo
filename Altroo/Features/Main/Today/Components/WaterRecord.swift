@@ -51,16 +51,15 @@ class WaterRecord: UIView {
         hStack.axis = .horizontal
         hStack.spacing = 4
         hStack.alignment = .center
-        hStack.distribution = .fillProportionally
+        hStack.distribution = .fill
         
         addSubview(hStack)
         
         hStack.translatesAutoresizingMaskIntoConstraints = false
         NSLayoutConstraint.activate([
-            hStack.topAnchor.constraint(equalTo: topAnchor),
-            hStack.leadingAnchor.constraint(equalTo: leadingAnchor),
-            hStack.trailingAnchor.constraint(equalTo: trailingAnchor),
-            hStack.bottomAnchor.constraint(equalTo: bottomAnchor)
+            hStack.topAnchor.constraint(equalTo: topAnchor, constant: 8),
+            hStack.leadingAnchor.constraint(equalTo: leadingAnchor, constant: 12),
+            hStack.bottomAnchor.constraint(equalTo: bottomAnchor, constant: -15)
         ])
     }
     
