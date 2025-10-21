@@ -276,7 +276,6 @@ class EditSectionViewController: GradientNavBarViewController {
             let checkmark = headerStack.arrangedSubviews.compactMap({ $0 as? UIImageView }).first(where: { $0.tag == 999 })
             let isVisible = checkmark?.image == UIImage(systemName: "checkmark.circle.fill")
             
-            // 👇 salva subitens, se houver
             let subitems: [SubitemConfig]?
             if type == .basicNeeds, let sectionStack = sectionView as? UIStackView {
                 subitems = sectionStack.arrangedSubviews.compactMap { subview in
