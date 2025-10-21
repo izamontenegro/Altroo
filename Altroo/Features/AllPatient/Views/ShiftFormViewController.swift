@@ -25,7 +25,7 @@ class ShiftFormViewController: UIViewController {
     }
     
     private let label1 = StandardLabel(
-        labelText: "Em quais horários você vai cuidar de seu paciente?",
+        labelText: "Em quais horários você vai cuidar de seu assistido?",
         labelFont: .sfPro,
         labelType: .title3,
         labelColor: .black10,
