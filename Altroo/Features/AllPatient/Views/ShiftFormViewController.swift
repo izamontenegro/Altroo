@@ -25,7 +25,7 @@ class ShiftFormViewController: UIViewController {
     }
     
     private let label1 = StandardLabel(
-        labelText: "Em quais horários você vai cuidar da sua mamãe?",
+        labelText: "Em quais horários você vai cuidar de seu paciente?",
         labelFont: .sfPro,
         labelType: .title3,
         labelColor: .black10,
@@ -83,6 +83,7 @@ class ShiftFormViewController: UIViewController {
         
         label1.numberOfLines = 0
         label1.lineBreakMode = .byWordWrapping
+        label1.updateLabelText("Em quais horários você vai cuidar de \(viewModel.name)?")
         
         view.addSubview(formStack)
         NSLayoutConstraint.activate([
