@@ -129,11 +129,11 @@ class RecordCard: InnerShadowView {
         
         addSubview(contentContainer)
         contentContainer.translatesAutoresizingMaskIntoConstraints = false
-        
+
         NSLayoutConstraint.activate([
             contentContainer.topAnchor.constraint(equalTo: topAnchor, constant: 40),
-            contentContainer.leadingAnchor.constraint(equalTo: leadingAnchor, constant: padding),
-            contentContainer.trailingAnchor.constraint(equalTo: trailingAnchor, constant: -padding),
+            contentContainer.leadingAnchor.constraint(equalTo: leadingAnchor, constant: 0),
+            contentContainer.trailingAnchor.constraint(equalTo: trailingAnchor, constant: 0),
             contentContainer.bottomAnchor.constraint(equalTo: bottomAnchor, constant: -padding)
         ])
         
@@ -142,9 +142,9 @@ class RecordCard: InnerShadowView {
         
         NSLayoutConstraint.activate([
             contentView.leadingAnchor.constraint(equalTo: contentContainer.leadingAnchor, constant: 0),
-            contentView.trailingAnchor.constraint(lessThanOrEqualTo: contentContainer.trailingAnchor, constant: -10),
-            contentView.bottomAnchor.constraint(equalTo: contentContainer.bottomAnchor, constant: -4),
-            contentView.topAnchor.constraint(equalTo: contentContainer.topAnchor, constant: 10)
+            contentView.trailingAnchor.constraint(equalTo: contentContainer.trailingAnchor, constant: 0),
+            contentView.bottomAnchor.constraint(equalTo: contentContainer.bottomAnchor, constant: 15),
+            contentView.topAnchor.constraint(equalTo: contentContainer.topAnchor, constant: 5)
         ])
     }
     

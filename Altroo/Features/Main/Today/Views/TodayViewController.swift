@@ -16,6 +16,8 @@ class TodayViewController: UIViewController {
     var viewModel: TodayViewModel
     weak var delegate: TodayViewControllerDelegate?
     var onTaskSelected: ((TaskInstance) -> Void)?
+    var symptomsCard: SymptomsCard
+    var feedingRecords: [FeedingRecord] = []
     
     required init?(coder: NSCoder) {
         fatalError("init(coder:) has not been implemented")
@@ -35,13 +37,11 @@ class TodayViewController: UIViewController {
         return stackView
     }()
     
-    var symptomsCard: SymptomsCard
-    
     init(delegate: TodayViewControllerDelegate? = nil, viewModel: TodayViewModel, onTaskSelected: ((TaskInstance) -> Void)? = nil) {
         self.delegate = delegate
-        
         self.viewModel = viewModel
         self.symptomsCard = SymptomsCard(symptoms: viewModel.todaySymptoms)
+
         super.init(nibName: nil, bundle: nil)
         
         self.symptomsCard.delegate = self
@@ -56,11 +56,10 @@ class TodayViewController: UIViewController {
         let profileToolbar = ProfileToolbarContainer(careRecipient: careRecipient)
         profileToolbar.translatesAutoresizingMaskIntoConstraints = false
         profileToolbar.delegate = self
-
         
-        view.addSubview(profileToolbar)
         view.addSubview(scrollView)
         scrollView.addSubview(vStack)
+        view.addSubview(profileToolbar)
         
         NSLayoutConstraint.activate([
             profileToolbar.topAnchor.constraint(equalTo: view.topAnchor),
@@ -81,18 +80,21 @@ class TodayViewController: UIViewController {
             vStack.trailingAnchor.constraint(equalTo: scrollView.trailingAnchor, constant: -20),
             vStack.widthAnchor.constraint(equalTo: scrollView.widthAnchor, constant: -40)
         ])
-        
-        view.bringSubviewToFront(profileToolbar)
     }
     
     override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
         tabBarController?.tabBar.isHidden = true
         navigationController?.setNavigationBarHidden(true, animated: false)
+        
         viewModel.fetchAllTodaySymptoms()
         viewModel.fetchStoolQuantity()
         viewModel.fetchUrineQuantity()
         viewModel.fetchAllPeriodTasks()
+        viewModel.fetchWaterQuantity()
+        
+        self.feedingRecords = viewModel.fetchFeedingRecords()
+        
         symptomsCard.updateSymptoms(viewModel.todaySymptoms)
         addSections()
     }
@@ -101,53 +103,7 @@ class TodayViewController: UIViewController {
         super.viewWillDisappear(animated)
         navigationController?.setNavigationBarHidden(false, animated: false)
     }
-    
-    // MARK: - Section Factory
-    private func makeSection(title: String, buttons: [(String, Selector)]) -> UIView {
-        let section = UIView()
-        section.translatesAutoresizingMaskIntoConstraints = false
         
-        let titleLabel = UILabel()
-        titleLabel.text = title
-        titleLabel.font = UIFont.boldSystemFont(ofSize: 18)
-        titleLabel.translatesAutoresizingMaskIntoConstraints = false
-        
-        section.addSubview(titleLabel)
-        NSLayoutConstraint.activate([
-            titleLabel.topAnchor.constraint(equalTo: section.topAnchor),
-            titleLabel.leadingAnchor.constraint(equalTo: section.leadingAnchor),
-            titleLabel.trailingAnchor.constraint(equalTo: section.trailingAnchor)
-        ])
-        
-        let stack = UIStackView()
-        stack.axis = .vertical
-        stack.spacing = 12
-        stack.translatesAutoresizingMaskIntoConstraints = false
-        section.addSubview(stack)
-        
-        NSLayoutConstraint.activate([
-            stack.topAnchor.constraint(equalTo: titleLabel.bottomAnchor, constant: 10),
-            stack.leadingAnchor.constraint(equalTo: section.leadingAnchor),
-            stack.trailingAnchor.constraint(equalTo: section.trailingAnchor),
-            stack.bottomAnchor.constraint(equalTo: section.bottomAnchor)
-        ])
-        
-        for (title, selector) in buttons {
-            let button = UIButton(type: .system)
-            button.setTitle(title, for: .normal)
-            button.backgroundColor = .teal20
-            button.setTitleColor(.white, for: .normal)
-            button.layer.cornerRadius = 8
-            button.titleLabel?.font = UIFont.systemFont(ofSize: 16, weight: .medium)
-            button.addTarget(self, action: selector, for: .touchUpInside)
-            button.translatesAutoresizingMaskIntoConstraints = false
-            button.heightAnchor.constraint(equalToConstant: 44).isActive = true
-            stack.addArrangedSubview(button)
-        }
-        
-        return section
-    }
-    
     func makeCardByPeriod() -> UIView {
         let cardStack = UIStackView()
         cardStack.axis = .vertical
@@ -249,12 +205,22 @@ class TodayViewController: UIViewController {
                 sectionStack.spacing = 16
                 
                 if visibleItems.contains("Alimentação") {
-                    let feedingCard = RecordCard(title: "Alimentação", iconName: "takeoutbag.and.cup.and.straw.fill", contentView: FeedingCardRecord(title: "Café da manhã", status: .partial))
+                    let feedingListView = FeedingRecordList()
+                    feedingListView.update(with: feedingRecords)
+                    
+                    let feedingCard = RecordCard(
+                        title: "Alimentação",
+                        iconName: "takeoutbag.and.cup.and.straw.fill",
+                        contentView: feedingListView
+                    )
+                    
                     feedingCard.onAddButtonTap = { [weak self] in
                         self?.delegate?.goTo(.recordFeeding)
                     }
+
                     sectionStack.addArrangedSubview(feedingCard)
                 }
+                
                 if visibleItems.contains("Hidratação") {
                     let iconName: String
                     if #available(iOS 17.0, *) {
@@ -263,16 +229,22 @@ class TodayViewController: UIViewController {
                         iconName = "drop.fill"
                     }
 
-                    let hidrationCard = RecordCard(
+                    let hydrationCard = RecordCard(
                         title: "Hidratação",
                         iconName: iconName,
                         showPlusButton: false,
-                        contentView: WaterRecord(currentQuantity: "0,5", goalQuantity: "2L")
+                        contentView: WaterRecord(currentQuantity: "\(viewModel.waterQuantity)", goalQuantity: "2L")
                     )
-                    hidrationCard.onAddButtonTap = { [weak self] in
+                    
+                    viewModel.onWaterQuantityUpdated = { [weak self] newValue in
+                        DispatchQueue.main.async {
+                            (hydrationCard.contentView as? WaterRecord)?.updateQuantity("\(newValue)")
+                        }
+                    }
+                    hydrationCard.onAddButtonTap = { [weak self] in
                         self?.delegate?.goTo(.recordHydration)
                     }
-                    sectionStack.addArrangedSubview(hidrationCard)
+                    sectionStack.addArrangedSubview(hydrationCard)
                 }
 
                 if visibleItems.contains("Fezes") || visibleItems.contains("Urina") {
@@ -317,36 +289,7 @@ class TodayViewController: UIViewController {
         }
     }
     
-    private func addTasksSection() {
-        let taskHeader = TaskHeader()
-        taskHeader.delegate = self
-        vStack.addArrangedSubview(taskHeader)
-    }
-    
-    private func addSymptomsSection() {
-        let symptomHeader = IntercurrenceHeader()
-        symptomHeader.delegate = self
-        vStack.addArrangedSubview(symptomHeader)
-        vStack.addArrangedSubview(symptomsCard)
-    }
-
-    
     // MARK: - BUTTON ACTIONS
-    @objc private func didTapEditSectionView() {
-        delegate?.goTo(.editSection)
-    }
-    @objc private func didTapRecordFeeding() {
-        delegate?.goTo(.recordFeeding)
-    }
-    @objc private func didTapRecordHydration() {
-        delegate?.goTo(.recordHydration)
-    }
-    @objc private func didTapRecordStool() {
-        delegate?.goTo(.recordStool)
-    }
-    @objc private func didTapRecordUrine() {
-        delegate?.goTo(.recordUrine)
-    }
     @objc private func didTapRecordHeartRate() {
         delegate?.goTo(.recordHeartRate)
     }

@@ -29,7 +29,7 @@ final class HydrationRecordViewModel {
         let totalWater = amount == .custom ? customValue : amount.milliliters
         
         basicNeedsFacade.addHydration(
-            period: .afternoon, // FIXME: substituir pelo período correto quando disponível
+            period: PeriodEnum.current,
             date: Date(),
             waterQuantity: totalWater,
             in: careRecipient
@@ -45,19 +45,19 @@ final class HydrationRecordViewModel {
             let request: NSFetchRequest<HydrationRecord> = HydrationRecord.fetchRequest()
             do {
                 let results = try context.fetch(request)
-                print("💧 [DEBUG] Total hydration records encontrados: \(results.count)")
-                if let last = results.last {
-                    print("💧 [DEBUG] Último registro salvo:")
-                    print("• ID:", last.id)
-                    print("• Data:", last.date ?? Date())
-                    print("• Período:", last.period ?? "—")
-                    print("• Quantidade:", last.waterQuantity)
-                }
+//                print("💧 [DEBUG] Total hydration records encontrados: \(results.count)")
+//                if let last = results.last {
+//                    print("💧 [DEBUG] Last Record:")
+//                    print("• ID:", last.id)
+//                    print("• Date:", last.date ?? Date())
+//                    print("• Period:", last.period ?? "—")
+//                    print("• Quantity:", last.waterQuantity)
+//                }
             } catch {
-                print("⚠️ [DEBUG] Falha ao buscar HydrationRecord:", error.localizedDescription)
+                print("⚠️ [DEBUG] Error fetching HydrationRecord:", error.localizedDescription)
             }
         } else {
-            print("⚠️ [DEBUG] Nenhum managedObjectContext encontrado para o CareRecipient atual.")
+            print("⚠️ [DEBUG] None managedObjectContext.")
         }
     }
 }

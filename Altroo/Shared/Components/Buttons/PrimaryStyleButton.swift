@@ -66,12 +66,6 @@ class PrimaryStyleButton: UIButton {
     
     override var isHighlighted: Bool {
         didSet {
-//            UIView.animate(withDuration: 0.15) {
-//                self.backgroundColor = self.isHighlighted
-//                ? self.color.withAlphaComponent(0.8)
-//                : self.color
-//            }
-            
             UIView.animate(withDuration: 0.1) {
                 self.transform = self.isHighlighted
                     ? CGAffineTransform(scaleX: 0.97, y: 0.97)

@@ -9,8 +9,8 @@ import UIKit
 
 class ProfileCareRecipient: UIView {
     
-    private static let defaultColor: UIColor = .blue30
-    private static let defaultStrokeColor: UIColor = .blue20
+    private static let defaultColor: UIColor = .teal20
+    private static let defaultStrokeColor: UIColor = .blue80
     
     var name: String { didSet { updateInitials() } }
     

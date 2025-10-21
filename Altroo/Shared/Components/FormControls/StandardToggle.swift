@@ -115,10 +115,10 @@ private struct StandardTogglePreviewWrapper: UIViewRepresentable {
     }
 }
 
-#Preview {
-    StandardTogglePreviewWrapper()
-        .frame(width: 50, height: 30)
-}
+//#Preview {
+//    StandardTogglePreviewWrapper()
+//        .frame(width: 50, height: 30)
+//}
 
 // TODO: USAR ISSO NA VIEW CONTROLLER !!
 //class ViewController: UIViewController {

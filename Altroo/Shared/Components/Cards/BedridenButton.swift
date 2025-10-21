@@ -218,10 +218,10 @@ private struct BedriddenButtonPreview: UIViewRepresentable {
     func updateUIView(_ uiView: BedriddenButton, context: Context) { }
 }
 
-#Preview {
-    let card = BedriddenButton(bedriddenState: .noMovement)
-    
-    return BedriddenButtonPreview(card: card)
-        .frame(width: 177, height: 211)
-        .padding()
-}
+//#Preview {
+//    let card = BedriddenButton(bedriddenState: .noMovement)
+//    
+//    return BedriddenButtonPreview(card: card)
+//        .frame(width: 177, height: 211)
+//        .padding()
+//}
