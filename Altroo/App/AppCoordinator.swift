@@ -15,6 +15,8 @@ final class AppCoordinator: Coordinator {
     
     let dependencies = AppDependencies()
     private var userService: UserServiceProtocol
+    
+    var receivedPatientViaShare: Bool = false
 
     init(rootNavigation: UINavigationController) {
         self.navigation = rootNavigation
@@ -27,6 +29,11 @@ final class AppCoordinator: Coordinator {
         if userService.fetchUser() == nil {
             _ = userService.createUser(name: "User Teste", category: "Cuidador")
         }
+        
+        if receivedPatientViaShare {
+                    showMainFlow()
+                    return
+                }
         
         if UserDefaults.standard.isFirstLaunch {
 //            showOnboardingFlow()

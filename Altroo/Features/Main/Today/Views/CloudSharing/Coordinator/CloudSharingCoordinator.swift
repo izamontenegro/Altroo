@@ -8,8 +8,6 @@
 import CloudKit
 import UIKit
 import CoreData
-import _Concurrency
-
 
 final class CloudSharingCoordinator: NSObject, UICloudSharingControllerDelegate {
     private let coreDataService: CoreDataService
@@ -24,14 +22,17 @@ final class CloudSharingCoordinator: NSObject, UICloudSharingControllerDelegate 
     }
     
     func presentSharingSheet() {
-        _Concurrency.Task {
-            if let share = try coreDataService.getShare(careRecipient) {
-                // if a share already exists\
-                let sharingController = UICloudSharingController(share: share, container: coreDataService.stack.ckContainer)
-                configureAndPresent(sharingController)
-            } else {
-                // if a new share needs to be created
-                await createShareAndPresent()
+        CoreDataStack.shared.cloudKitReady { [self] in
+            
+            Task {
+                if let share = try coreDataService.getShare(careRecipient) {
+                    // if a share already exists\
+                    let sharingController = UICloudSharingController(share: share, container: coreDataService.stack.ckContainer)
+                    configureAndPresent(sharingController)
+                } else {
+                    // if a new share needs to be created
+                    await createShareAndPresent()
+                }
             }
         }
     }
@@ -47,6 +48,9 @@ final class CloudSharingCoordinator: NSObject, UICloudSharingControllerDelegate 
             
         } catch {
             print("Failed to create share: \(error.localizedDescription)")
+            if let ckError = error as? CKError {
+                    print("CloudKit error: \(ckError.errorCode), \(ckError.localizedDescription)")
+                }
             // handle error, show an alert etc
         }
     }
