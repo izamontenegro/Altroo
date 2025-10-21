@@ -36,8 +36,7 @@ final class MealRecordViewModel {
         feedingService.addFeeding(
             amountEaten: selectedMealAmountEaten,
             date: Date(),
-            // FIXME: UPDATE HERE WHEN MERGED
-            period: PeriodEnum.afternoon,
+            period: PeriodEnum.current,
             notes: notes,
             mealCategory: selectedMealCategory,
             in: careRecipient
