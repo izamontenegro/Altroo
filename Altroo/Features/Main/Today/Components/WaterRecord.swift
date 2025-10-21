@@ -8,7 +8,7 @@
 import UIKit
 
 class WaterRecord: UIView {
-    let currentQuantity: String
+    var currentQuantity: String
     let goalQuantity: String
     
     init(currentQuantity: String, goalQuantity: String) {
@@ -62,6 +62,10 @@ class WaterRecord: UIView {
             hStack.trailingAnchor.constraint(equalTo: trailingAnchor),
             hStack.bottomAnchor.constraint(equalTo: bottomAnchor)
         ])
+    }
+    
+    func updateQuantity(_ newQuantity: String) {
+        currentQuantity = "\(newQuantity) / \(goalQuantity)"
     }
 }
 
