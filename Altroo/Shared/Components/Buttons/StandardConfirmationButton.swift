@@ -58,7 +58,7 @@ final class StandardConfirmationButton: PrimaryStyleButton {
         titleLabelCustom.updateLabelText(title)
     }
 }
-
-#Preview {
-    StandardConfirmationButton(title: "Adicionar")
-}
+//
+//#Preview {
+//    StandardConfirmationButton(title: "Adicionar")
+//}

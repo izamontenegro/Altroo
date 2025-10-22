@@ -116,19 +116,19 @@ class PulseIcon: UIView {
         }
     }
 }
-
-#Preview {
-    let iconView = PulseIcon(text: "1",
-                             color: UIColor(resource: .teal10),
-                             iconColor: UIColor(resource: .pureWhite),
-                             shadowColor: UIColor(resource: .teal80))
-    
-    iconView.translatesAutoresizingMaskIntoConstraints = false
-    
-    NSLayoutConstraint.activate([
-        iconView.widthAnchor.constraint(equalToConstant: 55),
-        iconView.heightAnchor.constraint(equalTo: iconView.widthAnchor)
-    ])
-    
-    return iconView
-}
+//
+//#Preview {
+//    let iconView = PulseIcon(text: "1",
+//                             color: UIColor(resource: .teal10),
+//                             iconColor: UIColor(resource: .pureWhite),
+//                             shadowColor: UIColor(resource: .teal80))
+//    
+//    iconView.translatesAutoresizingMaskIntoConstraints = false
+//    
+//    NSLayoutConstraint.activate([
+//        iconView.widthAnchor.constraint(equalToConstant: 55),
+//        iconView.heightAnchor.constraint(equalTo: iconView.widthAnchor)
+//    ])
+//    
+//    return iconView
+//}

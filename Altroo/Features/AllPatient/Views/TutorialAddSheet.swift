@@ -81,6 +81,6 @@ class TutorialAddSheet: UIViewController {
     }
 }
 
-#Preview {
-    UINavigationController(rootViewController: TutorialAddSheet())
-}
+//#Preview {
+//    UINavigationController(rootViewController: TutorialAddSheet())
+//}

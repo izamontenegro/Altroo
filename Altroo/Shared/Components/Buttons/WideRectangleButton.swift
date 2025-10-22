@@ -46,7 +46,7 @@ class WideRectangleButton: PrimaryStyleButton {
         titleLabel?.font = UIFont.systemFont(ofSize: 17, weight: .semibold)
     }
 }
-
-#Preview {
-    WideRectangleButton(title: "O dia todo")
-}
+//
+//#Preview {
+//    WideRectangleButton(title: "O dia todo")
+//}

@@ -65,6 +65,6 @@ final class OutlineButton: UIButton {
     }
 }
 
-#Preview {
-    OutlineButton(title: "texto", color: .teal20)
-}
+//#Preview {
+//    OutlineButton(title: "texto", color: .teal20)
+//}
