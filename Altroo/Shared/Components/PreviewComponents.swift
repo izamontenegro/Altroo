@@ -54,14 +54,6 @@ class ComponentPreviewViewController: UIViewController {
     private func previewComponents() {
         // TEXTFIELD
         let textField = StandardTextfield(
-            width: 250,
-            height: 45,
-//            title: StandardLabel(labelText: "Nome",
-//                                 labelFont: .sfPro,
-//                                 labelType: .title3,
-//                                 labelColor: UIColor(resource: .black10),
-//                                 labelWeight: .medium
-//                                ),
             placeholder: "Maria Clara"
         )
 

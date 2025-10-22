@@ -11,7 +11,7 @@ protocol ShiftFormsViewControllerDelegate: AnyObject {
     func shiftFormsDidFinish()
 }
 
-class ShiftFormViewController: UIViewController {
+class ShiftFormViewController: GradientNavBarViewController {
     weak var delegate: ShiftFormsViewControllerDelegate?
     private let viewModel: AddPatientViewModel
     
@@ -81,6 +81,8 @@ class ShiftFormViewController: UIViewController {
         super.viewDidLoad()
         view.backgroundColor = .pureWhite
         
+        setupNavBar()
+        
         label1.numberOfLines = 0
         label1.lineBreakMode = .byWordWrapping
         label1.updateLabelText("Em quais horários você vai cuidar de \(viewModel.name)?")
@@ -95,6 +97,10 @@ class ShiftFormViewController: UIViewController {
         
         allDayButton.addTarget(self, action: #selector(didTapAllDayButton), for: .touchUpInside)
         doneButton.addTarget(self, action: #selector(didTapDoneButton), for: .touchUpInside)
+    }
+    
+    private func setupNavBar() {
+        setNavbarTitle("Adicionar Paciente")
     }
     
     @objc private func didTapAllDayButton() {

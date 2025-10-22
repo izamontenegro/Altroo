@@ -7,9 +7,31 @@
 import UIKit
 
 class FormValidator {
+    //FIXME: NOVO TEXTO
     func isEmpty(_ text: String, fieldName: String, error: inout String?) -> Bool {
         if text.isEmpty {
             error = "\(fieldName) não pode estar vazio."
+            return false
+        } else {
+            error = nil
+            return true
+        }
+    }
+    
+    func invalidValue(value: Int, minValue: Int, maxValue: Int, error: inout String?) -> Bool {
+        if value > maxValue || value < minValue {
+            error = "Valor inválido."
+            return false
+        } else {
+            error = nil
+            return true
+        }
+    }
+    
+    //TODO
+    func invalidPhoneFormat(value: Int, minValue: Int, maxValue: Int, error: inout String?) -> Bool {
+        if value > maxValue || value < minValue {
+            error = "Valor inválido."
             return false
         } else {
             error = nil

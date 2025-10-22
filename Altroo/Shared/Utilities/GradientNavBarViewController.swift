@@ -9,6 +9,7 @@ import UIKit
 
 class GradientNavBarViewController: UIViewController {
     var rightButton: UIButton?
+    var text: String?
 
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -55,6 +56,7 @@ class GradientNavBarViewController: UIViewController {
         nav.navigationBar.tintColor = .white
     
         configureNavBarButtons()
+        configureNavBarTitle()
     }
     
     private func configureNavBarButtons() {
@@ -68,6 +70,13 @@ class GradientNavBarViewController: UIViewController {
         if let rightButton = rightButton {
             navigationItem.rightBarButtonItem = UIBarButtonItem(customView: rightButton)
         }
+    }
+    
+    private func configureNavBarTitle() {
+        guard let text else { return }
+        
+        let title = StandardLabel(labelText: text, labelFont: .sfPro, labelType: .body, labelColor: .white)
+        navigationItem.titleView = title
     }
 
     @objc func handleBack() {
@@ -89,6 +98,10 @@ class GradientNavBarViewController: UIViewController {
 
         let renderer = UIGraphicsImageRenderer(size: size)
         return renderer.image { context in layer.render(in: context.cgContext) }
+    }
+    
+    func setNavbarTitle(_ title: String) {
+        self.text = title
     }
 }
 

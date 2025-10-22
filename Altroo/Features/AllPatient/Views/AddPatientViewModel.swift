@@ -26,6 +26,9 @@ final class AddPatientViewModel: ObservableObject {
     @Published var diseases: [DiseaseDraft] = []
     @Published var bedriddenStatus: BedriddenStatus = .notBedridden
     
+    @Published private(set) var fieldErrors: [String: String] = [:]
+    private let validator = FormValidator()
+
     private var cancellables = Set<AnyCancellable>()
     
     init(careRecipientFacade: CareRecipientFacade, userService: UserServiceProtocol) {
@@ -59,7 +62,7 @@ final class AddPatientViewModel: ObservableObject {
         self.bedriddenStatus = bedriddenStatus
     }
     
-    func finalizeCareRecipient() {
+    func finalizeCareRecipient() {        
         newPatient = careRecipientFacade.buildCareRecipient { pd, pc, hp, mental, physical, routine, basicNeeds, event, symptom in
             
             // Personal Data
@@ -94,6 +97,7 @@ final class AddPatientViewModel: ObservableObject {
         contacts = []
         diseases = []
         bedriddenStatus = .notBedridden
+        
     }
     
     func setShift(_ shift: [PeriodEnum]) {
@@ -111,4 +115,30 @@ struct ContactDraft: Identifiable {
 struct DiseaseDraft: Identifiable {
     let id = UUID()
     var name: String
+}
+
+
+//MARK: - VALIDATION
+extension AddPatientViewModel {
+    func validateProfile() -> Bool {
+        var newErrors: [String: String] = [:]
+
+        if !validator.isEmpty(name, fieldName: "Nome", error: &newErrors["name"]) {
+            fieldErrors = newErrors
+            return false
+        }
+
+        if !validator.invalidValue(value: Int(weight), minValue: 30, maxValue: 300, error: &newErrors["weight"]) {
+            fieldErrors = newErrors
+            return false
+        }
+
+        if !validator.invalidValue(value: Int(height), minValue: 50, maxValue: 300, error: &newErrors["height"]) {
+            fieldErrors = newErrors
+            return false
+        }
+
+        fieldErrors = [:]
+        return true
+    }
 }
