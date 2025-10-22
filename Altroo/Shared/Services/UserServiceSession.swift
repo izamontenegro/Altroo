@@ -66,7 +66,6 @@ class UserServiceSession: UserServiceProtocol {
         
         let sharedFetch = NSFetchRequest<CareRecipient>(entityName: "CareRecipient")
             if let sharedObjects = try? context.fetch(sharedFetch) {
-                // Adiciona os que ainda não estão associados
                 for shared in sharedObjects where !patients.contains(shared) {
                     patients.append(shared)
                 }

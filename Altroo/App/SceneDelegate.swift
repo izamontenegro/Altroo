@@ -50,8 +50,6 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
                 
                 DispatchQueue.main.async {
                     self.appCoordinator?.receivedPatientViaShare = true
-
-                    // Reinicia fluxo para ir direto ao main flow
                     self.appCoordinator?.start()
                 }
             }
