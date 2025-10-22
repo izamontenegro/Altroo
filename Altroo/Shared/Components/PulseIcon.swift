@@ -27,7 +27,7 @@ class PulseIcon: UIView {
     init(frame: CGRect = .zero, text: String, color: UIColor, iconColor: UIColor, shadowColor: UIColor) {
         self.text = text
         self.color = color
-        self.iconColor = color
+        self.iconColor = iconColor
         self.shadowColor = shadowColor
         super.init(frame: frame)
         setupBackground()
@@ -102,8 +102,11 @@ class PulseIcon: UIView {
         if let text {
             let label = StandardLabel(labelText: text,
                                       labelFont: .sfPro,
-                                      labelType: .title2,
-                                      labelColor: iconColor)
+                                      labelType: .title1,
+                                      labelColor: iconColor,
+                                      labelWeight: .semibold)
+            
+            label.translatesAutoresizingMaskIntoConstraints = false
             addSubview(label)
             
             NSLayoutConstraint.activate([
@@ -114,18 +117,18 @@ class PulseIcon: UIView {
     }
 }
 
-//#Preview {
-//    let iconView = PulseIcon(iconName: "stethoscope",
-//                             color: UIColor(resource: .red0),
-//                             iconColor: UIColor(resource: .black0),
-//                             shadowColor: UIColor(resource: .pureWhite))
-//    
-//    iconView.translatesAutoresizingMaskIntoConstraints = false
-//    
-//    NSLayoutConstraint.activate([
-//        iconView.widthAnchor.constraint(equalToConstant: 320),
-//        iconView.heightAnchor.constraint(equalTo: iconView.widthAnchor)
-//    ])
-//    
-//    return iconView
-//}
+#Preview {
+    let iconView = PulseIcon(text: "1",
+                             color: UIColor(resource: .teal10),
+                             iconColor: UIColor(resource: .pureWhite),
+                             shadowColor: UIColor(resource: .teal80))
+    
+    iconView.translatesAutoresizingMaskIntoConstraints = false
+    
+    NSLayoutConstraint.activate([
+        iconView.widthAnchor.constraint(equalToConstant: 55),
+        iconView.heightAnchor.constraint(equalTo: iconView.widthAnchor)
+    ])
+    
+    return iconView
+}

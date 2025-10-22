@@ -36,7 +36,7 @@ class TutorialAddSheet: UIViewController {
     }
     
     private func setupNavigationBar() {
-        navigationItem.title = "Tutorial"
+        navigationItem.title = ""
         navigationItem.leftBarButtonItem = closeButton
     }
     
@@ -45,12 +45,18 @@ class TutorialAddSheet: UIViewController {
     }
     
     private func makeIconView(text: String) -> PulseIcon {
-        let iconView = PulseIcon(text: text, color: UIColor(resource: .teal30), iconColor: .red, shadowColor: UIColor(resource: .teal60))
+        let iconView = PulseIcon(text: text,
+                                 color: UIColor(resource: .teal10),
+                                 iconColor: UIColor(resource: .pureWhite),
+                                 shadowColor: UIColor(resource: .teal60))
+        
         iconView.translatesAutoresizingMaskIntoConstraints = false
+        
         NSLayoutConstraint.activate([
-            iconView.widthAnchor.constraint(equalToConstant: 70),
+            iconView.widthAnchor.constraint(equalToConstant: 60),
             iconView.heightAnchor.constraint(equalTo: iconView.widthAnchor)
         ])
+        
         return iconView
     }
     
@@ -75,6 +81,6 @@ class TutorialAddSheet: UIViewController {
     }
 }
 
-//#Preview {
-//    UINavigationController(rootViewController: TutorialAddSheet())
-//}
+#Preview {
+    UINavigationController(rootViewController: TutorialAddSheet())
+}
