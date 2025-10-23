@@ -4,6 +4,7 @@
 //
 //  Created by Izadora de Oliveira Albuquerque Montenegro on 22/09/25.
 //
+
 import UIKit
 
 // MARK: - DefaultAppFactory
@@ -23,7 +24,7 @@ extension DefaultAppFactory {
     func makeWelcomeOnboardingViewController(delegate: WelcomeOnboardingViewControllerDelegate) -> UIViewController {
         let vc = WelcomeOnboardingViewController()
         vc.delegateOnboarding = delegate
-        vc.title = "Welcome!"
+        vc.title = "Bem Vinda ao Altroo!"
         return vc
     }
 }
@@ -69,7 +70,7 @@ extension DefaultAppFactory {
 extension DefaultAppFactory {
     func makeSettingsViewController(delegate: SettingsViewControllerDelegate) -> UIViewController {
         let vc = SettingsViewController()
-        vc.title = "Settings"
+        vc.title = "Ajustes"
         vc.delegate = delegate
         return vc
     }
@@ -84,13 +85,13 @@ extension DefaultAppFactory {
     func makeHistoryViewController(delegate: HistoryViewControllerDelegate) -> UIViewController {
         let vc = HistoryViewController()
         vc.delegate = delegate
-        vc.title = "History"
+        vc.title = "Histórico"
         return vc
     }
     
     func makeAnalysisViewController() -> UIViewController {
         let vc = AnalysisViewController()
-        vc.title = "Analysis"
+        vc.title = "Relatórios"
         return vc
     }
 }
@@ -101,8 +102,6 @@ extension DefaultAppFactory {
         let vc = EditSectionViewController()
         return vc
     }
-    
-    
 }
 
 //MARK: SymptomFactory
@@ -123,7 +122,6 @@ extension DefaultAppFactory {
         let vc = EditSymptomViewController(viewModel: vm)
         return vc
     }
-
 }
 
 //MARK: - ProfileFactory
@@ -141,7 +139,7 @@ extension DefaultAppFactory {
         (vc as? ChangeCareRecipientViewController)?.delegate = delegate
         return vc
     }
-   
+    
     func makeMedicalRecordViewController() -> UIViewController {
         let vm = MedicalRecordViewModel(userService: dependencies.userService)
         let vc = MedicalRecordViewController(viewModel: vm)
@@ -184,7 +182,6 @@ extension DefaultAppFactory {
         let vc = MedicationTimeSheetViewController()
         return vc
     }
-    
 }
 
 // MARK: - BasicNeedsFactory
@@ -197,7 +194,7 @@ extension DefaultAppFactory {
     func makeUrineRecordViewController() -> UIViewController {
         let vm = UrineRecordViewModel(urineService: dependencies.basicNeedsFacade, coreDataService: dependencies.coreDataService, userService: dependencies.userService)
         let vc = UrineRecordViewController(viewModel: vm)
-
+        
         return vc
     }
     func makeMealRecordViewController() -> UIViewController {
@@ -230,10 +227,10 @@ extension DefaultAppFactory {
         let vc = EditTaskViewController(viewModel: vm)
         return vc
     }
-
+    
     func makeTaskDetailViewController(task: TaskInstance) -> UIViewController {
         let vc = TaskDetailViewController(task: task)
-        vc.title = "Task"
+        vc.title = "Tarefas"
         return vc
     }
 }
@@ -284,10 +281,6 @@ extension DefaultAppFactory {
 
 //MARK: - SettingsFactory
 extension DefaultAppFactory {
-    func makeUserProfileViewController() -> UIViewController {
-        let vc = UserProfileViewController()
-        return vc
-    }
     func makePrivacySecurityViewController() -> UIViewController {
         let vc = PrivacySecurityViewController()
         return vc

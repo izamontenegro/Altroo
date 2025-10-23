@@ -8,16 +8,14 @@
 import UIKit
 
 protocol SettingsViewControllerDelegate: AnyObject {
-    func goToUserProfile()
     func goToPrivacySecurity()
     func goToDevelopers()
-
 }
 
 class SettingsViewController: UIViewController {
-
+    
     weak var delegate: SettingsViewControllerDelegate?
-
+    
     let vStack: UIStackView = {
         let stackView = UIStackView(arrangedSubviews: [])
         stackView.axis = .vertical
@@ -25,34 +23,31 @@ class SettingsViewController: UIViewController {
         stackView.translatesAutoresizingMaskIntoConstraints = false
         return stackView
     }()
-
+    
     override func viewDidLoad() {
         super.viewDidLoad()
         view.backgroundColor = .blue80
-
+        
         view.addSubview(vStack)
-
+        
         addDelegateButtons()
-
+        
         NSLayoutConstraint.activate([
             vStack.topAnchor.constraint(equalTo: view.safeAreaLayoutGuide.topAnchor, constant: 30),
             vStack.leadingAnchor.constraint(equalTo: view.leadingAnchor, constant: 20),
             vStack.trailingAnchor.constraint(equalTo: view.trailingAnchor, constant: -20)
         ])
     }
-
+    
     private func addDelegateButtons() {
-        createStandardButton(title: "User Profile", action: #selector(didTapUserProfileButton))
-        createStandardButton(title: "Privacy and Security", action: #selector(didTapPrivacySecurityButton))
-        createStandardButton(title: "Ratings", action: #selector(didTapDevelopersButton))
-        createStandardButton(title: "Developers", action: #selector(didTapDevelopersButton))
+        createStandardButton(title: "Privacidade e Segurança", action: #selector(didTapPrivacySecurityButton))
+        createStandardButton(title: "Desenvolvedoras", action: #selector(didTapDevelopersButton))
     }
-
+    
     // MARK: - BUTTON ACTIONS
-    @objc func didTapUserProfileButton() { delegate?.goToUserProfile() }
     @objc func didTapPrivacySecurityButton() { delegate?.goToPrivacySecurity() }
     @objc func didTapDevelopersButton() { delegate?.goToDevelopers() }
-
+    
     // MARK: - Utility
     private func createStandardButton(title: String, action: Selector) {
         let button = UIButton(type: .system)
@@ -65,4 +60,8 @@ class SettingsViewController: UIViewController {
         button.addTarget(self, action: action, for: .touchUpInside)
         vStack.addArrangedSubview(button)
     }
+}
+
+#Preview {
+    SettingsViewController()
 }
