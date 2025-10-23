@@ -23,14 +23,7 @@ class PatientFormsViewController: GradientNavBarViewController {
         return control
     }()
     
-    private lazy var nameTextField: StandardTextfield = {
-        let tf = StandardTextfield()
-        tf.placeholder = "Nome do assistido"
-        tf.backgroundColor = .white70
-        tf.textColor = .black10
-        tf.translatesAutoresizingMaskIntoConstraints = false
-        return tf
-    }()
+    private lazy var nameTextField = StandardTextfield(placeholder: "Nome do assistido")
     
     private lazy var heightTextField: StandardTextfield = {
         let tf = StandardTextfield()

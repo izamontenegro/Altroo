@@ -28,6 +28,13 @@ final class AddPatientViewModel: ObservableObject {
     
     @Published private(set) var fieldErrors: [String: String] = [:]
     private let validator = FormValidator()
+    
+    let relationshipOptions = ["Contínuo", "Data Final"]
+    @Published var selectedRelationshipIndex: Int = 0
+    var selectedRelationship: String {
+        return relationshipOptions[selectedRelationshipIndex]
+    }
+
 
     private var cancellables = Set<AnyCancellable>()
     
