@@ -35,6 +35,7 @@
 		367EC4A42E7CB1AC008B22D1 /* Exceptions for "Altroo" folder in "Altroo" target */ = {
 			isa = PBXFileSystemSynchronizedBuildFileExceptionSet;
 			membershipExceptions = (
+				Features/Main/Today/Views/Profile/MedicalRecord/EditPhysicalStateViewController.swift,
 				Resources/Info.plist,
 			);
 			target = 367EC48E2E7CB1AA008B22D1 /* Altroo */;
@@ -263,7 +264,7 @@
 				CODE_SIGN_ENTITLEMENTS = Altroo/AltrooDebug.entitlements;
 				CODE_SIGN_STYLE = Automatic;
 				CURRENT_PROJECT_VERSION = 1;
-				DEVELOPMENT_TEAM = R45K4498NN;
+				DEVELOPMENT_TEAM = 2BF575N85D;
 				GENERATE_INFOPLIST_FILE = YES;
 				INFOPLIST_FILE = Altroo/Resources/Info.plist;
 				INFOPLIST_KEY_CFBundleDisplayName = Altroo;
@@ -275,13 +276,13 @@
 				INFOPLIST_KEY_UISupportedInterfaceOrientations = UIInterfaceOrientationPortrait;
 				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPad = "UIInterfaceOrientationPortrait UIInterfaceOrientationPortraitUpsideDown";
 				INFOPLIST_KEY_UIUserInterfaceStyle = Light;
-				IPHONEOS_DEPLOYMENT_TARGET = 16.0;
+				IPHONEOS_DEPLOYMENT_TARGET = 17.6;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
 					"@executable_path/Frameworks",
 				);
 				MARKETING_VERSION = 1.0.1;
-				PRODUCT_BUNDLE_IDENTIFIER = IzadoraMontenegro.Altroo;
+				PRODUCT_BUNDLE_IDENTIFIER = IzadoraMontenegro.Altroooo;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SWIFT_EMIT_LOC_STRINGS = YES;
 				SWIFT_VERSION = 5.0;
@@ -309,7 +310,7 @@
 				INFOPLIST_KEY_UISupportedInterfaceOrientations = UIInterfaceOrientationPortrait;
 				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPad = "UIInterfaceOrientationPortrait UIInterfaceOrientationPortraitUpsideDown";
 				INFOPLIST_KEY_UIUserInterfaceStyle = Light;
-				IPHONEOS_DEPLOYMENT_TARGET = 16.0;
+				IPHONEOS_DEPLOYMENT_TARGET = 17.6;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
 					"@executable_path/Frameworks",
