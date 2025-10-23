@@ -123,22 +123,12 @@ extension AddPatientViewModel {
     func validateProfile() -> Bool {
         var newErrors: [String: String] = [:]
 
-        if !validator.isEmpty(name, fieldName: "Nome", error: &newErrors["name"]) {
-            fieldErrors = newErrors
-            return false
-        }
+        _ = validator.isEmpty(name, fieldName: "Nome", error: &newErrors["name"])
+        _ = validator.invalidValue(value: Int(weight), minValue: 30, maxValue: 300, error: &newErrors["weight"])
+        _ = validator.invalidValue(value: Int(height), minValue: 50, maxValue: 300, error: &newErrors["height"])
 
-        if !validator.invalidValue(value: Int(weight), minValue: 30, maxValue: 300, error: &newErrors["weight"]) {
-            fieldErrors = newErrors
-            return false
-        }
+        fieldErrors = newErrors
 
-        if !validator.invalidValue(value: Int(height), minValue: 50, maxValue: 300, error: &newErrors["height"]) {
-            fieldErrors = newErrors
-            return false
-        }
-
-        fieldErrors = [:]
-        return true
+        return newErrors.isEmpty
     }
 }

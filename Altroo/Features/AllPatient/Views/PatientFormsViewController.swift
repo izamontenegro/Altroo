@@ -62,7 +62,7 @@ class PatientFormsViewController: GradientNavBarViewController {
     
     private lazy var weightTextField: StandardTextfield = {
         let tf = StandardTextfield()
-        tf.placeholder = ""
+        tf.placeholder = "0"
         tf.backgroundColor = .white70
         tf.textColor = .black10
         tf.keyboardType = .numberPad
@@ -201,7 +201,6 @@ class PatientFormsViewController: GradientNavBarViewController {
     }
     
     private func bindViewModel() {
-        
           viewModel.$fieldErrors
               .receive(on: RunLoop.main)
               .sink { [weak self] errors in
@@ -265,7 +264,7 @@ class PatientFormsViewController: GradientNavBarViewController {
         let dateOfBirth = datePicker.date
         
         viewModel.updatePersonalData(
-            name: heightTextField.text ?? "",
+            name: nameTextField.text ?? "",
             gender: gender,
             dateOfBirth: dateOfBirth,
             height: height,
@@ -273,7 +272,8 @@ class PatientFormsViewController: GradientNavBarViewController {
             address: addressTextField.text ?? ""
         )
         
-        guard viewModel.validateProfile() else { return }
+        //FIXME: DESCOMENTAR
+//        guard viewModel.validateProfile() else { return }
         
         for c in contactsList {
             viewModel.addContact(name: c.name, contactDescription: c.description, contactMethod: c.method)

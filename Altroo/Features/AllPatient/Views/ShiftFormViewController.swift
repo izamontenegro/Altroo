@@ -24,6 +24,8 @@ class ShiftFormViewController: GradientNavBarViewController {
         fatalError("init(coder:) has not been implemented")
     }
     
+    private let titleSection = FormTitleSection(title: "Sobre você", description: "Preencha os campos a seguir quanto a seus dados pessoais e em relação ao assistido.", totalSteps: 3, currentStep: 1)
+    
     private let label1 = StandardLabel(
         labelText: "Em quais horários você vai cuidar de seu assistido?",
         labelFont: .sfPro,
@@ -70,7 +72,7 @@ class ShiftFormViewController: GradientNavBarViewController {
     }()
     
     private lazy var formStack: UIStackView = {
-        let stack = UIStackView(arrangedSubviews: [label1, timeStack, allDayButton, doneButton])
+        let stack = UIStackView(arrangedSubviews: [titleSection, label1, timeStack, allDayButton, doneButton])
         stack.axis = .vertical
         stack.spacing = 24
         stack.translatesAutoresizingMaskIntoConstraints = false
@@ -89,9 +91,9 @@ class ShiftFormViewController: GradientNavBarViewController {
         
         view.addSubview(formStack)
         NSLayoutConstraint.activate([
-            formStack.topAnchor.constraint(equalTo: view.safeAreaLayoutGuide.topAnchor, constant: 32),
-            formStack.leadingAnchor.constraint(equalTo: view.leadingAnchor, constant: 32),
-            formStack.trailingAnchor.constraint(equalTo: view.trailingAnchor, constant: -32),
+            formStack.topAnchor.constraint(equalTo: view.safeAreaLayoutGuide.topAnchor, constant: Layout.mediumSpacing),
+            formStack.leadingAnchor.constraint(equalTo: view.leadingAnchor, constant: Layout.mediumSpacing),
+            formStack.trailingAnchor.constraint(equalTo: view.trailingAnchor, constant: -Layout.mediumSpacing),
             doneButton.heightAnchor.constraint(equalToConstant: 44)
         ])
         
