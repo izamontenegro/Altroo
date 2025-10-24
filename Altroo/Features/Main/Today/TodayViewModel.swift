@@ -13,6 +13,8 @@ class TodayViewModel {
     let careRecipientFacade: CareRecipientFacade
     let basicNeedsFacade: BasicNeedsFacade
     let userService: UserServiceProtocol
+    let coreDataService: CoreDataService
+    let historyService: HistoryService
     var taskService: RoutineActivitiesFacade
     
     var currentCareRecipient: CareRecipient?
@@ -25,11 +27,13 @@ class TodayViewModel {
     @Published var waterQuantity: Double = 0.0
     @Published var waterMeasure: Double = 0.0
         
-    init(careRecipientFacade: CareRecipientFacade, basicNeedsFacade: BasicNeedsFacade, userService: UserServiceProtocol, taskService: RoutineActivitiesFacade) {
+    init(careRecipientFacade: CareRecipientFacade, basicNeedsFacade: BasicNeedsFacade, userService: UserServiceProtocol, taskService: RoutineActivitiesFacade, coreDataService: CoreDataService, historyService: HistoryService) {
         self.careRecipientFacade = careRecipientFacade
         self.basicNeedsFacade = basicNeedsFacade
         self.userService = userService
         self.taskService = taskService
+        self.coreDataService = coreDataService
+        self.historyService = historyService
         
         fetchCareRecipient()
         fetchAllTodaySymptoms()
@@ -141,13 +145,17 @@ class TodayViewModel {
         guard
             let careRecipient = userService.fetchCurrentPatient()
         else { return }
+        
+        let author = coreDataService.currentPerformerName(for: careRecipient)
                 
         basicNeedsFacade.addHydration(
             period: PeriodEnum.current,
             date: Date(),
-            waterQuantity: careRecipientFacade.getWaterMeasure(careRecipient),
+            waterQuantity: careRecipientFacade.getWaterMeasure(careRecipient), author: author,
             in: careRecipient
         )
+    
+        historyService.addHistoryItem(title: "Bebeu \(careRecipientFacade.getWaterMeasure(careRecipient))ml de água", author: author, date: Date(), type: .hydration, to: careRecipient)
         
         self.fetchWaterQuantity()
     }

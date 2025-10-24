@@ -8,13 +8,13 @@
 import Foundation
 
 protocol FeedingServiceProtocol {
-    func addFeedingRecord(amountEaten: MealAmountEatenEnum, Date: Date, period: PeriodEnum, notes: String, photo: Data?, mealCategory: MealCategoryEnum, in careRecipient: CareRecipient)
+    func addFeedingRecord(amountEaten: MealAmountEatenEnum, Date: Date, period: PeriodEnum, notes: String, photo: Data?, mealCategory: MealCategoryEnum, author: String, in careRecipient: CareRecipient)
     
     func deleteFeedingRecord(feedingRecord: FeedingRecord, from careRecipient: CareRecipient)
 }
 
 class FeedingService: FeedingServiceProtocol {
-    func addFeedingRecord(amountEaten: MealAmountEatenEnum, Date: Date, period: PeriodEnum, notes: String, photo: Data?, mealCategory: MealCategoryEnum, in careRecipient: CareRecipient) {
+    func addFeedingRecord(amountEaten: MealAmountEatenEnum, Date: Date, period: PeriodEnum, notes: String, photo: Data?, mealCategory: MealCategoryEnum, author: String, in careRecipient: CareRecipient) {
         
         guard let context = careRecipient.managedObjectContext else { return }
         let newFeedingRecord = FeedingRecord(context: context)
@@ -25,6 +25,7 @@ class FeedingService: FeedingServiceProtocol {
         newFeedingRecord.period = period.rawValue
         newFeedingRecord.photo = photo
         newFeedingRecord.mealCategory = mealCategory.displayText
+        newFeedingRecord.author = author
         
         if let basicNeeds = careRecipient.basicNeeds {
             let mutableFeeding = basicNeeds.mutableSetValue(forKey: "feeding")

@@ -11,12 +11,18 @@ class AllTasksViewModel {
     var taskService: RoutineActivitiesFacade
     var currentCareRecipient: CareRecipient?
     let userService: UserServiceProtocol
+    
+    let coreDataService: CoreDataService
+    let historyService: HistoryService
+    
 
     @Published var tasks: [TaskInstance] = []
   
-    init(taskService: RoutineActivitiesFacade, userService: UserServiceProtocol) {
+    init(taskService: RoutineActivitiesFacade, userService: UserServiceProtocol, coreDataService: CoreDataService, historyService: HistoryService) {
         self.taskService = taskService
         self.userService = userService
+        self.coreDataService = coreDataService
+        self.historyService = historyService
 
         fetchCareRecipient()
         loadTasks()
@@ -66,6 +72,14 @@ class AllTasksViewModel {
     }
     
     func markAsDone(_ instance: TaskInstance) {
+        guard
+            let careRecipient = userService.fetchCurrentPatient()
+        else { return }
+        
         taskService.toggleInstanceIsDone(instance)
+        
+        let author = coreDataService.currentPerformerName(for: careRecipient)
+        
+        historyService.addHistoryItem(title: "Realizou \(instance.template?.name ?? "tarefa")", author: author, date: Date(), type: .task, to: careRecipient)
     }
 }

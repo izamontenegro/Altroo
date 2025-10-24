@@ -15,7 +15,7 @@ protocol UrineServiceProtocol {
         date: Date,
         color: String,
         characteristics: [UrineCharacteristicsEnum],
-        observation: String?,
+        observation: String?, author: String,
         to careRecipient: CareRecipient
     ) -> UrineRecord?
 
@@ -42,7 +42,7 @@ final class UrineService: UrineServiceProtocol {
         date: Date,
         color: String,
         characteristics: [UrineCharacteristicsEnum],
-        observation: String?,
+        observation: String?, author: String,
         to careRecipient: CareRecipient
     ) -> UrineRecord? {
         guard let context = careRecipient.managedObjectContext else { return nil }
@@ -54,6 +54,7 @@ final class UrineService: UrineServiceProtocol {
         record.period = period.rawValue
         record.urineCharacteristics = encode(characteristics)
         record.urineObservation = observation
+        record.author = author
 
         if let basicNeeds = careRecipient.basicNeeds {
             let set = basicNeeds.mutableSetValue(forKey: "urine")

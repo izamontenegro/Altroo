@@ -8,13 +8,13 @@
 import Foundation
 
 protocol StoolServiceProtocol {
-    func addStoolRecord(period: PeriodEnum, date: Date, format: String, notes: String, color: String, in careRecipient: CareRecipient)
+    func addStoolRecord(period: PeriodEnum, date: Date, format: String, notes: String, color: String, author: String, in careRecipient: CareRecipient)
     
     func deleteStoolRecord(stoolRecord: StoolRecord, from careRecipient: CareRecipient)
 }
 
 class StoolService: StoolServiceProtocol {
-    func addStoolRecord(period: PeriodEnum, date: Date, format: String, notes: String, color: String, in careRecipient: CareRecipient) {
+    func addStoolRecord(period: PeriodEnum, date: Date, format: String, notes: String, color: String, author: String, in careRecipient: CareRecipient) {
         
         guard let context = careRecipient.managedObjectContext else { return }
         let newStoolRecord = StoolRecord(context: context)
@@ -24,6 +24,7 @@ class StoolService: StoolServiceProtocol {
         newStoolRecord.format = format
         newStoolRecord.notes = notes
         newStoolRecord.period = period.rawValue
+        newStoolRecord.author = author
         
         if let basicNeeds = careRecipient.basicNeeds {
             let mutableStool = basicNeeds.mutableSetValue(forKey: "stool")

@@ -10,6 +10,8 @@ import Combine
 class AddSymptomViewModel {
     let careRecipientFacade: CareRecipientFacade
     let userService: UserServiceProtocol
+    let coreDataService: CoreDataService
+    let historyService: HistoryService
     
     var currentCareRecipient: CareRecipient?
     
@@ -34,9 +36,11 @@ class AddSymptomViewModel {
         return newDate
     }
     
-    init(careRecipientFacade: CareRecipientFacade, userService: UserServiceProtocol) {
+    init(careRecipientFacade: CareRecipientFacade, userService: UserServiceProtocol, coreDataService: CoreDataService, historyService: HistoryService) {
         self.careRecipientFacade = careRecipientFacade
         self.userService = userService
+        self.coreDataService = coreDataService
+        self.historyService = historyService
         
         fetchCareRecipient()
     }
@@ -51,7 +55,14 @@ class AddSymptomViewModel {
         guard validator.isEmpty(name, fieldName: "Nome", error: &nameError) else { return false }
         guard validator.checkFutureDate(fullDate, error: &dateError) else { return false }
         
+       
+        let author = coreDataService.currentPerformerName(for: careRecipient)
+        
         careRecipientFacade.addSymptom(name: name, symptomDescription: note, date: fullDate, in: careRecipient)
+        
+        
+        historyService.addHistoryItem(title: "Registrou \(name)", author: author, date: Date(), type: .symptom, to: careRecipient)
+        
         
         return true
     }

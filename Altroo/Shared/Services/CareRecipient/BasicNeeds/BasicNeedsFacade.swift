@@ -30,8 +30,8 @@ final class BasicNeedsFacade: BasicNeedsFacadeProtocol {
     
     // MARK: - FEEDING ACTIONS
     
-    func addFeeding(amountEaten: MealAmountEatenEnum, date: Date, period: PeriodEnum, notes: String, mealCategory: MealCategoryEnum, in careRecipient: CareRecipient) {
-        feedingService.addFeedingRecord(amountEaten: amountEaten, Date: date, period: period, notes: notes, photo: nil, mealCategory: mealCategory, in: careRecipient)
+    func addFeeding(amountEaten: MealAmountEatenEnum, date: Date, period: PeriodEnum, notes: String, mealCategory: MealCategoryEnum, author: String, in careRecipient: CareRecipient) {
+        feedingService.addFeedingRecord(amountEaten: amountEaten, Date: date, period: period, notes: notes, photo: nil, mealCategory: mealCategory, author: author, in: careRecipient)
         
         persistenceService.save()
     }
@@ -42,8 +42,8 @@ final class BasicNeedsFacade: BasicNeedsFacadeProtocol {
     }
     
     // MARK: - HYDRATION ACTIONS
-    func addHydration(period: PeriodEnum, date: Date, waterQuantity: Double, in careRecipient: CareRecipient) {
-        hydrationService.addHydrationRecord(period: period, date: date, waterQuantity: waterQuantity, in: careRecipient)
+    func addHydration(period: PeriodEnum, date: Date, waterQuantity: Double, author: String, in careRecipient: CareRecipient) {
+        hydrationService.addHydrationRecord(period: period, date: date, waterQuantity: waterQuantity, author: author, in: careRecipient)
         persistenceService.save()
     }
     
@@ -53,8 +53,8 @@ final class BasicNeedsFacade: BasicNeedsFacadeProtocol {
     }
     
     // MARK: - STOOL ACTIONS
-    func addStool(period: PeriodEnum, date: Date, format: String, notes: String, color: String, in careRecipient: CareRecipient) {
-        stoolService.addStoolRecord(period: period, date: date, format: format, notes: notes, color: color, in: careRecipient)
+    func addStool(period: PeriodEnum, date: Date, format: String, notes: String, color: String, author: String, in careRecipient: CareRecipient) {
+        stoolService.addStoolRecord(period: period, date: date, format: format, notes: notes, color: color, author: author, in: careRecipient)
         persistenceService.save()
     }
 
@@ -70,6 +70,7 @@ final class BasicNeedsFacade: BasicNeedsFacadeProtocol {
         color: String,
         in careRecipient: CareRecipient,
         urineCharacteristics: [UrineCharacteristicsEnum],
+        author: String,
         observation: String?
     ) {
         urineService.addUrineRecord(
@@ -77,7 +78,7 @@ final class BasicNeedsFacade: BasicNeedsFacadeProtocol {
             date: date,
             color: color,
             characteristics: urineCharacteristics,
-            observation: observation,
+            observation: observation, author: author,
             to: careRecipient
         )
         persistenceService.save()
