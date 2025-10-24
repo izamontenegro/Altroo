@@ -6,30 +6,48 @@
 //
 
 import UIKit
+import CoreData
 
 final class AppCoordinator: Coordinator {
-
+    
     var childCoordinators: [Coordinator] = []
     var navigation: UINavigationController
     private let factory: AppFactory
     
     let dependencies = AppDependencies()
     private var userService: UserServiceProtocol
-
+    
+    var receivedPatientViaShare: Bool = false
+    
     init(rootNavigation: UINavigationController) {
         self.navigation = rootNavigation
         self.userService = UserServiceSession(context: dependencies.coreDataService.stack.context)
         self.factory = DefaultAppFactory(dependencies: dependencies)
         rootNavigation.setNavigationBarHidden(true, animated: false)
     }
-
+    
     func start() {
         if userService.fetchUser() == nil {
             _ = userService.createUser(name: "User Teste", category: "Cuidador")
         }
         
+        if receivedPatientViaShare {
+            let fetchRequest = NSFetchRequest<CareRecipient>(entityName: "CareRecipient")
+            if let sharedPatients = try? CoreDataStack.shared.context.fetch(fetchRequest),
+               let newPatient = sharedPatients.last {
+                print("Paciente recebido via share: \(newPatient)")
+                userService.setCurrentPatient(newPatient)
+                userService.addPatient(newPatient)
+            } else {
+                print("Nenhum CareRecipient encontrado no shared store ainda.")
+            }
+            
+            showMainFlow()
+            return
+        }
+        
         if UserDefaults.standard.isFirstLaunch {
-//            showOnboardingFlow()
+            //            showOnboardingFlow()
             showAllPatientsFlow()
         } else if userService.fetchCurrentPatient() == nil {
             showAllPatientsFlow()
@@ -37,7 +55,7 @@ final class AppCoordinator: Coordinator {
             showMainFlow()
         }
     }
-
+    
     private func showOnboardingFlow() {
         let onboardingCoordinator = OnboardingCoordinator(navigation: navigation,
                                                           factory: factory)
@@ -49,7 +67,7 @@ final class AppCoordinator: Coordinator {
         add(child: onboardingCoordinator)
         onboardingCoordinator.start()
     }
-
+    
     private func showMainFlow() {
         let mainCoordinator = MainCoordinator(navigation: navigation,
                                               factory: factory)
@@ -63,10 +81,10 @@ final class AppCoordinator: Coordinator {
         add(child: mainCoordinator)
         mainCoordinator.start()
     }
-
+    
     private func showAllPatientsFlow() {
         let associatePatientCoordinator = AssociatePatientCoordinator(navigation: navigation,
-                                              factory: factory)
+                                                                      factory: factory)
         associatePatientCoordinator.onFinish = { [weak self, weak associatePatientCoordinator] in
             guard let self, let associatePatientCoordinator else { return }
             self.remove(child: associatePatientCoordinator)

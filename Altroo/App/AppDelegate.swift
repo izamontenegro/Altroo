@@ -18,6 +18,9 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
             UIWindow.appearance().overrideUserInterfaceStyle = .light
         }
         
+        _ = CoreDataStack.shared
+
+        
         return true
     }
 
