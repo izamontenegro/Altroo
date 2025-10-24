@@ -7,6 +7,7 @@
 import UIKit
 
 final class OutlineButton: UIButton {
+    
     private let label = StandardLabel(
         labelText: "",
         labelFont: .sfPro,
@@ -52,14 +53,18 @@ final class OutlineButton: UIButton {
     }
     
     // MARK: - Public funcs
-        func updateTitle(_ title: String) {
-            label.updateLabelText(title)
-        }
-        
-        func updateColor(_ color: UIColor) {
-            self.color = color
-            label.labelColor = color
-            label.configureLabelColor()
-            layer.borderColor = color.cgColor
-        }
+    func updateTitle(_ title: String) {
+        label.updateLabelText(title)
+    }
+    
+    func updateColor(_ color: UIColor) {
+        self.color = color
+        label.labelColor = color
+        label.configureLabelColor()
+        layer.borderColor = color.cgColor
+    }
 }
+
+//#Preview {
+//    OutlineButton(title: "texto", color: .teal20)
+//}

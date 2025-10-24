@@ -13,6 +13,7 @@ protocol TodayViewControllerDelegate: AnyObject {
 }
 
 class TodayViewController: UIViewController {
+    
     var viewModel: TodayViewModel
     weak var delegate: TodayViewControllerDelegate?
     var onTaskSelected: ((TaskInstance) -> Void)?
@@ -41,7 +42,7 @@ class TodayViewController: UIViewController {
         self.delegate = delegate
         self.viewModel = viewModel
         self.symptomsCard = SymptomsCard(symptoms: viewModel.todaySymptoms)
-
+        
         super.init(nibName: nil, bundle: nil)
         
         self.symptomsCard.delegate = self
@@ -98,28 +99,28 @@ class TodayViewController: UIViewController {
         symptomsCard.updateSymptoms(viewModel.todaySymptoms)
         addSections()
     }
-
+    
     override func viewWillDisappear(_ animated: Bool) {
         super.viewWillDisappear(animated)
         navigationController?.setNavigationBarHidden(false, animated: false)
     }
-        
+    
     func makeCardByPeriod() -> UIView {
         let cardStack = UIStackView()
         cardStack.axis = .vertical
         cardStack.spacing = 16
         cardStack.alignment = .fill
         cardStack.translatesAutoresizingMaskIntoConstraints = false
-
+        
         let tasks = viewModel.periodTasks
-
+        
         if tasks.isEmpty {
             let container = UIView()
             container.backgroundColor = .pureWhite
             container.layer.cornerRadius = 12
             container.translatesAutoresizingMaskIntoConstraints = false
             container.heightAnchor.constraint(equalToConstant: 80).isActive = true
-
+            
             let emptyLabel = StandardLabel(
                 labelText: "Nenhuma tarefa registrada.",
                 labelFont: .sfPro,
@@ -128,7 +129,7 @@ class TodayViewController: UIViewController {
             )
             emptyLabel.textAlignment = .center
             emptyLabel.translatesAutoresizingMaskIntoConstraints = false
-
+            
             container.addSubview(emptyLabel)
             NSLayoutConstraint.activate([
                 emptyLabel.centerXAnchor.constraint(equalTo: container.centerXAnchor),
@@ -136,7 +137,7 @@ class TodayViewController: UIViewController {
                 emptyLabel.leadingAnchor.constraint(greaterThanOrEqualTo: container.leadingAnchor, constant: 8),
                 emptyLabel.trailingAnchor.constraint(lessThanOrEqualTo: container.trailingAnchor, constant: -8)
             ])
-
+            
             cardStack.addArrangedSubview(container)
         } else {
             for task in tasks {
@@ -144,20 +145,20 @@ class TodayViewController: UIViewController {
                 card.delegate = self
                 card.translatesAutoresizingMaskIntoConstraints = false
                 cardStack.addArrangedSubview(card)
-
+                
                 NSLayoutConstraint.activate([
                     card.leadingAnchor.constraint(equalTo: cardStack.leadingAnchor),
                     card.trailingAnchor.constraint(equalTo: cardStack.trailingAnchor)
                 ])
             }
         }
-
+        
         return cardStack
     }
     
     private func addSections() {
         var configs = TodaySectionManager.shared.load()
-
+        
         if configs.isEmpty || configs.first(where: { $0.type == .basicNeeds })?.subitems == nil {
             let defaultSubitems = [
                 SubitemConfig(title: "Alimentação", isVisible: true),
@@ -186,15 +187,15 @@ class TodayViewController: UIViewController {
             configs = [basicNeedsConfig, tasksConfig, intercurrencesConfig]
             TodaySectionManager.shared.save(configs)
         }
-
+        
         vStack.arrangedSubviews.forEach {
             vStack.removeArrangedSubview($0)
             $0.removeFromSuperview()
         }
-
+        
         for config in configs.sorted(by: { $0.order < $1.order }) {
             guard config.isVisible else { continue }
-
+            
             switch config.type {
             case .basicNeeds:
                 let visibleItems = config.subitems?.filter(\.isVisible).map(\.title) ?? []
@@ -217,7 +218,7 @@ class TodayViewController: UIViewController {
                     feedingCard.onAddButtonTap = { [weak self] in
                         self?.delegate?.goTo(.recordFeeding)
                     }
-
+                    
                     sectionStack.addArrangedSubview(feedingCard)
                 }
                 
@@ -228,7 +229,7 @@ class TodayViewController: UIViewController {
                     } else {
                         iconName = "drop.fill"
                     }
-
+                    
                     let hydrationCard = RecordCard(
                         title: "Hidratação",
                         iconName: iconName,
@@ -246,12 +247,13 @@ class TodayViewController: UIViewController {
                     }
                     sectionStack.addArrangedSubview(hydrationCard)
                 }
-
+                
                 if visibleItems.contains("Fezes") || visibleItems.contains("Urina") {
                     let bottomRow = UIStackView()
                     bottomRow.axis = .horizontal
                     bottomRow.spacing = 16
                     bottomRow.distribution = .fillEqually
+                    
                     if visibleItems.contains("Fezes") {
                         let stoolCard = RecordCard(title: "Fezes", iconName: "toilet.fill", contentView: QuantityRecordContent(quantity: viewModel.todayStoolQuantity))
                         stoolCard.onAddButtonTap = { [weak self] in
@@ -260,6 +262,7 @@ class TodayViewController: UIViewController {
                         
                         bottomRow.addArrangedSubview(stoolCard)
                     }
+                    
                     if visibleItems.contains("Urina") {
                         let urineCard = RecordCard(title: "Urina", iconName: "toilet.fill", contentView: QuantityRecordContent(quantity: viewModel.todayUrineQuantity))
                         urineCard.onAddButtonTap = { [weak self] in
@@ -270,16 +273,16 @@ class TodayViewController: UIViewController {
                     }
                     sectionStack.addArrangedSubview(bottomRow)
                 }
-
+                
                 vStack.addArrangedSubview(title)
                 vStack.addArrangedSubview(sectionStack)
-
+                
             case .tasks:
                 let taskHeader = TaskHeader()
                 taskHeader.delegate = self
                 vStack.addArrangedSubview(taskHeader)
                 vStack.addArrangedSubview(makeCardByPeriod())
-
+                
             case .intercurrences:
                 let symptomHeader = IntercurrenceHeader()
                 symptomHeader.delegate = self

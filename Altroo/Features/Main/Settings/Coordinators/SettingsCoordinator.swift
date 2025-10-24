@@ -7,12 +7,10 @@
 
 import UIKit
 
-
-
 final class SettingsCoordinator: Coordinator {
     var childCoordinators: [Coordinator] = []
     var navigation: UINavigationController
-    private let factory: AppFactory
+    private let factory: AppFactory //This helps decouple screen creation from navigation logic.
 
     init(navigation: UINavigationController, factory: AppFactory) {
         self.factory = factory
@@ -26,10 +24,6 @@ final class SettingsCoordinator: Coordinator {
 }
 
 extension SettingsCoordinator: SettingsViewControllerDelegate {
-    func goToUserProfile() {
-        let vc = factory.makeUserProfileViewController()
-        navigation.pushViewController(vc, animated: true)
-    }
     
     func goToPrivacySecurity() {
         let vc = factory.makePrivacySecurityViewController()

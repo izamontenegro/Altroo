@@ -92,8 +92,11 @@ class PulseIcon: UIView {
         if let text {
             let label = StandardLabel(labelText: text,
                                       labelFont: .sfPro,
-                                      labelType: .title2,
-                                      labelColor: iconColor)
+                                      labelType: .title1,
+                                      labelColor: iconColor,
+                                      labelWeight: .semibold)
+            
+            label.translatesAutoresizingMaskIntoConstraints = false
             addSubview(label)
             label.translatesAutoresizingMaskIntoConstraints = false
             NSLayoutConstraint.activate([
@@ -119,17 +122,17 @@ class PulseIcon: UIView {
         label?.textColor = iconColor
     }
 }
-
+//
 //#Preview {
-//    let iconView = PulseIcon(iconName: "stethoscope",
-//                             color: UIColor(resource: .red0),
-//                             iconColor: UIColor(resource: .black0),
-//                             shadowColor: UIColor(resource: .pureWhite))
+//    let iconView = PulseIcon(text: "1",
+//                             color: UIColor(resource: .teal10),
+//                             iconColor: UIColor(resource: .pureWhite),
+//                             shadowColor: UIColor(resource: .teal80))
 //    
 //    iconView.translatesAutoresizingMaskIntoConstraints = false
 //    
 //    NSLayoutConstraint.activate([
-//        iconView.widthAnchor.constraint(equalToConstant: 320),
+//        iconView.widthAnchor.constraint(equalToConstant: 55),
 //        iconView.heightAnchor.constraint(equalTo: iconView.widthAnchor)
 //    ])
 //    
