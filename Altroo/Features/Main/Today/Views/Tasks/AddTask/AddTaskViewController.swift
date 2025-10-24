@@ -25,22 +25,8 @@ class AddTaskViewController: GradientNavBarViewController {
     
     let addButton = StandardConfirmationButton(title: "Adicionar")
     
-    let nameTexfield = StandardTextfield(width: 370,
-                                         height: 38,
-//                                         title: StandardLabel(labelText: "Nome",
-//                                                              labelFont: .sfPro,
-//                                                              labelType: .title3,
-//                                                              labelColor: UIColor(resource: .black10),
-//                                                              labelWeight: .semibold),
-                                         placeholder: "Nome")
-    let noteTexfield = StandardTextfield(width: 370,
-                                         height: 38,
-//                                         title: StandardLabel(labelText: "Observação",
-//                                                              labelFont: .sfPro,
-//                                                              labelType: .title3,
-//                                                              labelColor: UIColor(resource: .black10),
-//                                                              labelWeight: .semibold),
-                                         placeholder: "Observação")
+    let nameTexfield = StandardTextfield(placeholder: "Nome")
+    let noteTexfield = StandardTextfield(placeholder: "Observação")
     
     var hourPickers: [UIDatePicker] = []
     let addTimeButton = PrimaryStyleButton(title: "Novo Horário")

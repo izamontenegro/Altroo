@@ -89,7 +89,7 @@ extension DefaultAppFactory {
             historyService: dependencies.historyService
         )
         let vc = HistoryViewController(viewModel: vm, delegate: delegate)
-        vc.title = "History"
+        vc.title = ""
         return vc
     }
     

@@ -25,15 +25,21 @@ struct HistoryView: View {
                 )
                 .padding(.horizontal, 16)
                 .padding(.top, 8)
-                
-                LazyVStack(spacing: 8) {
-                    ForEach($viewModel.sections) { $section in
-                        HistorySectionView(section: $section) { item in
-                            viewModel.selectedItem = item
-                            showSheet = true
+                if(viewModel.sections.isEmpty) {
+                    Text("Você ainda não adicionou nenhum registro ou atividade.")
+                        .font(.headline)
+                        .foregroundStyle(.black30)
+                        .padding(.leading)
+                } else {
+                    LazyVStack(spacing: 8) {
+                        ForEach($viewModel.sections) { $section in
+                            HistorySectionView(section: $section) { item in
+                                viewModel.selectedItem = item
+                                showSheet = true
+                            }
                         }
+                        Spacer()
                     }
-                    Spacer()
                 }
             }
             .padding(.top, 8)
