@@ -70,7 +70,7 @@ extension DefaultAppFactory {
 extension DefaultAppFactory {
     func makeSettingsViewController(delegate: SettingsViewControllerDelegate) -> UIViewController {
         let vc = SettingsViewController()
-        vc.title = "Ajustes"
+//        vc.title = "Ajustes"
         vc.delegate = delegate
         return vc
     }
@@ -85,13 +85,13 @@ extension DefaultAppFactory {
     func makeHistoryViewController(delegate: HistoryViewControllerDelegate) -> UIViewController {
         let vc = HistoryViewController()
         vc.delegate = delegate
-        vc.title = "Histórico"
+//        vc.title = "Histórico"
         return vc
     }
     
     func makeAnalysisViewController() -> UIViewController {
         let vc = AnalysisViewController()
-        vc.title = "Relatórios"
+//        vc.title = "Relatórios"
         return vc
     }
 }
