@@ -11,6 +11,7 @@ import Foundation
 class TodayViewModel {
     
     let careRecipientFacade: CareRecipientFacade
+    let basicNeedsFacade: BasicNeedsFacade
     let userService: UserServiceProtocol
     var taskService: RoutineActivitiesFacade
     
@@ -21,17 +22,12 @@ class TodayViewModel {
     
     @Published var todayStoolQuantity: Int = 0
     @Published var todayUrineQuantity: Int = 0
-    
-    var waterQuantity: Double = 0 {
-        didSet {
-            onWaterQuantityUpdated?(waterQuantity)
-        }
-    }
-    
-    var onWaterQuantityUpdated: ((Double) -> Void)?
-    
-    init(careRecipientFacade: CareRecipientFacade, userService: UserServiceProtocol, taskService: RoutineActivitiesFacade) {
+    @Published var waterQuantity: Double = 0.0
+    @Published var waterMeasure: Double = 0.0
+        
+    init(careRecipientFacade: CareRecipientFacade, basicNeedsFacade: BasicNeedsFacade, userService: UserServiceProtocol, taskService: RoutineActivitiesFacade) {
         self.careRecipientFacade = careRecipientFacade
+        self.basicNeedsFacade = basicNeedsFacade
         self.userService = userService
         self.taskService = taskService
         
@@ -40,6 +36,7 @@ class TodayViewModel {
         fetchAllPeriodTasks()
         fetchUrineQuantity()
         fetchStoolQuantity()
+        fetchWaterMeasure()
     }
     
     private func fetchCareRecipient() {
@@ -138,4 +135,31 @@ class TodayViewModel {
         
         self.waterQuantity = totalWater / 1000
     }
+    
+    // func to save a hydration record
+    func saveHydrationRecord() {
+        guard
+            let careRecipient = userService.fetchCurrentPatient()
+        else { return }
+                
+        basicNeedsFacade.addHydration(
+            period: PeriodEnum.current,
+            date: Date(),
+            waterQuantity: careRecipientFacade.getWaterMeasure(careRecipient),
+            in: careRecipient
+        )
+        
+        self.fetchWaterQuantity()
+    }
+    
+    func fetchWaterMeasure() {
+        guard let careRecipient = currentCareRecipient else { return }
+        waterMeasure = careRecipientFacade.getWaterMeasure(careRecipient)
+    }
+
+    func getWaterTarget() -> Double {
+        guard let careRecipient = currentCareRecipient else { return 0 }
+        return careRecipientFacade.getWaterTarget(careRecipient)
+    }
+    
 }

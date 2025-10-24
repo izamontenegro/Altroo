@@ -29,7 +29,7 @@ class TaskHeader: UIView {
     
     private lazy var periodTag: CapsuleIconView = {
         let currentPeriod = PeriodEnum.current
-        let capsule = CapsuleIconView(iconName: currentPeriod.iconName, text: currentPeriod.displayName)
+        let capsule = CapsuleIconView(iconName: currentPeriod.iconName, text: "Ver Tudo")
         
         capsule.isUserInteractionEnabled = true
         let tapGesture = UITapGestureRecognizer(target: self, action: #selector(didTapPeriodTag))

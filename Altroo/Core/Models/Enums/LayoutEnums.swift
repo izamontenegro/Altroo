@@ -16,7 +16,7 @@ enum Layout {
     static let hugeSpacing: CGFloat = 30 //home section spacing
     
     static let smallButtonBottomPadding: CGFloat = 40
-    static let bigButtonBottomPadding: CGFloat = 60
+    static let bigButtonBottomPadding: CGFloat = 80
 
     
     static let homeSectionSpacing = hugeSpacing

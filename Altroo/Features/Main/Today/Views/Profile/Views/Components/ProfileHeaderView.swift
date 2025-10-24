@@ -206,6 +206,6 @@ private extension ProfileHeader {
 
     func formattedHeight(from height: Double?) -> String {
         guard let height else { return "—" }
-        return String(format: "%.2f m", height)
+        return String(format: "%.0f cm", height)
     }
 }

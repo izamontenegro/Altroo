@@ -9,15 +9,48 @@ import UIKit
 
 class HeaderProfile: UIView {
     
-    let profileName: String
+    private let rawName: String
+    private var profileName: String { return formatName(rawName) }
     var careRecipient: CareRecipient?
     
     private lazy var profileView: ProfileCareRecipient = {
-        let view = ProfileCareRecipient(name: profileName, strokeColor: .pureWhite)
+        let names = profileName.split(separator: " ")
+        let firstInitial = names.first?.prefix(1) ?? ""
+        let secondInitial = names.dropFirst().first?.prefix(1) ?? ""
+        let initials = "\(firstInitial)\(secondInitial)"
+        
+        let view = ProfileCareRecipient(name: String(initials), strokeColor: .pureWhite)
         view.translatesAutoresizingMaskIntoConstraints = false
         return view
     }()
     
+    init(name: String, careRecipient: CareRecipient? = nil) {
+        self.rawName = name
+        self.careRecipient = careRecipient
+        super.init(frame: .zero)
+        setupLayout()
+    }
+    
+    required init?(coder: NSCoder) {
+        fatalError("init(coder:) has not been implemented")
+    }
+    
+    private func formatName(_ name: String) -> String {
+        let components = name.split(separator: " ")
+        guard !components.isEmpty else { return name }
+        
+        let first = String(components[0])
+        
+        if components.count == 1 {
+            return first
+        }
+        
+        let second = String(components[1])
+        let abbreviatedSecond = second.count > 10 ? "\(second.prefix(1))." : second
+        
+        return "\(first) \(abbreviatedSecond)"
+    }
+
     func makeContentStack() -> UIStackView {
         let name = StandardLabel(labelText: profileName, labelFont: .comfortaa, labelType: .title2, labelColor: .pureWhite, labelWeight: .bold)
         let label = StandardLabel(labelText: "Cuidando de:", labelFont: .comfortaa, labelType: .subHeadline, labelColor: .pureWhite, labelWeight: .regular)
@@ -47,17 +80,6 @@ class HeaderProfile: UIView {
         return horizontalStack
     }
 
-    init(name: String, careRecipient: CareRecipient? = nil) {
-        self.profileName = name
-        self.careRecipient = careRecipient
-        super.init(frame: .zero)
-        setupLayout()
-    }
-    
-    required init?(coder: NSCoder) {
-        fatalError("init(coder:) has not been implemented")
-    }
-    
     private func setupLayout() {
         let finalLayout = makeCombinedLayout()
         addSubview(finalLayout)

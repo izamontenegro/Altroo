@@ -26,7 +26,7 @@ class FeedingRecordList: UIView {
         hStack.axis = .horizontal
         hStack.spacing = 8
         hStack.alignment = .center
-        hStack.distribution = .fillProportionally
+        hStack.distribution = .fill
         hStack.translatesAutoresizingMaskIntoConstraints = false
         
         let scrollView = UIScrollView()
@@ -64,9 +64,24 @@ class FeedingRecordList: UIView {
                 labelColor: .black30
             )
             label.textAlignment = .center
-            hStack.addArrangedSubview(label)
+            label.translatesAutoresizingMaskIntoConstraints = false
+
+            let container = UIView()
+            container.translatesAutoresizingMaskIntoConstraints = false
+            container.addSubview(label)
+            hStack.addArrangedSubview(container)
+
+            NSLayoutConstraint.activate([
+                label.centerXAnchor.constraint(equalTo: container.centerXAnchor),
+                label.centerYAnchor.constraint(equalTo: container.centerYAnchor),
+                label.bottomAnchor.constraint(equalTo: container.bottomAnchor, constant: -10),
+                container.widthAnchor.constraint(equalTo: self.widthAnchor),
+                container.heightAnchor.constraint(equalTo: self.heightAnchor)
+            ])
+            
             return
         }
+
         
         for record in feedingRecords {
             let title = record.mealCategory ?? "Sem categoria"

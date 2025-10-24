@@ -14,6 +14,8 @@ final class HydrationRecordViewController: GradientNavBarViewController {
     private var amountButtons: [UIButton] = []
     private var customValueField: UITextField!
     private var confirmationButton: StandardConfirmationButton!
+    
+    var onDismiss: (() -> Void)?
 
     init(viewModel: HydrationRecordViewModel) {
         self.viewModel = viewModel
@@ -40,6 +42,13 @@ final class HydrationRecordViewController: GradientNavBarViewController {
         setupLayout()
         bindViewModel()
         setupTapToDismiss()
+    }
+    
+    override func viewDidDisappear(_ animated: Bool) {
+        super.viewDidDisappear(animated)
+        if isBeingDismissed {
+            onDismiss?()
+        }
     }
 
     // MARK: - Layout
@@ -146,7 +155,7 @@ final class HydrationRecordViewController: GradientNavBarViewController {
 
     private func configureConfirmationButton() -> StandardConfirmationButton {
         let button = StandardConfirmationButton(title: "Salvar")
-        button.addTarget(self, action: #selector(saveHydrationRecord), for: .touchUpInside)
+        button.addTarget(self, action: #selector(saveHydrationMeasure), for: .touchUpInside)
         button.translatesAutoresizingMaskIntoConstraints = false
         return button
     }
@@ -175,8 +184,8 @@ final class HydrationRecordViewController: GradientNavBarViewController {
         viewModel.customValue = Double(sender.text ?? "") ?? 0
     }
 
-    @objc private func saveHydrationRecord() {
-        viewModel.saveHydrationRecord()
+    @objc private func saveHydrationMeasure() {
+        viewModel.saveHydrationMeasure()
         dismiss(animated: true)
     }
 
