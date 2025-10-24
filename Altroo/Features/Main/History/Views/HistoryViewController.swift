@@ -23,7 +23,7 @@ final class HistoryViewController: GradientNavBarViewController {
         self.viewModel = viewModel
         self.delegate = delegate
         self.hosting = hosting
-        super.init(nibName: nil, bundle: nil) // <-- importante
+        super.init(nibName: nil, bundle: nil)
     }
 
     @MainActor required init?(coder: NSCoder) { fatalError("init(coder:) has not been implemented") }
