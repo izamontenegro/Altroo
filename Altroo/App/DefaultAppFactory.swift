@@ -112,7 +112,7 @@ extension DefaultAppFactory {
 //MARK: SymptomFactory
 extension DefaultAppFactory {
     func makeAddSymptomViewController() -> UIViewController {
-        let vm = AddSymptomViewModel(careRecipientFacade: dependencies.careRecipientFacade, userService: dependencies.userService)
+        let vm = AddSymptomViewModel(careRecipientFacade: dependencies.careRecipientFacade, userService: dependencies.userService, coreDataService: dependencies.coreDataService, historyService: dependencies.historyService)
         let vc = AddSymptomViewController(viewModel: vm)
         return vc
     }

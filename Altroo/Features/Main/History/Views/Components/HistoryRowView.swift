@@ -59,6 +59,7 @@ struct HistoryRowView: View {
                         .padding(.horizontal, 12)
                 }
             }
+            .cornerRadius(8)
         }
         .buttonStyle(.plain)
     }
