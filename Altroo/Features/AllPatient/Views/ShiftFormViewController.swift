@@ -96,7 +96,7 @@ class ShiftFormViewController: GradientNavBarViewController {
         return stack
     }()
     
-    private lazy var timeSection = FormSectionView(title: "Em qual período deseja receber notificações do assistido?", content: timeStack, isObligatory: true)
+    private lazy var timeSection = FormSectionView(title: "Em qual período deseja receber notificações do assistido?", content: timeStack)
     
     private let doneButton = StandardConfirmationButton(title: "Concluir")
     

@@ -97,7 +97,7 @@ class PatientFormsViewController: GradientNavBarViewController {
     }()
     
     private lazy var nameSection = FormSectionView(title: "Nome", content: nameTextField, isObligatory: true)
-    private lazy var birthDateSection = FormSectionView(title: "Data de Nascimento", content: datePicker, isObligatory: true)
+    private lazy var birthDateSection = FormSectionView(title: "Data de Nascimento", content: datePicker)
     private lazy var ageSection = FormSectionView(title: "Idade", content: ageLabel)
     private lazy var heightSection = FormSectionView(title: "Altura", content: heightInputStack)
     private lazy var weightSection = FormSectionView(title: "Peso", content: weightInputStack)
