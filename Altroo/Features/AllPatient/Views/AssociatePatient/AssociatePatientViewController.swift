@@ -20,7 +20,7 @@ class AssociatePatientViewController: UIViewController {
     private let viewModel: AssociatePatientViewModel
 
     let viewLabel = StandardLabel(
-        labelText: "Nenhum Assistido encontrado.\nClique no botão \"Adicionar\" para criar.",
+        labelText: "Nenhum Assistido encontrado.\nClique no botão para criar.",
         labelFont: .sfPro,
         labelType: .title3,
         labelColor: .black40,
@@ -136,8 +136,26 @@ class AssociatePatientViewController: UIViewController {
         vStack.arrangedSubviews.forEach { $0.removeFromSuperview() }
         
         if careRecipients.isEmpty {
-            viewLabel.text = "Nenhum Assistido encontrado.\nClique no botão \"Adicionar\" para criar."
-            vStack.addArrangedSubview(viewLabel)
+               viewLabel.numberOfLines = 0
+               viewLabel.textAlignment = .center
+               
+               let emptyStateContainer = UIView()
+               emptyStateContainer.translatesAutoresizingMaskIntoConstraints = false
+               emptyStateContainer.addSubview(viewLabel)
+               
+               NSLayoutConstraint.activate([
+                   viewLabel.centerXAnchor.constraint(equalTo: emptyStateContainer.centerXAnchor),
+                   viewLabel.centerYAnchor.constraint(equalTo: emptyStateContainer.centerYAnchor),
+                   viewLabel.leadingAnchor.constraint(equalTo: emptyStateContainer.leadingAnchor, constant: Layout.mediumSpacing),
+                   viewLabel.trailingAnchor.constraint(equalTo: emptyStateContainer.trailingAnchor, constant: -Layout.mediumSpacing)
+               ])
+               
+               vStack.addArrangedSubview(emptyStateContainer)
+               
+               NSLayoutConstraint.activate([
+                   emptyStateContainer.heightAnchor.constraint(equalTo: view.heightAnchor, multiplier: 0.6)
+               ])
+            
         } else {
             for careRecipient in careRecipients {
                 let card = CareRecipientCard(
