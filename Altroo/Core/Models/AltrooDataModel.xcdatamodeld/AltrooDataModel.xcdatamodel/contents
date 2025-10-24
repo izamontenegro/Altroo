@@ -53,6 +53,7 @@
     </entity>
     <entity name="FeedingRecord" representedClassName="FeedingRecord" syncable="YES" codeGenerationType="class">
         <attribute name="amountEaten" optional="YES" attributeType="String"/>
+        <attribute name="author" optional="YES" attributeType="String"/>
         <attribute name="date" optional="YES" attributeType="Date" usesScalarValueType="NO"/>
         <attribute name="mealCategory" optional="YES" attributeType="String"/>
         <attribute name="notes" optional="YES" attributeType="String"/>
@@ -158,6 +159,7 @@
         <relationship name="routineActivities" optional="YES" maxCount="1" deletionRule="Nullify" destinationEntity="RoutineActivities" inverseName="tasks" inverseEntity="RoutineActivities"/>
     </entity>
     <entity name="StoolRecord" representedClassName="StoolRecord" syncable="YES" codeGenerationType="class">
+        <attribute name="author" optional="YES" attributeType="String"/>
         <attribute name="color" optional="YES" attributeType="String"/>
         <attribute name="date" optional="YES" attributeType="Date" usesScalarValueType="NO"/>
         <attribute name="format" optional="YES" attributeType="String"/>
@@ -178,6 +180,7 @@
         <relationship name="template" optional="YES" maxCount="1" deletionRule="Nullify" destinationEntity="RoutineTask" inverseName="instances" inverseEntity="RoutineTask"/>
     </entity>
     <entity name="UrineRecord" representedClassName="UrineRecord" syncable="YES" codeGenerationType="class">
+        <attribute name="author" optional="YES" attributeType="String"/>
         <attribute name="color" optional="YES" attributeType="String"/>
         <attribute name="date" optional="YES" attributeType="Date" usesScalarValueType="NO"/>
         <attribute name="id" optional="YES" attributeType="UUID" usesScalarValueType="NO"/>

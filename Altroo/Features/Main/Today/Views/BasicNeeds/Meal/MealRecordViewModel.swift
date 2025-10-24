@@ -36,50 +36,20 @@ final class MealRecordViewModel {
             let selectedMealAmountEaten
         else { return }
         
+        let author = coreDataService.currentPerformerName(for: careRecipient)
+        
         feedingService.addFeeding(
             amountEaten: selectedMealAmountEaten,
             date: Date(),
             period: PeriodEnum.current,
             notes: notes,
-            mealCategory: selectedMealCategory,
+            mealCategory: selectedMealCategory, author: author,
             in: careRecipient
         )
         
-        let author = coreDataService.currentPerformerName(for: careRecipient)
+        historyService.addHistoryItem(title: "Comeu \(selectedMealCategory.displayText).", author: author, date: Date(), to: careRecipient)
         
-        historyService.addHistoryItem(title: "Bebeu ml de água", author: author, date: Date(), to: careRecipient)
-        
-        checkSavedRecord()
     }
-    
-    // MARK: - 🔍 Debug: verify that the record was actually saved in Core Data
-    // This block fetches all meals records from the context and prints the last one.
-    // It’s only for debugging until we have a proper UI (history) to display the data.
-    
-    private func checkSavedRecord() {
-            guard let careRecipient = getCurrentCareRecipient() else { return }
-
-            if let context = careRecipient.managedObjectContext {
-                let request: NSFetchRequest<FeedingRecord> = FeedingRecord.fetchRequest()
-                do {
-                    let results = try context.fetch(request)
-//                    print("🍽️ [DEBUG] Total feeding records found: \(results.count)")
-//                    if let last = results.last {
-//                        print("🍽️ [DEBUG] Last saved feeding record:")
-//                        print("• ID:", last.id)
-//                        print("• Date:", last.date ?? Date())
-//                        print("• Period:", last.period ?? "—")
-//                        print("• Category:", last.mealCategory ?? "—")
-//                        print("• Amount Eaten:", last.amountEaten ?? "—")
-//                        print("• Notes:", last.notes ?? "—")
-//                    }
-                } catch {
-                    print("⚠️ [DEBUG] Failed to fetch FeedingRecord:", error.localizedDescription)
-                }
-            } else {
-                print("⚠️ [DEBUG] No managedObjectContext found for the current CareRecipient.")
-            }
-        }
     
     private func getCurrentCareRecipient() -> CareRecipient? {
         userService.fetchCurrentPatient()
