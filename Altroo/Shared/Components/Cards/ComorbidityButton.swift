@@ -94,8 +94,9 @@ class ComorbidityButton: UIButton {
     private func makeContent() -> UIStackView {
 
         label.textAlignment = .center
-        label.numberOfLines = 0
         label.lineBreakMode = .byWordWrapping
+        label.adjustsFontSizeToFitWidth = true
+        label.numberOfLines = 0
         label.widthAnchor.constraint(equalToConstant: 120).isActive = true
         
         let stack = UIStackView()
@@ -127,7 +128,7 @@ class ComorbidityButton: UIButton {
         var name: String {
             switch self {
             case .heartFailure:
-                return "Doenças Cardiovasculares"
+                return "Doenças Cardíacas"
             case .diabetes:
                 return "Diabetes"
             case .hypertension:

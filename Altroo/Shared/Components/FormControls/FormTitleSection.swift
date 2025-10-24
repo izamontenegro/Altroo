@@ -16,7 +16,7 @@ final class FormTitleSection: UIStackView {
         super.init(frame: .zero)
         alignment = .leading
         axis = .vertical
-        spacing = 8
+        spacing = Layout.verySmallSpacing
         translatesAutoresizingMaskIntoConstraints = false
 
         let titleLabel = StandardLabel(
@@ -40,6 +40,7 @@ final class FormTitleSection: UIStackView {
         
         addArrangedSubview(makeStepRow())
         addArrangedSubview(titleLabel)
+        setCustomSpacing(0, after: titleLabel)
         addArrangedSubview(descriptionLabel)
     }
 
@@ -86,8 +87,4 @@ final class FormTitleSection: UIStackView {
         
         return circle
     }
-}
-
-#Preview {
-    FormTitleSection(title:  "perfil", description: "lofnanfcioanoife lofnanfcioanoife lofnanfcioanoife lofnanfcioanoife lofnanfcioanoife", totalSteps: 3, currentStep: 1)
 }

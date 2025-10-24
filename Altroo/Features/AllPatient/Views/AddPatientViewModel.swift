@@ -10,7 +10,6 @@ import Combine
 import CoreData
 
 final class AddPatientViewModel: ObservableObject {
-    
     private let careRecipientFacade: CareRecipientFacade
     private let userService: UserServiceProtocol
     
@@ -26,15 +25,14 @@ final class AddPatientViewModel: ObservableObject {
     @Published var diseases: [DiseaseDraft] = []
     @Published var bedriddenStatus: BedriddenStatus = .notBedridden
     
+    @Published var userName: String = ""
+    @Published var userNameError: String?
+    let relationshipOptions = ["Cuidador","Mãe", "Pai", "Filho", "Filha", "Familiar", "Amigo", "Outro"]
+    @Published var selectedRelationship: String = "Cuidador"
+    var isAllDay = false
+    
     @Published private(set) var fieldErrors: [String: String] = [:]
     private let validator = FormValidator()
-    
-    let relationshipOptions = ["Contínuo", "Data Final"]
-    @Published var selectedRelationshipIndex: Int = 0
-    var selectedRelationship: String {
-        return relationshipOptions[selectedRelationshipIndex]
-    }
-
 
     private var cancellables = Set<AnyCancellable>()
     
@@ -104,11 +102,18 @@ final class AddPatientViewModel: ObservableObject {
         contacts = []
         diseases = []
         bedriddenStatus = .notBedridden
-        
     }
     
-    func setShift(_ shift: [PeriodEnum]) {
-        userService.setShift(shift)
+    func finalizeUser(startDate: Date, endDate: Date) {
+        userService.setName(userName)
+        userService.setCategory(selectedRelationship)
+        
+        if isAllDay {
+            userService.setShift([.afternoon, .overnight, .morning, .night])
+        } else {
+            let shift = PeriodEnum.shifts(for: startDate, end: endDate)
+            userService.setShift(shift)
+        }
     }
 }
 
@@ -131,11 +136,18 @@ extension AddPatientViewModel {
         var newErrors: [String: String] = [:]
 
         _ = validator.isEmpty(name, fieldName: "Nome", error: &newErrors["name"])
-        _ = validator.invalidValue(value: Int(weight), minValue: 30, maxValue: 300, error: &newErrors["weight"])
-        _ = validator.invalidValue(value: Int(height), minValue: 50, maxValue: 300, error: &newErrors["height"])
+        
+        //FIXME: COMO É A VALIDAÇÃO?
+//        _ = validator.invalidValue(value: Int(weight), minValue: 30, maxValue: 300, error: &newErrors["weight"])
+//        _ = validator.invalidValue(value: Int(height), minValue: 50, maxValue: 300, error: &newErrors["height"])
 
         fieldErrors = newErrors
 
         return newErrors.isEmpty
+    }
+    
+    func validateUser() -> Bool {
+        guard validator.isEmpty(userName, fieldName: "Nome", error: &userNameError) else { return false }
+        return true
     }
 }

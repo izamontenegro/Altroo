@@ -23,8 +23,6 @@ final class FormSectionView: UIStackView {
         spacing = 8
         translatesAutoresizingMaskIntoConstraints = false
         
-        
-        
         let titleLabel = StandardLabel(
             labelText: title,
             labelFont: .sfPro,
@@ -32,7 +30,7 @@ final class FormSectionView: UIStackView {
             labelColor: .black10,
             labelWeight: .semibold
         )
-        
+        titleLabel.numberOfLines = 0
         
         if isObligatory {
             let attributed = NSMutableAttributedString(
@@ -56,8 +54,6 @@ final class FormSectionView: UIStackView {
         errorIcon.image = UIImage(systemName: "exclamationmark.triangle")
         errorIcon.tintColor = .red10
         errorIcon.setContentHuggingPriority(.required, for: .horizontal)
-        
-        
         errorLabel.numberOfLines = 0
         
         errorStack.axis = .horizontal

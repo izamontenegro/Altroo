@@ -18,11 +18,13 @@ class GradientNavBarViewController: UIViewController {
     
     override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
+        navigationController?.setNavigationBarHidden(false, animated: false)
         configureNavBar()
     }
 
     
     override func viewWillDisappear(_ animated: Bool) {
+        super.viewWillDisappear(animated)
         desconfigureNavBar()
     }
     
