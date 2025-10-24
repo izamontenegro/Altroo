@@ -128,7 +128,6 @@ class TaskFormViewController: GradientNavBarViewController {
             dateStack.addArrangedSubview(startSection)
             contentStack.addArrangedSubview(dateStack)
 
-
             //notes
             let noteSection = FormSectionView(title: "Observações", content: noteTexfield)
             contentStack.addArrangedSubview(noteSection)

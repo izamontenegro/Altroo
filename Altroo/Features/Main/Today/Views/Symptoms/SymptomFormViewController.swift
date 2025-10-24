@@ -106,13 +106,13 @@ class SymptomFormViewController: GradientNavBarViewController {
             view.addSubview(deleteButton)
             NSLayoutConstraint.activate([
                 deleteButton.centerXAnchor.constraint(equalTo: view.centerXAnchor),
-                deleteButton.bottomAnchor.constraint(equalTo: view.safeAreaLayoutGuide.bottomAnchor, constant: -Layout.mediumSpacing)
+                deleteButton.bottomAnchor.constraint(equalTo: view.safeAreaLayoutGuide.bottomAnchor, constant: -Layout.smallButtonBottomPadding)
             ])
             confirmBottomConstraint = confirmButton.bottomAnchor.constraint(equalTo: deleteButton.topAnchor, constant: -Layout.mediumSpacing)
             confirmBottomConstraint?.isActive = true
         } else {
             deleteButton.removeFromSuperview()
-            confirmBottomConstraint = confirmButton.bottomAnchor.constraint(equalTo: view.safeAreaLayoutGuide.bottomAnchor, constant: -Layout.mediumSpacing)
+            confirmBottomConstraint = confirmButton.bottomAnchor.constraint(equalTo: view.safeAreaLayoutGuide.bottomAnchor, constant: -Layout.smallButtonBottomPadding)
             confirmBottomConstraint?.isActive = true
         }
     }
