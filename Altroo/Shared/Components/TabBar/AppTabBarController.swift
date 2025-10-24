@@ -40,7 +40,7 @@ final class AppTabBarController: UITabBarController, UITabBarControllerDelegate 
         setupCustomTabBar()
         
         //FIXME: Take this out when there is more thing for the tabbar
-        customTabBar.isHidden = true
+//        customTabBar.isHidden = true
 
     }
     

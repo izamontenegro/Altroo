@@ -13,6 +13,7 @@
         <relationship name="basicNeeds" optional="YES" maxCount="1" deletionRule="Nullify" destinationEntity="BasicNeeds" inverseName="careRecipient" inverseEntity="BasicNeeds"/>
         <relationship name="careRecipientEvents" optional="YES" toMany="YES" deletionRule="Nullify" destinationEntity="CareRecipientEvent" inverseName="careRecipient" inverseEntity="CareRecipientEvent"/>
         <relationship name="healthProblems" optional="YES" maxCount="1" deletionRule="Nullify" destinationEntity="HealthProblems" inverseName="careRecipient" inverseEntity="HealthProblems"/>
+        <relationship name="historyItems" maxCount="1" deletionRule="Nullify" destinationEntity="HistoryItem" inverseName="careRecipient" inverseEntity="HistoryItem"/>
         <relationship name="mentalState" optional="YES" maxCount="1" deletionRule="Nullify" destinationEntity="MentalState" inverseName="careRecipient" inverseEntity="MentalState"/>
         <relationship name="personalCare" optional="YES" maxCount="1" deletionRule="Nullify" destinationEntity="PersonalCare" inverseName="careRecipient" inverseEntity="PersonalCare"/>
         <relationship name="personalData" optional="YES" maxCount="1" deletionRule="Nullify" destinationEntity="PersonalData" inverseName="careRecipient" inverseEntity="PersonalData"/>
@@ -66,6 +67,12 @@
         <attribute name="surgery" optional="YES" attributeType="Transformable" valueTransformerName="" customClassName="[String]"/>
         <relationship name="careRecipient" optional="YES" maxCount="1" deletionRule="Nullify" destinationEntity="CareRecipient" inverseName="healthProblems" inverseEntity="CareRecipient"/>
         <relationship name="diseases" optional="YES" toMany="YES" deletionRule="Nullify" destinationEntity="Disease" inverseName="healthProblems" inverseEntity="Disease"/>
+    </entity>
+    <entity name="HistoryItem" representedClassName="HistoryItem" syncable="YES" codeGenerationType="class">
+        <attribute name="author" optional="YES" attributeType="String"/>
+        <attribute name="date" optional="YES" attributeType="Date" usesScalarValueType="NO"/>
+        <attribute name="title" optional="YES" attributeType="String"/>
+        <relationship name="careRecipient" optional="YES" maxCount="1" deletionRule="Nullify" destinationEntity="CareRecipient" inverseName="historyItems" inverseEntity="CareRecipient"/>
     </entity>
     <entity name="HydrationRecord" representedClassName="HydrationRecord" syncable="YES" codeGenerationType="class">
         <attribute name="date" optional="YES" attributeType="Date" usesScalarValueType="NO"/>
