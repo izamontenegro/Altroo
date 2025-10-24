@@ -9,13 +9,18 @@ import UIKit
 
 class GradientNavBarViewController: UIViewController {
     var rightButton: UIButton?
+    var showBackButton: Bool = true
 
     override func viewDidLoad() {
         super.viewDidLoad()
         view.backgroundColor = .pureWhite
-        configureNavBar()
     }
     
+    override func viewWillAppear(_ animated: Bool) {
+        super.viewWillAppear(animated)
+        configureNavBar()
+    }
+
     override func viewWillDisappear(_ animated: Bool) {
         desconfigureNavBar()
     }
@@ -53,12 +58,16 @@ class GradientNavBarViewController: UIViewController {
     }
     
     private func configureNavBarButtons() {
-        let back = UIButton(type: .system)
-        back.setImage(UIImage(systemName: "chevron.left"), for: .normal)
-        back.setTitle(" Voltar", for: .normal)
-        back.titleLabel?.font = .systemFont(ofSize: 17)
-        back.addTarget(self, action: #selector(handleBack), for: .touchUpInside)
-        navigationItem.leftBarButtonItem = UIBarButtonItem(customView: back)
+        if showBackButton {
+            let back = UIButton(type: .system)
+            back.setImage(UIImage(systemName: "chevron.left"), for: .normal)
+            back.setTitle("Voltar", for: .normal)
+            back.titleLabel?.font = .systemFont(ofSize: 17)
+            back.addTarget(self, action: #selector(handleBack), for: .touchUpInside)
+            navigationItem.leftBarButtonItem = UIBarButtonItem(customView: back)
+        } else {
+            navigationItem.leftBarButtonItem = nil
+        }
 
         if let rightButton = rightButton {
             navigationItem.rightBarButtonItem = UIBarButtonItem(customView: rightButton)

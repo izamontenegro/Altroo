@@ -57,15 +57,15 @@ final class UrineRecordViewModel {
             let request: NSFetchRequest<UrineRecord> = UrineRecord.fetchRequest()
             do {
                 let results = try context.fetch(request)
-                print("💧 [DEBUG] Total urine records found: \(results.count)")
+//                print("💧 [DEBUG] Total urine records found: \(results.count)")
                 if let last = results.last {
-                    print("💧 [DEBUG] Last saved urine record:")
-                    print("• ID:", last.id?.uuidString ?? "nil")
-                    print("• Date:", last.date ?? Date())
-                    print("• Period:", last.period ?? "—")
-                    print("• Color:", last.color ?? "—")
-                    print("• Characteristics:", last.urineCharacteristics ?? "—")
-                    print("• Observation:", last.urineObservation ?? "—")
+//                    print("💧 [DEBUG] Last saved urine record:")
+//                    print("• ID:", last.id?.uuidString ?? "nil")
+//                    print("• Date:", last.date ?? Date())
+//                    print("• Period:", last.period ?? "—")
+//                    print("• Color:", last.color ?? "—")
+//                    print("• Characteristics:", last.urineCharacteristics ?? "—")
+//                    print("• Observation:", last.urineObservation ?? "—")
                 }
             } catch {
                 print("⚠️ [DEBUG] Failed to fetch UrineRecord:", error.localizedDescription)

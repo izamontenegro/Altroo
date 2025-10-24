@@ -31,7 +31,8 @@ class FeedingCardRecord: UIView {
             labelColor: .teal30,
             labelWeight: .medium
         )
-        titleLabel.textAlignment = .center
+
+        titleLabel.textAlignment = .left
         
         let capsuleIcon = CapsuleIconView(
             iconName: status.iconName,
@@ -56,14 +57,13 @@ class FeedingCardRecord: UIView {
         addSubview(vStack)
         
         vStack.translatesAutoresizingMaskIntoConstraints = false
+        
         NSLayoutConstraint.activate([
-            vStack.centerXAnchor.constraint(equalTo: centerXAnchor),
+            vStack.leadingAnchor.constraint(equalTo: leadingAnchor, constant: 12),
             vStack.centerYAnchor.constraint(equalTo: centerYAnchor),
-            vStack.leadingAnchor.constraint(greaterThanOrEqualTo: leadingAnchor, constant: 12),
             vStack.trailingAnchor.constraint(lessThanOrEqualTo: trailingAnchor, constant: -12),
-            vStack.topAnchor.constraint(lessThanOrEqualTo: topAnchor, constant: 8),
+            vStack.topAnchor.constraint(greaterThanOrEqualTo: topAnchor, constant: 8),
             vStack.bottomAnchor.constraint(lessThanOrEqualTo: bottomAnchor, constant: -8)
-
         ])
         
         layer.cornerRadius = 8
@@ -73,8 +73,7 @@ class FeedingCardRecord: UIView {
             heightAnchor.constraint(equalToConstant: 70),
             widthAnchor.constraint(equalToConstant: 146)
         ])
-    }
-}
+    }}
 
 enum FeedingStatus {
     case completed

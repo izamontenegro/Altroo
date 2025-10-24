@@ -49,17 +49,16 @@ final class StandardConfirmationButton: PrimaryStyleButton {
         ])
         
         layer.cornerRadius = 22
-        contentEdgeInsets = UIEdgeInsets(top: 8, left: 64, bottom: 8, right: 64)
+        contentEdgeInsets = UIEdgeInsets(top: 8, left: 64,
+                                         bottom: 8, right: 64)
         translatesAutoresizingMaskIntoConstraints = false
     }
-    
     // MARK: - Public funcs
-        func updateTitle(_ title: String) {
-            titleLabelCustom.updateLabelText(title)
-        }
-
+    func updateTitle(_ title: String) {
+        titleLabelCustom.updateLabelText(title)
+    }
 }
-
+//
 //#Preview {
 //    StandardConfirmationButton(title: "Adicionar")
 //}

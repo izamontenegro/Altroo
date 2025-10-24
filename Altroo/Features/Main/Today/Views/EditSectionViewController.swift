@@ -225,8 +225,6 @@ class EditSectionViewController: GradientNavBarViewController {
             saveCurrentOrder()
         }
     }
-
-    
     @objc private func handleDrag(_ gesture: UILongPressGestureRecognizer) {
         guard let draggedView = gesture.view?.superview?.superview else { return }
         guard let stackView = draggedView.superview as? UIStackView else { return }
@@ -276,7 +274,6 @@ class EditSectionViewController: GradientNavBarViewController {
             let checkmark = headerStack.arrangedSubviews.compactMap({ $0 as? UIImageView }).first(where: { $0.tag == 999 })
             let isVisible = checkmark?.image == UIImage(systemName: "checkmark.circle.fill")
             
-            // 👇 salva subitens, se houver
             let subitems: [SubitemConfig]?
             if type == .basicNeeds, let sectionStack = sectionView as? UIStackView {
                 subitems = sectionStack.arrangedSubviews.compactMap { subview in
@@ -303,8 +300,6 @@ class EditSectionViewController: GradientNavBarViewController {
         
         TodaySectionManager.shared.save(configs)
     }
-
-
 }
 
 //#Preview {

@@ -6,12 +6,6 @@
 //
 import UIKit
 
-struct MockSymptom {
-    var name: String?
-    var date: Date?
-    var symptomDescription: String?
-}
-
 protocol SymptomsCardDelegate: AnyObject {
     func tappedSymptom(_ symptom: Symptom, on card: SymptomsCard)
 }

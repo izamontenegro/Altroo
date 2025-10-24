@@ -7,17 +7,19 @@
 
 import UIKit
 
-class AnalysisViewController: UIViewController {
+class AnalysisViewController: GradientNavBarViewController {
 
     let viewLabel: UILabel = {
         let label = UILabel()
-        label.text = "Analysis View"
+        label.text = "Relatórios Em breve"
+        label.tintColor = .black10
         label.textAlignment = .center
         
         label.translatesAutoresizingMaskIntoConstraints = false
         return label
     }()
     override func viewDidLoad() {
+        showBackButton = false
         super.viewDidLoad()
 
         view.backgroundColor = .blue80

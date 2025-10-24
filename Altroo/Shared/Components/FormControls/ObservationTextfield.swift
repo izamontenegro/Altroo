@@ -108,7 +108,7 @@ struct ObservationViewPreview: UIViewRepresentable {
     func updateUIView(_ uiView: ObservationView, context: Context) {}
 }
 
-#Preview {
-    ObservationViewPreview()
-        .padding()
-}
+//#Preview {
+//    ObservationViewPreview()
+//        .padding()
+//}
