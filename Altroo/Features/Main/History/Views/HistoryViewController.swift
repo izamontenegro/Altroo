@@ -30,7 +30,6 @@ final class HistoryViewController: GradientNavBarViewController {
 
     override func viewDidLoad() {
         super.viewDidLoad()
-        view.backgroundColor = .systemBackground
 
         let swiftUIView = HistoryView(viewModel: viewModel) { [weak self] in
             guard let self else { return }
@@ -45,6 +44,7 @@ final class HistoryViewController: GradientNavBarViewController {
 
         addChild(hosting)
         view.addSubview(hosting.view)
+        
         hosting.view.translatesAutoresizingMaskIntoConstraints = false
         NSLayoutConstraint.activate([
             hosting.view.topAnchor.constraint(equalTo: view.topAnchor),

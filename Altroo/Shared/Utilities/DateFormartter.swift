@@ -8,6 +8,23 @@
 import Foundation
 
 final class DateFormatterHelper {
+    
+    static func historyDateNumber(from date: Date) -> String {
+        let df = DateFormatter()
+        df.locale = Locale(identifier: "pt_BR")
+        df.setLocalizedDateFormatFromTemplate("dd/MM/yy")
+        return df.string(from: date)
+    }
+
+    static func historyWeekdayShort(from date: Date) -> String {
+        let df = DateFormatter()
+        df.locale = Locale(identifier: "pt_BR")
+        df.setLocalizedDateFormatFromTemplate("EEEE")
+        return df.string(from: date)
+            .replacingOccurrences(of: "-feira", with: "")
+            .capitalized // “Sexta”
+    }
+    
     static func weekDayFormatter(date: Date) -> String {
         let weekdayFormatter = DateFormatter()
         weekdayFormatter.locale = Locale(identifier: "pt_BR")
