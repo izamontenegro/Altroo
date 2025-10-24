@@ -272,8 +272,8 @@ extension DefaultAppFactory {
 
 // MARK: - GeneralFactory
 extension DefaultAppFactory {
-    func makeAddIntervalSheet() -> UIViewController { // TODO:
-        let vc = HistoryDetailViewController()
+    func makeAddIntervalSheet() -> UIViewController {
+        let vc = UIViewController()
         return vc
     }
 }
@@ -281,11 +281,6 @@ extension DefaultAppFactory {
 // MARK: - HistoryFactory
 extension DefaultAppFactory {
     func makeSeeHistoryDetailSheet() -> UIViewController {
-        // Se for SwiftUI:
-        // let view = SeeHistoryDetailView(...) // injete o que precisar
-        // return UIHostingController(rootView: view)
-
-        // Placeholder UIKit:
         let vc = UIViewController()
         vc.view.backgroundColor = .systemBackground
         vc.title = "Detalhe do Histórico"

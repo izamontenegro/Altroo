@@ -12,6 +12,7 @@ protocol HistoryServiceProtocol {
         title: String,
         author: String?,
         date: Date,
+        type: HistoryActivityType,
         to careRecipient: CareRecipient
     )
 
@@ -32,6 +33,7 @@ final class HistoryService: HistoryServiceProtocol {
         title: String,
         author: String?,
         date: Date,
+        type: HistoryActivityType,
         to careRecipient: CareRecipient
     ) {
         guard let context = careRecipient.managedObjectContext else { return }
@@ -40,6 +42,7 @@ final class HistoryService: HistoryServiceProtocol {
         newItem.title = title
         newItem.author = author
         newItem.date = date
+        newItem.activityType = type.displayText
 
         newItem.careRecipient = careRecipient
         let historySet = careRecipient.mutableSetValue(forKey: "historyItems")

@@ -31,13 +31,7 @@ final class HistoryViewController: GradientNavBarViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
 
-        let swiftUIView = HistoryView(viewModel: viewModel) { [weak self] in
-            guard let self else { return }
-            if let item = viewModel.selectedItem {
-                self.delegate?.openDetailSheet(self, item: item)
-
-            }
-        }
+        let swiftUIView = HistoryView(viewModel: viewModel) 
 
         let hosting = UIHostingController(rootView: swiftUIView)
         self.hosting = hosting

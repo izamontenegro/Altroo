@@ -47,7 +47,7 @@ final class MealRecordViewModel {
             in: careRecipient
         )
         
-        historyService.addHistoryItem(title: "Comeu \(selectedMealCategory.displayText).", author: author, date: Date(), to: careRecipient)
+        historyService.addHistoryItem(title: "Comeu \(selectedMealCategory.displayText)", author: author, date: Date(), type: .meal, to: careRecipient)
         
     }
     

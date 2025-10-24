@@ -65,8 +65,6 @@ final class HistoryViewModel: ObservableObject {
         reloadHistory()
     }
 
-    // MARK: - Helpers
-
     static func buildSections(from items: [HistoryItem]) -> [HistoryDaySection] {
         let cal = Calendar.current
         let grouped = Dictionary(grouping: items) { item -> Date in

@@ -61,7 +61,7 @@ class AddSymptomViewModel {
         careRecipientFacade.addSymptom(name: name, symptomDescription: note, date: fullDate, in: careRecipient)
         
         
-        historyService.addHistoryItem(title: "Registrou \(name)", author: author, date: Date(), to: careRecipient)
+        historyService.addHistoryItem(title: "Registrou \(name)", author: author, date: Date(), type: .symptom, to: careRecipient)
         
         
         return true

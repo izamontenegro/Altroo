@@ -42,6 +42,6 @@ final class HydrationRecordViewModel {
             in: careRecipient
         )
         
-        historyService.addHistoryItem(title: "Bebeu \(totalWater)ml de água", author: author, date: Date(), to: careRecipient)
+        historyService.addHistoryItem(title: "Bebeu \(totalWater)ml de água", author: author, date: Date(), type: .hydration, to: careRecipient)
     }
 }

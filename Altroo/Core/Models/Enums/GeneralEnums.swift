@@ -100,3 +100,29 @@ enum StatusEnum: String {
     case afterLunch
     case other
 }
+
+enum HistoryActivityType: String {
+    case urine
+    case stool
+    case task
+    case symptom
+    case hydration
+    case meal
+    
+    var displayText: String {
+        switch self {
+        case .urine:
+            return "Urina"
+        case .stool:
+            return "Fezes"
+        case .task:
+            return "Tarefa"
+        case .symptom:
+            return "Intercorrência"
+        case .hydration:
+            return "Hidratação"
+        case .meal:
+            return "Alimentação"
+        }
+    }
+}

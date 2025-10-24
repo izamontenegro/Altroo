@@ -44,7 +44,7 @@ final class UrineRecordViewModel {
             observation: urineObservation
         )
         
-        historyService.addHistoryItem(title: "Registrou urina", author: author, date: Date(), to: careRecipient)
+        historyService.addHistoryItem(title: "Registrou urina", author: author, date: Date(), type: .urine, to: careRecipient)
         
     }
     

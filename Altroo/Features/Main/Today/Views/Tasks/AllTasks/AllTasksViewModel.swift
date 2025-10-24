@@ -80,6 +80,6 @@ class AllTasksViewModel {
         
         let author = coreDataService.currentPerformerName(for: careRecipient)
         
-        historyService.addHistoryItem(title: "Realizou \(instance.template?.name ?? "tarefa.")", author: author, date: Date(), to: careRecipient)
+        historyService.addHistoryItem(title: "Realizou \(instance.template?.name ?? "tarefa")", author: author, date: Date(), type: .task, to: careRecipient)
     }
 }

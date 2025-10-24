@@ -10,7 +10,7 @@ import UIKit
 
 struct HistoryView: View {
     @ObservedObject var viewModel: HistoryViewModel
-    var onOpenSheet: () -> Void
+    @State var showSheet: Bool = false
     
     var body: some View {
         ScrollView {
@@ -29,7 +29,7 @@ struct HistoryView: View {
                     ForEach($viewModel.sections) { $section in
                         HistorySectionView(section: $section) { item in
                             viewModel.selectedItem = item
-                            onOpenSheet()
+                            showSheet = true
                         }
                     }
                     Spacer()
@@ -40,5 +40,13 @@ struct HistoryView: View {
         .background(Color.blue80.ignoresSafeArea())
         .onAppear { viewModel.reloadHistory() }
         .navigationBarTitleDisplayMode(.inline)
+        .sheet(isPresented: $showSheet, content: {
+            if let item = viewModel.selectedItem {
+                HistoryDetailSheet(viewModel: viewModel, item: item)
+                    .presentationDetents([.medium])
+            } else {
+                Text("erro ao selecionar item")
+            }
+        })
     }
 }

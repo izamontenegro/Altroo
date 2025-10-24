@@ -39,7 +39,7 @@ final class StoolRecordViewModel {
         
         stoolService.addStool(period: PeriodEnum.current, date: Date(), format: selectedStoolType?.rawValue ?? "", notes: notes, color: selectedStoolColor?.hexString ?? "", author: author, in: careRecipient)
         
-        historyService.addHistoryItem(title: "Registrou fezes \(selectedStoolType?.displayText ?? "").", author: author, date: Date(), to: careRecipient)
+        historyService.addHistoryItem(title: "Registrou fezes \(selectedStoolType?.displayText ?? "")", author: author, date: Date(), type: .stool, to: careRecipient)
     }
     
     private func getCurrentCareRecipient() -> CareRecipient? {
