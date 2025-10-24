@@ -249,8 +249,6 @@ class EditSectionViewController: GradientNavBarViewController {
 
         headerCheck.image = UIImage(systemName: anySubitemChecked ? "checkmark.circle.fill" : "circle")
     }
-
-    
     @objc private func handleDrag(_ gesture: UILongPressGestureRecognizer) {
         guard let draggedView = gesture.view?.superview?.superview else { return }
         guard let stackView = draggedView.superview as? UIStackView else { return }
@@ -326,8 +324,6 @@ class EditSectionViewController: GradientNavBarViewController {
         
         TodaySectionManager.shared.save(configs)
     }
-
-
 }
 
 //#Preview {
