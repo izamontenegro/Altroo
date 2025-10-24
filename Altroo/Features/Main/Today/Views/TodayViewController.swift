@@ -6,6 +6,7 @@
 //
 
 import UIKit
+import Combine
 
 protocol TodayViewControllerDelegate: AnyObject {
     func goTo(_ destination: TodayDestination)
@@ -13,11 +14,14 @@ protocol TodayViewControllerDelegate: AnyObject {
 }
 
 class TodayViewController: UIViewController {
+    
     var viewModel: TodayViewModel
     weak var delegate: TodayViewControllerDelegate?
     var onTaskSelected: ((TaskInstance) -> Void)?
     var symptomsCard: SymptomsCard
     var feedingRecords: [FeedingRecord] = []
+    private var cancellables = Set<AnyCancellable>()
+
     
     required init?(coder: NSCoder) {
         fatalError("init(coder:) has not been implemented")
@@ -26,13 +30,14 @@ class TodayViewController: UIViewController {
     let scrollView: UIScrollView = {
         let scrollView = UIScrollView()
         scrollView.translatesAutoresizingMaskIntoConstraints = false
+        scrollView.showsHorizontalScrollIndicator = false
         return scrollView
     }()
     
     let vStack: UIStackView = {
         let stackView = UIStackView(arrangedSubviews: [])
         stackView.axis = .vertical
-        stackView.spacing = 20
+        stackView.spacing = 15
         stackView.translatesAutoresizingMaskIntoConstraints = false
         return stackView
     }()
@@ -41,7 +46,7 @@ class TodayViewController: UIViewController {
         self.delegate = delegate
         self.viewModel = viewModel
         self.symptomsCard = SymptomsCard(symptoms: viewModel.todaySymptoms)
-
+        
         super.init(nibName: nil, bundle: nil)
         
         self.symptomsCard.delegate = self
@@ -65,21 +70,21 @@ class TodayViewController: UIViewController {
             profileToolbar.topAnchor.constraint(equalTo: view.topAnchor),
             profileToolbar.leadingAnchor.constraint(equalTo: view.leadingAnchor),
             profileToolbar.trailingAnchor.constraint(equalTo: view.trailingAnchor),
-            profileToolbar.heightAnchor.constraint(equalToConstant: 174)
-        ])
-        
-        NSLayoutConstraint.activate([
-            scrollView.topAnchor.constraint(equalTo: profileToolbar.bottomAnchor, constant: -30),
-            scrollView.bottomAnchor.constraint(equalTo: view.safeAreaLayoutGuide.bottomAnchor, constant: -45),
+            profileToolbar.heightAnchor.constraint(equalToConstant: 250),
+            
+            scrollView.topAnchor.constraint(equalTo: view.topAnchor, constant: 150),
             scrollView.leadingAnchor.constraint(equalTo: view.leadingAnchor),
             scrollView.trailingAnchor.constraint(equalTo: view.trailingAnchor),
+            scrollView.bottomAnchor.constraint(equalTo: view.bottomAnchor, constant: -Layout.bigButtonBottomPadding),
             
             vStack.topAnchor.constraint(equalTo: scrollView.topAnchor, constant: 40),
-            vStack.bottomAnchor.constraint(equalTo: scrollView.bottomAnchor, constant: -0),
+            vStack.bottomAnchor.constraint(equalTo: scrollView.bottomAnchor, constant: -30),
             vStack.leadingAnchor.constraint(equalTo: scrollView.leadingAnchor, constant: 20),
             vStack.trailingAnchor.constraint(equalTo: scrollView.trailingAnchor, constant: -20),
             vStack.widthAnchor.constraint(equalTo: scrollView.widthAnchor, constant: -40)
         ])
+        
+        setupBindings()
     }
     
     override func viewWillAppear(_ animated: Bool) {
@@ -98,37 +103,37 @@ class TodayViewController: UIViewController {
         symptomsCard.updateSymptoms(viewModel.todaySymptoms)
         addSections()
     }
-
+    
     override func viewWillDisappear(_ animated: Bool) {
         super.viewWillDisappear(animated)
         navigationController?.setNavigationBarHidden(false, animated: false)
     }
-        
+    
     func makeCardByPeriod() -> UIView {
         let cardStack = UIStackView()
         cardStack.axis = .vertical
         cardStack.spacing = 16
         cardStack.alignment = .fill
         cardStack.translatesAutoresizingMaskIntoConstraints = false
-
+        
         let tasks = viewModel.periodTasks
-
+        
         if tasks.isEmpty {
             let container = UIView()
             container.backgroundColor = .pureWhite
             container.layer.cornerRadius = 12
             container.translatesAutoresizingMaskIntoConstraints = false
             container.heightAnchor.constraint(equalToConstant: 80).isActive = true
-
+            
             let emptyLabel = StandardLabel(
-                labelText: "Nenhuma tarefa registrada.",
+                labelText: "Nenhuma tarefa registrada",
                 labelFont: .sfPro,
                 labelType: .callOut,
                 labelColor: .black30
             )
             emptyLabel.textAlignment = .center
             emptyLabel.translatesAutoresizingMaskIntoConstraints = false
-
+            
             container.addSubview(emptyLabel)
             NSLayoutConstraint.activate([
                 emptyLabel.centerXAnchor.constraint(equalTo: container.centerXAnchor),
@@ -136,7 +141,7 @@ class TodayViewController: UIViewController {
                 emptyLabel.leadingAnchor.constraint(greaterThanOrEqualTo: container.leadingAnchor, constant: 8),
                 emptyLabel.trailingAnchor.constraint(lessThanOrEqualTo: container.trailingAnchor, constant: -8)
             ])
-
+            
             cardStack.addArrangedSubview(container)
         } else {
             for task in tasks {
@@ -144,20 +149,40 @@ class TodayViewController: UIViewController {
                 card.delegate = self
                 card.translatesAutoresizingMaskIntoConstraints = false
                 cardStack.addArrangedSubview(card)
-
+                
                 NSLayoutConstraint.activate([
                     card.leadingAnchor.constraint(equalTo: cardStack.leadingAnchor),
                     card.trailingAnchor.constraint(equalTo: cardStack.trailingAnchor)
                 ])
             }
         }
-
+        
         return cardStack
+    }
+    
+    private func setupBindings() {
+        viewModel.$waterQuantity
+            .receive(on: DispatchQueue.main)
+            .sink { [weak self] newValue in
+                guard let self = self else { return }
+                self.addSections()
+                
+            }
+            .store(in: &cancellables)
+        
+        viewModel.$waterMeasure
+            .receive(on: DispatchQueue.main)
+            .sink { [weak self] newValue in
+                guard let self = self else { return }
+                self.addSections()
+                
+            }
+            .store(in: &cancellables)
     }
     
     private func addSections() {
         var configs = TodaySectionManager.shared.load()
-
+        
         if configs.isEmpty || configs.first(where: { $0.type == .basicNeeds })?.subitems == nil {
             let defaultSubitems = [
                 SubitemConfig(title: "Alimentação", isVisible: true),
@@ -186,15 +211,15 @@ class TodayViewController: UIViewController {
             configs = [basicNeedsConfig, tasksConfig, intercurrencesConfig]
             TodaySectionManager.shared.save(configs)
         }
-
+        
         vStack.arrangedSubviews.forEach {
             vStack.removeArrangedSubview($0)
             $0.removeFromSuperview()
         }
-
+        
         for config in configs.sorted(by: { $0.order < $1.order }) {
             guard config.isVisible else { continue }
-
+            
             switch config.type {
             case .basicNeeds:
                 let visibleItems = config.subitems?.filter(\.isVisible).map(\.title) ?? []
@@ -217,7 +242,7 @@ class TodayViewController: UIViewController {
                     feedingCard.onAddButtonTap = { [weak self] in
                         self?.delegate?.goTo(.recordFeeding)
                     }
-
+                    
                     sectionStack.addArrangedSubview(feedingCard)
                 }
                 
@@ -228,30 +253,34 @@ class TodayViewController: UIViewController {
                     } else {
                         iconName = "drop.fill"
                     }
+                    
+                    let waterRecord = WaterRecord(currentQuantity: "\(viewModel.waterQuantity)", goalQuantity: "2L")
+                    waterRecord.onEditTap = { [weak self] in
+                        self?.delegate?.goTo(.recordHydration)
+                    }
 
                     let hydrationCard = RecordCard(
                         title: "Hidratação",
                         iconName: iconName,
                         showPlusButton: false,
-                        contentView: WaterRecord(currentQuantity: "\(viewModel.waterQuantity)", goalQuantity: "2L")
+                        contentView: waterRecord,
+                        waterText: "\(Int(viewModel.waterMeasure))ml"
                     )
                     
-                    viewModel.onWaterQuantityUpdated = { [weak self] newValue in
-                        DispatchQueue.main.async {
-                            (hydrationCard.contentView as? WaterRecord)?.updateQuantity("\(newValue)")
-                        }
-                    }
                     hydrationCard.onAddButtonTap = { [weak self] in
-                        self?.delegate?.goTo(.recordHydration)
+                        self?.viewModel.saveHydrationRecord()
                     }
+
+                    
                     sectionStack.addArrangedSubview(hydrationCard)
                 }
-
+                
                 if visibleItems.contains("Fezes") || visibleItems.contains("Urina") {
                     let bottomRow = UIStackView()
                     bottomRow.axis = .horizontal
                     bottomRow.spacing = 16
                     bottomRow.distribution = .fillEqually
+                    
                     if visibleItems.contains("Fezes") {
                         let stoolCard = RecordCard(title: "Fezes", iconName: "toilet.fill", contentView: QuantityRecordContent(quantity: viewModel.todayStoolQuantity))
                         stoolCard.onAddButtonTap = { [weak self] in
@@ -260,8 +289,16 @@ class TodayViewController: UIViewController {
                         
                         bottomRow.addArrangedSubview(stoolCard)
                     }
+                    
                     if visibleItems.contains("Urina") {
-                        let urineCard = RecordCard(title: "Urina", iconName: "toilet.fill", contentView: QuantityRecordContent(quantity: viewModel.todayUrineQuantity))
+                        let iconName: String
+                        if #available(iOS 17.0, *) {
+                            iconName = "drop.halffull"
+                        } else {
+                            iconName = "drop.fill"
+                        }
+                        
+                        let urineCard = RecordCard(title: "Urina", iconName: iconName, contentView: QuantityRecordContent(quantity: viewModel.todayUrineQuantity))
                         urineCard.onAddButtonTap = { [weak self] in
                             self?.delegate?.goTo(.recordUrine)
                         }
@@ -270,16 +307,16 @@ class TodayViewController: UIViewController {
                     }
                     sectionStack.addArrangedSubview(bottomRow)
                 }
-
+                
                 vStack.addArrangedSubview(title)
                 vStack.addArrangedSubview(sectionStack)
-
+                
             case .tasks:
                 let taskHeader = TaskHeader()
                 taskHeader.delegate = self
                 vStack.addArrangedSubview(taskHeader)
                 vStack.addArrangedSubview(makeCardByPeriod())
-
+                
             case .intercurrences:
                 let symptomHeader = IntercurrenceHeader()
                 symptomHeader.delegate = self

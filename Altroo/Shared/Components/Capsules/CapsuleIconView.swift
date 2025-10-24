@@ -13,6 +13,7 @@ class CapsuleIconView: UIView {
     var text: String!
     var mainColor: UIColor = UIColor(resource: .teal20)
     var accentColor: UIColor = UIColor(.white)
+    var iconSize: CGFloat = 18
     
     var labelIconSpacing: CGFloat = 6
     
@@ -38,6 +39,7 @@ class CapsuleIconView: UIView {
         text: String,
         mainColor: UIColor = UIColor(resource: .teal20),
         accentColor: UIColor = UIColor(.pureWhite),
+        iconSize: CGFloat = 18,
         contentInsets: UIEdgeInsets? = nil
     ) {
         self.init(frame: .zero)
@@ -45,7 +47,7 @@ class CapsuleIconView: UIView {
         self.text = text
         self.mainColor = mainColor
         self.accentColor = accentColor
-        
+        self.iconSize = iconSize
         if let insets = contentInsets {
             self.contentInsets = insets
         }
@@ -78,8 +80,9 @@ class CapsuleIconView: UIView {
         topConstraint = stackView.topAnchor.constraint(equalTo: self.topAnchor, constant: contentInsets.top)
         bottomConstraint = stackView.bottomAnchor.constraint(equalTo: self.bottomAnchor, constant: -contentInsets.bottom)
         leadingConstraint = stackView.leadingAnchor.constraint(equalTo: self.leadingAnchor, constant: 8)
+        trailingConstraint = stackView.trailingAnchor.constraint(equalTo: self.trailingAnchor, constant: -8)
 
-        NSLayoutConstraint.activate([topConstraint!, bottomConstraint!, leadingConstraint!])
+        NSLayoutConstraint.activate([topConstraint!, bottomConstraint!, leadingConstraint!, trailingConstraint!])
 
         let icon = UIImageView(image: UIImage(systemName: iconName))
         icon.tintColor = accentColor
@@ -88,7 +91,8 @@ class CapsuleIconView: UIView {
         stackView.addArrangedSubview(icon)
 
         NSLayoutConstraint.activate([
-            icon.widthAnchor.constraint(equalTo: icon.heightAnchor)
+            icon.widthAnchor.constraint(equalToConstant: iconSize),
+            icon.heightAnchor.constraint(equalToConstant: iconSize)
         ])
 
         let label = StandardLabel(

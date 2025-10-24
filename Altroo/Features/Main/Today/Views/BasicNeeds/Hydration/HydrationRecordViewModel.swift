@@ -9,7 +9,7 @@ import Combine
 import CoreData
 
 final class HydrationRecordViewModel {
-    private let basicNeedsFacade: BasicNeedsFacade
+    private let careRecipientFacade: CareRecipientFacade
     private let userService: UserServiceSession
     private let coreDataService: CoreDataService
     private let historyService: HistoryService
@@ -23,8 +23,9 @@ final class HydrationRecordViewModel {
         self.coreDataService = coreDataService
         self.historyService = historyService
     }
-
-    func saveHydrationRecord() {
+    
+    // func to save hydration measure
+    func saveHydrationMeasure() {
         guard
             let careRecipient = userService.fetchCurrentPatient(),
             let amount = selectedAmount

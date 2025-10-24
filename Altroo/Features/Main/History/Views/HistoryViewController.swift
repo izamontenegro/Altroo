@@ -29,6 +29,7 @@ final class HistoryViewController: GradientNavBarViewController {
     @MainActor required init?(coder: NSCoder) { fatalError("init(coder:) has not been implemented") }
 
     override func viewDidLoad() {
+        showBackButton = false
         super.viewDidLoad()
 
         let swiftUIView = HistoryView(viewModel: viewModel) 

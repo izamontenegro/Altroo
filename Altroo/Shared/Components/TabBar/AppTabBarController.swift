@@ -39,9 +39,12 @@ final class AppTabBarController: UITabBarController, UITabBarControllerDelegate 
         setupAppearance()
         setupCustomTabBar()
         
-        //FIXME: Take this out when there is more thing for the tabbar
-//        customTabBar.isHidden = true
-
+        NotificationCenter.default.addObserver(
+            self,
+            selector: #selector(handleTabBarVisibility(_:)),
+            name: .toggleTabBarVisibility,
+            object: nil
+        )
     }
     
     //FIXME: Investigate if this will work when there is custom tabbar
@@ -102,4 +105,45 @@ final class AppTabBarController: UITabBarController, UITabBarControllerDelegate 
             model.currentTab = newTab
         }
     }
+    
+    @objc private func handleTabBarVisibility(_ notification: Notification) {
+        guard let hidden = notification.userInfo?["hidden"] as? Bool else { return }
+        setTabBar(hidden: hidden)
+    }
+}
+
+extension AppTabBarController {
+    func setTabBar(hidden: Bool, animated: Bool = true) {
+        guard customTabBar.isHidden != hidden else { return }
+        
+        if animated {
+            if hidden {
+                UIView.animate(withDuration: 0.3, delay: 0, options: [.curveEaseInOut]) {
+                    self.customTabBar.alpha = 0
+                    self.customTabBar.transform = CGAffineTransform(translationX: 0, y: 20)
+                } completion: { _ in
+                    self.customTabBar.isHidden = true
+                    self.customTabBar.transform = .identity
+                }
+            } else {
+                self.customTabBar.isHidden = false
+                self.customTabBar.alpha = 0
+                self.customTabBar.transform = CGAffineTransform(translationX: 0, y: 20)
+                
+                UIView.animate(withDuration: 0.35, delay: 0.05, options: [.curveEaseInOut]) {
+                    self.customTabBar.alpha = 1
+                    self.customTabBar.transform = .identity
+                }
+            }
+        } else {
+            customTabBar.isHidden = hidden
+            customTabBar.alpha = hidden ? 0 : 1
+            customTabBar.transform = .identity
+        }
+    }
+}
+
+
+extension Notification.Name {
+    static let toggleTabBarVisibility = Notification.Name("toggleTabBarVisibility")
 }
