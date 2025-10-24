@@ -25,7 +25,7 @@ final class ProfileCoordinator: Coordinator {
     
     func start() {
         let vc = factory.makeProfileViewController(delegate: self)
-        navigation.pushViewController(vc, animated: false)
+        navigation.pushViewController(vc, animated: true)
     }
 }
 

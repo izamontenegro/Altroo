@@ -205,25 +205,49 @@ class EditSectionViewController: GradientNavBarViewController {
 
     @objc private func handleTap(_ sender: UITapGestureRecognizer) {
         guard let tappedView = sender.view else { return }
-        
-        if let checkmark = tappedView.subviews
-            .compactMap({ $0 as? UIImageView })
-            .first(where: { $0.tag == 999 }) {
-            
-            let isChecked = checkmark.image == UIImage(systemName: "checkmark.circle.fill")
-            let newImageName = isChecked ? "circle" : "checkmark.circle.fill"
-            checkmark.image = UIImage(systemName: newImageName)
-            
-            UIView.animate(withDuration: 0.15, animations: {
-                checkmark.transform = CGAffineTransform(scaleX: 0.8, y: 0.8)
-            }) { _ in
-                UIView.animate(withDuration: 0.15) {
-                    checkmark.transform = .identity
+
+        guard let checkmark = tappedView.subviews
+                .compactMap({ $0 as? UIImageView })
+                .first(where: { $0.tag == 999 }) else { return }
+
+        let isChecked = checkmark.image == UIImage(systemName: "checkmark.circle.fill")
+        let newImageName = isChecked ? "circle" : "checkmark.circle.fill"
+        checkmark.image = UIImage(systemName: newImageName)
+
+        UIView.animate(withDuration: 0.15, animations: {
+            checkmark.transform = CGAffineTransform(scaleX: 0.8, y: 0.8)
+        }) { _ in
+            UIView.animate(withDuration: 0.15) {
+                checkmark.transform = .identity
+            }
+        }
+
+        guard let sectionStack = tappedView.superview as? UIStackView,
+              let headerStack = sectionStack.arrangedSubviews.first as? UIStackView,
+              let headerCheck = headerStack.subviews.compactMap({ $0 as? UIImageView }).first(where: { $0.tag == 999 }) else { return }
+
+        let subitemStacks = sectionStack.arrangedSubviews.dropFirst()
+
+        if tappedView == headerStack {
+            for subview in subitemStacks {
+                if let itemCheck = subview.subviews.compactMap({ $0 as? UIImageView }).first(where: { $0.tag == 999 }) {
+                    itemCheck.image = UIImage(systemName: newImageName)
                 }
             }
-
-            saveCurrentOrder()
+        } else {
+            updateHeaderState(headerCheck: headerCheck, subitems: subitemStacks)
         }
+
+        saveCurrentOrder()
+    }
+
+    private func updateHeaderState(headerCheck: UIImageView, subitems: ArraySlice<UIView>) {
+        let anySubitemChecked = subitems.contains { subview in
+            guard let itemCheck = subview.subviews.compactMap({ $0 as? UIImageView }).first(where: { $0.tag == 999 }) else { return false }
+            return itemCheck.image == UIImage(systemName: "checkmark.circle.fill")
+        }
+
+        headerCheck.image = UIImage(systemName: anySubitemChecked ? "checkmark.circle.fill" : "circle")
     }
 
     
