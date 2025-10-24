@@ -8,8 +8,10 @@
 import UIKit
 
 final class TodayCoordinator: Coordinator {
+    
     var childCoordinators: [Coordinator] = []
     var navigation: UINavigationController
+    
     private let factory: AppFactory
     
     var onRequestLogout: (() -> Void)?
@@ -30,11 +32,25 @@ final class TodayCoordinator: Coordinator {
         let vc = factory.makeMealRecordViewController() as! MealRecordViewController
         vc.delegate = self
         return vc
-        case .recordHydration: return factory.makeHydrationRecordSheet()
+        case .recordHydration:
+            let vc = factory.makeHydrationRecordSheet()
+            if let hydrationVC = vc as? HydrationRecordViewController {
+                hydrationVC.onDismiss = { [weak self] in
+                    guard let self else { return }
+
+                    if let todayVC = self.navigation.viewControllers
+                        .compactMap({ $0 as? TodayViewController })
+                        .first {
+                        todayVC.viewModel.fetchWaterMeasure()
+                    }
+                }
+            }
+
+            return vc
         case .recordUrine:
-                    let vc = factory.makeUrineRecordViewController() as! UrineRecordViewController
-                    vc.delegate = self
-                    return vc
+            let vc = factory.makeUrineRecordViewController() as! UrineRecordViewController
+            vc.delegate = self
+            return vc
         case .recordStool:
             let vc = factory.makeStoolRecordViewController() as! StoolRecordViewController
             vc.delegate = self
@@ -62,9 +78,8 @@ final class TodayCoordinator: Coordinator {
             vc.coordinator = self
             return vc
         case .careRecipientProfile:
-            let profileCoord = ProfileCoordinator(navigation: navigation, factory: factory, associateFactory: factory
-                        )
-                        add(child: profileCoord); profileCoord.start()
+            let profileCoord = ProfileCoordinator(navigation: navigation, factory: factory, associateFactory: factory)
+            add(child: profileCoord); profileCoord.start()
             return nil
             
         case .checkMedicationDone:
@@ -159,7 +174,6 @@ enum TodayDestination {
     case seeAllMedication, addNewMedication, checkMedicationDone
     case seeAllEvents, addNewEvent
     case addSymptom, symptomDetail
-
     
     var isSheet: Bool {
         switch self {
@@ -197,7 +211,7 @@ extension TodayCoordinator: StoolRecordNavigationDelegate {
         }
     }
 }
-        
+
 extension TodayCoordinator: MealRecordNavigationDelegate {
     func didFinishAddingMealRecord() {
         if let todayVC = navigation.viewControllers.first {

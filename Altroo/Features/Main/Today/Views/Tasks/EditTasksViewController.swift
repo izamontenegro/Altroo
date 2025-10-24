@@ -164,18 +164,29 @@ class EditTaskViewController: TaskFormViewController {
             hourStack.addArrangedSubview(newPicker)
         }
         hourPickers.append(newPicker)
+        
+        
+        if !isInitial {
+            let index = viewModel.times.count
+            viewModel.addTime(from: newPicker.date)
+        }
+
     }
     
     @objc func timeChanged(_ sender: UIDatePicker) {
         let index = sender.tag
         
         if index < viewModel.times.count {
-            // update existing time
-            viewModel.addTime(from: sender.date, at: index)
-        } else if index == viewModel.times.count {
-            // add new time
-            viewModel.addTime(from: sender.date)
-        } else { return }
+           viewModel.addTime(from: sender.date, at: index)
+        }
+    }
+    
+    @objc override func startDateChanged(_ picker: UIDatePicker) {
+        viewModel.startDate = picker.date
+    }
+    
+    @objc override func endDateChanged(_ picker: UIDatePicker) {
+        viewModel.endDate = picker.date
     }
     
     @objc func addTimeButtonTapped(_ sender: UIButton) {

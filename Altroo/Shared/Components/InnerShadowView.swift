@@ -86,9 +86,9 @@ private struct InnerShadowViewPreview: UIViewRepresentable {
     func updateUIView(_ uiView: InnerShadowView, context: Context) { }
 }
 
-#Preview {
-    InnerShadowViewPreview()
-        .frame(width: 350, height: 200)
-        .padding()
-        .background(Color.black)
-}
+//#Preview {
+//    InnerShadowViewPreview()
+//        .frame(width: 350, height: 200)
+//        .padding()
+//        .background(Color.black)
+//}

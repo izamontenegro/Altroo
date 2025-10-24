@@ -16,18 +16,19 @@ class RecordCard: InnerShadowView {
     
     var addButtonPosition: Position = .none
     let addButton = PlusButton()
-    let waterCapsule = WaterCapsule(text: "250ml")
+    let waterCapsule: WaterCapsule
     var onAddButtonTap: (() -> Void)? //call closure using [weak self]
     
     let padding = 8.0
     let contentView: UIView?
     
-    init(frame: CGRect = .zero, title: String, iconName: String, showPlusButton: Bool = true, addButtonPosition: Position = .top, contentView: UIView? = nil) {
+    init(frame: CGRect = .zero, title: String, iconName: String, showPlusButton: Bool = true, addButtonPosition: Position = .top, contentView: UIView? = nil, waterText: String = "250ml" ) {
         self.title = title
         self.iconName = iconName
         self.showPlusButton = showPlusButton
         self.addButtonPosition = addButtonPosition
         self.contentView = contentView
+        self.waterCapsule = WaterCapsule(text: waterText)
         
         super.init(frame: frame, color: .blue70)
         
@@ -38,9 +39,7 @@ class RecordCard: InnerShadowView {
     }
     
     convenience init(frame: CGRect) {
-        self.init(frame: frame,
-                  title: "",
-                  iconName: "questionmark.circle")
+        self.init(frame: frame, title: "", iconName: "questionmark.circle")
     }
     
     required init?(coder: NSCoder) {
@@ -129,11 +128,11 @@ class RecordCard: InnerShadowView {
         
         addSubview(contentContainer)
         contentContainer.translatesAutoresizingMaskIntoConstraints = false
-        
+
         NSLayoutConstraint.activate([
             contentContainer.topAnchor.constraint(equalTo: topAnchor, constant: 40),
-            contentContainer.leadingAnchor.constraint(equalTo: leadingAnchor, constant: padding),
-            contentContainer.trailingAnchor.constraint(equalTo: trailingAnchor, constant: -padding),
+            contentContainer.leadingAnchor.constraint(equalTo: leadingAnchor, constant: 0),
+            contentContainer.trailingAnchor.constraint(equalTo: trailingAnchor, constant: 0),
             contentContainer.bottomAnchor.constraint(equalTo: bottomAnchor, constant: -padding)
         ])
         
@@ -142,16 +141,16 @@ class RecordCard: InnerShadowView {
         
         NSLayoutConstraint.activate([
             contentView.leadingAnchor.constraint(equalTo: contentContainer.leadingAnchor, constant: 0),
-            contentView.trailingAnchor.constraint(lessThanOrEqualTo: contentContainer.trailingAnchor, constant: -10),
-            contentView.bottomAnchor.constraint(equalTo: contentContainer.bottomAnchor, constant: -4),
-            contentView.topAnchor.constraint(equalTo: contentContainer.topAnchor, constant: 10)
+            contentView.trailingAnchor.constraint(equalTo: contentContainer.trailingAnchor, constant: 0),
+            contentView.bottomAnchor.constraint(equalTo: contentContainer.bottomAnchor, constant: 15),
+            contentView.topAnchor.constraint(equalTo: contentContainer.topAnchor, constant: 5)
         ])
     }
     
     @objc private func buttonWasTapped() {
         onAddButtonTap?()
     }
-    
+
     enum Position {
         case top, bottom, none
     }

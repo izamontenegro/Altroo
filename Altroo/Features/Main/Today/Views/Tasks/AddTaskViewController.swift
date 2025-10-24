@@ -25,22 +25,8 @@ class AddTaskViewController: GradientNavBarViewController {
     
     let addButton = StandardConfirmationButton(title: "Adicionar")
     
-    let nameTexfield = StandardTextfield(width: 370,
-                                         height: 38,
-//                                         title: StandardLabel(labelText: "Nome",
-//                                                              labelFont: .sfPro,
-//                                                              labelType: .title3,
-//                                                              labelColor: UIColor(resource: .black10),
-//                                                              labelWeight: .semibold),
-                                         placeholder: "Nome")
-    let noteTexfield = StandardTextfield(width: 370,
-                                         height: 38,
-//                                         title: StandardLabel(labelText: "Observação",
-//                                                              labelFont: .sfPro,
-//                                                              labelType: .title3,
-//                                                              labelColor: UIColor(resource: .black10),
-//                                                              labelWeight: .semibold),
-                                         placeholder: "Observação")
+    let nameTexfield = StandardTextfield(placeholder: "Nome")
+    let noteTexfield = StandardTextfield(placeholder: "Observação")
     
     var hourPickers: [UIDatePicker] = []
     let addTimeButton = PrimaryStyleButton(title: "Novo Horário")
@@ -91,6 +77,7 @@ class AddTaskViewController: GradientNavBarViewController {
         fatalError("init(coder:) has not been implemented")
     }
     
+    // MARK: - Lifecycle
     override func viewDidLoad() {
         super.viewDidLoad()
         
@@ -98,6 +85,16 @@ class AddTaskViewController: GradientNavBarViewController {
         
         setupUI()
         bindViewModel()
+    }
+    
+    override func viewWillAppear(_ animated: Bool) {
+        super.viewWillAppear(animated)
+        NotificationCenter.default.post(name: .toggleTabBarVisibility, object: nil, userInfo: ["hidden": true])
+    }
+    
+    override func viewWillDisappear(_ animated: Bool) {
+        super.viewWillDisappear(animated)
+        NotificationCenter.default.post(name: .toggleTabBarVisibility, object: nil, userInfo: ["hidden": false])
     }
     
     func bindViewModel() {

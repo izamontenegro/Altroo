@@ -9,18 +9,19 @@ import Combine
 import CoreData
 
 final class HydrationRecordViewModel {
-    private let basicNeedsFacade: BasicNeedsFacade
+    private let careRecipientFacade: CareRecipientFacade
     private let userService: UserServiceSession
 
     @Published var selectedAmount: HydrationAmountEnum? = nil
     @Published var customValue: Double = 0
 
-    init(basicNeedsFacade: BasicNeedsFacade, userService: UserServiceSession) {
-        self.basicNeedsFacade = basicNeedsFacade
+    init(careRecipientFacade: CareRecipientFacade, userService: UserServiceSession) {
+        self.careRecipientFacade = careRecipientFacade
         self.userService = userService
     }
-
-    func saveHydrationRecord() {
+    
+    // func to save hydration measure
+    func saveHydrationMeasure() {
         guard
             let careRecipient = userService.fetchCurrentPatient(),
             let amount = selectedAmount
@@ -28,14 +29,7 @@ final class HydrationRecordViewModel {
 
         let totalWater = amount == .custom ? customValue : amount.milliliters
         
-        basicNeedsFacade.addHydration(
-            period: .afternoon, // FIXME: substituir pelo período correto quando disponível
-            date: Date(),
-            waterQuantity: totalWater,
-            in: careRecipient
-        )
-        
-        checkSavedRecord()
+        careRecipientFacade.setWaterMeasure(totalWater, careRecipient)
     }
 
     private func checkSavedRecord() {
@@ -47,17 +41,17 @@ final class HydrationRecordViewModel {
                 let results = try context.fetch(request)
                 print("💧 [DEBUG] Total hydration records encontrados: \(results.count)")
                 if let last = results.last {
-                    print("💧 [DEBUG] Último registro salvo:")
+                    print("💧 [DEBUG] Last Record:")
                     print("• ID:", last.id)
-                    print("• Data:", last.date ?? Date())
-                    print("• Período:", last.period ?? "—")
-                    print("• Quantidade:", last.waterQuantity)
+                    print("• Date:", last.date ?? Date())
+                    print("• Period:", last.period ?? "—")
+                    print("• Quantity:", last.waterQuantity)
                 }
             } catch {
-                print("⚠️ [DEBUG] Falha ao buscar HydrationRecord:", error.localizedDescription)
+                print("⚠️ [DEBUG] Error fetching HydrationRecord:", error.localizedDescription)
             }
         } else {
-            print("⚠️ [DEBUG] Nenhum managedObjectContext encontrado para o CareRecipient atual.")
+            print("⚠️ [DEBUG] None managedObjectContext.")
         }
     }
 }

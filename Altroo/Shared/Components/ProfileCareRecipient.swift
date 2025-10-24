@@ -9,10 +9,12 @@ import UIKit
 
 class ProfileCareRecipient: UIView {
     
-    private static let defaultColor: UIColor = .blue30
-    private static let defaultStrokeColor: UIColor = .blue20
+    private static let defaultColor: UIColor = .teal20
+    private static let defaultStrokeColor: UIColor = .blue80
     
-    var name: String { didSet { updateInitials() } }
+    var name: String {
+        didSet { updateLabel() }
+    }
     
     var color: UIColor {
         didSet {
@@ -24,18 +26,6 @@ class ProfileCareRecipient: UIView {
         didSet {
             layer.borderColor = strokeColor.cgColor
         }
-    }
-    
-    private var initials: String {
-        let formatter = PersonNameComponentsFormatter()
-        formatter.style = .abbreviated
-        
-        if let components = formatter.personNameComponents(from: name) {
-            let initials = formatter.string(from: components)
-            return initials
-        }
-        
-        return ""
     }
     
     private let label = StandardLabel(
@@ -57,7 +47,7 @@ class ProfileCareRecipient: UIView {
         self.strokeColor = strokeColor
         super.init(frame: frame)
         setupView()
-        updateInitials()
+        updateLabel()
     }
     
     required init?(coder: NSCoder) {
@@ -66,11 +56,11 @@ class ProfileCareRecipient: UIView {
         self.strokeColor = ProfileCareRecipient.defaultStrokeColor
         super.init(coder: coder)
         setupView()
-        updateInitials()
+        updateLabel()
     }
     
-    private func updateInitials() {
-        label.text = initials
+    private func updateLabel() {
+        label.text = name
     }
     
     private func setupView() {

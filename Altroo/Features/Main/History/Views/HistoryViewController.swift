@@ -11,7 +11,7 @@ protocol HistoryViewControllerDelegate: AnyObject {
     func openDetailSheet(_ controller: HistoryViewController)
 }
 
-class HistoryViewController: UIViewController {
+class HistoryViewController: GradientNavBarViewController {
     weak var delegate: HistoryViewControllerDelegate?
 
     let viewLabel: UILabel = {
@@ -33,6 +33,7 @@ class HistoryViewController: UIViewController {
     
     
     override func viewDidLoad() {
+        showBackButton = false
         super.viewDidLoad()
 
         view.backgroundColor = .blue80

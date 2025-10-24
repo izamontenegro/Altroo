@@ -13,6 +13,7 @@ class CapsuleIconView: UIView {
     var text: String!
     var mainColor: UIColor = UIColor(resource: .teal20)
     var accentColor: UIColor = UIColor(.white)
+    var iconSize: CGFloat = 18
     
     var labelIconSpacing: CGFloat = 6
     
@@ -38,6 +39,7 @@ class CapsuleIconView: UIView {
         text: String,
         mainColor: UIColor = UIColor(resource: .teal20),
         accentColor: UIColor = UIColor(.pureWhite),
+        iconSize: CGFloat = 18,
         contentInsets: UIEdgeInsets? = nil
     ) {
         self.init(frame: .zero)
@@ -45,7 +47,7 @@ class CapsuleIconView: UIView {
         self.text = text
         self.mainColor = mainColor
         self.accentColor = accentColor
-        
+        self.iconSize = iconSize
         if let insets = contentInsets {
             self.contentInsets = insets
         }
@@ -65,32 +67,34 @@ class CapsuleIconView: UIView {
     private func makeCapsule() {
         self.backgroundColor = mainColor
         self.translatesAutoresizingMaskIntoConstraints = false
-        
+
         stackView = UIStackView()
         stackView.axis = .horizontal
-        stackView.alignment = .center
         stackView.spacing = labelIconSpacing
         stackView.translatesAutoresizingMaskIntoConstraints = false
-        
+        stackView.distribution = .fill
+        stackView.alignment = .center
+
         addSubview(stackView)
-        
+
         topConstraint = stackView.topAnchor.constraint(equalTo: self.topAnchor, constant: contentInsets.top)
         bottomConstraint = stackView.bottomAnchor.constraint(equalTo: self.bottomAnchor, constant: -contentInsets.bottom)
-        leadingConstraint = stackView.leadingAnchor.constraint(equalTo: self.leadingAnchor, constant: contentInsets.left)
-        trailingConstraint = stackView.trailingAnchor.constraint(equalTo: self.trailingAnchor, constant: -contentInsets.right)
-        
+        leadingConstraint = stackView.leadingAnchor.constraint(equalTo: self.leadingAnchor, constant: 8)
+        trailingConstraint = stackView.trailingAnchor.constraint(equalTo: self.trailingAnchor, constant: -8)
+
         NSLayoutConstraint.activate([topConstraint!, bottomConstraint!, leadingConstraint!, trailingConstraint!])
-        
+
         let icon = UIImageView(image: UIImage(systemName: iconName))
         icon.tintColor = accentColor
         icon.contentMode = .scaleAspectFit
         icon.translatesAutoresizingMaskIntoConstraints = false
         stackView.addArrangedSubview(icon)
-        
+
         NSLayoutConstraint.activate([
-            icon.widthAnchor.constraint(equalTo: icon.heightAnchor)
+            icon.widthAnchor.constraint(equalToConstant: iconSize),
+            icon.heightAnchor.constraint(equalToConstant: iconSize)
         ])
-        
+
         let label = StandardLabel(
             labelText: text,
             labelFont: .sfPro,
@@ -103,10 +107,16 @@ class CapsuleIconView: UIView {
         label.lineBreakMode = .byTruncatingTail
         label.adjustsFontSizeToFitWidth = true
         label.minimumScaleFactor = 0.85
-        
+
+        label.setContentHuggingPriority(.required, for: .horizontal)
+        label.setContentCompressionResistancePriority(.required, for: .horizontal)
+
         stackView.addArrangedSubview(label)
+
+        let intrinsicWidth = stackView.systemLayoutSizeFitting(UIView.layoutFittingCompressedSize).width
+        self.widthAnchor.constraint(equalToConstant: intrinsicWidth + 8 + contentInsets.right).isActive = true
     }
-    
+
     private func updateConstraintsForInsets() {
         topConstraint?.constant = contentInsets.top
         bottomConstraint?.constant = -contentInsets.bottom

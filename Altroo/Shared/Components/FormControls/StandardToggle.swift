@@ -13,11 +13,11 @@ class StandardToggle: UIControl {
     
     private(set) var isOn = false
     
-    var onColor: UIColor = UIColor(resource: .teal30)
-    var offColor: UIColor = UIColor(resource: .teal80)
-    var onThumbColor: UIColor = UIColor(resource: .pureWhite)
-    var offThumbColor: UIColor = UIColor(resource: .teal30)
-
+    var onColor: UIColor = .blue30
+    var offColor: UIColor = .white70
+    var onThumbColor: UIColor = .white70
+    var offThumbColor: UIColor = .pureWhite
+    
     override init(frame: CGRect) {
         super.init(frame: frame)
         setupView()
@@ -33,25 +33,26 @@ class StandardToggle: UIControl {
     private func setupView() {
         backgroundColor = .clear
         
+        let height = bounds.height
+        let width = height * 1.8
+        if frame.width != width {
+            frame.size.width = width
+        }
+        backgroundView.frame = bounds
+        backgroundView.layer.cornerRadius = height / 2
+        
         backgroundView.backgroundColor = offColor
-        backgroundView.layer.cornerRadius = 14
         backgroundView.layer.shadowColor = UIColor.black10.cgColor
         backgroundView.layer.shadowOpacity = 0.2
         backgroundView.layer.shadowOffset = CGSize(width: 2, height: 2)
         backgroundView.layer.shadowRadius = 3
         
+        
         addSubview(backgroundView)
         backgroundView.translatesAutoresizingMaskIntoConstraints = false
         
-        NSLayoutConstraint.activate([
-            backgroundView.topAnchor.constraint(equalTo: topAnchor),
-            backgroundView.bottomAnchor.constraint(equalTo: bottomAnchor),
-            backgroundView.leadingAnchor.constraint(equalTo: leadingAnchor),
-            backgroundView.trailingAnchor.constraint(equalTo: trailingAnchor)
-        ])
         
         thumbView.backgroundColor = offThumbColor
-        thumbView.layer.cornerRadius = 11
         thumbView.layer.shadowColor = UIColor.black10.cgColor
         thumbView.layer.shadowOpacity = 0.2
         thumbView.layer.shadowOffset = CGSize(width: 1, height: 1)
@@ -69,18 +70,23 @@ class StandardToggle: UIControl {
     override func layoutSubviews() {
         super.layoutSubviews()
         
+        let height = bounds.height
+        let width = height * 1.8
         let thumbSize = bounds.height - 8
-        let thumbY = bounds.midY - thumbSize / 2
         
-        if thumbView.constraints.isEmpty {
-            thumbView.frame = CGRect(
-                x: 4,
-                y: thumbY,
-                width: thumbSize,
-                height: thumbSize
-            )
+        if frame.width != width {
+            frame.size.width = width
         }
+        
+        backgroundView.frame = bounds
+        backgroundView.layer.cornerRadius = height / 2
+        
+        let thumbY = (height - thumbSize) / 2
+        let thumbX = isOn ? width - thumbSize - 4 : 4
+        thumbView.frame = CGRect(x: thumbX, y: thumbY, width: thumbSize, height: thumbSize)
+        thumbView.layer.cornerRadius = thumbSize / 2
     }
+    
     // MARK: - Actions
     @objc private func toggle() {
         setOn(!isOn, animated: true)
@@ -92,7 +98,7 @@ class StandardToggle: UIControl {
         let thumbSize = bounds.height - 8
         let newX = on ? bounds.width - thumbSize - 4 : 4
         
-        UIView.animate(withDuration: animated ? 0.5 : 0.0,
+        UIView.animate(withDuration: animated ? 0.4 : 0.0,
                        delay: 0,
                        usingSpringWithDamping: 0.7,
                        initialSpringVelocity: 0.5,
@@ -115,25 +121,25 @@ private struct StandardTogglePreviewWrapper: UIViewRepresentable {
     }
 }
 
-#Preview {
-    StandardTogglePreviewWrapper()
-        .frame(width: 50, height: 30)
-}
+//#Preview {
+//    StandardTogglePreviewWrapper()
+//        .frame(width: 50, height: 30)
+//}
 
 // TODO: USAR ISSO NA VIEW CONTROLLER !!
 //class ViewController: UIViewController {
 //    override func viewDidLoad() {
 //        super.viewDidLoad()
 //        view.backgroundColor = UIColor.systemGray6
-//        
+//
 //        let toggle = StandardToggle(frame: CGRect(x: 100, y: 200, width: 50, height: 30))
 //        toggle.onColor = UIColor.systemTeal
 //        toggle.offColor = UIColor.systemGray5
 //        view.addSubview(toggle)
-//        
+//
 //        toggle.addTarget(self, action: #selector(switchChanged(_:)), for: .valueChanged)
 //    }
-//    
+//
 //    @objc func switchChanged(_ sender: StandardToggle) {
 //        print("Switch state: \(sender.isOn)")
 //    }

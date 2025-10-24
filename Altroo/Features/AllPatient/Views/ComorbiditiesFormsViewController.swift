@@ -7,7 +7,7 @@
 
 import UIKit
 
-class ComorbiditiesFormsViewController: UIViewController {
+class ComorbiditiesFormsViewController: GradientNavBarViewController {
     
     weak var delegate: AssociatePatientViewControllerDelegate?
     private let viewModel: AddPatientViewModel
@@ -23,9 +23,10 @@ class ComorbiditiesFormsViewController: UIViewController {
     required init?(coder: NSCoder) {
         fatalError("init(coder:) has not been implemented")
     }
+    private let titleSection = FormTitleSection(title: "Comorbidades", description: "Selecione o que corresponder às comorbidades da pessoa cuidada.", totalSteps: 3, currentStep: 2)
     
     private let label1 = StandardLabel(
-        labelText: "O Assistido possui alguma das seguintes doenças?",
+        labelText: "O assistido tem alguma das condições abaixo?",
         labelFont: .sfPro,
         labelType: .title3,
         labelColor: .black10,
@@ -33,7 +34,7 @@ class ComorbiditiesFormsViewController: UIViewController {
     )
     
     private let label2 = StandardLabel(
-        labelText: "O Assistido é acamado?",
+        labelText: "O assistido é acamado?",
         labelFont: .sfPro,
         labelType: .title3,
         labelColor: .black10,
@@ -51,7 +52,7 @@ class ComorbiditiesFormsViewController: UIViewController {
     private let firstRowStack: UIStackView = {
         let stack = UIStackView()
         stack.axis = .horizontal
-        stack.spacing = 15
+        stack.spacing = Layout.smallSpacing
         stack.distribution = .fillEqually
         stack.translatesAutoresizingMaskIntoConstraints = false
         return stack
@@ -60,7 +61,7 @@ class ComorbiditiesFormsViewController: UIViewController {
     private let secondRowStack: UIStackView = {
         let stack = UIStackView()
         stack.axis = .horizontal
-        stack.spacing = 12
+        stack.spacing = Layout.smallSpacing
         stack.distribution = .fillEqually
         stack.translatesAutoresizingMaskIntoConstraints = false
         return stack
@@ -69,7 +70,7 @@ class ComorbiditiesFormsViewController: UIViewController {
     private let mainStack: UIStackView = {
         let stack = UIStackView()
         stack.axis = .vertical
-        stack.spacing = 24
+        stack.spacing = Layout.largeSpacing
         stack.alignment = .center
         stack.translatesAutoresizingMaskIntoConstraints = false
         return stack
@@ -82,33 +83,44 @@ class ComorbiditiesFormsViewController: UIViewController {
 
         view.backgroundColor = .pureWhite
         
+        setupNavBar()
         setupComorbidityButtons()
         
         label1.numberOfLines = 0
         label1.lineBreakMode = .byWordWrapping
         
+        mainStack.addArrangedSubview(titleSection)
+        mainStack.setCustomSpacing(Layout.mediumSpacing, after: titleSection)
         mainStack.addArrangedSubview(label1)
+        mainStack.setCustomSpacing(Layout.smallSpacing, after: label1)
         mainStack.addArrangedSubview(firstRowStack)
         mainStack.addArrangedSubview(label2)
+        mainStack.setCustomSpacing(Layout.smallSpacing, after: label2)
         mainStack.addArrangedSubview(secondRowStack)
         mainStack.addArrangedSubview(nextStepButton)
         
         view.addSubview(mainStack)
         
         NSLayoutConstraint.activate([
-            mainStack.topAnchor.constraint(equalTo: view.safeAreaLayoutGuide.topAnchor, constant: 32),
-            mainStack.leadingAnchor.constraint(equalTo: view.leadingAnchor, constant: 15),
-            mainStack.trailingAnchor.constraint(equalTo: view.trailingAnchor, constant: -15),
+            mainStack.topAnchor.constraint(equalTo: view.safeAreaLayoutGuide.topAnchor, constant: Layout.smallSpacing),
+            mainStack.leadingAnchor.constraint(equalTo: view.leadingAnchor, constant: Layout.mediumSpacing),
+            mainStack.trailingAnchor.constraint(equalTo: view.trailingAnchor, constant: -Layout.mediumSpacing),
+            
             label1.widthAnchor.constraint(equalTo: mainStack.widthAnchor),
             firstRowStack.widthAnchor.constraint(equalTo: mainStack.widthAnchor),
+            
             label2.widthAnchor.constraint(equalTo: mainStack.widthAnchor),
             secondRowStack.widthAnchor.constraint(equalTo: mainStack.widthAnchor),
+            
             nextStepButton.heightAnchor.constraint(equalToConstant: 46),
             nextStepButton.widthAnchor.constraint(equalToConstant: 215),
-
         ])
         
         nextStepButton.addTarget(self, action: #selector(didTapDoneButton), for: .touchUpInside)
+    }
+    
+    private func setupNavBar() {
+        setNavbarTitle("Adicionar Paciente")
     }
     
     private func setupComorbidityButtons() {
@@ -119,7 +131,7 @@ class ComorbiditiesFormsViewController: UIViewController {
             
             button.translatesAutoresizingMaskIntoConstraints = false
             NSLayoutConstraint.activate([
-                button.widthAnchor.constraint(equalToConstant: 115),
+//                button.widthAnchor.constraint(equalToConstant: 115),
                 button.heightAnchor.constraint(equalToConstant: 190)
             ])
             
@@ -136,7 +148,7 @@ class ComorbiditiesFormsViewController: UIViewController {
         secondRowStack.addArrangedSubview(bedriddenMovableButton)
         
         NSLayoutConstraint.activate([
-            secondRowStack.widthAnchor.constraint(equalToConstant: 115),
+//            secondRowStack.widthAnchor.constraint(equalToConstant: 115),
             secondRowStack.heightAnchor.constraint(equalToConstant: 210)
         ])
     }
@@ -157,17 +169,7 @@ class ComorbiditiesFormsViewController: UIViewController {
     
     @objc
     private func didTapBedriddenButton(_ sender: BedriddenButton) {
-        if sender.backgroundColor == .blue40 {
-            sender.backgroundColor = .white70
-            bedriddenStatus = .notBedridden
-            return
-        }
-
-        for case let button as BedriddenButton in secondRowStack.arrangedSubviews {
-            button.backgroundColor = .white70
-        }
-
-        sender.backgroundColor = .blue40
+        sender.toggleState()
 
         switch sender.bedriddenState {
         case .movement:

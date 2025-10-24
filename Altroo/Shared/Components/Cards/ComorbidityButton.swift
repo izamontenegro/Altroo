@@ -12,14 +12,15 @@ class ComorbidityButton: UIButton {
     
     private(set) var isSelectedState = false
     private var innerShadowView: InnerShadowView?
-    
-    var circle1 = CircleView()
-    var circle2 = CircleView()
-    var circle3 = CircleView()
-    var icon = UIImageView()
-    
-    private var iconView: PulseIcon!
-    private var label: StandardLabel!
+
+    private lazy var circleIcon = PulseIcon(iconName: comorbidity.iconName, color: .blue30, iconColor: .pureWhite, shadowColor: .clear)
+    private lazy var label = StandardLabel(
+        labelText: comorbidity.name,
+        labelFont: .sfPro,
+        labelType: .callOut,
+        labelColor: .blue30,
+        labelWeight: .regular
+    )
     
     init(frame: CGRect = .zero, comorbidity: Comorbidity) {
         self.comorbidity = comorbidity
@@ -40,6 +41,10 @@ class ComorbidityButton: UIButton {
     override func layoutSubviews() {
         super.layoutSubviews()
         innerShadowView?.frame = bounds
+        
+        for subview in subviews {
+            subview.isUserInteractionEnabled = false
+        }
     }
     
     // MARK: - click to change color
@@ -54,18 +59,11 @@ class ComorbidityButton: UIButton {
             let tint = self.isSelectedState ? UIColor(resource: .pureWhite)
                                             : UIColor(resource: .blue30)
             self.label.textColor = tint
-            
-            self.circle1.fillColor = self.isSelectedState ? UIColor(resource: .pureWhite).withAlphaComponent(0.3)
-            : UIColor(resource: .blue30).withAlphaComponent(0.3)
-            self.circle2.fillColor = self.isSelectedState ? UIColor(resource: .pureWhite).withAlphaComponent(0.5)
-            : UIColor(resource: .blue30).withAlphaComponent(0.5)
-            self.circle3.fillColor = self.isSelectedState ? UIColor(resource: .pureWhite).withAlphaComponent(0.8)
-            : UIColor(resource: .blue30).withAlphaComponent(0.8)
-            
-            self.icon.tintColor = self.isSelectedState ? UIColor(resource: .blue40)
-            : UIColor(resource: .white70)
+            self.circleIcon.color = self.isSelectedState ? .pureWhite : .blue30
+            self.circleIcon.iconColor = self.isSelectedState ? .blue40 : .white70
         }
     }
+    
     // MARK: - Setup
     private func setupBackground() {
         backgroundColor = UIColor(resource: .white70)
@@ -77,9 +75,10 @@ class ComorbidityButton: UIButton {
         
         NSLayoutConstraint.activate([
             content.centerXAnchor.constraint(equalTo: centerXAnchor),
-            content.centerYAnchor.constraint(equalTo: centerYAnchor)
+            content.centerYAnchor.constraint(equalTo: centerYAnchor),
+            circleIcon.widthAnchor.constraint(equalTo: widthAnchor, multiplier: 0.55),
+            circleIcon.heightAnchor.constraint(equalTo: circleIcon.widthAnchor),
         ])
-        
     }
     
     private func setupInnerShadow() {
@@ -93,78 +92,21 @@ class ComorbidityButton: UIButton {
     }
     // MARK: - UI Construction
     private func makeContent() -> UIStackView {
-        
-        // circles
-        circle1.fillColor = UIColor(resource: .blue30).withAlphaComponent(0.3)
-        circle1.translatesAutoresizingMaskIntoConstraints = false
-        circle1.widthAnchor.constraint(equalToConstant: 90).isActive = true
-        circle1.heightAnchor.constraint(equalToConstant: 90).isActive = true
-        
-        circle2.fillColor = UIColor(resource: .blue30).withAlphaComponent(0.5)
-        circle2.translatesAutoresizingMaskIntoConstraints = false
-        circle2.widthAnchor.constraint(equalToConstant: 74).isActive = true
-        circle2.heightAnchor.constraint(equalToConstant: 74).isActive = true
-        
-        circle3.fillColor = UIColor(resource: .blue30).withAlphaComponent(0.8)
-        circle3.translatesAutoresizingMaskIntoConstraints = false
-        circle3.widthAnchor.constraint(equalToConstant: 57).isActive = true
-        circle3.heightAnchor.constraint(equalToConstant: 57).isActive = true
-        
-        // icon
-        icon = UIImageView(image: UIImage(systemName: comorbidity.iconName))
-        icon.tintColor = UIColor(resource: .pureWhite)
-        icon.contentMode = .scaleAspectFit
-        icon.translatesAutoresizingMaskIntoConstraints = false
-        
-        NSLayoutConstraint.activate([
-            icon.heightAnchor.constraint(equalToConstant: 55),
-            icon.widthAnchor.constraint(equalToConstant: 55)
-        ])
-        
-        // Container for circles
-        let circles = UIView()
-        circles.translatesAutoresizingMaskIntoConstraints = false
-        circles.addSubview(circle1)
-        circles.addSubview(circle2)
-        circles.addSubview(circle3)
-        circles.addSubview(icon)
-        
-        NSLayoutConstraint.activate([
-            // Sets the container size equal to the largest circle
-            circles.widthAnchor.constraint(equalToConstant: 90),
-            circles.heightAnchor.constraint(equalToConstant: 90),
-            
-            // Centers all circles in the container
-            circle1.centerXAnchor.constraint(equalTo: circles.centerXAnchor),
-            circle1.centerYAnchor.constraint(equalTo: circles.centerYAnchor),
-            
-            circle2.centerXAnchor.constraint(equalTo: circles.centerXAnchor),
-            circle2.centerYAnchor.constraint(equalTo: circles.centerYAnchor),
-            
-            circle3.centerXAnchor.constraint(equalTo: circles.centerXAnchor),
-            circle3.centerYAnchor.constraint(equalTo: circles.centerYAnchor),
-            
-            icon.centerXAnchor.constraint(equalTo: circles.centerXAnchor),
-            icon.centerYAnchor.constraint(equalTo: circles.centerYAnchor)
-        ])
-        
-        label = StandardLabel(
-            labelText: comorbidity.name,
-            labelFont: .sfPro,
-            labelType: .callOut,
-            labelColor: .blue30,
-            labelWeight: .regular
-        )
+
         label.textAlignment = .center
-        label.numberOfLines = 0
         label.lineBreakMode = .byWordWrapping
+        label.adjustsFontSizeToFitWidth = true
+        label.numberOfLines = 0
         label.widthAnchor.constraint(equalToConstant: 120).isActive = true
         
-        let stack = UIStackView(arrangedSubviews: [circles, label])
+        let stack = UIStackView()
         stack.axis = .vertical
         stack.alignment = .center
         stack.spacing = 16
         stack.translatesAutoresizingMaskIntoConstraints = false
+        
+        stack.addArrangedSubview(circleIcon)
+        stack.addArrangedSubview(label)
         
         return stack
     }
@@ -186,7 +128,7 @@ class ComorbidityButton: UIButton {
         var name: String {
             switch self {
             case .heartFailure:
-                return "Insuficiência Cardíaca"
+                return "Doenças Cardíacas"
             case .diabetes:
                 return "Diabetes"
             case .hypertension:
@@ -209,10 +151,10 @@ private struct ComorbidityCardPreview: UIViewRepresentable {
     func updateUIView(_ uiView: ComorbidityButton, context: Context) { }
 }
 
-#Preview {
-    let card = ComorbidityButton(comorbidity: .heartFailure)
-    
-    return ComorbidityCardPreview(card: card)
-        .frame(width: 115, height: 190)
-        .padding()
-}
+//#Preview {
+//    let card = ComorbidityButton(comorbidity: .heartFailure)
+//    
+//    return ComorbidityCardPreview(card: card)
+//        .frame(width: 115, height: 190)
+//        .padding()
+//}
