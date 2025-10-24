@@ -76,7 +76,7 @@ extension DefaultAppFactory {
     }
     
     func makeTodayViewController(delegate: TodayViewControllerDelegate) -> UIViewController {
-        let vm = TodayViewModel(careRecipientFacade: dependencies.careRecipientFacade, basicNeedsFacade: dependencies.basicNeedsFacade, userService: dependencies.userService, taskService: dependencies.routineActivitiesFacade)
+        let vm = TodayViewModel(careRecipientFacade: dependencies.careRecipientFacade, basicNeedsFacade: dependencies.basicNeedsFacade, userService: dependencies.userService, taskService: dependencies.routineActivitiesFacade, coreDataService: dependencies.coreDataService, historyService: dependencies.historyService)
         let vc = TodayViewController(viewModel: vm)
         vc.delegate = delegate
         return vc
@@ -207,7 +207,7 @@ extension DefaultAppFactory {
         return vc
     }
     func makeHydrationRecordSheet() -> UIViewController {
-        let vm = HydrationRecordViewModel(basicNeedsFacade: dependencies.basicNeedsFacade, userService: dependencies.userService, coreDataService: dependencies.coreDataService, historyService: dependencies.historyService)
+        let vm = HydrationRecordViewModel(careRecipientFacade: dependencies.careRecipientFacade, userService: dependencies.userService, coreDataService: dependencies.coreDataService, historyService: dependencies.historyService)
         let vc = HydrationRecordViewController(viewModel: vm)
         return vc
     }
