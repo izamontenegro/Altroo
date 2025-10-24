@@ -4,10 +4,12 @@
 //
 //  Created by Raissa Parente on 13/10/25.
 //
+
 import Combine
 import Foundation
 
 class TodayViewModel {
+    
     let careRecipientFacade: CareRecipientFacade
     let userService: UserServiceProtocol
     var taskService: RoutineActivitiesFacade
@@ -19,6 +21,7 @@ class TodayViewModel {
     
     @Published var todayStoolQuantity: Int = 0
     @Published var todayUrineQuantity: Int = 0
+    
     var waterQuantity: Double = 0 {
         didSet {
             onWaterQuantityUpdated?(waterQuantity)
@@ -102,10 +105,10 @@ class TodayViewModel {
     
     func fetchFeedingRecords() -> [FeedingRecord] {
         guard let currentCareRecipient = currentCareRecipient else { return [] }
-
+        
         let calendar = Calendar.current
         let today = Date()
-
+        
         let todayFeedings = currentCareRecipient.basicNeeds?.feeding?
             .compactMap { $0 as? FeedingRecord }
             .filter { record in
@@ -113,10 +116,10 @@ class TodayViewModel {
                 return calendar.isDate(date, inSameDayAs: today)
             }
             .sorted { ($0.date ?? Date()) > ($1.date ?? Date()) } ?? []
-
+        
         return todayFeedings
     }
-
+    
     func fetchWaterQuantity() {
         guard let currentCareRecipient = currentCareRecipient else { return }
         
@@ -135,5 +138,4 @@ class TodayViewModel {
         
         self.waterQuantity = totalWater / 1000
     }
-    
 }
