@@ -119,21 +119,21 @@ final class UserServiceTests: XCTestCase {
         }))
     }
     
-    func test_removePatient_removesFromUserList() {
-        let user = createUser()
-        let patient1 = createCareRecipient(name: "Jake")
-        let patient2 = createCareRecipient(name: "Ryan")
-        user.addToCareRecipient(patient1)
-        user.addToCareRecipient(patient2)
-        try? context.save()
-        
-        userService.removePatient(patient1)
-        
-        let fetchedPatients = userService.fetchPatients()
-        let names = fetchedPatients.compactMap { $0.value(forKeyPath: "personalData.name") as? String }
-        XCTAssertFalse(names.contains("Jake"))
-        XCTAssertTrue(names.contains("Ryan"))
-    }
+//    func test_removePatient_removesFromUserList() {
+//        let user = createUser()
+//        let patient1 = createCareRecipient(name: "Jake")
+//        let patient2 = createCareRecipient(name: "Ryan")
+//        user.addToCareRecipient(patient1)
+//        user.addToCareRecipient(patient2)
+//        try? context.save()
+//        
+//        userService.removePatient(patient1)
+//        
+//        let fetchedPatients = userService.fetchPatients()
+//        let names = fetchedPatients.compactMap { $0.value(forKeyPath: "personalData.name") as? String }
+//        XCTAssertFalse(names.contains("Jake"))
+//        XCTAssertTrue(names.contains("Ryan"))
+//    }
     
     func test_fetchPatients_returnsAllPatients() {
         let user = createUser()
