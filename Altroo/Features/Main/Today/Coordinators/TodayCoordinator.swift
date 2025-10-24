@@ -30,7 +30,21 @@ final class TodayCoordinator: Coordinator {
         let vc = factory.makeMealRecordViewController() as! MealRecordViewController
         vc.delegate = self
         return vc
-        case .recordHydration: return factory.makeHydrationRecordSheet()
+        case .recordHydration:
+            let vc = factory.makeHydrationRecordSheet()
+            if let hydrationVC = vc as? HydrationRecordViewController {
+                hydrationVC.onDismiss = { [weak self] in
+                    guard let self else { return }
+
+                    if let todayVC = self.navigation.viewControllers
+                        .compactMap({ $0 as? TodayViewController })
+                        .first {
+                        todayVC.viewModel.fetchWaterMeasure()
+                    }
+                }
+            }
+
+            return vc
         case .recordUrine:
                     let vc = factory.makeUrineRecordViewController() as! UrineRecordViewController
                     vc.delegate = self

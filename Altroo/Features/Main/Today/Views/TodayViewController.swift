@@ -6,6 +6,7 @@
 //
 
 import UIKit
+import Combine
 
 protocol TodayViewControllerDelegate: AnyObject {
     func goTo(_ destination: TodayDestination)
@@ -18,6 +19,8 @@ class TodayViewController: UIViewController {
     var onTaskSelected: ((TaskInstance) -> Void)?
     var symptomsCard: SymptomsCard
     var feedingRecords: [FeedingRecord] = []
+    private var cancellables = Set<AnyCancellable>()
+
     
     required init?(coder: NSCoder) {
         fatalError("init(coder:) has not been implemented")
@@ -32,7 +35,7 @@ class TodayViewController: UIViewController {
     let vStack: UIStackView = {
         let stackView = UIStackView(arrangedSubviews: [])
         stackView.axis = .vertical
-        stackView.spacing = 20
+        stackView.spacing = 15
         stackView.translatesAutoresizingMaskIntoConstraints = false
         return stackView
     }()
@@ -65,14 +68,12 @@ class TodayViewController: UIViewController {
             profileToolbar.topAnchor.constraint(equalTo: view.topAnchor),
             profileToolbar.leadingAnchor.constraint(equalTo: view.leadingAnchor),
             profileToolbar.trailingAnchor.constraint(equalTo: view.trailingAnchor),
-            profileToolbar.heightAnchor.constraint(equalToConstant: 174)
-        ])
-        
-        NSLayoutConstraint.activate([
-            scrollView.topAnchor.constraint(equalTo: profileToolbar.bottomAnchor, constant: -30),
-            scrollView.bottomAnchor.constraint(equalTo: view.safeAreaLayoutGuide.bottomAnchor, constant: -45),
+            profileToolbar.heightAnchor.constraint(equalToConstant: 250),
+            
+            scrollView.topAnchor.constraint(equalTo: view.topAnchor, constant: 150),
             scrollView.leadingAnchor.constraint(equalTo: view.leadingAnchor),
             scrollView.trailingAnchor.constraint(equalTo: view.trailingAnchor),
+            scrollView.bottomAnchor.constraint(equalTo: view.bottomAnchor),
             
             vStack.topAnchor.constraint(equalTo: scrollView.topAnchor, constant: 40),
             vStack.bottomAnchor.constraint(equalTo: scrollView.bottomAnchor, constant: -0),
@@ -80,6 +81,8 @@ class TodayViewController: UIViewController {
             vStack.trailingAnchor.constraint(equalTo: scrollView.trailingAnchor, constant: -20),
             vStack.widthAnchor.constraint(equalTo: scrollView.widthAnchor, constant: -40)
         ])
+        
+        setupBindings()
     }
     
     override func viewWillAppear(_ animated: Bool) {
@@ -121,7 +124,7 @@ class TodayViewController: UIViewController {
             container.heightAnchor.constraint(equalToConstant: 80).isActive = true
 
             let emptyLabel = StandardLabel(
-                labelText: "Nenhuma tarefa registrada.",
+                labelText: "Nenhuma tarefa registrada",
                 labelFont: .sfPro,
                 labelType: .callOut,
                 labelColor: .black30
@@ -153,6 +156,26 @@ class TodayViewController: UIViewController {
         }
 
         return cardStack
+    }
+    
+    private func setupBindings() {
+        viewModel.$waterQuantity
+            .receive(on: DispatchQueue.main)
+            .sink { [weak self] newValue in
+                guard let self = self else { return }
+                self.addSections()
+                
+            }
+            .store(in: &cancellables)
+        
+        viewModel.$waterMeasure
+            .receive(on: DispatchQueue.main)
+            .sink { [weak self] newValue in
+                guard let self = self else { return }
+                self.addSections()
+                
+            }
+            .store(in: &cancellables)
     }
     
     private func addSections() {
@@ -228,22 +251,25 @@ class TodayViewController: UIViewController {
                     } else {
                         iconName = "drop.fill"
                     }
+                    
+                    let waterRecord = WaterRecord(currentQuantity: "\(viewModel.waterQuantity)", goalQuantity: "2L")
+                    waterRecord.onEditTap = { [weak self] in
+                        self?.delegate?.goTo(.recordHydration)
+                    }
 
                     let hydrationCard = RecordCard(
                         title: "Hidratação",
                         iconName: iconName,
                         showPlusButton: false,
-                        contentView: WaterRecord(currentQuantity: "\(viewModel.waterQuantity)", goalQuantity: "2L")
+                        contentView: waterRecord,
+                        waterText: "\(Int(viewModel.waterMeasure))ml"
                     )
                     
-                    viewModel.onWaterQuantityUpdated = { [weak self] newValue in
-                        DispatchQueue.main.async {
-                            (hydrationCard.contentView as? WaterRecord)?.updateQuantity("\(newValue)")
-                        }
-                    }
                     hydrationCard.onAddButtonTap = { [weak self] in
-                        self?.delegate?.goTo(.recordHydration)
+                        self?.viewModel.saveHydrationRecord()
                     }
+
+                    
                     sectionStack.addArrangedSubview(hydrationCard)
                 }
 
@@ -261,7 +287,14 @@ class TodayViewController: UIViewController {
                         bottomRow.addArrangedSubview(stoolCard)
                     }
                     if visibleItems.contains("Urina") {
-                        let urineCard = RecordCard(title: "Urina", iconName: "toilet.fill", contentView: QuantityRecordContent(quantity: viewModel.todayUrineQuantity))
+                        let iconName: String
+                        if #available(iOS 17.0, *) {
+                            iconName = "drop.halffull"
+                        } else {
+                            iconName = "drop.fill"
+                        }
+                        
+                        let urineCard = RecordCard(title: "Urina", iconName: iconName, contentView: QuantityRecordContent(quantity: viewModel.todayUrineQuantity))
                         urineCard.onAddButtonTap = { [weak self] in
                             self?.delegate?.goTo(.recordUrine)
                         }

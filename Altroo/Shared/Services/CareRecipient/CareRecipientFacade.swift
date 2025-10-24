@@ -53,6 +53,8 @@ extension CareRecipientFacade {
         careRecipient.basicNeeds = basicNeeds
         careRecipient.careRecipientEvents = [careRecipientEvent]
         careRecipient.symptoms = [symptom]
+        careRecipient.waterTarget = 2000.0
+        careRecipient.waterMeasure = 250.0
         careRecipient.id = UUID()
         
         configure(personalData, personalCare, healthProblems, mentalState, physicalState, routineActivities, basicNeeds, careRecipientEvent, symptom)
@@ -79,5 +81,22 @@ extension CareRecipientFacade {
     func deleteCareRecipient(_ careRecipient: CareRecipient) {
         persistenceService.deleteCareRecipient(careRecipient)
     }
-
+    
+    func setWaterTarget(_ waterTarget: Double, _ careRecipient: CareRecipient) {
+        careRecipient.waterTarget = waterTarget
+        persistenceService.save()
+    }
+    
+    func setWaterMeasure(_ waterMeasure: Double, _ careRecipient: CareRecipient) {
+        careRecipient.waterMeasure = waterMeasure
+        persistenceService.save()
+    }
+    
+    func getWaterTarget(_ careRecipient: CareRecipient) -> Double {
+        return careRecipient.waterTarget
+    }
+    
+    func getWaterMeasure(_ careRecipient: CareRecipient) -> Double {
+        return careRecipient.waterMeasure
+    }
 }
