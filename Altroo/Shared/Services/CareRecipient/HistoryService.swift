@@ -4,7 +4,6 @@
 //
 //  Created by Izadora de Oliveira Albuquerque Montenegro on 23/10/25.
 //
-
 import Foundation
 import CoreData
 
@@ -20,6 +19,11 @@ protocol HistoryServiceProtocol {
         _ item: HistoryItem,
         from careRecipient: CareRecipient
     )
+
+    func fetchHistoryItems(
+        for careRecipient: CareRecipient,
+        limit: Int?
+    ) -> [HistoryItem]
 }
 
 final class HistoryService: HistoryServiceProtocol {
@@ -63,5 +67,19 @@ final class HistoryService: HistoryServiceProtocol {
         } catch {
             assertionFailure("Failed to delete HistoryItem: \(error)")
         }
+    }
+
+    func fetchHistoryItems(
+        for careRecipient: CareRecipient,
+        limit: Int? = nil
+    ) -> [HistoryItem] {
+        guard let context = careRecipient.managedObjectContext else { return [] }
+
+        let request: NSFetchRequest<HistoryItem> = HistoryItem.fetchRequest()
+        request.predicate = NSPredicate(format: "careRecipient == %@", careRecipient)
+        request.sortDescriptors = [NSSortDescriptor(key: "date", ascending: false)]
+        if let limit { request.fetchLimit = limit }
+
+        return (try? context.fetch(request)) ?? []
     }
 }

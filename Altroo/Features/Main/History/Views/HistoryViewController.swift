@@ -4,27 +4,42 @@
 //
 //  Created by Izadora de Oliveira Albuquerque Montenegro on 22/09/25.
 //
-
-import UIKit
 import SwiftUI
+import UIKit
 
 protocol HistoryViewControllerDelegate: AnyObject {
-    func openDetailSheet(_ controller: HistoryViewController)
+    func openDetailSheet(_ controller: HistoryViewController, item: HistoryItem)
 }
 
-final class HistoryViewController: UIViewController {
+final class HistoryViewController: GradientNavBarViewController {
+    let viewModel: HistoryViewModel
     weak var delegate: HistoryViewControllerDelegate?
 
     private var hosting: UIHostingController<HistoryView>?
+
+    init(viewModel: HistoryViewModel,
+         delegate: HistoryViewControllerDelegate? = nil,
+         hosting: UIHostingController<HistoryView>? = nil) {
+        self.viewModel = viewModel
+        self.delegate = delegate
+        self.hosting = hosting
+        super.init(nibName: nil, bundle: nil) // <-- importante
+    }
+
+    @MainActor required init?(coder: NSCoder) { fatalError("init(coder:) has not been implemented") }
 
     override func viewDidLoad() {
         super.viewDidLoad()
         view.backgroundColor = .systemBackground
 
-        let swiftUIView = HistoryView { [weak self] in
+        let swiftUIView = HistoryView(viewModel: viewModel) { [weak self] in
             guard let self else { return }
-            self.delegate?.openDetailSheet(self)
+            if let item = viewModel.selectedItem {
+                self.delegate?.openDetailSheet(self, item: item)
+
+            }
         }
+
         let hosting = UIHostingController(rootView: swiftUIView)
         self.hosting = hosting
 
@@ -39,8 +54,9 @@ final class HistoryViewController: UIViewController {
         ])
         hosting.didMove(toParent: self)
     }
-}
 
-#Preview {
-    HistoryView()
+    override func viewWillAppear(_ animated: Bool) {
+        super.viewWillAppear(animated)
+        if viewModel.sections.isEmpty { viewModel.reloadHistory() }
+    }
 }

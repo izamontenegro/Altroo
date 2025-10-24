@@ -20,11 +20,13 @@ final class HistoryCoordinator: Coordinator {
     }
 }
 
+
+
 extension HistoryCoordinator: HistoryViewControllerDelegate {
-    func openDetailSheet(_ controller: HistoryViewController) {
+    func openDetailSheet(_ controller: HistoryViewController, item: HistoryItem) {
         let vc = factory.makeSeeHistoryDetailSheet()
         vc.modalPresentationStyle = .pageSheet
-        
+
         if let sheet = vc.sheetPresentationController {
             sheet.detents = [.medium()]
             sheet.prefersGrabberVisible = true

@@ -11,6 +11,7 @@ final class AppDependencies {
     let routineActivitiesFacade: RoutineActivitiesFacade
     let careRecipientFacade: CareRecipientFacade
     let userService: UserServiceSession
+    let historyService: HistoryService
 
     init() {
         self.coreDataService = CoreDataService()
@@ -36,6 +37,8 @@ final class AppDependencies {
         )
         
         self.userService = UserServiceSession(context: coreDataService.stack.context)
+        
+        self.historyService = HistoryService()
     }
 }
 

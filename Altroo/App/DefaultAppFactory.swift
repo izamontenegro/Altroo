@@ -82,8 +82,12 @@ extension DefaultAppFactory {
     }
     
     func makeHistoryViewController(delegate: HistoryViewControllerDelegate) -> UIViewController {
-        let vc = HistoryViewController()
-        vc.delegate = delegate
+        let vm = HistoryViewModel(
+            userService: dependencies.userService,
+            coreDataService: dependencies.coreDataService,
+            historyService: dependencies.historyService
+        )
+        let vc = HistoryViewController(viewModel: vm, delegate: delegate)
         vc.title = "History"
         return vc
     }
@@ -206,7 +210,7 @@ extension DefaultAppFactory {
         return vc
     }
     func makeHydrationRecordSheet() -> UIViewController {
-        let vm = HydrationRecordViewModel(basicNeedsFacade: dependencies.basicNeedsFacade, userService: dependencies.userService)
+        let vm = HydrationRecordViewModel(basicNeedsFacade: dependencies.basicNeedsFacade, userService: dependencies.userService, coreDataService: dependencies.coreDataService, historyService: dependencies.historyService)
         let vc = HydrationRecordViewController(viewModel: vm)
         return vc
     }
@@ -277,7 +281,14 @@ extension DefaultAppFactory {
 // MARK: - HistoryFactory
 extension DefaultAppFactory {
     func makeSeeHistoryDetailSheet() -> UIViewController {
-        let vc = HistoryDetailViewController()
+        // Se for SwiftUI:
+        // let view = SeeHistoryDetailView(...) // injete o que precisar
+        // return UIHostingController(rootView: view)
+
+        // Placeholder UIKit:
+        let vc = UIViewController()
+        vc.view.backgroundColor = .systemBackground
+        vc.title = "Detalhe do Histórico"
         return vc
     }
 }
