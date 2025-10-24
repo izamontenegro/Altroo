@@ -14,16 +14,19 @@ final class StoolRecordViewModel {
     let stoolService: BasicNeedsFacade
     let userService: UserServiceSession
     let coreDataService: CoreDataService
+    private let historyService: HistoryService
+
     
     @Published var selectedStoolType: StoolTypesEnum? = nil
     @Published var selectedStoolColor: UIColor? = nil
     @Published var selectedCharacteristics: [UrineCharacteristicsEnum] = []
     @Published var notes: String = ""
     
-    init(stoolService: BasicNeedsFacade, coreDataService: CoreDataService, userService: UserServiceSession) {
+    init(stoolService: BasicNeedsFacade, coreDataService: CoreDataService, userService: UserServiceSession, historyService: HistoryService) {
         self.stoolService = stoolService
         self.coreDataService = coreDataService
         self.userService = userService
+        self.historyService = historyService
     }
     
     func createStoolRecord() {
@@ -33,6 +36,10 @@ final class StoolRecordViewModel {
         else { return }
         
         stoolService.addStool(period: PeriodEnum.current, date: Date(), format: selectedStoolType?.rawValue ?? "", notes: notes, color: selectedStoolColor?.hexString ?? "", in: careRecipient)
+        
+        let author = coreDataService.currentPerformerName(for: careRecipient)
+       
+        historyService.addHistoryItem(title: "Bebeu ml de água", author: author, date: Date(), to: careRecipient)
         
         checkSavedRecord()
     }

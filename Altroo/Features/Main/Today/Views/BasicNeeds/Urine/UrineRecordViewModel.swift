@@ -14,15 +14,18 @@ final class UrineRecordViewModel {
     let urineService: BasicNeedsFacade
     let userService: UserServiceSession
     let coreDataService: CoreDataService
+    private let historyService: HistoryService
+
     
     @Published var selectedUrineColor: UIColor? = nil
     @Published var selectedCharacteristics: [UrineCharacteristicsEnum] = []
     @Published var urineObservation: String = ""
     
-    init(urineService: BasicNeedsFacade, coreDataService: CoreDataService, userService: UserServiceSession) {
+    init(urineService: BasicNeedsFacade, coreDataService: CoreDataService, userService: UserServiceSession, historyService: HistoryService) {
         self.urineService = urineService
         self.coreDataService = coreDataService
         self.userService = userService
+        self.historyService = historyService
     }
     
     func createUrineRecord() {
@@ -38,6 +41,10 @@ final class UrineRecordViewModel {
             urineCharacteristics: selectedCharacteristics,
             observation: urineObservation
         )
+        
+        let author = coreDataService.currentPerformerName(for: careRecipient)
+        
+        historyService.addHistoryItem(title: "Bebeu ml de água", author: author, date: Date(), to: careRecipient)
         
         checkSavedRecord()
     }

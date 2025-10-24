@@ -12,6 +12,8 @@ final class MealRecordViewModel {
     let feedingService: BasicNeedsFacade
     let userService: UserServiceSession
     let coreDataService: CoreDataService
+    private let historyService: HistoryService
+
 
     @Published var selectedMealCategory: MealCategoryEnum? = nil
     @Published var selectedMealAmountEaten: MealAmountEatenEnum? = nil
@@ -20,10 +22,11 @@ final class MealRecordViewModel {
 
     init(feedingService: BasicNeedsFacade,
          coreDataService: CoreDataService,
-         userService: UserServiceSession) {
+         userService: UserServiceSession, historyService: HistoryService) {
         self.feedingService = feedingService
         self.coreDataService = coreDataService
         self.userService = userService
+        self.historyService = historyService
     }
 
     func createFeedingRecord() {
@@ -41,6 +44,10 @@ final class MealRecordViewModel {
             mealCategory: selectedMealCategory,
             in: careRecipient
         )
+        
+        let author = coreDataService.currentPerformerName(for: careRecipient)
+        
+        historyService.addHistoryItem(title: "Bebeu ml de água", author: author, date: Date(), to: careRecipient)
         
         checkSavedRecord()
     }

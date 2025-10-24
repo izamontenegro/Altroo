@@ -194,18 +194,18 @@ extension DefaultAppFactory {
 // MARK: - BasicNeedsFactory
 extension DefaultAppFactory {
     func makeStoolRecordViewController() -> UIViewController {
-        let vm = StoolRecordViewModel(stoolService: dependencies.basicNeedsFacade, coreDataService: dependencies.coreDataService, userService: dependencies.userService)
+        let vm = StoolRecordViewModel(stoolService: dependencies.basicNeedsFacade, coreDataService: dependencies.coreDataService, userService: dependencies.userService, historyService: dependencies.historyService)
         let vc = StoolRecordViewController(viewModel: vm)
         return vc
     }
     func makeUrineRecordViewController() -> UIViewController {
-        let vm = UrineRecordViewModel(urineService: dependencies.basicNeedsFacade, coreDataService: dependencies.coreDataService, userService: dependencies.userService)
+        let vm = UrineRecordViewModel(urineService: dependencies.basicNeedsFacade, coreDataService: dependencies.coreDataService, userService: dependencies.userService, historyService: dependencies.historyService)
         let vc = UrineRecordViewController(viewModel: vm)
 
         return vc
     }
     func makeMealRecordViewController() -> UIViewController {
-        let vm = MealRecordViewModel(feedingService: dependencies.basicNeedsFacade, coreDataService: dependencies.coreDataService, userService: dependencies.userService)
+        let vm = MealRecordViewModel(feedingService: dependencies.basicNeedsFacade, coreDataService: dependencies.coreDataService, userService: dependencies.userService, historyService: dependencies.historyService)
         let vc = MealRecordViewController(viewModel: vm)
         return vc
     }
