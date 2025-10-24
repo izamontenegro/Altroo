@@ -47,7 +47,6 @@ final class TodayCoordinator: Coordinator {
             }
 
             return vc
-        case .recordHydration: return factory.makeHydrationRecordSheet()
         case .recordUrine:
             let vc = factory.makeUrineRecordViewController() as! UrineRecordViewController
             vc.delegate = self

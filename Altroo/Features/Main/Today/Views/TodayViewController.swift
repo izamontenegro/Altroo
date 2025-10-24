@@ -30,6 +30,7 @@ class TodayViewController: UIViewController {
     let scrollView: UIScrollView = {
         let scrollView = UIScrollView()
         scrollView.translatesAutoresizingMaskIntoConstraints = false
+        scrollView.showsHorizontalScrollIndicator = false
         return scrollView
     }()
     
@@ -74,10 +75,10 @@ class TodayViewController: UIViewController {
             scrollView.topAnchor.constraint(equalTo: view.topAnchor, constant: 150),
             scrollView.leadingAnchor.constraint(equalTo: view.leadingAnchor),
             scrollView.trailingAnchor.constraint(equalTo: view.trailingAnchor),
-            scrollView.bottomAnchor.constraint(equalTo: view.bottomAnchor),
+            scrollView.bottomAnchor.constraint(equalTo: view.bottomAnchor, constant: -Layout.bigButtonBottomPadding),
             
             vStack.topAnchor.constraint(equalTo: scrollView.topAnchor, constant: 40),
-            vStack.bottomAnchor.constraint(equalTo: scrollView.bottomAnchor, constant: -0),
+            vStack.bottomAnchor.constraint(equalTo: scrollView.bottomAnchor, constant: -30),
             vStack.leadingAnchor.constraint(equalTo: scrollView.leadingAnchor, constant: 20),
             vStack.trailingAnchor.constraint(equalTo: scrollView.trailingAnchor, constant: -20),
             vStack.widthAnchor.constraint(equalTo: scrollView.widthAnchor, constant: -40)
