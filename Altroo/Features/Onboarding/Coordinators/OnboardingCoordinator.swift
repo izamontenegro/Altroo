@@ -27,7 +27,7 @@ final class OnboardingCoordinator: Coordinator {
     }
 }
 
-extension OnboardingCoordinator: WelcomeOnboardingViewControllerDelegate {
+extension OnboardingCoordinator: OnboardingContainerViewControllerDelegate {
     func goToAllPatient() {
         onFinish?()
     }

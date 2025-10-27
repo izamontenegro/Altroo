@@ -14,7 +14,12 @@ class CareRecipientCard: UIView {
     var careRecipient: CareRecipient?
     
     private lazy var profileView: ProfileCareRecipient = {
-        let view = ProfileCareRecipient(name: profileName)
+        let names = profileName.split(separator: " ")
+        let firstInitial = names.first?.prefix(1) ?? ""
+        let secondInitial = names.dropFirst().first?.prefix(1) ?? ""
+        let initials = "\(firstInitial)\(secondInitial)"
+        
+        let view = ProfileCareRecipient(name: String(initials), strokeColor: .pureWhite)
         view.translatesAutoresizingMaskIntoConstraints = false
         return view
     }()
