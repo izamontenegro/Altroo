@@ -131,7 +131,7 @@ class AssociatePatientViewController: UIViewController {
     }
 
     private func updateView() {
-        let careRecipients = viewModel.allPatients
+        let careRecipients = viewModel.fetchAvailableCareRecipients()
         
         vStack.arrangedSubviews.forEach { $0.removeFromSuperview() }
         
