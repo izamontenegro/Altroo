@@ -27,17 +27,18 @@ class ShiftFormViewController: GradientNavBarViewController {
         fatalError("init(coder:) has not been implemented")
     }
     
-    private let titleSection = FormTitleSection(title: "Sobre você", description: "Preencha os campos a seguir quanto a seus dados pessoais e em relação ao assistido.", totalSteps: 3, currentStep: 1)
+    private let titleSection = FormTitleSection(title: "Sobre você", description: "Preencha os campos a seguir quanto a seus dados pessoais e em relação ao assistido.", totalSteps: 3, currentStep: 3)
     
     private lazy var nameSection = FormSectionView(title: "Nome", content: nameTextField, isObligatory: true)
     private lazy var nameTextField = StandardTextfield(placeholder: "Nome do cuidador")
 
-    private let allDayToggle: StandardToggle = {
-        let toggle = StandardToggle()
-        toggle.setContentHuggingPriority(.required, for: .horizontal)
-        toggle.setContentCompressionResistancePriority(.required, for: .horizontal)
-        toggle.contentHorizontalAlignment = .leading
-
+    //Time
+    private lazy var allDaySwitch: UISwitch = {
+        let toggle = UISwitch()
+        toggle.isOn = viewModel.isAllDay
+        toggle.onTintColor = .blue30
+        toggle.thumbTintColor = .white70
+        toggle.addTarget(self, action: #selector(didTapAllDaySwitch(_:)), for: .valueChanged)
         return toggle
     }()
     
@@ -48,6 +49,13 @@ class ShiftFormViewController: GradientNavBarViewController {
         picker.setContentHuggingPriority(.required, for: .horizontal)
         picker.setContentCompressionResistancePriority(.required, for: .horizontal)
         picker.contentHorizontalAlignment = .leading
+        
+        var components = DateComponents()
+           components.hour = 6
+           components.minute = 0
+           if let date = Calendar.current.date(from: components) {
+               picker.date = date
+           }
         return picker
     }()
     
@@ -58,20 +66,39 @@ class ShiftFormViewController: GradientNavBarViewController {
         picker.setContentHuggingPriority(.required, for: .horizontal)
         picker.setContentCompressionResistancePriority(.required, for: .horizontal)
         picker.contentHorizontalAlignment = .leading
+        
+        var components = DateComponents()
+           components.hour = 12
+           components.minute = 0
+           if let date = Calendar.current.date(from: components) {
+               picker.date = date
+           }
         return picker
     }()
     
     private lazy var startSection = FormSectionView(title: "Hora inicial", content: startTimePicker)
     private lazy var endSection = FormSectionView(title: "Hora final", content: endTimePicker)
-    private lazy var allDaySection = FormSectionView(title: "Dia inteiro", content: allDayToggle)
+    private lazy var allDaySection = FormSectionView(title: "Dia inteiro", content: allDaySwitch)
+    
+    private lazy var timeSection = FormSectionView(title: "Em qual período deseja receber notificações do assistido?", content: timeStack)
+    private lazy var timeStack: UIStackView = {
+        let stack = UIStackView(arrangedSubviews: [allDaySection])
+        stack.axis = .horizontal
+        stack.spacing = 16
+        stack.distribution = .fill
+        return stack
+    }()
     
     
+    //Relationship
     private lazy var relationshipSection = FormSectionView(title: "Qual a sua relação com o assistido?", content: relationshipButton, isObligatory: true)
     private lazy var relationshipButton: PopupMenuButton = {
         let button = PopupMenuButton(title: viewModel.selectedRelationship)
         button.showsMenuAsPrimaryAction = true
         button.changesSelectionAsPrimaryAction = true
         button.backgroundColor = .blue40
+        button.setContentHuggingPriority(.required, for: .horizontal)
+        button.setContentCompressionResistancePriority(.required, for: .horizontal)
         
         let actions: [UIAction] = viewModel.relationshipOptions.map { option in
             let isSelected = (option == viewModel.selectedRelationship)
@@ -87,16 +114,7 @@ class ShiftFormViewController: GradientNavBarViewController {
         
         return button
     }()
-    
-    private lazy var timeStack: UIStackView = {
-        let stack = UIStackView(arrangedSubviews: [startSection, endSection, allDaySection])
-        stack.axis = .horizontal
-        stack.spacing = 16
-        stack.distribution = .fill
-        return stack
-    }()
-    
-    private lazy var timeSection = FormSectionView(title: "Em qual período deseja receber notificações do assistido?", content: timeStack)
+
     
     private let doneButton = StandardConfirmationButton(title: "Concluir")
     
@@ -129,6 +147,7 @@ class ShiftFormViewController: GradientNavBarViewController {
         ])
         
         doneButton.addTarget(self, action: #selector(didTapDoneButton), for: .touchUpInside)
+        print("Registrando target didTapAllDayToggle")
         
         let tapGesture = UITapGestureRecognizer(target: self, action: #selector(dismissKeyboard))
         tapGesture.cancelsTouchesInView = false
@@ -158,16 +177,27 @@ class ShiftFormViewController: GradientNavBarViewController {
                 self?.nameSection.setError(error)
             }
             .store(in: &cancellables)
+        
+        viewModel.$isAllDay
+            .receive(on: RunLoop.main)
+            .sink { [weak self] isAllDay in
+                self?.controlTimePickersVisibility(isAllDay: isAllDay)
+            }
+            .store(in: &cancellables)
     }
 
+    @objc private func didTapAllDaySwitch(_ sender: UISwitch) {
+        viewModel.isAllDay = sender.isOn
+    }
     
-    //TODO: ADAPT TO TOGGLE
-    @objc private func didTapAllDayButton() {
-        let isAllDay = startTimePicker.isEnabled
-        startTimePicker.isEnabled = !isAllDay
-        endTimePicker.isEnabled = !isAllDay
-        
-        viewModel.isAllDay.toggle()
+    private func controlTimePickersVisibility(isAllDay: Bool) {
+        if isAllDay {
+            startSection.removeFromSuperview()
+            endSection.removeFromSuperview()
+        } else {
+            timeStack.addArrangedSubview(startSection)
+            timeStack.addArrangedSubview(endSection)
+        }
     }
     
     @objc

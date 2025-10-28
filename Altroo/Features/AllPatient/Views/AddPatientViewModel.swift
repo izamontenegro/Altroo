@@ -27,9 +27,9 @@ final class AddPatientViewModel: ObservableObject {
     
     @Published var userName: String = ""
     @Published var userNameError: String?
-    let relationshipOptions = ["Cuidador","Mãe", "Pai", "Filho", "Filha", "Familiar", "Amigo", "Outro"]
+    let relationshipOptions = ["Cuidador", "Mãe", "Pai", "Filho", "Filha", "Familiar", "Amigo", "Outro"]
     @Published var selectedRelationship: String = "Cuidador"
-    var isAllDay = false
+    @Published var isAllDay = true
     
     @Published private(set) var fieldErrors: [String: String] = [:]
     private let validator = FormValidator()
@@ -135,7 +135,7 @@ extension AddPatientViewModel {
     func validateProfile() -> Bool {
         var newErrors: [String: String] = [:]
 
-        _ = validator.isEmpty(name, fieldName: "Nome", error: &newErrors["name"])
+//        _ = validator.isEmpty(name, fieldName: "Nome", error: &newErrors["name"])
         
         //FIXME: COMO É A VALIDAÇÃO?
 //        _ = validator.invalidValue(value: Int(weight), minValue: 30, maxValue: 300, error: &newErrors["weight"])
@@ -147,7 +147,7 @@ extension AddPatientViewModel {
     }
     
     func validateUser() -> Bool {
-        guard validator.isEmpty(userName, fieldName: "Nome", error: &userNameError) else { return false }
+//        guard validator.isEmpty(userName, fieldName: "Nome", error: &userNameError) else { return false }
         return true
     }
 }

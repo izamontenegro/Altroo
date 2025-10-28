@@ -18,6 +18,9 @@ class StandardToggle: UIControl {
     var onThumbColor: UIColor = .white70
     var offThumbColor: UIColor = .pureWhite
     
+    private let defaultHeight: CGFloat = 20
+    private var defaultWidth: CGFloat { defaultHeight * 1.8 }
+    
     override init(frame: CGRect) {
         super.init(frame: frame)
         setupView()
@@ -29,37 +32,32 @@ class StandardToggle: UIControl {
         setupView()
         setupGesture()
     }
+    
     // MARK: - Setup
+    override var intrinsicContentSize: CGSize {
+            return CGSize(width: defaultWidth, height: defaultHeight)
+     }
+    
     private func setupView() {
         backgroundColor = .clear
         
-        let height = bounds.height
-        let width = height * 1.8
-        if frame.width != width {
-            frame.size.width = width
-        }
-        backgroundView.frame = bounds
-        backgroundView.layer.cornerRadius = height / 2
-        
         backgroundView.backgroundColor = offColor
+        backgroundView.layer.cornerRadius = defaultHeight / 2
         backgroundView.layer.shadowColor = UIColor.black10.cgColor
         backgroundView.layer.shadowOpacity = 0.2
         backgroundView.layer.shadowOffset = CGSize(width: 2, height: 2)
         backgroundView.layer.shadowRadius = 3
-        
-        
-        addSubview(backgroundView)
         backgroundView.translatesAutoresizingMaskIntoConstraints = false
-        
+        addSubview(backgroundView)
         
         thumbView.backgroundColor = offThumbColor
+        thumbView.layer.cornerRadius = (defaultHeight - 8) / 2
         thumbView.layer.shadowColor = UIColor.black10.cgColor
         thumbView.layer.shadowOpacity = 0.2
         thumbView.layer.shadowOffset = CGSize(width: 1, height: 1)
         thumbView.layer.shadowRadius = 2
-        
-        addSubview(thumbView)
         thumbView.translatesAutoresizingMaskIntoConstraints = false
+        addSubview(thumbView)
     }
     
     private func setupGesture() {
@@ -69,31 +67,32 @@ class StandardToggle: UIControl {
     
     override func layoutSubviews() {
         super.layoutSubviews()
-        
-        let height = bounds.height
-        let width = height * 1.8
+
         let thumbSize = bounds.height - 8
         
-        if frame.width != width {
-            frame.size.width = width
-        }
-        
         backgroundView.frame = bounds
-        backgroundView.layer.cornerRadius = height / 2
+        backgroundView.layer.cornerRadius = bounds.height / 2
         
-        let thumbY = (height - thumbSize) / 2
-        let thumbX = isOn ? width - thumbSize - 4 : 4
+        let thumbY = (bounds.height - thumbSize) / 2
+        let thumbX = isOn ? bounds.width - thumbSize - 4 : 4
         thumbView.frame = CGRect(x: thumbX, y: thumbY, width: thumbSize, height: thumbSize)
         thumbView.layer.cornerRadius = thumbSize / 2
+        
+        backgroundView.backgroundColor = isOn ? onColor : offColor
+        thumbView.backgroundColor = isOn ? onThumbColor : offThumbColor
     }
     
     // MARK: - Actions
-    @objc private func toggle() {
+    @objc func toggle() {
+        print(">> toggle() chamado, estado atual: \(isOn)")
+
         setOn(!isOn, animated: true)
         sendActions(for: .valueChanged)
     }
     
     func setOn(_ on: Bool, animated: Bool) {
+        print(">> setOn chamado com \(on)")
+        guard isOn != on else { return }
         isOn = on
         let thumbSize = bounds.height - 8
         let newX = on ? bounds.width - thumbSize - 4 : 4
