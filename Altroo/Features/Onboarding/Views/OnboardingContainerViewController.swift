@@ -47,16 +47,65 @@ class OnboardingContainerViewController: UIViewController {
                                                    options: nil)
         super.init(nibName: nil, bundle: nil)
         
-        let page1 = OnboardingPageViewController(imageName: "onboarding1_0",
-                                                 title: "Sem mais bagunça",
-                                                 description: "Gerencie necessidades básicas, medicamentos, tarefas, ocorrências, tudo em um só lugar")
-        let page2 = OnboardingPageViewController(imageName: "onboard2",
-                                                 title: "Conexão é a chave",
-                                                 description: "Compartilhe o perfil do paciente com familiares e outros cuidadores")
-        let page3 = OnboardingPageViewController(imageName: "onboard3",
-                                                 title: "Relatórios mostram o que importa",
-                                                 description: "Acompanhe as atividades de atendimento e obtenha insights claros dos relatórios dos pacientes")
-        
+        let page1 = OnboardingPageViewController(
+            imageNames: ["onboarding1_0", "onboarding1_1"],
+            title: "Sem mais bagunça",
+            description: "Gerencie necessidades básicas, medicamentos, tarefas, ocorrências, tudo em um só lugar",
+            animations: [
+                { iv in
+                    guard let superview = iv.superview else { return }
+
+                    UIView.animateKeyframes(withDuration: 1.8, delay: 0, options: [.calculationModeCubic]) {
+                        UIView.addKeyframe(withRelativeStartTime: 0.2, relativeDuration: 0.6) {
+                            iv.alpha = 0
+                        }
+                    }
+                },
+                { iv in
+                    iv.alpha = 0
+                    iv.transform = CGAffineTransform(translationX: -UIScreen.main.bounds.width, y: 0)
+
+                    UIView.animateKeyframes(withDuration: 1.8, delay: 0, options: [.calculationModeCubic]) {
+                        UIView.addKeyframe(withRelativeStartTime: 0.3, relativeDuration: 0.6) {
+                            iv.alpha = 1
+                            iv.transform = .identity
+                        }
+                    }
+                }
+            ]
+        )
+
+        let page2 = OnboardingPageViewController(
+            imageNames: ["onboarding2_0", "onboarding2_1"],
+            imageHeights: [100, 100],
+            title: "Sem mais bagunça",
+            description: "Gerencie necessidades básicas, medicamentos, tarefas, ocorrências, tudo em um só lugar",
+            animations: [
+            ]
+        ).addLottieAnimation(named: "onboarding_page2")
+
+        let page3 = OnboardingPageViewController(
+            imageNames: ["onboarding1_0", "onboarding1_1"],
+            title: "Sem mais bagunça",
+            description: "Gerencie necessidades básicas, medicamentos, tarefas, ocorrências, tudo em um só lugar",
+            animations: [
+                { iv in
+                    iv.alpha = 1
+                    UIView.animate(withDuration: 1.5) {
+                        iv.alpha = 0
+                    }
+                },
+                { iv in
+                    iv.alpha = 0
+                    iv.transform = CGAffineTransform(translationX: -UIScreen.main.bounds.width, y: 0).rotated(by: -.pi/8)
+                    UIView.animate(withDuration: 1.5, delay: 0.2, options: [.curveEaseOut]) {
+                        iv.alpha = 1
+                        iv.transform = .identity
+                    }
+                }
+            ]
+        )
+
         pages = [page1, page2, page3]
         pageController.dataSource = self
         pageController.delegate = self
@@ -65,7 +114,7 @@ class OnboardingContainerViewController: UIViewController {
     required init?(coder: NSCoder) {
         fatalError("init(coder:) has not been implemented")
     }
-
+    
     override func viewDidLoad() {
         super.viewDidLoad()
         view.backgroundColor = .systemBackground
@@ -93,7 +142,7 @@ class OnboardingContainerViewController: UIViewController {
         nextButton.addTarget(self, action: #selector(nextTapped), for: .touchUpInside)
         backButton.addTarget(self, action: #selector(backTapped), for: .touchUpInside)
         skipButton.addTarget(self, action: #selector(skipTapped), for: .touchUpInside)
-                
+        
         let navStack = UIStackView(arrangedSubviews: [backButton, pageControl, skipButton])
         navStack.axis = .horizontal
         navStack.alignment = .center
@@ -128,36 +177,36 @@ class OnboardingContainerViewController: UIViewController {
             let nextVC = pages[currentIndex]
             pageController.setViewControllers([nextVC], direction: .forward, animated: true)
             pageControl.currentPage = currentIndex
-
+            
             let shouldShowBack = currentIndex > 0
             UIView.animate(withDuration: 0.25) {
                 self.backButton.alpha = shouldShowBack ? 1 : 0
             }
             backButton.isUserInteractionEnabled = shouldShowBack
-
+            
             nextButton.updateTitle(currentIndex == pages.count - 1 ? "Começar" : "Próximo")
         } else {
             delegateOnboarding?.goToAllPatient()
         }
     }
-
+    
     @objc private func backTapped() {
         if currentIndex > 0 {
             currentIndex -= 1
             let prevVC = pages[currentIndex]
             pageController.setViewControllers([prevVC], direction: .reverse, animated: true)
             pageControl.currentPage = currentIndex
-
+            
             let shouldShowBack = currentIndex > 0
             UIView.animate(withDuration: 0.25) {
                 self.backButton.alpha = shouldShowBack ? 1 : 0
             }
             backButton.isUserInteractionEnabled = shouldShowBack
-
+            
             nextButton.updateTitle("Próximo")
         }
     }
-
+    
     
     @objc private func skipTapped() {
         delegateOnboarding?.goToAllPatient()
@@ -195,13 +244,13 @@ extension OnboardingContainerViewController: UIPageViewControllerDataSource, UIP
             nextButton.updateTitle(index == pages.count - 1 ? "Começar" : "Próximo")
         }
     }
-
+    
 }
 
-import SwiftUI
-#Preview {
-    OnboardingPageViewController(imageName: "onboard1",
-                                             title: "Bem-vindo!",
-                                             description: "Conheça nosso aplicativo.")
-
-}
+//import SwiftUI
+//#Preview {
+//    OnboardingPageViewController(imageName: "onboard1",
+//                                 title: "Bem-vindo!",
+//                                 description: "Conheça nosso aplicativo.")
+//    
+//}

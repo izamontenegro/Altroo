@@ -8,16 +8,29 @@
 import UIKit
 
 class OnboardingPageViewController: UIViewController {
-    private let imageName: String
     private let titleText: String
     private let descriptionText: String
     private let bottomGradientLayer = CAGradientLayer()
+    private var imageView = UIImageView()
+    private var imageViews: [UIImageView] = []
+    private var animations: [(_ imageView: UIImageView) -> Void] = []
+    private var imageHeights: [CGFloat?] = []
 
-    init(imageName: String, title: String, description: String) {
-        self.imageName = imageName
+    init(imageNames: [String], imageHeights: [CGFloat?] = [], title: String, description: String, animations: [(_ imageView: UIImageView) -> Void]) {
         self.titleText = title
         self.descriptionText = description
+        self.animations = animations
+        self.imageHeights = imageHeights
+
         super.init(nibName: nil, bundle: nil)
+        
+        self.imageViews = imageNames.compactMap { name in
+            guard let image = UIImage(named: name) else { return nil }
+            let iv = UIImageView(image: image)
+            iv.contentMode = .scaleAspectFit
+            iv.translatesAutoresizingMaskIntoConstraints = false
+            return iv
+        }
     }
 
     required init?(coder: NSCoder) {
@@ -29,14 +42,33 @@ class OnboardingPageViewController: UIViewController {
         setupLayout()
         setupBottomGradient()
     }
+    
+    override func viewDidAppear(_ animated: Bool) {
+        super.viewDidAppear(animated)
+        animateImages()
+    }
 
     private func setupLayout() {
-        view.backgroundColor = .systemBackground
+        view.backgroundColor = .pureWhite
+        for iv in imageViews {
+            view.addSubview(iv)
+            NSLayoutConstraint.activate([
+                iv.topAnchor.constraint(equalTo: view.safeAreaLayoutGuide.topAnchor, constant: Layout.mediumSpacing),
+                iv.leadingAnchor.constraint(equalTo: view.leadingAnchor),
+                iv.trailingAnchor.constraint(equalTo: view.trailingAnchor)
+            ])
+            
+            if let image = iv.image {
+                let aspect = image.size.height / image.size.width
+                
+                let heightConstraint = iv.heightAnchor.constraint(equalTo: iv.widthAnchor, multiplier: aspect)
+                heightConstraint.isActive = imageHeights.isEmpty
+                
+                let maxHeightConstraint = iv.heightAnchor.constraint(lessThanOrEqualToConstant: 400)
+                maxHeightConstraint.isActive = true
+            }
+        }
 
-        let imageView = UIImageView(image: UIImage(named: imageName))
-        imageView.contentMode = .scaleAspectFit
-        imageView.translatesAutoresizingMaskIntoConstraints = false
-        view.addSubview(imageView)
 
         let titleLabel = StandardLabel(
             labelText: titleText,
@@ -65,28 +97,17 @@ class OnboardingPageViewController: UIViewController {
         textStack.translatesAutoresizingMaskIntoConstraints = false
         view.addSubview(textStack)
 
-        var constraints = [
-            imageView.topAnchor.constraint(equalTo: view.safeAreaLayoutGuide.topAnchor, constant: 10),
-            imageView.leadingAnchor.constraint(equalTo: view.leadingAnchor),
-            imageView.trailingAnchor.constraint(equalTo: view.trailingAnchor),
-
-            textStack.topAnchor.constraint(equalTo: imageView.bottomAnchor, constant: 15),
-            textStack.leadingAnchor.constraint(equalTo: view.leadingAnchor, constant: 30),
-            textStack.trailingAnchor.constraint(equalTo: view.trailingAnchor, constant: -30),
-            textStack.centerXAnchor.constraint(equalTo: view.centerXAnchor),
-            textStack.bottomAnchor.constraint(lessThanOrEqualTo: view.safeAreaLayoutGuide.bottomAnchor, constant: -30)
-        ]
-
-        if let image = imageView.image {
-            let aspectRatio = image.size.height / image.size.width
-            constraints.append(
-                imageView.heightAnchor.constraint(equalTo: imageView.widthAnchor, multiplier: aspectRatio)
-            )
+        if let lastImageView = imageViews.last {
+            NSLayoutConstraint.activate([
+                textStack.topAnchor.constraint(equalTo: view.safeAreaLayoutGuide.bottomAnchor, constant: -200),
+                textStack.leadingAnchor.constraint(equalTo: view.leadingAnchor, constant: 30),
+                textStack.trailingAnchor.constraint(equalTo: view.trailingAnchor, constant: -30),
+                textStack.centerXAnchor.constraint(equalTo: view.centerXAnchor),
+                textStack.bottomAnchor.constraint(lessThanOrEqualTo: view.safeAreaLayoutGuide.bottomAnchor, constant: -30)
+            ])
         }
 
-        NSLayoutConstraint.activate(constraints)
     }
-
     
     private func setupBottomGradient() {
         bottomGradientLayer.colors = [
@@ -99,6 +120,34 @@ class OnboardingPageViewController: UIViewController {
         bottomGradientLayer.frame = view.bounds
         view.layer.insertSublayer(bottomGradientLayer, at: 0)
     }
+    
+//    private func animateImages() {
+//        for iv in imageViews {
+//            iv.layer.removeAllAnimations()
+//            iv.alpha = 1
+//            iv.transform = .identity
+//        }
+//
+//        for (index, iv) in imageViews.enumerated() {
+//            guard index < animations.count else { continue }
+//            animations[index](iv)
+//        }
+//    }
+    
+    private func animateImages() {
+        // 🔄 reseta tudo antes de animar
+        for iv in imageViews {
+            iv.layer.removeAllAnimations()
+            iv.alpha = 1
+            iv.transform = .identity
+        }
+
+        // 🔥 executa as animações definidas externamente
+        for (index, iv) in imageViews.enumerated() {
+            guard index < animations.count else { continue }
+            animations[index](iv)
+        }
+    }
 
     override func viewDidLayoutSubviews() {
         super.viewDidLayoutSubviews()
@@ -106,10 +155,37 @@ class OnboardingPageViewController: UIViewController {
     }
 }
 
+import Lottie
+
+extension OnboardingPageViewController {
+    @discardableResult
+    func addLottieAnimation(named name: String) -> Self {
+        let animationView = LottieAnimationView(name: name)
+        animationView.loopMode = .loop
+        animationView.contentMode = .scaleAspectFit
+        animationView.translatesAutoresizingMaskIntoConstraints = false
+        
+        view.addSubview(animationView)
+        
+        NSLayoutConstraint.activate([
+            animationView.centerXAnchor.constraint(equalTo: view.centerXAnchor),
+            animationView.centerYAnchor.constraint(equalTo: view.centerYAnchor, constant: -40),
+            animationView.widthAnchor.constraint(equalTo: view.widthAnchor, multiplier: 0.8),
+            animationView.heightAnchor.constraint(equalTo: animationView.widthAnchor)
+        ])
+        
+        animationView.play()
+        return self
+    }
+}
+
+
 import SwiftUI
 #Preview {
-    OnboardingPageViewController(imageName: "onboard1",
-                                             title: "Bem-vindo!",
-                                             description: "Conheça nosso aplicativo.")
-
+    OnboardingPageViewController(
+        imageNames: [],
+        title: "Sem mais bagunça",
+        description: "Gerencie necessidades básicas, medicamentos, tarefas, ocorrências, tudo em um só lugar",
+        animations: []
+    ).addLottieAnimation(named: "onboarding_page2")
 }
