@@ -61,6 +61,15 @@ protocol SymptomFactory {
 }
 
 // MARK: - PROFILE FLOW
+
+protocol EditMedicalRecordFactory {
+    func makeEditPersonalDataViewController(delegate: EditMedicalRecordViewControllerDelegate) -> UIViewController
+    func makeEditHealthProblemsViewController(delegate: EditMedicalRecordViewControllerDelegate) -> UIViewController
+    func makeEditPhysicalStateViewController(delegate: EditMedicalRecordViewControllerDelegate) -> UIViewController
+    func makeEditMentalStateViewController(delegate: EditMedicalRecordViewControllerDelegate) -> UIViewController
+    func makeEditPersonalCareViewController(delegate: EditMedicalRecordViewControllerDelegate) -> UIViewController
+}
+
 protocol ProfileFactory {
     func makeProfileViewController(delegate: ProfileViewControllerDelegate) -> UIViewController
     func makeChangeCareRecipientViewController(delegate: ChangeCareRecipientViewControllerDelegate) -> UIViewController

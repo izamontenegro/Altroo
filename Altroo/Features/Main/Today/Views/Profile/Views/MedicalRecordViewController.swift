@@ -8,6 +8,14 @@
 import UIKit
 import Combine
 
+protocol EditMedicalRecordViewControllerDelegate: AnyObject {
+    func goToPersonalData()
+    func goToMentalState()
+    func goToPersonalCare()
+    func goToPhysicalState()
+    func goToHealthProblems()
+}
+
 final class MedicalRecordViewController: GradientNavBarViewController {
     
     let viewModel: MedicalRecordViewModel

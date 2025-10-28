@@ -50,7 +50,6 @@ extension ProfileCoordinator: ProfileViewControllerDelegate {
     
     func goToMedicalRecordViewController() {
         let vc = factory.makeMedicalRecordViewController()
-        
         navigation.pushViewController(vc, animated: true)
     }
     

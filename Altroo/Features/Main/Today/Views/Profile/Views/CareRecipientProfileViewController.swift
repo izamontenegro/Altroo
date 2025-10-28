@@ -34,6 +34,7 @@ final class CareRecipientProfileViewController: GradientNavBarViewController {
     // MARK: - Lifecycle
     override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
+        goToEdit = false
         viewModel.buildData()
         NotificationCenter.default.post(name: .toggleTabBarVisibility, object: nil, userInfo: ["hidden": true])
     }
@@ -52,6 +53,7 @@ final class CareRecipientProfileViewController: GradientNavBarViewController {
         viewModel.buildData()
         setupProfileHeader()
     }
+    
     
     private func setupProfileHeader() {
         view.backgroundColor = .pureWhite
