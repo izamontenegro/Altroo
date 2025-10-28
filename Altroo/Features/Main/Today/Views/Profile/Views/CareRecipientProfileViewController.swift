@@ -17,10 +17,8 @@ protocol ProfileViewControllerDelegate: AnyObject {
 
 final class CareRecipientProfileViewController: GradientNavBarViewController {
     weak var delegate: ProfileViewControllerDelegate?
-    
-    private(set) var mockPerson: CareRecipient!
-    
     let viewModel: CareRecipientProfileViewModel
+    var goToEdit: Bool = false
     
     // MARK: - Lifecycle
     init(viewModel: CareRecipientProfileViewModel) {
@@ -42,7 +40,11 @@ final class CareRecipientProfileViewController: GradientNavBarViewController {
     
     override func viewWillDisappear(_ animated: Bool) {
         super.viewWillDisappear(animated)
-        NotificationCenter.default.post(name: .toggleTabBarVisibility, object: nil, userInfo: ["hidden": false])
+        if goToEdit {
+            
+        } else {
+            NotificationCenter.default.post(name: .toggleTabBarVisibility, object: nil, userInfo: ["hidden": false])
+        }
     }
     
     override func viewDidLoad() {
@@ -252,7 +254,9 @@ final class CareRecipientProfileViewController: GradientNavBarViewController {
     }
     
     @objc private func didTapHeader() {
-//        delegate?.goToMedicalRecordViewController()
+        goToEdit = true
+        NotificationCenter.default.post(name: .toggleTabBarVisibility, object: nil, userInfo: ["hidden": true])
+        delegate?.goToMedicalRecordViewController()
     }
     @objc private func didTapChangeCareRecipientButton() { delegate?.openChangeCareRecipientSheet() }
     @objc private func didTapShareCareRecipientButton() {
