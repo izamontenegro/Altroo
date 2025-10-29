@@ -26,7 +26,7 @@ final class CloudSharingCoordinator: NSObject, UICloudSharingControllerDelegate 
             
             Task {
                 if let share = try coreDataService.getShare(careRecipient) {
-                    // if a share already exists\
+                    // if a share already exists
                     let sharingController = UICloudSharingController(share: share, container: coreDataService.stack.ckContainer)
                     configureAndPresent(sharingController)
                 } else {
@@ -49,9 +49,8 @@ final class CloudSharingCoordinator: NSObject, UICloudSharingControllerDelegate 
         } catch {
             print("Failed to create share: \(error.localizedDescription)")
             if let ckError = error as? CKError {
-                    print("CloudKit error: \(ckError.errorCode), \(ckError.localizedDescription)")
-                }
-            // handle error, show an alert etc
+                print("CloudKit error: \(ckError.errorCode), \(ckError.localizedDescription)")
+            }
         }
     }
     

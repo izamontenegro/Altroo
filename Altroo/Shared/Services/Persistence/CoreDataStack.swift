@@ -124,8 +124,6 @@ extension CoreDataStack {
         if isCloudKitReady {
             completion()
         } else {
-            // Observe quando os stores forem adicionados
-            // Aqui você pode usar NotificationCenter ou KVO sobre o persistentContainer
             NotificationCenter.default.addObserver(forName: .NSPersistentStoreRemoteChange, object: nil, queue: .main) { _ in
                 if self.isCloudKitReady {
                     completion()
@@ -133,4 +131,8 @@ extension CoreDataStack {
             }
         }
     }
+}
+
+extension Notification.Name {
+    static let didFinishCloudKitSync = Notification.Name("didFinishCloudKitSync")
 }

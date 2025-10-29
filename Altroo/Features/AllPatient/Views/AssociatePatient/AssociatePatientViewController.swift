@@ -90,6 +90,19 @@ class AssociatePatientViewController: UIViewController {
 
         setupLayout()
         updateView()
+
+        NotificationCenter.default.addObserver(
+            self,
+            selector: #selector(remoteDataChanged),
+            name: .didFinishCloudKitSync,
+            object: nil
+        )
+    }
+
+    @objc private func remoteDataChanged() {
+        DispatchQueue.main.async {
+            self.updateView()
+        }
     }
     
     private func setupLayout() {
