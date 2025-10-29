@@ -64,6 +64,10 @@ extension CareRecipientFacade {
         return careRecipient
     }
     
+    func setCaregiver(_ careRecipient: CareRecipient, for user: User) {
+        careRecipient.addToUser(user)
+    }
+    
     func fetchCareRecipient(by id: UUID) -> CareRecipient? {
         return persistenceService.fetchAllCareRecipients().first(where: { $0.id == id })
     }

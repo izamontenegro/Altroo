@@ -62,16 +62,23 @@ class UserServiceSession: UserServiceProtocol {
     
     func fetchPatients() -> [CareRecipient] {
         guard let user = fetchUser() else { return [] }
+        _ = user.name // se tiver um atributo simples
+        print("user \(user)")
+
         var patients = user.careRecipient?.allObjects as? [CareRecipient] ?? []
+        print("user.careRecipient count:", user.careRecipient?.count ?? 0)
+
         
         let sharedFetch = NSFetchRequest<CareRecipient>(entityName: "CareRecipient")
-            if let sharedObjects = try? context.fetch(sharedFetch) {
-                for shared in sharedObjects where !patients.contains(shared) {
-                    patients.append(shared)
-                }
+        if let sharedObjects = try? context.fetch(sharedFetch) {
+            for shared in sharedObjects where !patients.contains(shared) {
+                patients.append(shared)
             }
+        }
 
-            return patients
+        print("patinets apendados \(patients)")
+
+        return patients
     }
     
     func fetchCurrentPatient() -> CareRecipient? {
