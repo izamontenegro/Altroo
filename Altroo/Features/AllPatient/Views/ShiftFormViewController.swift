@@ -12,7 +12,7 @@ protocol ShiftFormsViewControllerDelegate: AnyObject {
     func shiftFormsDidFinish()
 }
 
-class ShiftFormViewController: GradientNavBarViewController {
+class ShiftFormViewController: UIViewController {
     private var cancellables = Set<AnyCancellable>()
 
     weak var delegate: ShiftFormsViewControllerDelegate?
@@ -76,9 +76,9 @@ class ShiftFormViewController: GradientNavBarViewController {
         return picker
     }()
     
-    private lazy var startSection = FormSectionView(title: "Hora inicial", content: startTimePicker)
-    private lazy var endSection = FormSectionView(title: "Hora final", content: endTimePicker)
-    private lazy var allDaySection = FormSectionView(title: "Dia inteiro", content: allDaySwitch)
+    private lazy var startSection = FormSectionView(title: "Hora inicial", content: startTimePicker, isSubsection: true)
+    private lazy var endSection = FormSectionView(title: "Hora final", content: endTimePicker, isSubsection: true)
+    private lazy var allDaySection = FormSectionView(title: "Dia inteiro", content: allDaySwitch, isSubsection: true)
     
     private lazy var timeSection = FormSectionView(title: "Em qual período deseja receber notificações do assistido?", content: timeStack)
     private lazy var timeStack: UIStackView = {
@@ -128,7 +128,6 @@ class ShiftFormViewController: GradientNavBarViewController {
         super.viewDidLoad()
         view.backgroundColor = .pureWhite
         
-        setupNavBar()
         bindViewModel()
         
         view.addSubview(formStack)
@@ -149,11 +148,6 @@ class ShiftFormViewController: GradientNavBarViewController {
         let tapGesture = UITapGestureRecognizer(target: self, action: #selector(dismissKeyboard))
         tapGesture.cancelsTouchesInView = false
         view.addGestureRecognizer(tapGesture)
-    }
-    
-    func setupNavBar() {
-        setNavbarTitle("Adicionar Paciente")
-        isRightButtonCancel = true
     }
     
     private func bindViewModel() {

@@ -8,7 +8,7 @@
 import UIKit
 import Combine
 
-class PatientFormsViewController: GradientNavBarViewController {
+class PatientFormsViewController: UIViewController {
     private var cancellables = Set<AnyCancellable>()
     private var keyboardHandler: KeyboardHandler?
 
@@ -207,16 +207,10 @@ class PatientFormsViewController: GradientNavBarViewController {
     }
 
     override func viewDidLoad() {
-        setupNavbar()
         super.viewDidLoad()
         setupUI()
         bindViewModel()
         keyboardHandler = KeyboardHandler(viewController: self)
-    }
-    
-    func setupNavbar() {
-        setNavbarTitle("Adicionar Paciente")
-        isRightButtonCancel = true
     }
     
     private func bindViewModel() {
@@ -232,6 +226,8 @@ class PatientFormsViewController: GradientNavBarViewController {
       }
     
     private func setupUI() {
+        view.backgroundColor = .pureWhite
+
         view.addSubview(scrollView)
         scrollView.addSubview(formStack)
         view.addSubview(nextStepButton)

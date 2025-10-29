@@ -7,7 +7,7 @@
 
 import UIKit
 
-class ComorbiditiesFormsViewController: GradientNavBarViewController {
+class ComorbiditiesFormsViewController: UIViewController {
     
     weak var delegate: AssociatePatientViewControllerDelegate?
     private let viewModel: AddPatientViewModel
@@ -76,11 +76,8 @@ class ComorbiditiesFormsViewController: GradientNavBarViewController {
     private var selectedComorbidities: Set<String> = []
 
     override func viewDidLoad() {
-        super.viewDidLoad()
-
         view.backgroundColor = .pureWhite
         
-        setupNavBar()
         setupComorbidityButtons()
         
         label1.numberOfLines = 0
@@ -117,10 +114,6 @@ class ComorbiditiesFormsViewController: GradientNavBarViewController {
         nextStepButton.addTarget(self, action: #selector(didTapDoneButton), for: .touchUpInside)
     }
     
-    func setupNavBar() {
-        setNavbarTitle("Adicionar Paciente")
-        isRightButtonCancel = true
-    }
     
     private func setupComorbidityButtons() {
         let firstRowDiseases: [ComorbidityButton.Comorbidity] = [.circulatory, .diabetes, .cognition]
