@@ -36,8 +36,8 @@ class ShiftFormViewController: GradientNavBarViewController {
     private lazy var allDaySwitch: UISwitch = {
         let toggle = UISwitch()
         toggle.isOn = viewModel.isAllDay
-        toggle.onTintColor = .blue30
-        toggle.thumbTintColor = .white70
+        toggle.onTintColor = .teal30
+        toggle.thumbTintColor = .pureWhite
         toggle.addTarget(self, action: #selector(didTapAllDaySwitch(_:)), for: .valueChanged)
         return toggle
     }()
@@ -97,8 +97,6 @@ class ShiftFormViewController: GradientNavBarViewController {
         button.showsMenuAsPrimaryAction = true
         button.changesSelectionAsPrimaryAction = true
         button.backgroundColor = .blue40
-        button.setContentHuggingPriority(.required, for: .horizontal)
-        button.setContentCompressionResistancePriority(.required, for: .horizontal)
         
         let actions: [UIAction] = viewModel.relationshipOptions.map { option in
             let isSelected = (option == viewModel.selectedRelationship)
@@ -147,7 +145,6 @@ class ShiftFormViewController: GradientNavBarViewController {
         ])
         
         doneButton.addTarget(self, action: #selector(didTapDoneButton), for: .touchUpInside)
-        print("Registrando target didTapAllDayToggle")
         
         let tapGesture = UITapGestureRecognizer(target: self, action: #selector(dismissKeyboard))
         tapGesture.cancelsTouchesInView = false

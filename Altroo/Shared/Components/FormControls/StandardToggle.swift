@@ -84,14 +84,11 @@ class StandardToggle: UIControl {
     
     // MARK: - Actions
     @objc func toggle() {
-        print(">> toggle() chamado, estado atual: \(isOn)")
-
         setOn(!isOn, animated: true)
         sendActions(for: .valueChanged)
     }
     
     func setOn(_ on: Bool, animated: Bool) {
-        print(">> setOn chamado com \(on)")
         guard isOn != on else { return }
         isOn = on
         let thumbSize = bounds.height - 8

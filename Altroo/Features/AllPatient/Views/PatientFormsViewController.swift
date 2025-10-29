@@ -10,6 +10,7 @@ import Combine
 
 class PatientFormsViewController: GradientNavBarViewController {
     private var cancellables = Set<AnyCancellable>()
+    private var keyboardHandler: KeyboardHandler?
 
     weak var delegate: AssociatePatientViewControllerDelegate?
     private let viewModel: AddPatientViewModel
@@ -180,12 +181,14 @@ class PatientFormsViewController: GradientNavBarViewController {
     required init?(coder: NSCoder) {
         fatalError("init(coder:) has not been implemented")
     }
-    
+
     override func viewDidLoad() {
         setNavbarTitle("Adicionar Paciente")
         super.viewDidLoad()
         setupUI()
         bindViewModel()
+        keyboardHandler = KeyboardHandler(viewController: self)
+
     }
     
     
@@ -203,6 +206,17 @@ class PatientFormsViewController: GradientNavBarViewController {
     private func setupUI() {
         view.addSubview(formStack)
         view.addSubview(nextStepButton)
+        
+        let allTextFields: [UITextField] = [
+            nameTextField,
+            heightTextField,
+            weightTextField,
+            addressTextField,
+            contactTextField
+        ]
+        allTextFields.forEach { tf in
+            tf.delegate = self
+        }
         
         NSLayoutConstraint.activate([
             formStack.topAnchor.constraint(equalTo: view.safeAreaLayoutGuide.topAnchor, constant: Layout.smallSpacing),

@@ -124,7 +124,7 @@ class ComorbiditiesFormsViewController: GradientNavBarViewController {
     }
     
     private func setupComorbidityButtons() {
-        let firstRowDiseases: [ComorbidityButton.Comorbidity] = [.heartFailure, .diabetes, .hypertension]
+        let firstRowDiseases: [ComorbidityButton.Comorbidity] = [.circulatory, .diabetes, .cognition]
         for disease in firstRowDiseases {
             let button = ComorbidityButton(comorbidity: disease)
             button.addTarget(self, action: #selector(didTapComorbidityButton(_:)), for: .touchUpInside)
