@@ -16,8 +16,8 @@ final class FormSectionView: UIStackView {
         labelColor: .red20,
         labelWeight: .regular
     )
-    
-    init(title: String, content: UIView, isObligatory: Bool = false) {
+        
+    init(title: String, content: UIView, isObligatory: Bool = false, isSubsection: Bool = false) {
         super.init(frame: .zero)
         axis = .vertical
         spacing = 8
@@ -26,9 +26,9 @@ final class FormSectionView: UIStackView {
         let titleLabel = StandardLabel(
             labelText: title,
             labelFont: .sfPro,
-            labelType: .callOut,
+            labelType: isSubsection ? .subHeadline : .callOut,
             labelColor: .black10,
-            labelWeight: .semibold
+            labelWeight: isSubsection ? .regular : .semibold
         )
         titleLabel.numberOfLines = 0
         

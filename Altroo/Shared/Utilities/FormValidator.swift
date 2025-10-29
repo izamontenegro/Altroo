@@ -48,4 +48,20 @@ class FormValidator {
             return true
         }
     }
+    
+    func checkAge(_ age: Int, date: Date, error: inout String?) -> Bool {
+        let calendar = Calendar.current
+        let today = calendar.startOfDay(for: Date())
+        let birthday = calendar.startOfDay(for: date)
+        
+        let difference = calendar.dateComponents([.year], from: birthday, to: today).year
+        guard let difference else { return false }
+        if  difference < 13 {
+            error = "Paciente menor de 13 anos"
+            return false
+        } else {
+            error = nil
+            return true
+        }
+    }
 }

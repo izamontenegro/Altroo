@@ -43,11 +43,8 @@ class ComorbiditiesFormsViewController: GradientNavBarViewController {
     
     private let nextStepButton = StandardConfirmationButton(title: "Próximo")
     
-    private lazy var bedriddenButton: BedriddenButton = {
-        let button = BedriddenButton(bedriddenState: .movement)
-        button.translatesAutoresizingMaskIntoConstraints = false
-        return button
-    }()
+    let bedriddenMovableButton = BedriddenButton(bedriddenState: .movement)
+    let bedriddenNoMovementButton = BedriddenButton(bedriddenState: .noMovement)
     
     private let firstRowStack: UIStackView = {
         let stack = UIStackView()
@@ -120,8 +117,9 @@ class ComorbiditiesFormsViewController: GradientNavBarViewController {
         nextStepButton.addTarget(self, action: #selector(didTapDoneButton), for: .touchUpInside)
     }
     
-    private func setupNavBar() {
+    func setupNavBar() {
         setNavbarTitle("Adicionar Paciente")
+        isRightButtonCancel = true
     }
     
     private func setupComorbidityButtons() {
@@ -138,9 +136,6 @@ class ComorbiditiesFormsViewController: GradientNavBarViewController {
             
             firstRowStack.addArrangedSubview(button)
         }
-        
-        let bedriddenMovableButton = BedriddenButton(bedriddenState: .movement)
-        let bedriddenNoMovementButton = BedriddenButton(bedriddenState: .noMovement)
 
         bedriddenMovableButton.addTarget(self, action: #selector(didTapBedriddenButton(_:)), for: .touchUpInside)
         bedriddenNoMovementButton.addTarget(self, action: #selector(didTapBedriddenButton(_:)), for: .touchUpInside)
@@ -174,9 +169,16 @@ class ComorbiditiesFormsViewController: GradientNavBarViewController {
 
         switch sender.bedriddenState {
         case .movement:
+            if bedriddenStatus != .notBedridden {
+                bedriddenNoMovementButton.toggleState()
+            }
             bedriddenStatus = .bedriddenMovable
+        
         case .noMovement:
-            bedriddenStatus = .notBedridden
+            if bedriddenStatus != .notBedridden {
+                bedriddenMovableButton.toggleState()
+            }
+            bedriddenStatus = .bedriddenImmobile
         }
     }
     

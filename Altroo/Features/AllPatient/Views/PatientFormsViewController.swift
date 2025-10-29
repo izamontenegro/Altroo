@@ -55,9 +55,9 @@ class PatientFormsViewController: GradientNavBarViewController {
         let tf = StandardTextfield()
         tf.placeholder = "0"
         tf.keyboardType = .numberPad
-        
         return tf
     }()
+    
     
     private lazy var weightInputStack: UIStackView = {
         let label = StandardLabel(
@@ -77,7 +77,33 @@ class PatientFormsViewController: GradientNavBarViewController {
     }()
     
     private lazy var addressTextField = StandardTextfield(placeholder: "Endereço do assistido")
-    private lazy var contactTextField = StandardTextfield(placeholder: "Telefone com DDI")
+    private lazy var contactNameTextField = StandardTextfield(placeholder: "Nome do contato")
+    private lazy var contactPhoneTextField: StandardTextfield = {
+        let tf = StandardTextfield()
+        tf.placeholder = "Telefone com DDI"
+        tf.keyboardType = .numberPad
+        return tf
+    }()
+    private lazy var relationshipButton: PopupMenuButton = {
+        let button = PopupMenuButton(title: viewModel.selectedContactRelationship)
+        button.showsMenuAsPrimaryAction = true
+        button.changesSelectionAsPrimaryAction = true
+        button.backgroundColor = .blue40
+        
+        let actions: [UIAction] = viewModel.relationshipOptions.map { option in
+            let isSelected = (option == viewModel.selectedContactRelationship)
+            return UIAction(title: option, state: isSelected ? .on : .off) { [weak self] action in
+                guard let self else { return }
+                self.viewModel.selectedContactRelationship = action.title
+                
+                self.relationshipButton.setTitle(action.title, for: .normal)
+            }
+        }
+        
+        button.menu = UIMenu(options: .singleSelection, children: actions)
+        
+        return button
+    }()
     
     private let datePicker: UIDatePicker = {
         let picker = UIDatePicker()
@@ -91,6 +117,7 @@ class PatientFormsViewController: GradientNavBarViewController {
         return picker
     }()
     
+    
     private lazy var nameSection = FormSectionView(title: "Nome", content: nameTextField, isObligatory: true)
     private lazy var birthDateSection = FormSectionView(title: "Data de Nascimento", content: datePicker)
     private lazy var ageSection = FormSectionView(title: "Idade", content: ageLabel)
@@ -98,25 +125,28 @@ class PatientFormsViewController: GradientNavBarViewController {
     private lazy var weightSection = FormSectionView(title: "Peso", content: weightInputStack)
     private lazy var genderSection = FormSectionView(title: "Sexo", content: genderSegmentedControl)
     private lazy var addressSection = FormSectionView(title: "Endereço", content: addressTextField)
-    //FIXME: Turn back into plural
-    private lazy var contactSection = FormSectionView(title: "Contato", content: contactTextField)
+    
+    private lazy var contactSection = FormSectionView(title: "Contato de Emergência", content: contactStack)
+    private lazy var contactNameSection = FormSectionView(title: "Nome", content: contactNameTextField, isSubsection: true)
+    private lazy var contactPhoneSection = FormSectionView(title: "Telefone", content: contactPhoneTextField, isSubsection: true)
+    private lazy var contactRelationshipSection = FormSectionView(title: "Relação", content: relationshipButton, isSubsection: true)
     
     private lazy var ageLabel: StandardLabel = {
         let label = StandardLabel(
             labelText: "0 anos",
             labelFont: .sfPro,
-            labelType: .largeTitle,
-            labelColor: .blue10,
+            labelType: .body,
+            labelColor: .black10,
             labelWeight: .regular
         )
         return label
     }()
     
     private lazy var birthAndAgeStack: UIStackView = {
-        let stack = UIStackView(arrangedSubviews: [birthDateSection, ageLabel])
+        let stack = UIStackView(arrangedSubviews: [birthDateSection, ageSection])
         stack.axis = .horizontal
         stack.spacing = Layout.mediumSpacing
-        stack.alignment = .bottom
+        stack.alignment = .top
         stack.distribution = .fillEqually
         return stack
     }()
@@ -130,6 +160,23 @@ class PatientFormsViewController: GradientNavBarViewController {
         return stack
     }()
     
+    private lazy var contactStack: UIStackView = {
+        let stack = UIStackView(arrangedSubviews: [contactNameSection, phoneAndRelationshipStack])
+        stack.axis = .vertical
+        stack.alignment = .fill
+        stack.spacing = Layout.verySmallSpacing
+        stack.translatesAutoresizingMaskIntoConstraints = false
+        return stack
+    }()
+    
+    private lazy var phoneAndRelationshipStack: UIStackView = {
+        let stack = UIStackView(arrangedSubviews: [contactPhoneSection, contactRelationshipSection])
+        stack.axis = .horizontal
+        stack.spacing = Layout.smallSpacing
+        stack.alignment = .top
+        stack.distribution = .fillEqually
+        return stack
+    }()
 
     private lazy var formStack: UIStackView = {
         let stack = UIStackView(arrangedSubviews: [
@@ -139,7 +186,6 @@ class PatientFormsViewController: GradientNavBarViewController {
             physicalInfoStack,
             addressSection,
             contactSection,
-            addContactButton,
         ])
         stack.axis = .vertical
         stack.alignment = .fill
@@ -148,20 +194,8 @@ class PatientFormsViewController: GradientNavBarViewController {
         return stack
     }()
     
+    private let scrollView = UIScrollView.make(direction: .vertical)
     private let nextStepButton = StandardConfirmationButton(title: "Próximo")
-    
-    private let addContactButton: UIButton = {
-        let button = UIButton()
-        button.layer.cornerRadius = 8
-        button.backgroundColor = .clear
-        button.layer.borderColor = UIColor(resource: .blue40).cgColor
-        button.layer.borderWidth = 2
-        button.setCustomTitleLabel(StandardLabel(labelText: "+", labelFont: .sfPro, labelType: .title1, labelColor: .blue40, labelWeight: .medium))
-        button.translatesAutoresizingMaskIntoConstraints = false
-        button.heightAnchor.constraint(equalToConstant: 38).isActive = true
-
-        return button
-    }()
         
     init(viewModel: AddPatientViewModel) {
         self.viewModel = viewModel
@@ -173,27 +207,33 @@ class PatientFormsViewController: GradientNavBarViewController {
     }
 
     override func viewDidLoad() {
-        setNavbarTitle("Adicionar Paciente")
+        setupNavbar()
         super.viewDidLoad()
         setupUI()
         bindViewModel()
         keyboardHandler = KeyboardHandler(viewController: self)
-
+    }
+    
+    func setupNavbar() {
+        setNavbarTitle("Adicionar Paciente")
+        isRightButtonCancel = true
     }
     
     private func bindViewModel() {
-          viewModel.$fieldErrors
-              .receive(on: RunLoop.main)
-              .sink { [weak self] errors in
-                  self?.nameSection.setError(errors["name"])
-                  self?.weightSection.setError(errors["weight"])
-                  self?.heightSection.setError(errors["height"])
-              }
-              .store(in: &cancellables)
+      viewModel.$fieldErrors
+          .receive(on: RunLoop.main)
+          .sink { [weak self] errors in
+              self?.nameSection.setError(errors["name"])
+              self?.weightSection.setError(errors["weight"])
+              self?.heightSection.setError(errors["height"])
+              self?.birthDateSection.setError(errors["age"])
+          }
+          .store(in: &cancellables)
       }
     
     private func setupUI() {
-        view.addSubview(formStack)
+        view.addSubview(scrollView)
+        scrollView.addSubview(formStack)
         view.addSubview(nextStepButton)
         
         let allTextFields: [UITextField] = [
@@ -201,16 +241,23 @@ class PatientFormsViewController: GradientNavBarViewController {
             heightTextField,
             weightTextField,
             addressTextField,
-            contactTextField
+            contactNameTextField,
+            contactPhoneTextField
         ]
         allTextFields.forEach { tf in
             tf.delegate = self
         }
         
         NSLayoutConstraint.activate([
-            formStack.topAnchor.constraint(equalTo: view.safeAreaLayoutGuide.topAnchor, constant: Layout.smallSpacing),
-            formStack.leadingAnchor.constraint(equalTo: view.leadingAnchor, constant: Layout.mediumSpacing),
-            formStack.trailingAnchor.constraint(equalTo: view.trailingAnchor, constant: -Layout.mediumSpacing),
+            scrollView.topAnchor.constraint(equalTo: view.safeAreaLayoutGuide.topAnchor),
+            scrollView.leadingAnchor.constraint(equalTo: view.leadingAnchor),
+            scrollView.trailingAnchor.constraint(equalTo: view.trailingAnchor),
+            scrollView.bottomAnchor.constraint(equalTo: nextStepButton.topAnchor),
+            
+            formStack.topAnchor.constraint(equalTo: scrollView.contentLayoutGuide.topAnchor, constant: Layout.smallSpacing),
+            formStack.leadingAnchor.constraint(equalTo: scrollView.contentLayoutGuide.leadingAnchor, constant: Layout.mediumSpacing),
+            formStack.trailingAnchor.constraint(equalTo: scrollView.contentLayoutGuide.trailingAnchor, constant: -Layout.mediumSpacing),
+            formStack.bottomAnchor.constraint(equalTo: scrollView.contentLayoutGuide.bottomAnchor, constant: -Layout.smallSpacing),
             
             nextStepButton.bottomAnchor.constraint(equalTo: view.safeAreaLayoutGuide.bottomAnchor, constant: -Layout.mediumSpacing),
             nextStepButton.centerXAnchor.constraint(equalTo: view.centerXAnchor),
@@ -218,7 +265,6 @@ class PatientFormsViewController: GradientNavBarViewController {
         ])
         
         datePicker.addTarget(self, action: #selector(updateAgeLabel), for: .valueChanged)
-        addContactButton.addTarget(self, action: #selector(didTapAddContactButton), for: .touchUpInside)
         nextStepButton.addTarget(self, action: #selector(didTapNextStepButton), for: .touchUpInside)
        
         let tapGesture = UITapGestureRecognizer(target: self, action: #selector(dismissKeyboard))
@@ -227,15 +273,15 @@ class PatientFormsViewController: GradientNavBarViewController {
     }
     
 
-    @objc
-    private func didTapAddContactButton() {
-        guard let text = contactTextField.text, !text.isEmpty else { return }
-
-        let contact = ContactDraft(name: text, description: "", method: "")
-        contactsList.append(contact)
-
-        contactTextField.text = ""
-    }
+//    @objc
+//    private func didTapAddContactButton() {
+//        guard let text = contactTextField.text, !text.isEmpty else { return }
+//
+//        let contact = ContactDraft(name: text, relationship: "", phone: "")
+//        contactsList.append(contact)
+//
+//        contactTextField.text = ""
+//    }
 
     @objc
     private func dismissKeyboard() {
@@ -245,7 +291,7 @@ class PatientFormsViewController: GradientNavBarViewController {
     @objc
     func didTapNextStepButton(_ sender: UIButton) {
         //FIXME: Emergency for apple presentation
-        didTapAddContactButton()
+//        didTapAddContactButton()
         
         let selectedIndex = genderSegmentedControl.selectedSegmentIndex
         let gender = selectedIndex == 0 ? "female" : "male"
@@ -266,11 +312,13 @@ class PatientFormsViewController: GradientNavBarViewController {
             address: addressTextField.text ?? ""
         )
         
+        let contactName = contactNameTextField.text ?? ""
+        let contactPhone = contactPhoneTextField.text ?? ""
+
+        viewModel.updateContact(name: contactName, phone: contactPhone)
+        
         guard viewModel.validateProfile() else { return }
         
-        for c in contactsList {
-            viewModel.addContact(name: c.name, contactDescription: c.description, contactMethod: c.method)
-        }
         
         delegate?.goToComorbiditiesForms()
     }

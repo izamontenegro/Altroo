@@ -93,16 +93,16 @@ class ShiftFormViewController: GradientNavBarViewController {
     //Relationship
     private lazy var relationshipSection = FormSectionView(title: "Qual a sua relação com o assistido?", content: relationshipButton, isObligatory: true)
     private lazy var relationshipButton: PopupMenuButton = {
-        let button = PopupMenuButton(title: viewModel.selectedRelationship)
+        let button = PopupMenuButton(title: viewModel.selectedUserRelationship)
         button.showsMenuAsPrimaryAction = true
         button.changesSelectionAsPrimaryAction = true
         button.backgroundColor = .blue40
         
         let actions: [UIAction] = viewModel.relationshipOptions.map { option in
-            let isSelected = (option == viewModel.selectedRelationship)
+            let isSelected = (option == viewModel.selectedUserRelationship)
             return UIAction(title: option, state: isSelected ? .on : .off) { [weak self] action in
                 guard let self else { return }
-                self.viewModel.selectedRelationship = action.title
+                self.viewModel.selectedUserRelationship = action.title
                 
                 self.relationshipButton.setTitle(action.title, for: .normal)
             }
@@ -151,8 +151,9 @@ class ShiftFormViewController: GradientNavBarViewController {
         view.addGestureRecognizer(tapGesture)
     }
     
-    private func setupNavBar() {
+    func setupNavBar() {
         setNavbarTitle("Adicionar Paciente")
+        isRightButtonCancel = true
     }
     
     private func bindViewModel() {
@@ -161,7 +162,7 @@ class ShiftFormViewController: GradientNavBarViewController {
             .assign(to: \.userName, on: viewModel)
             .store(in: &cancellables)
         
-        viewModel.$selectedRelationship
+        viewModel.$selectedUserRelationship
                .receive(on: RunLoop.main)
                .sink { [weak self] newValue in
                    self?.relationshipButton.setTitle(newValue, for: .normal)
