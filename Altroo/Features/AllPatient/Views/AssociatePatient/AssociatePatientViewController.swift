@@ -15,7 +15,7 @@ protocol AssociatePatientViewControllerDelegate: AnyObject {
     func goToMainFlow()
 }
 
-class AssociatePatientViewController: UIViewController {
+class AssociatePatientViewController: GradientHeader {
     weak var delegate: AssociatePatientViewControllerDelegate?
     private let viewModel: AssociatePatientViewModel
 
@@ -77,16 +77,9 @@ class AssociatePatientViewController: UIViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
         
-        view.backgroundColor = .white
-        navigationItem.title = "Seus Assistidos"
+        view.backgroundColor = .blue80
         
-        let appearance = UINavigationBarAppearance()
-        appearance.configureWithOpaqueBackground()
-        appearance.backgroundColor = .pureWhite
-        appearance.titleTextAttributes = [.foregroundColor: UIColor.black10]
-
-        navigationController?.navigationBar.standardAppearance = appearance
-        navigationController?.navigationBar.scrollEdgeAppearance = appearance
+        setNavbarItems(title: "Assistidos", subtitle: "Acompanhe os assistidos cadastrados no aplicativo ou adicione um novo.")
 
         setupLayout()
         updateView()
@@ -122,8 +115,6 @@ class AssociatePatientViewController: UIViewController {
             buttonsStack.leadingAnchor.constraint(equalTo: view.leadingAnchor, constant: 40),
             buttonsStack.trailingAnchor.constraint(equalTo: view.trailingAnchor, constant: -40),
 
-            addNewPatientButton.heightAnchor.constraint(equalToConstant: 50),
-            addNewPatientButton.widthAnchor.constraint(equalToConstant: 229)
         ])
 
         addNewPatientButton.addTarget(self, action: #selector(didTapAddNewPatientButton), for: .touchUpInside)
