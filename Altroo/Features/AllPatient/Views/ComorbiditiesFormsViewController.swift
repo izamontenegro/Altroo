@@ -71,7 +71,7 @@ class ComorbiditiesFormsViewController: GradientNavBarViewController {
         let stack = UIStackView()
         stack.axis = .vertical
         stack.spacing = Layout.largeSpacing
-        stack.alignment = .center
+        stack.alignment = .fill
         stack.translatesAutoresizingMaskIntoConstraints = false
         return stack
     }()
@@ -97,9 +97,9 @@ class ComorbiditiesFormsViewController: GradientNavBarViewController {
         mainStack.addArrangedSubview(label2)
         mainStack.setCustomSpacing(Layout.smallSpacing, after: label2)
         mainStack.addArrangedSubview(secondRowStack)
-        mainStack.addArrangedSubview(nextStepButton)
         
         view.addSubview(mainStack)
+        view.addSubview(nextStepButton)
         
         NSLayoutConstraint.activate([
             mainStack.topAnchor.constraint(equalTo: view.safeAreaLayoutGuide.topAnchor, constant: Layout.smallSpacing),
@@ -112,8 +112,9 @@ class ComorbiditiesFormsViewController: GradientNavBarViewController {
             label2.widthAnchor.constraint(equalTo: mainStack.widthAnchor),
             secondRowStack.widthAnchor.constraint(equalTo: mainStack.widthAnchor),
             
-            nextStepButton.heightAnchor.constraint(equalToConstant: 46),
-            nextStepButton.widthAnchor.constraint(equalToConstant: 215),
+            nextStepButton.bottomAnchor.constraint(equalTo: view.safeAreaLayoutGuide.bottomAnchor, constant: -Layout.mediumSpacing),
+            nextStepButton.centerXAnchor.constraint(equalTo: view.centerXAnchor),
+            nextStepButton.heightAnchor.constraint(equalToConstant: 44)
         ])
         
         nextStepButton.addTarget(self, action: #selector(didTapDoneButton), for: .touchUpInside)

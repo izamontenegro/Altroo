@@ -29,10 +29,7 @@ class PatientFormsViewController: GradientNavBarViewController {
     private lazy var heightTextField: StandardTextfield = {
         let tf = StandardTextfield()
         tf.placeholder = "0"
-        tf.backgroundColor = .white70
-        tf.textColor = .black10
         tf.keyboardType = .numberPad
-        tf.translatesAutoresizingMaskIntoConstraints = false
         return tf
     }()
     
@@ -57,10 +54,7 @@ class PatientFormsViewController: GradientNavBarViewController {
     private lazy var weightTextField: StandardTextfield = {
         let tf = StandardTextfield()
         tf.placeholder = "0"
-        tf.backgroundColor = .white70
-        tf.textColor = .black10
         tf.keyboardType = .numberPad
-        tf.translatesAutoresizingMaskIntoConstraints = false
         
         return tf
     }()
@@ -83,7 +77,7 @@ class PatientFormsViewController: GradientNavBarViewController {
     }()
     
     private lazy var addressTextField = StandardTextfield(placeholder: "Endereço do assistido")
-    private lazy var contactTextField = StandardTextfield(placeholder: "(00) 0 0000-0000")
+    private lazy var contactTextField = StandardTextfield(placeholder: "Telefone com DDI")
     
     private let datePicker: UIDatePicker = {
         let picker = UIDatePicker()
@@ -130,7 +124,7 @@ class PatientFormsViewController: GradientNavBarViewController {
     private lazy var physicalInfoStack: UIStackView = {
         let stack = UIStackView(arrangedSubviews: [weightSection, heightSection, genderSection])
         stack.axis = .horizontal
-        stack.spacing = Layout.largeSpacing
+        stack.spacing = Layout.smallSpacing
         stack.alignment = .top
         stack.distribution = .fillEqually
         return stack
@@ -153,7 +147,6 @@ class PatientFormsViewController: GradientNavBarViewController {
         stack.translatesAutoresizingMaskIntoConstraints = false
         return stack
     }()
-
     
     private let nextStepButton = StandardConfirmationButton(title: "Próximo")
     
@@ -166,10 +159,7 @@ class PatientFormsViewController: GradientNavBarViewController {
         button.setCustomTitleLabel(StandardLabel(labelText: "+", labelFont: .sfPro, labelType: .title1, labelColor: .blue40, labelWeight: .medium))
         button.translatesAutoresizingMaskIntoConstraints = false
         button.heightAnchor.constraint(equalToConstant: 38).isActive = true
-        
-        
-        //FIXME: Emergency for apple presentation
-        button.isHidden = true
+
         return button
     }()
         
@@ -190,7 +180,6 @@ class PatientFormsViewController: GradientNavBarViewController {
         keyboardHandler = KeyboardHandler(viewController: self)
 
     }
-    
     
     private func bindViewModel() {
           viewModel.$fieldErrors
@@ -277,7 +266,6 @@ class PatientFormsViewController: GradientNavBarViewController {
             address: addressTextField.text ?? ""
         )
         
-        //FIXME: DESCOMENTAR
         guard viewModel.validateProfile() else { return }
         
         for c in contactsList {
@@ -292,16 +280,6 @@ class PatientFormsViewController: GradientNavBarViewController {
     private func updateAgeLabel() {
         let age = Calendar.current.dateComponents([.year], from: datePicker.date, to: Date()).year ?? 0
         ageLabel.updateLabelText("\(age) anos")
-    }
-    
-    
-    private static func makeTextField(placeholder: String) -> UITextField {
-        let tf = UITextField()
-        tf.placeholder = placeholder
-        tf.borderStyle = .roundedRect
-        tf.autocorrectionType = .no
-        tf.autocapitalizationType = .none
-        return tf
     }
 }
 

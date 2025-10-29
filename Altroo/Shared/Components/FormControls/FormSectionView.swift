@@ -51,7 +51,8 @@ final class FormSectionView: UIStackView {
             titleLabel.attributedText = attributed
         }
         
-        errorIcon.image = UIImage(systemName: "exclamationmark.triangle")
+        let configuration = UIImage.SymbolConfiguration(textStyle: .caption1)
+        errorIcon.image = UIImage(systemName: "exclamationmark.triangle", withConfiguration: configuration)
         errorIcon.tintColor = .red10
         errorIcon.setContentHuggingPriority(.required, for: .horizontal)
         errorLabel.numberOfLines = 0
