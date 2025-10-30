@@ -17,7 +17,7 @@ struct ParticipantsAccess {
 extension CoreDataService {
     
     func fetchParticipants(for object: NSManagedObject) -> [CKShare.Participant]? {
-        guard isShared(object: object) else { return nil }
+        guard stack.isShared(object: object) else { return nil }
         do {
             let shares = try stack.persistentContainer.fetchShares(matching: [object.objectID])
             guard let share = shares[object.objectID] else { return nil }

@@ -11,7 +11,35 @@ import CloudKit
 
 class CoreDataStack {
     static let shared = CoreDataStack()
-    init() {}
+    private(set) var isCloudSynced = false
+//    init() {}
+    
+    //MARK: Utility vars
+    var ckContainer: CKContainer {
+        let storeDescription = persistentContainer.persistentStoreDescriptions.first
+        guard let identifier = storeDescription?.cloudKitContainerOptions?.containerIdentifier else {
+            fatalError("Unable to get container identifier")
+        }
+        return CKContainer(identifier: identifier)
+    }
+    
+    var context: NSManagedObjectContext {
+        persistentContainer.viewContext
+    }
+    
+    var privatePersistentStore: NSPersistentStore {
+        guard let privateStore = _privatePersistentStore else {
+            fatalError("Private store is not set")
+        }
+        return privateStore
+    }
+    
+    var sharedPersistentStore: NSPersistentStore {
+        guard let sharedStore = _sharedPersistentStore else {
+            fatalError("Shared store is not set")
+        }
+        return sharedStore
+    }
     
     lazy var persistentContainer: NSPersistentCloudKitContainer = {
         let container = NSPersistentCloudKitContainer(name: "AltrooDataModel") //.xcdatamodeld file name
@@ -20,17 +48,16 @@ class CoreDataStack {
             fatalError("Unable to get persistentStoreDescription")
         }
         
-        
         //MARK: Private store
         let storesURL = privateStoreDescription.url?.deletingLastPathComponent()
         privateStoreDescription.url = storesURL?.appendingPathComponent("private.sqlite")
-        
-        var privatePersistentStore: NSPersistentStore {
-            guard let privateStore = _privatePersistentStore else {
-                fatalError("Private store is not set")
-            }
-            return privateStore
-        }
+//
+//        var privatePersistentStore: NSPersistentStore {
+//            guard let privateStore = _privatePersistentStore else {
+//                fatalError("Private store is not set")
+//            }
+//            return privateStore
+//        }
         
         //MARK: Shared store
         let sharedStoreURL = storesURL?.appendingPathComponent("shared.sqlite")
@@ -47,8 +74,6 @@ class CoreDataStack {
         sharedStoreDescription.cloudKitContainerOptions = sharedStoreOptions
         container.persistentStoreDescriptions.append(sharedStoreDescription)
         
-        
-        
         //MARK: Load stores
         container.loadPersistentStores { loadedStoreDescription, error in
             if let error = error as NSError? {
@@ -61,13 +86,26 @@ class CoreDataStack {
                 if cloudKitContainerOptions.databaseScope == .private {
                     let privateStore = container.persistentStoreCoordinator.persistentStore(for: loadedStoreDescritionURL)
                     self._privatePersistentStore = privateStore
-                    
                 } else if cloudKitContainerOptions.databaseScope == .shared {
                     let sharedStore = container.persistentStoreCoordinator.persistentStore(for: loadedStoreDescritionURL)
                     self._sharedPersistentStore = sharedStore
                 }
             }
         }
+        
+//        NotificationCenter.default.addObserver(
+//            forName: NSPersistentCloudKitContainer.eventChangedNotification,
+//            object: container,
+//            queue: .main
+//        ) { notification in
+//            guard let event = notification.userInfo?[NSPersistentCloudKitContainer.eventNotificationUserInfoKey] as? NSPersistentCloudKitContainer.Event else { return }
+//
+//            if event.type == .import && event.endDate != nil {
+//                self.isCloudSynced = true
+//                NotificationCenter.default.post(name: .didFinishCloudKitSync, object: nil)
+//            }
+//        }
+
         
         //MARK: Context setup
         container.viewContext.mergePolicy = NSMergeByPropertyObjectTrumpMergePolicy
@@ -80,57 +118,32 @@ class CoreDataStack {
         
         return container
     }()
-    
-    var context: NSManagedObjectContext {
-        persistentContainer.viewContext
-    }
-    
-    
-    //MARK: Utility vars
-    var ckContainer: CKContainer {
-        let storeDescription = persistentContainer.persistentStoreDescriptions.first
-        guard let identifier = storeDescription?.cloudKitContainerOptions?.containerIdentifier else {
-            fatalError("Unable to get container identifier")
-        }
-        return CKContainer(identifier: identifier)
-    }
-    
+
     private var _privatePersistentStore: NSPersistentStore?
     private var _sharedPersistentStore: NSPersistentStore?
-    
-    var privatePersistentStore: NSPersistentStore {
-        guard let privateStore = _privatePersistentStore else {
-            fatalError("Private store is not set")
-        }
-        return privateStore
-    }
-    
-    var sharedPersistentStore: NSPersistentStore {
-        guard let sharedStore = _sharedPersistentStore else {
-            fatalError("Shared store is not set")
-        }
-        return sharedStore
-    }
-    
+    private init() {}
 }
 
 extension CoreDataStack {
 
-    private var isCloudKitReady: Bool {
-        _privatePersistentStore != nil && _sharedPersistentStore != nil
-    }
-
-    func cloudKitReady(completion: @escaping () -> Void) {
-        if isCloudKitReady {
-            completion()
-        } else {
-            NotificationCenter.default.addObserver(forName: .NSPersistentStoreRemoteChange, object: nil, queue: .main) { _ in
-                if self.isCloudKitReady {
-                    completion()
-                }
-            }
-        }
-    }
+//    private var isCloudKitReady: Bool {
+//        _privatePersistentStore != nil && _sharedPersistentStore != nil
+//    }
+//    
+//    func waitForCloudKitSync() async {
+//        if isCloudSynced { return }
+//
+//        return await withCheckedContinuation { continuation in
+//            NotificationCenter.default.addObserver(
+//                forName: .didFinishCloudKitSync,
+//                object: nil,
+//                queue: .main
+//            ) { _ in
+//                self.isCloudSynced = true
+//                continuation.resume()
+//            }
+//        }
+//    }
 }
 
 extension Notification.Name {

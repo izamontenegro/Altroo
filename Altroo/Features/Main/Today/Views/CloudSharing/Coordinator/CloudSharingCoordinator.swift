@@ -22,25 +22,22 @@ final class CloudSharingCoordinator: NSObject, UICloudSharingControllerDelegate 
     }
     
     func presentSharingSheet() {
-        CoreDataStack.shared.cloudKitReady { [self] in
-            
-            Task {
-                if let share = try coreDataService.getShare(careRecipient) {
-                    // if a share already exists
-                    let sharingController = UICloudSharingController(share: share, container: coreDataService.stack.ckContainer)
-                    configureAndPresent(sharingController)
-                } else {
-                    // if a new share needs to be created
-                    await createShareAndPresent()
-                }
+        Task {
+//            await CoreDataStack.shared.waitForCloudKitSync()
+
+            if let share = coreDataService.stack.getShare(careRecipient) {
+                let sharingController = UICloudSharingController(share: share, container: coreDataService.stack.ckContainer)
+                configureAndPresent(sharingController)
+            } else {
+                await createShareAndPresent()
             }
         }
     }
     
     private func createShareAndPresent() async {
         do {
-            let (_, share, container) = try await coreDataService.stack.persistentContainer.share([careRecipient as NSManagedObject], to: nil)
-            
+            let (_, share, container) = try await coreDataService.stack.persistentContainer.share([careRecipient], to: nil)
+                        
             share[CKShare.SystemFieldKey.title] = careRecipient.personalData?.name ?? "Shared Item"
             
             let sharingController = UICloudSharingController(share: share, container: container)
@@ -78,7 +75,7 @@ final class CloudSharingCoordinator: NSObject, UICloudSharingControllerDelegate 
     }
     
     func cloudSharingControllerDidStopSharing(_ csc: UICloudSharingController) {
-        if !coreDataService.isOwner(object: careRecipient) {
+        if !coreDataService.stack.isOwner(object: careRecipient) {
             coreDataService.deleteCareRecipient(careRecipient)
         }
     }

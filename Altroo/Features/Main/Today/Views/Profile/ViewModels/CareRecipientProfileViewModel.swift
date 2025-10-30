@@ -41,7 +41,7 @@ final class CareRecipientProfileViewModel {
     
     func currentShare() -> CKShare? {
         guard let recipient = currentCareRecipient() else { return nil }
-        return coreDataService.getShare(recipient)
+        return coreDataService.stack.getShare(recipient)
     }
     
     private func calcCompletion() -> CGFloat {
