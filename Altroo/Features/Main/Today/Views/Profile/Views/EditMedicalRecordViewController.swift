@@ -11,15 +11,9 @@ final class EditMedicalRecordViewController: GradientNavBarViewController, Medic
     let viewModel: EditMedicalRecordViewModel
     weak var delegate: EditMedicalRecordViewControllerDelegate?
     
-    // O que é: instâncias das SUAS views, agora como UIViews puras.
-    // Como faz: criamos as duas views com o mesmo viewModel, prontas para serem exibidas.
-    // Por que faz: permite alternar sem navegação e sem view controllers filhos.
     private lazy var editPersonalDataView = EditPersonalDataView(viewModel: viewModel)
     private lazy var editPersonalCareView = EditPersonalCareView(viewModel: viewModel)
 
-    // O que é: referência para a subview atualmente visível.
-    // Como faz: guardamos para remover antes de adicionar a próxima.
-    // Por que faz: evita sobreposição de views.
     private var currentContentView: UIView?
 
     private let contentContainerView: UIView = {
@@ -28,14 +22,9 @@ final class EditMedicalRecordViewController: GradientNavBarViewController, Medic
         return view
     }()
     
-    // Substitui o picker: agora usamos o nosso seletor com ícones
     private lazy var sectionSelectorView: MedicalRecordSectionSelectorView = {
-        // O que faz: cria o seletor com os símbolos desejados e índice inicial 0.
-        // Como faz: injeta delegate para ser notificado na seleção.
-        // Por que faz: centraliza a escolha da seção sem navegação.
         let selector = MedicalRecordSectionSelectorView(
-            symbolNames: ["person.fill", "heart.fill", "figure.arms.open", "brain.head.profile", "hand.raised.fill"],
-            initialSelectedIndex: 0
+            symbolNames: ["person.fill", "heart.fill", "figure.arms.open", "brain.head.profile.fill", "hand.raised.fill"]
         )
         selector.delegate = self
         return selector
@@ -61,12 +50,11 @@ final class EditMedicalRecordViewController: GradientNavBarViewController, Medic
         super.viewDidLoad()
         view.backgroundColor = .pureWhite
 
-        // Layout básico: seletor em cima, conteúdo embaixo
         view.addSubview(sectionSelectorView)
         view.addSubview(contentContainerView)
 
         NSLayoutConstraint.activate([
-            sectionSelectorView.topAnchor.constraint(equalTo: view.safeAreaLayoutGuide.topAnchor, constant: 12),
+            sectionSelectorView.topAnchor.constraint(equalTo: view.safeAreaLayoutGuide.topAnchor, constant: 10),
             sectionSelectorView.leadingAnchor.constraint(equalTo: view.leadingAnchor, constant: 16),
             sectionSelectorView.trailingAnchor.constraint(equalTo: view.trailingAnchor, constant: -16),
 
@@ -76,7 +64,6 @@ final class EditMedicalRecordViewController: GradientNavBarViewController, Medic
             contentContainerView.bottomAnchor.constraint(equalTo: view.bottomAnchor)
         ])
 
-        // Exibe o primeiro conteúdo por padrão
         displaySection(editPersonalDataView)
     }
 
@@ -88,23 +75,18 @@ final class EditMedicalRecordViewController: GradientNavBarViewController, Medic
             headerView.topAnchor.constraint(equalTo: view.safeAreaLayoutGuide.topAnchor, constant: 16),
             headerView.leadingAnchor.constraint(equalTo: view.leadingAnchor, constant: 16),
             headerView.trailingAnchor.constraint(equalTo: view.trailingAnchor, constant: -16),
-//
-//            contentContainerView.topAnchor.constraint(equalTo: sectionSelectorButton.bottomAnchor, constant: 20),
+
             contentContainerView.leadingAnchor.constraint(equalTo: view.leadingAnchor),
             contentContainerView.trailingAnchor.constraint(equalTo: view.trailingAnchor),
             contentContainerView.bottomAnchor.constraint(equalTo: view.bottomAnchor)
         ])
     }
 
-    // Delegate do seletor: mapeia índice → view correspondente e troca no container
     func medicalRecordSectionSelectorView(_ selectorView: MedicalRecordSectionSelectorView, didSelectIndex index: Int) {
-        // O que faz: executa o “switch” pelo índice vindo do componente.
-        // Como faz: decide qual UIView usar e chama displaySection.
-        // Por que faz: reproduz exatamente a ideia do switch do SwiftUI.
         switch index {
         case 0: displaySection(editPersonalDataView)
         case 1: displaySection(editPersonalCareView)
-        case 2: displaySection(editPersonalCareView) // exemplo: mapeie para outras views quando existirem
+        case 2: displaySection(editPersonalCareView)
         case 3: displaySection(editPersonalCareView)
         case 4: displaySection(editPersonalCareView)
         default: displaySection(editPersonalDataView)
@@ -112,9 +94,6 @@ final class EditMedicalRecordViewController: GradientNavBarViewController, Medic
     }
 
     private func displaySection(_ newContentView: UIView) {
-        // O que faz: troca a subview exibida dentro do container.
-        // Como faz: remove a atual (se houver), adiciona a nova e ancora por Auto Layout.
-        // Por que faz: idêntico ao switch do SwiftUI, mas com UIViews.
         if let currentContentView {
             currentContentView.removeFromSuperview()
         }

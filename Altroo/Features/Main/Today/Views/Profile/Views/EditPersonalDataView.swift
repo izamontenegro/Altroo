@@ -11,7 +11,6 @@ final class EditPersonalDataView: UIView {
     let viewModel: EditMedicalRecordViewModel
     weak var delegate: EditMedicalRecordViewControllerDelegate?
 
-    // Exemplo de campos (substitua/adapte pelos seus)
     private lazy var nameTextField = StandardTextfield(placeholder: "Nome do assistido")
     private lazy var addressTextField = StandardTextfield(placeholder: "Endereço do assistido")
 
@@ -26,7 +25,6 @@ final class EditPersonalDataView: UIView {
     }()
 
     private lazy var formStack: UIStackView = {
-        // Observação: substitua por seus FormSectionView e demais subviews reais.
         let nameSection = FormSectionView(title: "Nome", content: nameTextField, isObligatory: true)
         let addressSection = FormSectionView(title: "Endereço", content: addressTextField)
 
@@ -43,7 +41,7 @@ final class EditPersonalDataView: UIView {
         super.init(frame: .zero)
         translatesAutoresizingMaskIntoConstraints = false
         setupUI()
-        fillInformations() // O que faz: já preenche os campos ao montar a view.
+        fillInformations()
     }
     required init?(coder: NSCoder) { fatalError("init(coder:) has not been implemented") }
 
@@ -64,10 +62,7 @@ final class EditPersonalDataView: UIView {
             formStack.bottomAnchor.constraint(lessThanOrEqualTo: bottomAnchor, constant: -20)
         ])
     }
-
-    // O que é: preenche os campos consultando o viewModel (mesma lógica que você já tem).
-    // Como faz: busca o paciente, lê personalData e injeta nos textfields.
-    // Por que faz: mantém a view autônoma para ser exibida em qualquer container.
+    
     func fillInformations() {
         guard let patient = viewModel.userService.fetchCurrentPatient(),
               let personalData = patient.personalData else { return }
