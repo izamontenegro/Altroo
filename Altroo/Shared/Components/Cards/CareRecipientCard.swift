@@ -84,7 +84,7 @@ class CareRecipientCard: UIView {
         let initialsLabel = StandardLabel(
             labelText: isPlusButton ? "+" : initials,
             labelFont: .sfPro,
-            labelType: .title2,
+            labelType: isPlusButton ? .largeTitle : .title2,
             labelColor: .pureWhite,
             labelWeight: .medium
         )

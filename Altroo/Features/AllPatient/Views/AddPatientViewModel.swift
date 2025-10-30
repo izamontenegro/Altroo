@@ -137,7 +137,7 @@ extension AddPatientViewModel {
     func validateProfile() -> Bool {
         var newErrors: [String: String] = [:]
 
-//        _ = validator.isEmpty(name, fieldName: "Nome", error: &newErrors["name"])
+        _ = validator.isEmpty(name, error: &newErrors["name"])
         
         if !weight.isZero {
             _ = validator.invalidValue(value: Int(weight), minValue: 0, maxValue: 999, error: &newErrors["weight"])
@@ -155,7 +155,7 @@ extension AddPatientViewModel {
     }
     
     func validateUser() -> Bool {
-//        guard validator.isEmpty(userName, fieldName: "Nome", error: &userNameError) else { return false }
+        guard validator.isEmpty(userName, error: &userNameError) else { return false }
         return true
     }
 }

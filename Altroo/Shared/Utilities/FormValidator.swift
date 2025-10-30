@@ -57,7 +57,7 @@ class FormValidator {
         let difference = calendar.dateComponents([.year], from: birthday, to: today).year
         guard let difference else { return false }
         if  difference < 13 {
-            error = "Paciente menor de 13 anos"
+            error = "Assistido menor de 13 anos"
             return false
         } else {
             error = nil
