@@ -8,11 +8,15 @@
 import UIKit
 
 final class EditMedicalRecordViewController: GradientNavBarViewController, MedicalRecordSectionSelectorViewDelegate {
+    
     let viewModel: EditMedicalRecordViewModel
     weak var delegate: EditMedicalRecordViewControllerDelegate?
     
-    private lazy var editPersonalDataView = EditPersonalDataView(viewModel: viewModel)
-    private lazy var editPersonalCareView = EditPersonalCareView(viewModel: viewModel)
+    private lazy var editPersonalDataForms = EditPersonalDataView(viewModel: viewModel)
+    private lazy var editHealthProblemsForms = EditHealthProblemsView(viewModel: viewModel)
+    private lazy var editPhysicalStateForms = EditPhysicalStateView(viewModel: viewModel)
+    private lazy var editMentalStateForms = EditMentalStateView(viewModel: viewModel)
+    private lazy var editPersonalCareForms = EditPersonalCareView(viewModel: viewModel)
 
     private var currentContentView: UIView?
 
@@ -20,14 +24,6 @@ final class EditMedicalRecordViewController: GradientNavBarViewController, Medic
         let view = UIView()
         view.translatesAutoresizingMaskIntoConstraints = false
         return view
-    }()
-    
-    private lazy var sectionSelectorView: MedicalRecordSectionSelectorView = {
-        let selector = MedicalRecordSectionSelectorView(
-            symbolNames: ["person.fill", "heart.fill", "figure.arms.open", "brain.head.profile.fill", "hand.raised.fill"]
-        )
-        selector.delegate = self
-        return selector
     }()
 
     private let headerView: EditSectionHeaderView = {
@@ -46,6 +42,16 @@ final class EditMedicalRecordViewController: GradientNavBarViewController, Medic
     }
     required init?(coder: NSCoder) { fatalError("init(coder:) has not been implemented") }
 
+    private lazy var sectionSelectorView: MedicalRecordSectionSelectorView = {
+        let selector = MedicalRecordSectionSelectorView(
+            symbolNames: ["person.fill", "heart.fill", "figure.arms.open", "brain.head.profile.fill", "hand.raised.fill"]
+        )
+        selector.delegate = self
+        selector.translatesAutoresizingMaskIntoConstraints = false
+
+        return selector
+    }()
+
     override func viewDidLoad() {
         super.viewDidLoad()
         view.backgroundColor = .pureWhite
@@ -58,15 +64,18 @@ final class EditMedicalRecordViewController: GradientNavBarViewController, Medic
             sectionSelectorView.leadingAnchor.constraint(equalTo: view.leadingAnchor, constant: 16),
             sectionSelectorView.trailingAnchor.constraint(equalTo: view.trailingAnchor, constant: -16),
 
+            sectionSelectorView.heightAnchor.constraint(equalToConstant: 50),
+
             contentContainerView.topAnchor.constraint(equalTo: sectionSelectorView.bottomAnchor, constant: 20),
             contentContainerView.leadingAnchor.constraint(equalTo: view.leadingAnchor),
             contentContainerView.trailingAnchor.constraint(equalTo: view.trailingAnchor),
             contentContainerView.bottomAnchor.constraint(equalTo: view.bottomAnchor)
         ])
 
-        displaySection(editPersonalDataView)
-    }
+        view.bringSubviewToFront(sectionSelectorView)
 
+        displaySection(editPersonalDataForms)
+    }
     private func setupLayout() {
         view.addSubview(headerView)
         view.addSubview(contentContainerView)
@@ -84,12 +93,12 @@ final class EditMedicalRecordViewController: GradientNavBarViewController, Medic
 
     func medicalRecordSectionSelectorView(_ selectorView: MedicalRecordSectionSelectorView, didSelectIndex index: Int) {
         switch index {
-        case 0: displaySection(editPersonalDataView)
-        case 1: displaySection(editPersonalCareView)
-        case 2: displaySection(editPersonalCareView)
-        case 3: displaySection(editPersonalCareView)
-        case 4: displaySection(editPersonalCareView)
-        default: displaySection(editPersonalDataView)
+        case 0: displaySection(editPersonalDataForms)
+        case 1: displaySection(editHealthProblemsForms)
+        case 2: displaySection(editPhysicalStateForms)
+        case 3: displaySection(editMentalStateForms)
+        case 4: displaySection(editPersonalCareForms)
+        default: displaySection(editPersonalDataForms)
         }
     }
 
