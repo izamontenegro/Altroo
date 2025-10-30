@@ -186,6 +186,7 @@ class PatientFormsViewController: UIViewController {
             physicalInfoStack,
             addressSection,
             contactSection,
+            nextStepButton
         ])
         stack.axis = .vertical
         stack.alignment = .fill
@@ -230,7 +231,6 @@ class PatientFormsViewController: UIViewController {
 
         view.addSubview(scrollView)
         scrollView.addSubview(formStack)
-        view.addSubview(nextStepButton)
         
         let allTextFields: [UITextField] = [
             nameTextField,
@@ -248,16 +248,14 @@ class PatientFormsViewController: UIViewController {
             scrollView.topAnchor.constraint(equalTo: view.safeAreaLayoutGuide.topAnchor),
             scrollView.leadingAnchor.constraint(equalTo: view.leadingAnchor),
             scrollView.trailingAnchor.constraint(equalTo: view.trailingAnchor),
-            scrollView.bottomAnchor.constraint(equalTo: nextStepButton.topAnchor),
+            scrollView.bottomAnchor.constraint(equalTo: view.bottomAnchor),
             
             formStack.topAnchor.constraint(equalTo: scrollView.contentLayoutGuide.topAnchor, constant: Layout.smallSpacing),
             formStack.leadingAnchor.constraint(equalTo: scrollView.contentLayoutGuide.leadingAnchor, constant: Layout.mediumSpacing),
             formStack.trailingAnchor.constraint(equalTo: scrollView.contentLayoutGuide.trailingAnchor, constant: -Layout.mediumSpacing),
             formStack.bottomAnchor.constraint(equalTo: scrollView.contentLayoutGuide.bottomAnchor, constant: -Layout.smallSpacing),
-            
-            nextStepButton.bottomAnchor.constraint(equalTo: view.safeAreaLayoutGuide.bottomAnchor, constant: -Layout.mediumSpacing),
-            nextStepButton.centerXAnchor.constraint(equalTo: view.centerXAnchor),
-            nextStepButton.heightAnchor.constraint(equalToConstant: 44)
+            formStack.widthAnchor.constraint(equalTo: scrollView.frameLayoutGuide.widthAnchor, constant: -2 * Layout.mediumSpacing)
+
         ])
         
         datePicker.addTarget(self, action: #selector(updateAgeLabel), for: .valueChanged)

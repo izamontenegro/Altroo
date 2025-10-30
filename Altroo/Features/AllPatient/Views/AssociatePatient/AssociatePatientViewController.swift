@@ -134,7 +134,6 @@ class AssociatePatientViewController: GradientHeader {
         vStack.addArrangedSubview(addNewPatientButton)
         vStack.setCustomSpacing(Layout.smallSpacing, after: addNewPatientButton)
         vStack.addArrangedSubview(addExistingPatientButton)
-
     }
 
     @objc private func didTapCareRecipientCard(_ sender: UITapGestureRecognizer) {
