@@ -14,11 +14,6 @@ class GradientHeader: UIViewController {
     private var gradientView: UIView!
     private var stack: UIStackView!
     
-    override func viewDidLoad() {
-        super.viewDidLoad()
-        setupGradientHeader()
-    }
-    
     override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
         setupGradientHeader()
@@ -26,16 +21,23 @@ class GradientHeader: UIViewController {
     
     override func viewDidLayoutSubviews() {
         super.viewDidLayoutSubviews()
+        view.layoutIfNeeded()
 
-        //inside top safe area
-        if let gradientView {
-            let headerHeight = gradientView.frame.height
-            additionalSafeAreaInsets.top = headerHeight
+        guard let gradientView else { return }
+
+        let headerHeight = gradientView.frame.height
+        let safeTop = view.safeAreaInsets.top
+        let currentInsetTop = additionalSafeAreaInsets.top
+        
+        let newInset = max(0, headerHeight - safeTop)
+        if newInset != currentInsetTop {
+            additionalSafeAreaInsets.top = newInset
         }
     }
 
-
     private func setupGradientHeader() {
+        if gradientView != nil { return }
+
         gradientView = UIView()
         gradientView.translatesAutoresizingMaskIntoConstraints = false
         view.addSubview(gradientView)
@@ -90,12 +92,6 @@ class GradientHeader: UIViewController {
         gradientView.layoutIfNeeded()
         gradient.frame = gradientView.bounds
         gradientView.layer.insertSublayer(gradient, at: 0)
-        
-        stack.layer.borderColor = UIColor(.red).cgColor
-        stack.layer.borderWidth = 2
-        
-        gradientView.layer.borderColor = UIColor(.green).cgColor
-        gradientView.layer.borderWidth = 2
     }
     
     func setNavbarItems(title: String, subtitle: String, view: UIView? = nil) {
