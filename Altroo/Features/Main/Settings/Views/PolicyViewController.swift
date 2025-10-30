@@ -7,27 +7,16 @@
 
 import UIKit
 
-class PolicyViewController: UIViewController {
-
-    let viewLabel: UILabel = {
-        let label = UILabel()
-        label.text = "Policy View"
-        label.textAlignment = .center
-        
-        label.translatesAutoresizingMaskIntoConstraints = false
-        return label
-    }()
+class PolicyViewController: GradientNavBarViewController {
     
     override func viewDidLoad() {
         super.viewDidLoad()
 
-        view.backgroundColor = .systemIndigo
-        
-        view.addSubview(viewLabel)
-        
-        NSLayoutConstraint.activate([
-            viewLabel.centerXAnchor.constraint(equalTo: view.centerXAnchor),
-            viewLabel.centerYAnchor.constraint(equalTo: view.centerYAnchor)
-        ])
+        view.backgroundColor = .pureWhite
     }
+    
+}
+
+#Preview {
+    PolicyViewController()
 }
