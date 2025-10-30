@@ -19,6 +19,8 @@ protocol EditMedicalRecordViewControllerDelegate: AnyObject {
 final class MedicalRecordViewController: GradientNavBarViewController {
     
     let viewModel: MedicalRecordViewModel
+    
+    weak var delegate: EditMedicalRecordViewControllerDelegate?
 
     // MARK: - Properties
     private var cancellables = Set<AnyCancellable>()
@@ -234,6 +236,11 @@ final class MedicalRecordViewController: GradientNavBarViewController {
 
         wrapper.addArrangedSubview(alertBox)
         wrapper.addArrangedSubview(editButton)
+        
+        editButton.isUserInteractionEnabled = true
+        let tap = UITapGestureRecognizer(target: self, action: #selector(didTapEditButton))
+        editButton.addGestureRecognizer(tap)
+        
         return wrapper
     }
 
@@ -345,8 +352,8 @@ final class MedicalRecordViewController: GradientNavBarViewController {
 
         return button
     }
+    
+    @objc func didTapEditButton() {
+        delegate?.goToPersonalData()
+    }
 }
-//
-//#Preview {
-//    UINavigationController(rootViewController: MedicalRecordViewController())
-//}

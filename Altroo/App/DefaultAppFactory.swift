@@ -144,9 +144,10 @@ extension DefaultAppFactory {
         return vc
     }
     
-    func makeMedicalRecordViewController() -> UIViewController {
+    func makeMedicalRecordViewController(delegate: EditMedicalRecordViewControllerDelegate?) -> UIViewController {
         let vm = MedicalRecordViewModel(userService: dependencies.userService)
         let vc = MedicalRecordViewController(viewModel: vm)
+        vc.delegate = delegate
         return vc
     }
     

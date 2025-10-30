@@ -75,7 +75,7 @@ protocol EditMedicalRecordFactory {
 protocol ProfileFactory {
     func makeProfileViewController(delegate: ProfileViewControllerDelegate) -> UIViewController
     func makeChangeCareRecipientViewController(delegate: ChangeCareRecipientViewControllerDelegate) -> UIViewController
-    func makeMedicalRecordViewController() -> UIViewController
+    func makeMedicalRecordViewController(delegate: EditMedicalRecordViewControllerDelegate?) -> UIViewController
 }
 
 // MARK: - EVENTS FLOW

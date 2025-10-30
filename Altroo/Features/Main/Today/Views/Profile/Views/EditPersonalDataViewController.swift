@@ -7,7 +7,7 @@
 
 import UIKit
 
-final class EditPersonalDataViewController: UIViewController {
+final class EditPersonalDataViewController: GradientNavBarViewController {
     let viewModel: EditMedicalRecordViewModel
     
     weak var delegate: EditMedicalRecordViewControllerDelegate?
