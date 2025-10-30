@@ -106,6 +106,6 @@ class MyProfileViewController: GradientNavBarViewController {
     }
 }
 
-#Preview {
-    MyProfileViewController()
-}
+//#Preview {
+//    MyProfileViewController()
+//}

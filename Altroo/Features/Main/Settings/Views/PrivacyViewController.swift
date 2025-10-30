@@ -39,7 +39,7 @@ class PrivacyViewController: GradientNavBarViewController {
         return label
     }()
     
-    private let policyTitle: StandardLabel = {
+    private let privacyTitle: StandardLabel = {
         let label = StandardLabel(
             labelText: "Aceitação da Política",
             labelFont: .sfPro,
@@ -50,7 +50,7 @@ class PrivacyViewController: GradientNavBarViewController {
         
         return label
     }()
-    private let policyText: StandardLabel = {
+    private let privacyText: StandardLabel = {
         let label = StandardLabel(
             labelText: "Ao utilizar o Altroo, você declara estar ciente e de acordo com os termos desta Política de Privacidade. \n\nSe não concordar com algum dos termos, recomendamos interromper o uso do aplicativo e solicitar a exclusão de sua conta.",
             labelFont: .sfPro,
@@ -90,15 +90,15 @@ class PrivacyViewController: GradientNavBarViewController {
     private func setupUI() {
         view.addSubview(titleLabel)
         view.addSubview(subtitleLabel)
-        view.addSubview(policyTitle)
-        view.addSubview(policyText)
+        view.addSubview(privacyTitle)
+        view.addSubview(privacyText)
         view.addSubview(dataTitle)
         view.addSubview(dataText)
         
         titleLabel.translatesAutoresizingMaskIntoConstraints = false
         subtitleLabel.translatesAutoresizingMaskIntoConstraints = false
-        policyTitle.translatesAutoresizingMaskIntoConstraints = false
-        policyText.translatesAutoresizingMaskIntoConstraints = false
+        privacyTitle.translatesAutoresizingMaskIntoConstraints = false
+        privacyText.translatesAutoresizingMaskIntoConstraints = false
         dataTitle.translatesAutoresizingMaskIntoConstraints = false
         dataText.translatesAutoresizingMaskIntoConstraints = false
         
@@ -112,15 +112,15 @@ class PrivacyViewController: GradientNavBarViewController {
             subtitleLabel.trailingAnchor.constraint(equalTo: titleLabel.trailingAnchor),
             
             // policy acceptance
-            policyTitle.topAnchor.constraint(equalTo: subtitleLabel.bottomAnchor, constant: 24),
-            policyTitle.leadingAnchor.constraint(equalTo: titleLabel.leadingAnchor),
-            policyTitle.trailingAnchor.constraint(equalTo: titleLabel.trailingAnchor),
-            policyText.topAnchor.constraint(equalTo: policyTitle.bottomAnchor, constant: 8),
-            policyText.leadingAnchor.constraint(equalTo: policyTitle.leadingAnchor),
-            policyText.trailingAnchor.constraint(equalTo: policyTitle.trailingAnchor),
+            privacyTitle.topAnchor.constraint(equalTo: subtitleLabel.bottomAnchor, constant: 24),
+            privacyTitle.leadingAnchor.constraint(equalTo: titleLabel.leadingAnchor),
+            privacyTitle.trailingAnchor.constraint(equalTo: titleLabel.trailingAnchor),
+            privacyText.topAnchor.constraint(equalTo: privacyTitle.bottomAnchor, constant: 8),
+            privacyText.leadingAnchor.constraint(equalTo: privacyTitle.leadingAnchor),
+            privacyText.trailingAnchor.constraint(equalTo: privacyTitle.trailingAnchor),
             
             // data collection
-            dataTitle.topAnchor.constraint(equalTo: policyText.bottomAnchor, constant: 24),
+            dataTitle.topAnchor.constraint(equalTo: privacyText.bottomAnchor, constant: 24),
             dataTitle.leadingAnchor.constraint(equalTo: titleLabel.leadingAnchor),
             dataTitle.trailingAnchor.constraint(equalTo: titleLabel.trailingAnchor),
             dataText.topAnchor.constraint(equalTo: dataTitle.bottomAnchor, constant: 8),
@@ -130,6 +130,6 @@ class PrivacyViewController: GradientNavBarViewController {
     }
 }
 
-#Preview {
-    PrivacyViewController()
-}
+//#Preview {
+//    PrivacyViewController()
+//}

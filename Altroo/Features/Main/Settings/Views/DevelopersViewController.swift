@@ -212,6 +212,6 @@ extension UIImage {
     }
 }
 
-#Preview {
-    DevelopersViewController()
-}
+//#Preview {
+//    DevelopersViewController()
+//}

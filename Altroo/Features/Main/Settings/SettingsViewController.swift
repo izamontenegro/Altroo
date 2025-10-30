@@ -107,11 +107,11 @@ class SettingsViewController: GradientNavBarViewController {
     
     // MARK: - BUTTON ACTION
     @objc func didTapMyProfileButton() { delegate?.goToMyProfile() }
-    @objc func didTapPrivacyButton() { delegate?.goToMyProfile() }
-    @objc func didTapPolicyButton() { delegate?.goToMyProfile() }
+    @objc func didTapPrivacyButton() { delegate?.goToPrivacy() }
+    @objc func didTapPolicyButton() { delegate?.goToPolicy() }
     @objc func didTapDevelopersButton() { delegate?.goToDevelopers() }
 }
 
-#Preview {
-    SettingsViewController()
-}
+//#Preview {
+//    SettingsViewController()
+//}

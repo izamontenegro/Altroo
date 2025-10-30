@@ -54,6 +54,6 @@ class InfoRowView: UIView {
     }
 }
 
-#Preview {
-    InfoRowView(title: "Nome", info: "Dar banho Dar banho")
-}
+//#Preview {
+//    InfoRowView(title: "Nome", info: "Dar banho Dar banho")
+//}
