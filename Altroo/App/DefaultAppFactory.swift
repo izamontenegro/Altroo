@@ -149,6 +149,43 @@ extension DefaultAppFactory {
         let vc = MedicalRecordViewController(viewModel: vm)
         return vc
     }
+    
+    // edit medical record flow
+    func makeEditPersonalDataViewController(delegate: any EditMedicalRecordViewControllerDelegate) -> UIViewController {
+        let vm = EditMedicalRecordViewModel()
+        let vc = EditPersonalDataViewController(viewModel: vm)
+        vc.delegate = delegate
+        return vc
+    }
+    
+    func makeEditHealthProblemsViewController(delegate: any EditMedicalRecordViewControllerDelegate) -> UIViewController {
+        let vm = EditMedicalRecordViewModel()
+        let vc = EditPersonalDataViewController(viewModel: vm)
+        vc.delegate = delegate
+        return vc
+    }
+    
+    func makeEditPhysicalStateViewController(delegate: any EditMedicalRecordViewControllerDelegate) -> UIViewController {
+        let vm = EditMedicalRecordViewModel()
+        let vc = EditPersonalDataViewController(viewModel: vm)
+        vc.delegate = delegate
+        return vc
+    }
+    
+    func makeEditMentalStateViewController(delegate: any EditMedicalRecordViewControllerDelegate) -> UIViewController {
+        let vm = EditMedicalRecordViewModel()
+        let vc = EditPersonalDataViewController(viewModel: vm)
+        vc.delegate = delegate
+        return vc
+    }
+    
+    func makeEditPersonalCareViewController(delegate: any EditMedicalRecordViewControllerDelegate) -> UIViewController {
+        let vm = EditMedicalRecordViewModel()
+        let vc = EditPersonalDataViewController(viewModel: vm)
+        vc.delegate = delegate
+        return vc
+    }
+    
 }
 
 // MARK: - EventsFactory

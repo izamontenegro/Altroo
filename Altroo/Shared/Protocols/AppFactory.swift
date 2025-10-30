@@ -22,7 +22,9 @@ protocol AppFactory:
     GeneralFactory,
     HistoryFactory,
     SettingsFactory,
-    ServiceFactory {
+    ServiceFactory,
+    EditMedicalRecordFactory
+{
 }
 
 // MARK: - ONBOARDING FLOW
@@ -74,8 +76,6 @@ protocol ProfileFactory {
     func makeProfileViewController(delegate: ProfileViewControllerDelegate) -> UIViewController
     func makeChangeCareRecipientViewController(delegate: ChangeCareRecipientViewControllerDelegate) -> UIViewController
     func makeMedicalRecordViewController() -> UIViewController
-    
-//    func makeEditCaregiverViewController() -> UIViewController
 }
 
 // MARK: - EVENTS FLOW
