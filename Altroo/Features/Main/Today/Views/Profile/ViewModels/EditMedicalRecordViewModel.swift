@@ -69,6 +69,5 @@ final class EditMedicalRecordViewModel {
     
     // MARK: Personal care
 
-    
 }
 
