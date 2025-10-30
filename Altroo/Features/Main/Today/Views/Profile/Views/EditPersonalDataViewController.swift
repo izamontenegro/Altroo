@@ -21,4 +21,26 @@ final class EditPersonalDataViewController: GradientNavBarViewController {
         fatalError("init(coder:) has not been implemented")
     }
     
+    override func viewDidLoad() {
+        view.backgroundColor = .pureWhite
+        
+        setupUI()
+    }
+    
+    func setupUI() {
+        let header = EditSectionHeaderView(sectionTitle: "Dados Pessoais", sectionDescription: "Preencha os campos a seguir quanto aos dados básicos da pessoa cuidada.", sectionIcon: "person.fill")
+        header.translatesAutoresizingMaskIntoConstraints = false
+        
+        view.addSubview(header)
+        
+        NSLayoutConstraint.activate([
+            header.topAnchor.constraint(equalTo: view.safeAreaLayoutGuide.topAnchor, constant: 15),
+            header.leadingAnchor.constraint(equalTo: view.leadingAnchor, constant: 16),
+            header.trailingAnchor.constraint(equalTo: view.trailingAnchor, constant: -16)
+
+        ])
+    }
+    
+    
+    
 }
