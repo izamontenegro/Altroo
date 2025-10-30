@@ -7,7 +7,7 @@
 
 import UIKit
 
-class PrivacySecurityViewController: UIViewController {
+class PrivacyViewController: UIViewController {
 
     let viewLabel: UILabel = {
         let label = UILabel()

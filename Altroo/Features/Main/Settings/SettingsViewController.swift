@@ -8,6 +8,9 @@
 import UIKit
 
 protocol SettingsViewControllerDelegate: AnyObject {
+    func goToMyProfile()
+    func goToPrivacy()
+    func goToPolicy()
     func goToDevelopers()
 }
 
@@ -22,6 +25,9 @@ class SettingsViewController: GradientNavBarViewController {
         
         setupLayout()
         
+        myprofilebutton.addTarget(self, action: #selector(didTapMyProfileButton), for: .touchUpInside)
+        privacybutton.addTarget(self, action: #selector(didTapPrivacyButton), for: .touchUpInside)
+        policybutton.addTarget(self, action: #selector(didTapPolicyButton), for: .touchUpInside)
         devsbutton.addTarget(self, action: #selector(didTapDevelopersButton), for: .touchUpInside)
     }
     
@@ -48,12 +54,16 @@ class SettingsViewController: GradientNavBarViewController {
         return label
     }()
     
-    private let emergencybutton: ArrowWideRectangleButton = {
-        let emergencybutton = ArrowWideRectangleButton(title: "Adicionar Modo Emergência")
+    private let myprofilebutton: ArrowWideRectangleButton = {
+        let emergencybutton = ArrowWideRectangleButton(title: "Meu Perfil")
         return emergencybutton
     }()
     private let privacybutton: ArrowWideRectangleButton = {
-        let privacybutton = ArrowWideRectangleButton(title: "Privacidade e Segurança")
+        let privacybutton = ArrowWideRectangleButton(title: "Privacidade e Proteção")
+        return privacybutton
+    }()
+    private let policybutton: ArrowWideRectangleButton = {
+        let privacybutton = ArrowWideRectangleButton(title: "Aviso Legal")
         return privacybutton
     }()
     private let ratingbutton: ArrowWideRectangleButton = {
@@ -73,7 +83,7 @@ class SettingsViewController: GradientNavBarViewController {
         titleLabel.translatesAutoresizingMaskIntoConstraints = false
         subtitleLabel.translatesAutoresizingMaskIntoConstraints = false
         
-        let stackView = UIStackView(arrangedSubviews: [emergencybutton, privacybutton, ratingbutton, devsbutton])
+        let stackView = UIStackView(arrangedSubviews: [myprofilebutton, privacybutton, policybutton, ratingbutton, devsbutton])
         stackView.axis = .vertical
         stackView.spacing = 16
         stackView.translatesAutoresizingMaskIntoConstraints = false
@@ -96,9 +106,12 @@ class SettingsViewController: GradientNavBarViewController {
     }
     
     // MARK: - BUTTON ACTION
+    @objc func didTapMyProfileButton() { delegate?.goToMyProfile() }
+    @objc func didTapPrivacyButton() { delegate?.goToMyProfile() }
+    @objc func didTapPolicyButton() { delegate?.goToMyProfile() }
     @objc func didTapDevelopersButton() { delegate?.goToDevelopers() }
 }
 
-//#Preview {
-//    SettingsViewController()
-//}
+#Preview {
+    SettingsViewController()
+}

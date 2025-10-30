@@ -287,8 +287,16 @@ extension DefaultAppFactory {
 
 //MARK: - SettingsFactory
 extension DefaultAppFactory {
-    func makePrivacySecurityViewController() -> UIViewController {
-        let vc = PrivacySecurityViewController()
+    func makeMyProfileViewController() -> UIViewController {
+        let vc = MyProfileViewController()
+        return vc
+    }
+    func makePrivacyViewController() -> UIViewController {
+        let vc = PrivacyViewController()
+        return vc
+    }
+    func makePolicyViewController() -> UIViewController {
+        let vc = PolicyViewController()
         return vc
     }
     func makeDevelopersViewController() -> UIViewController{

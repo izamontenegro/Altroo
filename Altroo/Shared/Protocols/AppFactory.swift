@@ -121,8 +121,9 @@ protocol HistoryFactory {
 
 // MARK: - SETTINGS FLOW
 protocol SettingsFactory {
-//    func makeUserProfileViewController() -> UIViewController
-    func makePrivacySecurityViewController() -> UIViewController
+    func makeMyProfileViewController() -> UIViewController
+    func makePrivacyViewController() -> UIViewController
+    func makePolicyViewController() -> UIViewController
     func makeDevelopersViewController() -> UIViewController
 }
 
