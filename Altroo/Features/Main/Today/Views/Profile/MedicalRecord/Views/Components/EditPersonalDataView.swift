@@ -4,12 +4,14 @@
 //
 //  Created by Izadora de Oliveira Albuquerque Montenegro on 28/10/25.
 //
-
 import UIKit
+import Combine
 
 final class EditPersonalDataView: UIView {
     let viewModel: EditMedicalRecordViewModel
     weak var delegate: EditMedicalRecordViewControllerDelegate?
+
+    private var subscriptions = Set<AnyCancellable>()
 
     private let genderSegmentedControl: StandardSegmentedControl = {
         let items = ["F", "M"]
@@ -105,7 +107,7 @@ final class EditPersonalDataView: UIView {
     private lazy var weightSection = FormSectionView(title: "Peso", content: weightInputStack)
     private lazy var genderSection = FormSectionView(title: "Sexo", content: genderSegmentedControl)
     private lazy var addressSection = FormSectionView(title: "Endereço", content: addressTextField)
-    private lazy var contactSection = FormSectionView(title: "Contato", content: contactTextField) // FIXME: Turn back into plural
+    private lazy var contactSection = FormSectionView(title: "Contato", content: contactTextField)
 
     private lazy var birthAndAgeStack: UIStackView = {
         let stack = UIStackView(arrangedSubviews: [birthDateSection, ageLabel])
@@ -155,13 +157,14 @@ final class EditPersonalDataView: UIView {
         super.init(frame: .zero)
         translatesAutoresizingMaskIntoConstraints = false
         setupUI()
+        bindViewModel()
+        bindInputs()
         fillInformations()
     }
     required init?(coder: NSCoder) { fatalError("init(coder:) has not been implemented") }
 
     private func setupUI() {
         backgroundColor = .pureWhite
-
         addSubview(header)
         addSubview(formStack)
 
@@ -179,25 +182,77 @@ final class EditPersonalDataView: UIView {
         datePicker.addTarget(self, action: #selector(handleDateChanged), for: .valueChanged)
     }
 
+    private func bindViewModel() {
+        viewModel.$personalDataFormState
+            .receive(on: DispatchQueue.main)
+            .sink { [weak self] state in
+                guard let self else { return }
+                if self.nameTextField.text != state.name { self.nameTextField.text = state.name }
+                if self.addressTextField.text != state.address { self.addressTextField.text = state.address }
+                if let height = state.height {
+                    let text = height.truncatingRemainder(dividingBy: 1) == 0 ? String(Int(height)) : String(height)
+                    if self.heightTextField.text != text { self.heightTextField.text = text }
+                } else if self.heightTextField.text?.isEmpty == false {
+                    self.heightTextField.text = ""
+                }
+                if let weight = state.weight {
+                    let text = weight.truncatingRemainder(dividingBy: 1) == 0 ? String(Int(weight)) : String(weight)
+                    if self.weightTextField.text != text { self.weightTextField.text = text }
+                } else if self.weightTextField.text?.isEmpty == false {
+                    self.weightTextField.text = ""
+                }
+                if let date = state.dateOfBirth, self.datePicker.date != date {
+                    self.datePicker.date = date
+                }
+                let index = state.gender == "M" ? 1 : (state.gender == "F" ? 0 : UISegmentedControl.noSegment)
+                if self.genderSegmentedControl.selectedSegmentIndex != index {
+                    self.genderSegmentedControl.selectedSegmentIndex = index
+                }
+                self.ageLabel.text = state.ageText
+            }
+            .store(in: &subscriptions)
+    }
+
+    private func bindInputs() {
+        nameTextField.addTarget(self, action: #selector(handleNameChanged), for: .editingChanged)
+        addressTextField.addTarget(self, action: #selector(handleAddressChanged), for: .editingChanged)
+        heightTextField.addTarget(self, action: #selector(handleHeightChanged), for: .editingChanged)
+        weightTextField.addTarget(self, action: #selector(handleWeightChanged), for: .editingChanged)
+        genderSegmentedControl.addTarget(self, action: #selector(handleGenderChanged), for: .valueChanged)
+    }
+
     @objc private func handleDateChanged() {
-        ageLabel.text = viewModel.calculateAge(from: datePicker.date)
+        viewModel.updateDateOfBirth(datePicker.date)
+        ageLabel.text = viewModel.personalDataFormState.ageText
+    }
+
+    @objc private func handleNameChanged() {
+        viewModel.updateName(nameTextField.text ?? "")
+    }
+
+    @objc private func handleAddressChanged() {
+        viewModel.updateAddress(addressTextField.text ?? "")
+    }
+
+    @objc private func handleHeightChanged() {
+        viewModel.updateHeight(from: heightTextField.text ?? "")
+    }
+
+    @objc private func handleWeightChanged() {
+        viewModel.updateWeight(from: weightTextField.text ?? "")
+    }
+
+    @objc private func handleGenderChanged() {
+        let index = genderSegmentedControl.selectedSegmentIndex
+        let value = (index == 1) ? "M" : (index == 0) ? "F" : ""
+        viewModel.updateGender(value)
     }
 
     func fillInformations() {
-        guard let patient = viewModel.userService.fetchCurrentPatient(),
-              let personalData = patient.personalData else { return }
-
-        nameTextField.text = personalData.name ?? ""
-        heightTextField.text = "\(personalData.height)"
-        weightTextField.text = "\(personalData.weight)"
-        addressTextField.text = personalData.address ?? ""
-        contactTextField.text = MedicalRecordFormatter.contactsList(from: personalData.contacts as? Set<Contact>)
-
-        if let dateOfBirth = personalData.dateOfBirth {
-            datePicker.date = dateOfBirth
-            ageLabel.text = viewModel.calculateAge(from: dateOfBirth)
-        } else {
-            ageLabel.text = ""
+        viewModel.loadInitialPersonalDataFormState()
+        if let patient = viewModel.userService.fetchCurrentPatient(),
+           let personalData = patient.personalData {
+            contactTextField.text = MedicalRecordFormatter.contactsList(from: personalData.contacts as? Set<Contact>)
         }
     }
 }

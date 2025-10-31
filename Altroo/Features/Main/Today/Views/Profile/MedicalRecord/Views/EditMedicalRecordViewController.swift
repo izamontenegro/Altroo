@@ -19,6 +19,7 @@ final class EditMedicalRecordViewController: GradientNavBarViewController, Medic
     private lazy var editPersonalCareForms = EditPersonalCareView(viewModel: viewModel)
 
     private var currentContentView: UIView?
+    private var currentSectionIndex: Int = 0 
 
     private let contentContainerView: UIView = {
         let view = UIView()
@@ -38,14 +39,19 @@ final class EditMedicalRecordViewController: GradientNavBarViewController, Medic
         )
         selector.delegate = self
         selector.translatesAutoresizingMaskIntoConstraints = false
-
         return selector
     }()
 
     override func viewDidLoad() {
-        super.viewDidLoad()
-        view.backgroundColor = .pureWhite
+        let salvarButton = UIButton(type: .system)
+        salvarButton.setTitle("Salvar", for: .normal)
+        salvarButton.titleLabel?.font = .systemFont(ofSize: 17)
+        salvarButton.addTarget(self, action: #selector(handleSaveTapped), for: .touchUpInside)
+        rightButton = salvarButton
 
+        super.viewDidLoad()
+
+        view.backgroundColor = .pureWhite
         view.addSubview(sectionSelectorView)
         view.addSubview(contentContainerView)
 
@@ -55,7 +61,6 @@ final class EditMedicalRecordViewController: GradientNavBarViewController, Medic
             contentContainerView.trailingAnchor.constraint(equalTo: view.trailingAnchor),
 
             sectionSelectorView.heightAnchor.constraint(equalToConstant: 30),
-
             sectionSelectorView.topAnchor.constraint(equalTo: contentContainerView.bottomAnchor, constant: 10),
             sectionSelectorView.leadingAnchor.constraint(equalTo: view.leadingAnchor),
             sectionSelectorView.trailingAnchor.constraint(equalTo: view.trailingAnchor),
@@ -65,11 +70,11 @@ final class EditMedicalRecordViewController: GradientNavBarViewController, Medic
         view.bringSubviewToFront(sectionSelectorView)
 
         displaySection(editPersonalDataForms)
+        viewModel.loadInitialPersonalDataFormState()
     }
     
     private func setupLayout() {
         view.addSubview(contentContainerView)
-
         NSLayoutConstraint.activate([
             contentContainerView.leadingAnchor.constraint(equalTo: view.leadingAnchor),
             contentContainerView.trailingAnchor.constraint(equalTo: view.trailingAnchor),
@@ -78,13 +83,25 @@ final class EditMedicalRecordViewController: GradientNavBarViewController, Medic
     }
 
     func medicalRecordSectionSelectorView(_ selectorView: MedicalRecordSectionSelectorView, didSelectIndex index: Int) {
+        currentSectionIndex = index
         switch index {
-        case 0: displaySection(editPersonalDataForms)
-        case 1: displaySection(editHealthProblemsForms)
-        case 2: displaySection(editPhysicalStateForms)
-        case 3: displaySection(editMentalStateForms)
-        case 4: displaySection(editPersonalCareForms)
-        default: displaySection(editPersonalDataForms)
+        case 0:
+            displaySection(editPersonalDataForms)
+            viewModel.loadInitialPersonalDataFormState()
+        case 1:
+            displaySection(editHealthProblemsForms)
+        case 2:
+            displaySection(editPhysicalStateForms)
+            viewModel.loadInitialPhysicalStateFormState()
+        case 3:
+            displaySection(editMentalStateForms)
+            viewModel.loadInitialMentalStateFormState()
+        case 4:
+            displaySection(editPersonalCareForms)
+            viewModel.loadInitialPersonalCareFormState()
+        default:
+            displaySection(editPersonalDataForms)
+            viewModel.loadInitialPersonalDataFormState()
         }
     }
 
@@ -104,5 +121,25 @@ final class EditMedicalRecordViewController: GradientNavBarViewController, Medic
 
         currentContentView = newContentView
         view.layoutIfNeeded()
+    }
+
+    @objc private func handleSaveTapped() {
+        switch currentSectionIndex {
+        case 0:
+            viewModel.persistPersonalDataFormState()
+        case 1:
+            // TODO: viewModel.persistHealthProblemsFormState()
+            break
+        case 2:
+            viewModel.persistPhysicalStateFormState()
+        case 3:
+            viewModel.persistMentalStateFormState()
+        case 4:
+            viewModel.persistPersonalCareFormState()
+        default:
+            viewModel.persistPersonalDataFormState()
+        }
+
+        navigationController?.popViewController(animated: true)
     }
 }
