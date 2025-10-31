@@ -47,21 +47,21 @@ extension DefaultAppFactory {
     func makePatientFormViewController(delegate: AssociatePatientViewControllerDelegate) -> UIViewController {
         let vc = PatientFormsViewController(viewModel: addPatientViewModel)
         vc.delegate = delegate
-        vc.title = "Perfil do Assistido"
+        vc.title = "Adicionar Paciente"
         return vc
     }
     
     func makeComorbiditiesFormViewController(delegate: AssociatePatientViewControllerDelegate) -> UIViewController {
         let vc = ComorbiditiesFormsViewController(viewModel: addPatientViewModel)
         vc.delegate = delegate
-        vc.title = "Comorbidades"
+        vc.title = "Adicionar Paciente"
         return vc
     }
     
     func makeShiftFormViewController(delegate: ShiftFormsViewControllerDelegate) -> UIViewController {
         let vc = ShiftFormViewController(viewModel: addPatientViewModel)
         vc.delegate = delegate
-        vc.title = "Turnos"
+        vc.title = "Adicionar Paciente"
         return vc
     }
 }
