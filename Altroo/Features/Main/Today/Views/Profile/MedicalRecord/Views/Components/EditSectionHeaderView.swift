@@ -32,38 +32,40 @@ final class EditSectionHeaderView: UIView {
         let icon = UIImageView(image: UIImage(systemName: sectionIcon))
         icon.translatesAutoresizingMaskIntoConstraints = false
         icon.tintColor = .blue20
-        
+        icon.contentMode = .scaleAspectFit
+
         let title = StandardLabel(labelText: sectionTitle, labelFont: .sfPro, labelType: .title2, labelColor: .blue20, labelWeight: .semibold)
-        
+
         let hStack = UIStackView()
         hStack.axis = .horizontal
         hStack.spacing = 4
         hStack.translatesAutoresizingMaskIntoConstraints = false
-        
+
         hStack.addArrangedSubview(icon)
         hStack.addArrangedSubview(title)
-        
+
         NSLayoutConstraint.activate([
             icon.widthAnchor.constraint(equalToConstant: 24)
         ])
-        
+
         let headerDescription = StandardLabel(labelText: sectionDescription, labelFont: .sfPro, labelType: .body, labelColor: .black30, labelWeight: .regular)
         headerDescription.numberOfLines = 0
         headerDescription.lineBreakMode = .byWordWrapping
-        
+
         let mainStack = UIStackView()
         mainStack.axis = .vertical
         mainStack.spacing = 4
         mainStack.translatesAutoresizingMaskIntoConstraints = false
-        
+
         mainStack.addArrangedSubview(hStack)
         mainStack.addArrangedSubview(headerDescription)
-        
-        NSLayoutConstraint.activate([
-            headerDescription.trailingAnchor.constraint(equalTo: mainStack.trailingAnchor)
 
-        ])
-        
         addSubview(mainStack)
-    }
-}
+
+        NSLayoutConstraint.activate([
+            mainStack.topAnchor.constraint(equalTo: topAnchor),
+            mainStack.leadingAnchor.constraint(equalTo: leadingAnchor),
+            mainStack.trailingAnchor.constraint(equalTo: trailingAnchor),
+            mainStack.bottomAnchor.constraint(equalTo: bottomAnchor)
+        ])
+    }}

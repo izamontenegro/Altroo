@@ -26,16 +26,6 @@ final class EditMedicalRecordViewController: GradientNavBarViewController, Medic
         return view
     }()
 
-    private let headerView: EditSectionHeaderView = {
-        let header = EditSectionHeaderView(
-            sectionTitle: "Prontuário",
-            sectionDescription: "Selecione abaixo qual seção deseja editar sem sair desta tela.",
-            sectionIcon: "doc.text.fill"
-        )
-        header.translatesAutoresizingMaskIntoConstraints = false
-        return header
-    }()
-
     init(viewModel: EditMedicalRecordViewModel) {
         self.viewModel = viewModel
         super.init(nibName: nil, bundle: nil)
@@ -60,31 +50,27 @@ final class EditMedicalRecordViewController: GradientNavBarViewController, Medic
         view.addSubview(contentContainerView)
 
         NSLayoutConstraint.activate([
-            sectionSelectorView.topAnchor.constraint(equalTo: view.safeAreaLayoutGuide.topAnchor, constant: 10),
-            sectionSelectorView.leadingAnchor.constraint(equalTo: view.leadingAnchor, constant: 16),
-            sectionSelectorView.trailingAnchor.constraint(equalTo: view.trailingAnchor, constant: -16),
-
-            sectionSelectorView.heightAnchor.constraint(equalToConstant: 50),
-
-            contentContainerView.topAnchor.constraint(equalTo: sectionSelectorView.bottomAnchor, constant: 20),
+            contentContainerView.topAnchor.constraint(equalTo: view.safeAreaLayoutGuide.topAnchor, constant: 15),
             contentContainerView.leadingAnchor.constraint(equalTo: view.leadingAnchor),
             contentContainerView.trailingAnchor.constraint(equalTo: view.trailingAnchor),
-            contentContainerView.bottomAnchor.constraint(equalTo: view.bottomAnchor)
+
+            sectionSelectorView.heightAnchor.constraint(equalToConstant: 30),
+
+            sectionSelectorView.topAnchor.constraint(equalTo: contentContainerView.bottomAnchor, constant: 10),
+            sectionSelectorView.leadingAnchor.constraint(equalTo: view.leadingAnchor),
+            sectionSelectorView.trailingAnchor.constraint(equalTo: view.trailingAnchor),
+            sectionSelectorView.bottomAnchor.constraint(equalTo: view.safeAreaLayoutGuide.bottomAnchor)
         ])
 
         view.bringSubviewToFront(sectionSelectorView)
 
         displaySection(editPersonalDataForms)
     }
+    
     private func setupLayout() {
-        view.addSubview(headerView)
         view.addSubview(contentContainerView)
 
         NSLayoutConstraint.activate([
-            headerView.topAnchor.constraint(equalTo: view.safeAreaLayoutGuide.topAnchor, constant: 16),
-            headerView.leadingAnchor.constraint(equalTo: view.leadingAnchor, constant: 16),
-            headerView.trailingAnchor.constraint(equalTo: view.trailingAnchor, constant: -16),
-
             contentContainerView.leadingAnchor.constraint(equalTo: view.leadingAnchor),
             contentContainerView.trailingAnchor.constraint(equalTo: view.trailingAnchor),
             contentContainerView.bottomAnchor.constraint(equalTo: view.bottomAnchor)
