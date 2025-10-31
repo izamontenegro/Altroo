@@ -9,6 +9,7 @@ import UIKit
 
 class GradientNavBarViewController: UIViewController {
     var rightButton: UIButton?
+    var isRightButtonCancel = false
     var showBackButton: Bool = true
     var text: String?
 
@@ -72,6 +73,14 @@ class GradientNavBarViewController: UIViewController {
         } else {
             navigationItem.leftBarButtonItem = nil
         }
+        
+        if isRightButtonCancel {
+            let cancel = UIButton(type: .system)
+            cancel.setTitle("Cancelar", for: .normal)
+            cancel.titleLabel?.font = .systemFont(ofSize: 17)
+            cancel.addTarget(self, action: #selector(handleCancel), for: .touchUpInside)
+            navigationItem.rightBarButtonItem = UIBarButtonItem(customView: cancel)
+        }
 
         if let rightButton = rightButton {
             navigationItem.rightBarButtonItem = UIBarButtonItem(customView: rightButton)
@@ -87,6 +96,11 @@ class GradientNavBarViewController: UIViewController {
 
     @objc func handleBack() {
         navigationController?.popViewController(animated: true)
+    }
+    
+    @objc
+    private func handleCancel() {
+        navigationController?.popToRootViewController(animated: true)
     }
     
     private func makeGradientNavBarImage() -> UIImage? {

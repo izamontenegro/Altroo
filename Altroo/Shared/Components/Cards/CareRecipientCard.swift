@@ -8,49 +8,17 @@
 import UIKit
 
 class CareRecipientCard: UIView {
-    
     let profileName: String
-    let profileAge: Int
+    let notification: String?
     var careRecipient: CareRecipient?
     
-    private lazy var profileView: ProfileCareRecipient = {
-        let view = ProfileCareRecipient(name: profileName)
-        view.translatesAutoresizingMaskIntoConstraints = false
-        return view
-    }()
+    var isPlusButton = false
     
-    func makeContentStack() -> UIStackView {
-        let label = StandardLabel(labelText: profileName, labelFont: .comfortaa, labelType: .title2, labelColor: .blue20, labelWeight: .bold)
-        let age = StandardLabel(labelText: "\(profileAge) anos", labelFont: .comfortaa, labelType: .title3, labelColor: .black10, labelWeight: .semibold)
-        
-        let stack = UIStackView()
-        stack.axis = .vertical
-        stack.spacing = 2
-        stack.addArrangedSubview(label)
-        stack.addArrangedSubview(age)
-        
-        return stack
-    }
-    
-    func makeCombinedLayout() -> UIStackView {
-        let contentStack = makeContentStack()
-        
-        let horizontalStack = UIStackView()
-        horizontalStack.axis = .horizontal
-        horizontalStack.spacing = 12
-        horizontalStack.alignment = .center
-        horizontalStack.translatesAutoresizingMaskIntoConstraints = false
-        
-        horizontalStack.addArrangedSubview(profileView)
-        horizontalStack.addArrangedSubview(contentStack)
-        
-        return horizontalStack
-    }
-
-    init(name: String, age: Int, careRecipient: CareRecipient? = nil, frame: CGRect = .zero) {
+    init(name: String, notification: String? = nil, careRecipient: CareRecipient? = nil, isPlusButton: Bool = false, frame: CGRect = .zero) {
         self.profileName = name
-        self.profileAge = age
+        self.notification = notification
         self.careRecipient = careRecipient
+        self.isPlusButton = isPlusButton
         super.init(frame: frame)
         setupLayout()
     }
@@ -60,19 +28,85 @@ class CareRecipientCard: UIView {
     }
     
     private func setupLayout() {
-        backgroundColor = .blue80
+        backgroundColor = .pureWhite
         layer.cornerRadius = 10
         clipsToBounds = true
         
-        let finalLayout = makeCombinedLayout()
-        addSubview(finalLayout)
+        let avatarView = makeAvatarView()
+           let contentStack = makeContentStack()
+           
+           let mainStack = UIStackView(arrangedSubviews: [avatarView, contentStack])
+           mainStack.axis = .horizontal
+           mainStack.spacing = 12
+           mainStack.alignment = .center
+           mainStack.translatesAutoresizingMaskIntoConstraints = false
+           
+           addSubview(mainStack)
+           
+           NSLayoutConstraint.activate([
+               mainStack.topAnchor.constraint(equalTo: topAnchor, constant: 12),
+               mainStack.leadingAnchor.constraint(equalTo: leadingAnchor, constant: 10),
+               mainStack.trailingAnchor.constraint(equalTo: trailingAnchor, constant: -10),
+               mainStack.bottomAnchor.constraint(equalTo: bottomAnchor, constant: -12)
+           ])
+    }
+    
+    private func makeContentStack() -> UIStackView {
+        let label = StandardLabel(labelText: profileName,
+                                  labelFont: .comfortaa,
+                                  labelType: .title3,
+                                  labelColor: isPlusButton ? .teal20 : .blue20,
+                                  labelWeight: .bold)
+        
+        let stack = UIStackView()
+        stack.axis = .vertical
+        stack.spacing = 2
+        stack.addArrangedSubview(label)
+        if let notification {
+            let notificationLabel = StandardLabel(labelText: notification, labelFont: .comfortaa, labelType: .title3, labelColor: .black10, labelWeight: .semibold)
+            
+            stack.addArrangedSubview(notificationLabel)
+        }
+        
+        return stack
+    }
+    
+    private func makeAvatarView() -> UIView {
+        let avatar = UIView()
+        avatar.translatesAutoresizingMaskIntoConstraints = false
+        avatar.backgroundColor = isPlusButton ? .teal30 : .blue30
+        avatar.layer.cornerRadius = 22
+        avatar.layer.masksToBounds = true
+        avatar.layer.borderColor = isPlusButton ? UIColor.teal20.cgColor : UIColor.blue20.cgColor
+        avatar.layer.borderWidth = 2
+
+        let initials = initialsFromName(profileName)
+        let initialsLabel = StandardLabel(
+            labelText: isPlusButton ? "+" : initials,
+            labelFont: .sfPro,
+            labelType: isPlusButton ? .largeTitle : .title2,
+            labelColor: .pureWhite,
+            labelWeight: .medium
+        )
+        initialsLabel.translatesAutoresizingMaskIntoConstraints = false
+        avatar.addSubview(initialsLabel)
 
         NSLayoutConstraint.activate([
-            finalLayout.topAnchor.constraint(equalTo: self.topAnchor, constant: 12),
-            finalLayout.leadingAnchor.constraint(equalTo: self.leadingAnchor, constant: 10),
-            finalLayout.trailingAnchor.constraint(equalTo: self.trailingAnchor, constant: -10),
-            finalLayout.bottomAnchor.constraint(equalTo: self.bottomAnchor, constant: -12)
+            avatar.widthAnchor.constraint(equalToConstant: 44),
+            avatar.heightAnchor.constraint(equalToConstant: 44),
+            initialsLabel.centerXAnchor.constraint(equalTo: avatar.centerXAnchor),
+            initialsLabel.centerYAnchor.constraint(equalTo: avatar.centerYAnchor)
         ])
+        return avatar
+    }
+    
+    func initialsFromName(_ name: String) -> String {
+        let comps = name.split(separator: " ")
+        let initials = comps
+            .prefix(2)
+            .compactMap { $0.first?.uppercased() }
+            .joined()
+        return initials.isEmpty ? "?" : initials
     }
 }
 
