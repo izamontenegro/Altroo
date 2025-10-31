@@ -25,7 +25,7 @@ final class EditMentalStateView: UIView {
         return header
     }()
 
-    private let emotionalStates = ["Calmo", "Depressivo", "Agitado", "Agressivo", "Vívido", "Ansioso"]
+    private let emotionalStates = EmotionalStateEnum.allCases.map { $0.displayText }
 
     private lazy var emotionalStack: UIStackView = {
         let buttons = emotionalStates.map { makeEmotionalButton(title: $0, isSelected: false) }
@@ -50,13 +50,13 @@ final class EditMentalStateView: UIView {
     }()
 
     private lazy var orientationOptionsStack: UIStackView = {
-        let rows: [(String, Bool)] = [
-            ("Bem orientado", false),
-            ("Desorientado em tempo", false),
-            ("Desorientado em espaço", false),
-            ("Desorientado em pessoas", false)
+        let options = [
+            OrientationEnum.oriented,
+            OrientationEnum.disorientedInTime,
+            OrientationEnum.disorientedInSpace,
+            OrientationEnum.disorientedInPersons
         ]
-        let views = rows.map { makeCheckboxRow(text: $0.0, isOn: $0.1) }
+        let views = options.map { makeCheckboxRow(text: $0.displayText, isOn: false) }
         let stack = UIStackView(arrangedSubviews: views)
         stack.axis = .vertical
         stack.spacing = 12
@@ -65,7 +65,7 @@ final class EditMentalStateView: UIView {
     }()
 
     private lazy var memoryPopupButton: PopupMenuButton = {
-        let button = PopupMenuButton(title: "Mantida")
+        let button = PopupMenuButton(title: MemoryEnum.intact.displayText)
         button.backgroundColor = .blue40
         button.translatesAutoresizingMaskIntoConstraints = false
         button.widthAnchor.constraint(equalToConstant: 175).isActive = true
@@ -139,37 +139,32 @@ final class EditMentalStateView: UIView {
             .sink { [weak self] state in
                 guard let self else { return }
 
-                if let emo = state.emotionalState?.rawValue {
-                    self.selectEmotional(title: emo)
+                if let emotional = state.emotionalState {
+                    self.selectEmotional(title: emotional.displayText)
                 } else {
                     self.selectEmotional(title: nil)
                 }
 
-                if let ori = state.orientationState?.rawValue {
-                    self.selectOrientation(title: ori)
+                if let orientation = state.orientationState {
+                    self.selectOrientation(title: orientation.displayText)
                 } else {
                     self.selectOrientation(title: nil)
                 }
 
-                if let mem = state.memoryState?.rawValue,
-                   self.memoryPopupButton.currentTitle != mem {
-                    self.memoryPopupButton.setTitle(mem, for: .normal)
+                if let memory = state.memoryState {
+                    self.memoryPopupButton.setTitle(memory.displayText, for: .normal)
                 }
             }
             .store(in: &subscriptions)
     }
 
     private func configureMenu() {
-        let memoryActions: [UIAction] = [
-            UIAction(title: "Mantida", handler: { [weak self] _ in
-                self?.memoryPopupButton.setTitle("Mantida", for: .normal)
-                self?.viewModel.updateMemoryState(MemoryEnum(rawValue: "Mantida"))
-            }),
-            UIAction(title: "Prejudicada", handler: { [weak self] _ in
-                self?.memoryPopupButton.setTitle("Prejudicada", for: .normal)
-                self?.viewModel.updateMemoryState(MemoryEnum(rawValue: "Prejudicada"))
+        let memoryActions: [UIAction] = MemoryEnum.allCases.map { value in
+            UIAction(title: value.displayText, handler: { [weak self] _ in
+                self?.memoryPopupButton.setTitle(value.displayText, for: .normal)
+                self?.viewModel.updateMemoryState(value)
             })
-        ]
+        }
         memoryPopupButton.menu = UIMenu(children: memoryActions)
         memoryPopupButton.showsMenuAsPrimaryAction = true
     }
@@ -187,11 +182,11 @@ final class EditMentalStateView: UIView {
         button.accessibilityIdentifier = title
 
         button.addAction(UIAction { [weak self, weak button] _ in
-            guard let self, let button else { return }
-            self.selectEmotional(title: button.accessibilityIdentifier)
-            self.viewModel.updateEmotionalState(
-                button.accessibilityIdentifier.flatMap { EmotionalStateEnum(rawValue: $0) }
-            )
+            guard let self, let button, let key = button.accessibilityIdentifier else { return }
+            self.selectEmotional(title: key)
+            if let value = EmotionalStateEnum.allCases.first(where: { $0.displayText == key }) {
+                self.viewModel.updateEmotionalState(value)
+            }
         }, for: .touchUpInside)
 
         return button
@@ -226,29 +221,29 @@ final class EditMentalStateView: UIView {
         orientationButtons.append(button)
 
         button.addAction(UIAction { [weak self, weak button] _ in
-            guard let self, let button else { return }
-            self.selectOrientation(title: button.accessibilityIdentifier)
-            self.viewModel.updateOrientationState(
-                button.accessibilityIdentifier.flatMap { OrientationEnum(rawValue: $0) }
-            )
+            guard let self, let button, let key = button.accessibilityIdentifier else { return }
+            self.selectOrientation(title: key)
+            if let value = OrientationEnum.allCases.first(where: { $0.displayText == key }) {
+                self.viewModel.updateOrientationState(value)
+            }
         }, for: .touchUpInside)
 
         return container
     }
 
     private func selectEmotional(title: String?) {
-        for b in emotionalButtons {
-            let match = (b.accessibilityIdentifier == title)
-            b.backgroundColor = match ? .blue40 : .white70
-            b.setTitleColor(match ? .white : .blue40, for: .normal)
+        for button in emotionalButtons {
+            let match = (button.accessibilityIdentifier == title)
+            button.backgroundColor = match ? .blue40 : .white70
+            button.setTitleColor(match ? .white : .blue40, for: .normal)
         }
     }
 
     private func selectOrientation(title: String?) {
-        for b in orientationButtons {
-            let match = (b.accessibilityIdentifier == title)
-            b.backgroundColor = match ? .blue40 : .clear
-            b.setImage(match ? UIImage(systemName: "checkmark") : nil, for: .normal)
+        for button in orientationButtons {
+            let match = (button.accessibilityIdentifier == title)
+            button.backgroundColor = match ? .blue40 : .clear
+            button.setImage(match ? UIImage(systemName: "checkmark") : nil, for: .normal)
         }
     }
 }

@@ -89,11 +89,13 @@ final class MedicalRecordViewModel {
 
     func mentalStateText(person: CareRecipient) -> String {
         let mentalState = person.mentalState
+        let emotional = mentalState?.emotionalState.flatMap { EmotionalStateEnum(rawValue: $0)?.displayText } ?? "—"
+        let orientation = mentalState?.orientationState.flatMap { OrientationEnum(rawValue: $0)?.displayText } ?? "—"
+        let memory = mentalState?.memoryState.flatMap { MemoryEnum(rawValue: $0)?.displayText } ?? "—"
         return """
-        Comportamento: \(mentalState?.emotionalState ?? "—")
-        Orientação: \(mentalState?.orientationState ?? "—")
-        Memória: \(mentalState?.memoryState ?? "—")
-        Cognição: \(mentalState?.cognitionState ?? "—")
+        Comportamento: \(emotional)
+        Orientação: \(orientation)
+        Memória: \(memory)
         """
     }
 
@@ -173,13 +175,16 @@ final class MedicalRecordViewModel {
         ]
     }
     
+    
     private func rowsMental(from careRecipient: CareRecipient) -> [InfoRow] {
         let mentalState = careRecipient.mentalState
+        let emotional = mentalState?.emotionalState.flatMap { EmotionalStateEnum(rawValue: $0)?.displayText } ?? "—"
+        let orientation = mentalState?.orientationState.flatMap { OrientationEnum(rawValue: $0)?.displayText } ?? "—"
+        let memory = mentalState?.memoryState.flatMap { MemoryEnum(rawValue: $0)?.displayText } ?? "—"
         return [
-            ("Comportamento", mentalState?.emotionalState ?? "—"),
-            ("Orientação", mentalState?.orientationState ?? "—"),
-            ("Memória", mentalState?.memoryState ?? "—"),
-            ("Cognição", mentalState?.cognitionState ?? "—")
+            ("Comportamento", emotional),
+            ("Orientação", orientation),
+            ("Memória", memory),
         ]
     }
     
