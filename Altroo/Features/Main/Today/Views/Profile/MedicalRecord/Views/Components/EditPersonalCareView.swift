@@ -58,7 +58,7 @@ final class EditPersonalCareView: UIView {
 
     private lazy var firstRowStack: UIStackView = {
         let stack = UIStackView(arrangedSubviews: [bathSection, hygieneSection])
-        stack.axis = .horizontal
+        stack.axis = .vertical
         stack.spacing = 16
         stack.alignment = .top
         stack.distribution = .fillEqually
@@ -67,10 +67,10 @@ final class EditPersonalCareView: UIView {
 
     private lazy var secondRowStack: UIStackView = {
         let stack = UIStackView(arrangedSubviews: [excretionSection, feedingSection])
-        stack.axis = .horizontal
+        stack.axis = .vertical
         stack.spacing = 16
         stack.alignment = .top
-        stack.distribution = .fillEqually
+        stack.distribution = .fillProportionally
         return stack
     }()
 
