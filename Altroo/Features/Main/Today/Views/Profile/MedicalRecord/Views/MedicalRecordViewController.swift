@@ -128,14 +128,13 @@ final class MedicalRecordViewController: GradientNavBarViewController {
         
         let track = UIView()
         track.translatesAutoresizingMaskIntoConstraints = false
-        track.backgroundColor = .blue80
+        track.backgroundColor = .pureWhite
         track.layer.cornerRadius = 8
         
         let fill = UIView()
         fill.translatesAutoresizingMaskIntoConstraints = false
         fill.layer.cornerRadius = 8
         fill.clipsToBounds = true
-        // Fallback imediato: já pinta algo mesmo sem gradient
         fill.backgroundColor = .blue10
         
         track.addSubview(fill)
@@ -147,18 +146,26 @@ final class MedicalRecordViewController: GradientNavBarViewController {
             labelColor: .blue20,
             labelWeight: .medium
         )
+        percentLabel.setContentHuggingPriority(.required, for: .horizontal)
+        percentLabel.setContentCompressionResistancePriority(.required, for: .horizontal)
+        
         
         let progressRow = UIStackView(arrangedSubviews: [track, percentLabel])
         progressRow.axis = .horizontal
         progressRow.alignment = .center
         progressRow.spacing = 10
         
+        
         let stack = UIStackView(arrangedSubviews: [title, subtitle, progressRow])
         stack.axis = .vertical
-        stack.spacing = 8
+        stack.spacing = 4
         stack.translatesAutoresizingMaskIntoConstraints = false
         
         container.addSubview(stack)
+        
+        NSLayoutConstraint.activate([
+            track.trailingAnchor.constraint(equalTo: percentLabel.leadingAnchor, constant: -10)
+        ])
         
         NSLayoutConstraint.activate([
             track.heightAnchor.constraint(equalToConstant: 15),
