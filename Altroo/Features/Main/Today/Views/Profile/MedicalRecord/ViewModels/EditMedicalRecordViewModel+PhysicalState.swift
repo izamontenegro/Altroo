@@ -16,6 +16,7 @@ struct PhysicalStateFormState: Equatable {
     var mobilityState: MobilityEnum? = nil
 }
 
+
 extension EditMedicalRecordViewModel {
     
     func loadInitialPhysicalStateFormState() {

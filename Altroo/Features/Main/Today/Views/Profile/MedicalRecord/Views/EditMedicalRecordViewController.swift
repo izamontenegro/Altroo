@@ -124,22 +124,8 @@ final class EditMedicalRecordViewController: GradientNavBarViewController, Medic
     }
 
     @objc private func handleSaveTapped() {
-        switch currentSectionIndex {
-        case 0:
-            viewModel.persistPersonalDataFormState()
-        case 1:
-            // TODO: viewModel.persistHealthProblemsFormState()
-            break
-        case 2:
-            viewModel.persistPhysicalStateFormState()
-        case 3:
-            viewModel.persistMentalStateFormState()
-        case 4:
-            viewModel.persistPersonalCareFormState()
-        default:
-            viewModel.persistPersonalDataFormState()
-        }
-
+        viewModel.persistFormState()
         navigationController?.popViewController(animated: true)
     }
 }
+

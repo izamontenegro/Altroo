@@ -19,7 +19,6 @@ public struct MedicalRecordSectionVM {
 final class MedicalRecordViewModel {
     var userService: UserServiceProtocol
     
-    // MARK: - Output
     @Published private(set) var sections: [MedicalRecordSectionVM] = []
     @Published private(set) var completionPercent: CGFloat = 0.0
     
@@ -36,7 +35,6 @@ final class MedicalRecordViewModel {
         userService.fetchCurrentPatient()
     }
 
-    // MARK: - Text builders
     func personalDataText(person: CareRecipient) -> String {
         let personalData = person.personalData
         let name = personalData?.name ?? "—"
@@ -77,11 +75,15 @@ final class MedicalRecordViewModel {
 
     func physicalStateText(person: CareRecipient) -> String {
         let physicalState = person.physicalState
+        let vision = physicalState?.visionState.flatMap { VisionEnum(rawValue: $0)?.displayText } ?? "—"
+        let hearing = physicalState?.hearingState.flatMap { HearingEnum(rawValue: $0)?.displayText } ?? "—"
+        let mobility = physicalState?.mobilityState.flatMap { MobilityEnum(rawValue: $0)?.displayText } ?? "—"
+        let oral = physicalState?.oralHealthState.flatMap { OralHealthEnum(rawValue: $0)?.displayText } ?? "—"
         return """
-        Visão: \(physicalState?.visionState ?? "—")
-        Audição: \(physicalState?.hearingState ?? "—")
-        Locomoção: \(physicalState?.mobilityState ?? "—")
-        Saúde bucal: \(physicalState?.oralHealthState ?? "—")
+        Visão: \(vision)
+        Audição: \(hearing)
+        Locomoção: \(mobility)
+        Saúde bucal: \(oral)
         """
     }
 
@@ -108,8 +110,6 @@ final class MedicalRecordViewModel {
         \(equipments.isEmpty ? "—" : equipments)
         """
     }
-    
-    // MARK: - Build outputs
     
     private func rebuildOutputs() {
         guard let person = currentPatient() else {
@@ -161,11 +161,15 @@ final class MedicalRecordViewModel {
     
     private func rowsPhysical(from careRecipient: CareRecipient) -> [InfoRow] {
         let physicalState = careRecipient.physicalState
+        let vision = physicalState?.visionState.flatMap { VisionEnum(rawValue: $0)?.displayText } ?? "—"
+        let hearing = physicalState?.hearingState.flatMap { HearingEnum(rawValue: $0)?.displayText } ?? "—"
+        let mobility = physicalState?.mobilityState.flatMap { MobilityEnum(rawValue: $0)?.displayText } ?? "—"
+        let oral = physicalState?.oralHealthState.flatMap { OralHealthEnum(rawValue: $0)?.displayText } ?? "—"
         return [
-            ("Visão", physicalState?.visionState ?? "—"),
-            ("Audição", physicalState?.hearingState ?? "—"),
-            ("Locomoção", physicalState?.mobilityState ?? "—"),
-            ("Saúde bucal", physicalState?.oralHealthState ?? "—")
+            ("Visão", vision),
+            ("Audição", hearing),
+            ("Locomoção", mobility),
+            ("Saúde bucal", oral)
         ]
     }
     
@@ -191,7 +195,6 @@ final class MedicalRecordViewModel {
         ]
     }
     
-    // MARK: - Completion
     private func calcCompletion(for careRecipient: CareRecipient) -> CGFloat {
         var total = 0, filled = 0
         func check(_ value: String?) { total += 1; if let x = value, !x.trimmingCharacters(in: .whitespaces).isEmpty { filled += 1 } }

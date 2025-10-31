@@ -26,3 +26,12 @@ final class EditMedicalRecordViewModel {
         userService.fetchCurrentPatient()
     }
 }
+
+extension EditMedicalRecordViewModel {
+    func persistFormState() {
+        persistPersonalDataFormState()
+        persistPhysicalStateFormState()
+        persistMentalStateFormState()
+        persistPersonalCareFormState()
+    }
+}
