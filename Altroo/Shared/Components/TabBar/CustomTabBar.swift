@@ -116,7 +116,7 @@ struct CustomTabBar: View {
     }
 }
 
-#Preview("CustomTabBar") {
-    @Previewable @StateObject var model = TabModel()
-    CustomTabBar(model: model)
-}
+//#Preview("CustomTabBar") {
+//    @Previewable @StateObject var model = TabModel()
+//    CustomTabBar(model: model)
+//}

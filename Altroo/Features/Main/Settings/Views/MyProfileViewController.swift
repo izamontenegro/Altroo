@@ -30,7 +30,7 @@ class MyProfileViewController: GradientNavBarViewController {
     }()
     private let subtitleLabel: StandardLabel = {
         let label = StandardLabel(
-            labelText: "Gerencie suas informações aqui.",
+            labelText: "Gerencie suas informações pessoais",
             labelFont: .sfPro,
             labelType: .headline,
             labelColor: .black30,
@@ -66,6 +66,16 @@ class MyProfileViewController: GradientNavBarViewController {
         return label
     }()
     
+    lazy var vStack: UIStackView = {
+        let stackView = UIStackView(arrangedSubviews: [name, contact])
+        stackView.axis = .vertical
+        stackView.distribution = .fill
+        stackView.spacing = 8
+                
+        stackView.translatesAutoresizingMaskIntoConstraints = false
+        return stackView
+    }()
+    
     private func headerUI() {
         view.addSubview(titleLabel)
         view.addSubview(subtitleLabel)
@@ -90,18 +100,13 @@ class MyProfileViewController: GradientNavBarViewController {
     }
     
     private func infoProfileUI() {
-        view.addSubview(name)
-        view.addSubview(contact)
-        
-        name.translatesAutoresizingMaskIntoConstraints = false
-        contact.translatesAutoresizingMaskIntoConstraints = false
+        view.addSubview(vStack)
+        vStack.translatesAutoresizingMaskIntoConstraints = false
         
         NSLayoutConstraint.activate([
-            name.topAnchor.constraint(equalTo: subtitleLabel.bottomAnchor, constant: 48),
-            name.leadingAnchor.constraint(equalTo: titleLabel.leadingAnchor),
-            
-            contact.topAnchor.constraint(equalTo: name.bottomAnchor, constant: 12),
-            contact.leadingAnchor.constraint(equalTo: titleLabel.leadingAnchor)
+            vStack.topAnchor.constraint(equalTo: subtitleLabel.bottomAnchor, constant: 24),
+            vStack.leadingAnchor.constraint(equalTo: titleLabel.leadingAnchor),
+            vStack.trailingAnchor.constraint(equalTo: titleLabel.trailingAnchor)
         ])
     }
 }
