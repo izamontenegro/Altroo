@@ -265,17 +265,6 @@ class PatientFormsViewController: UIViewController {
         tapGesture.cancelsTouchesInView = false
         view.addGestureRecognizer(tapGesture)
     }
-    
-
-//    @objc
-//    private func didTapAddContactButton() {
-//        guard let text = contactTextField.text, !text.isEmpty else { return }
-//
-//        let contact = ContactDraft(name: text, relationship: "", phone: "")
-//        contactsList.append(contact)
-//
-//        contactTextField.text = ""
-//    }
 
     @objc
     private func dismissKeyboard() {
@@ -284,9 +273,6 @@ class PatientFormsViewController: UIViewController {
     
     @objc
     func didTapNextStepButton(_ sender: UIButton) {
-        //FIXME: Emergency for apple presentation
-//        didTapAddContactButton()
-        
         let selectedIndex = genderSegmentedControl.selectedSegmentIndex
         let gender = selectedIndex == 0 ? "female" : "male"
         

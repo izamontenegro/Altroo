@@ -67,6 +67,10 @@ class SymptomFormViewController: GradientNavBarViewController {
             
             confirmButton.centerXAnchor.constraint(equalTo: view.centerXAnchor),
         ])
+        
+        let tapGesture = UITapGestureRecognizer(target: self, action: #selector(dismissKeyboard))
+        tapGesture.cancelsTouchesInView = false
+        view.addGestureRecognizer(tapGesture)
     }
     
     func setupContent() {
@@ -88,12 +92,10 @@ class SymptomFormViewController: GradientNavBarViewController {
         let dateSection = FormSectionView(title: "Data", content: datePicker)
         
         //date and time
-        let dateTimeStack = UIStackView(arrangedSubviews: [])
+        let dateTimeStack = UIStackView(arrangedSubviews: [dateSection, timeSection])
         dateTimeStack.axis = .horizontal
         dateTimeStack.distribution = .equalSpacing
         dateTimeStack.translatesAutoresizingMaskIntoConstraints = false
-        dateTimeStack.addArrangedSubview(dateSection)
-        dateTimeStack.addArrangedSubview(timeSection)
         contentStack.addArrangedSubview(dateTimeStack)
     }
     
@@ -115,6 +117,11 @@ class SymptomFormViewController: GradientNavBarViewController {
             confirmBottomConstraint = confirmButton.bottomAnchor.constraint(equalTo: view.safeAreaLayoutGuide.bottomAnchor, constant: -Layout.smallButtonBottomPadding)
             confirmBottomConstraint?.isActive = true
         }
+    }
+    
+    @objc
+    private func dismissKeyboard() {
+        view.endEditing(true)
     }
 }
 
