@@ -5,10 +5,15 @@
 //  Created by Izadora de Oliveira Albuquerque Montenegro on 30/10/25.
 //
 import UIKit
+import Combine
 
 final class EditMentalStateView: UIView {
     let viewModel: EditMedicalRecordViewModel
     weak var delegate: EditMedicalRecordViewControllerDelegate?
+
+    private var subscriptions = Set<AnyCancellable>()
+    private var emotionalButtons: [UIButton] = []
+    private var orientationButtons: [UIButton] = []
 
     private let header: EditSectionHeaderView = {
         let header = EditSectionHeaderView(
@@ -21,10 +26,10 @@ final class EditMentalStateView: UIView {
     }()
 
     private let emotionalStates = ["Calmo", "Depressivo", "Agitado", "Agressivo", "Vívido", "Ansioso"]
-    private var selectedEmotionalStates: Set<String> = ["Depressivo", "Agressivo", "Ansioso"]
 
     private lazy var emotionalStack: UIStackView = {
-        let buttons = emotionalStates.map { makeEmotionalButton(title: $0, isSelected: selectedEmotionalStates.contains($0)) }
+        let buttons = emotionalStates.map { makeEmotionalButton(title: $0, isSelected: false) }
+        emotionalButtons = buttons
         let stack = UIStackView(arrangedSubviews: buttons)
         stack.axis = .horizontal
         stack.spacing = 8
@@ -45,12 +50,14 @@ final class EditMentalStateView: UIView {
     }()
 
     private lazy var orientationOptionsStack: UIStackView = {
-        let stack = UIStackView(arrangedSubviews: [
-            makeCheckboxRow(text: "Bem orientado", isOn: false),
-            makeCheckboxRow(text: "Desorientado em tempo", isOn: true),
-            makeCheckboxRow(text: "Desorientado em espaço", isOn: true),
-            makeCheckboxRow(text: "Desorientado em pessoas", isOn: true)
-        ])
+        let rows: [(String, Bool)] = [
+            ("Bem orientado", false),
+            ("Desorientado em tempo", false),
+            ("Desorientado em espaço", false),
+            ("Desorientado em pessoas", false)
+        ]
+        let views = rows.map { makeCheckboxRow(text: $0.0, isOn: $0.1) }
+        let stack = UIStackView(arrangedSubviews: views)
         stack.axis = .vertical
         stack.spacing = 12
         stack.alignment = .fill
@@ -103,6 +110,8 @@ final class EditMentalStateView: UIView {
         translatesAutoresizingMaskIntoConstraints = false
         setupUI()
         configureMenu()
+        bindViewModel()
+        viewModel.loadInitialMentalStateFormState()
     }
 
     required init?(coder: NSCoder) { fatalError("init(coder:) has not been implemented") }
@@ -124,10 +133,42 @@ final class EditMentalStateView: UIView {
         ])
     }
 
+    private func bindViewModel() {
+        viewModel.$mentalStateFormState
+            .receive(on: DispatchQueue.main)
+            .sink { [weak self] state in
+                guard let self else { return }
+
+                if let emo = state.emotionalState?.rawValue {
+                    self.selectEmotional(title: emo)
+                } else {
+                    self.selectEmotional(title: nil)
+                }
+
+                if let ori = state.orientationState?.rawValue {
+                    self.selectOrientation(title: ori)
+                } else {
+                    self.selectOrientation(title: nil)
+                }
+
+                if let mem = state.memoryState?.rawValue,
+                   self.memoryPopupButton.currentTitle != mem {
+                    self.memoryPopupButton.setTitle(mem, for: .normal)
+                }
+            }
+            .store(in: &subscriptions)
+    }
+
     private func configureMenu() {
         let memoryActions: [UIAction] = [
-            UIAction(title: "Mantida", handler: { [weak self] _ in self?.memoryPopupButton.setTitle("Mantida", for: .normal) }),
-            UIAction(title: "Prejudicada", handler: { [weak self] _ in self?.memoryPopupButton.setTitle("Prejudicada", for: .normal) })
+            UIAction(title: "Mantida", handler: { [weak self] _ in
+                self?.memoryPopupButton.setTitle("Mantida", for: .normal)
+                self?.viewModel.updateMemoryState(MemoryEnum(rawValue: "Mantida"))
+            }),
+            UIAction(title: "Prejudicada", handler: { [weak self] _ in
+                self?.memoryPopupButton.setTitle("Prejudicada", for: .normal)
+                self?.viewModel.updateMemoryState(MemoryEnum(rawValue: "Prejudicada"))
+            })
         ]
         memoryPopupButton.menu = UIMenu(children: memoryActions)
         memoryPopupButton.showsMenuAsPrimaryAction = true
@@ -143,12 +184,14 @@ final class EditMentalStateView: UIView {
         button.layer.borderWidth = 1.5
         button.layer.borderColor = UIColor.blue40.cgColor
         button.heightAnchor.constraint(equalToConstant: 36).isActive = true
+        button.accessibilityIdentifier = title
 
-        button.addAction(UIAction { [weak button] _ in
-            guard let button else { return }
-            let selected = button.backgroundColor == .blue40
-            button.backgroundColor = selected ? .white70 : .blue40
-            button.setTitleColor(selected ? .blue40 : .white, for: .normal)
+        button.addAction(UIAction { [weak self, weak button] _ in
+            guard let self, let button else { return }
+            self.selectEmotional(title: button.accessibilityIdentifier)
+            self.viewModel.updateEmotionalState(
+                button.accessibilityIdentifier.flatMap { EmotionalStateEnum(rawValue: $0) }
+            )
         }, for: .touchUpInside)
 
         return button
@@ -165,6 +208,7 @@ final class EditMentalStateView: UIView {
         button.setPreferredSymbolConfiguration(.init(pointSize: 14, weight: .bold), forImageIn: .normal)
         button.widthAnchor.constraint(equalToConstant: 22).isActive = true
         button.heightAnchor.constraint(equalToConstant: 22).isActive = true
+        button.accessibilityIdentifier = text
 
         let label = StandardLabel(
             labelText: text,
@@ -179,13 +223,32 @@ final class EditMentalStateView: UIView {
         container.alignment = .center
         container.spacing = 12
 
-        button.addAction(UIAction { [weak button] _ in
-            guard let button else { return }
-            let selected = button.backgroundColor == .blue40
-            button.backgroundColor = selected ? .clear : .blue40
-            button.setImage(selected ? nil : UIImage(systemName: "checkmark"), for: .normal)
+        orientationButtons.append(button)
+
+        button.addAction(UIAction { [weak self, weak button] _ in
+            guard let self, let button else { return }
+            self.selectOrientation(title: button.accessibilityIdentifier)
+            self.viewModel.updateOrientationState(
+                button.accessibilityIdentifier.flatMap { OrientationEnum(rawValue: $0) }
+            )
         }, for: .touchUpInside)
 
         return container
+    }
+
+    private func selectEmotional(title: String?) {
+        for b in emotionalButtons {
+            let match = (b.accessibilityIdentifier == title)
+            b.backgroundColor = match ? .blue40 : .white70
+            b.setTitleColor(match ? .white : .blue40, for: .normal)
+        }
+    }
+
+    private func selectOrientation(title: String?) {
+        for b in orientationButtons {
+            let match = (b.accessibilityIdentifier == title)
+            b.backgroundColor = match ? .blue40 : .clear
+            b.setImage(match ? UIImage(systemName: "checkmark") : nil, for: .normal)
+        }
     }
 }

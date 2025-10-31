@@ -13,7 +13,7 @@ final class EditMedicalRecordViewController: GradientNavBarViewController, Medic
     weak var delegate: EditMedicalRecordViewControllerDelegate?
     
     private lazy var editPersonalDataForms = EditPersonalDataView(viewModel: viewModel)
-    private lazy var editHealthProblemsForms = EditHealthProblemsView(viewModel: viewModel)
+//    private lazy var editHealthProblemsForms = EditHealthProblemsView(viewModel: viewModel)
     private lazy var editPhysicalStateForms = EditPhysicalStateView(viewModel: viewModel)
     private lazy var editMentalStateForms = EditMentalStateView(viewModel: viewModel)
     private lazy var editPersonalCareForms = EditPersonalCareView(viewModel: viewModel)
@@ -35,7 +35,7 @@ final class EditMedicalRecordViewController: GradientNavBarViewController, Medic
 
     private lazy var sectionSelectorView: MedicalRecordSectionSelectorView = {
         let selector = MedicalRecordSectionSelectorView(
-            symbolNames: ["person.fill", "heart.fill", "figure.arms.open", "brain.head.profile.fill", "hand.raised.fill"]
+            symbolNames: ["person.fill", "figure.arms.open", "brain.head.profile.fill", "hand.raised.fill"]
         )
         selector.delegate = self
         selector.translatesAutoresizingMaskIntoConstraints = false
@@ -88,15 +88,15 @@ final class EditMedicalRecordViewController: GradientNavBarViewController, Medic
         case 0:
             displaySection(editPersonalDataForms)
             viewModel.loadInitialPersonalDataFormState()
+//        case 1:
+//            displaySection(editHealthProblemsForms)
         case 1:
-            displaySection(editHealthProblemsForms)
-        case 2:
             displaySection(editPhysicalStateForms)
             viewModel.loadInitialPhysicalStateFormState()
-        case 3:
+        case 2:
             displaySection(editMentalStateForms)
             viewModel.loadInitialMentalStateFormState()
-        case 4:
+        case 3:
             displaySection(editPersonalCareForms)
             viewModel.loadInitialPersonalCareFormState()
         default:

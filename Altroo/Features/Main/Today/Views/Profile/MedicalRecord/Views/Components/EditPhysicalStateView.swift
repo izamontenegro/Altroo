@@ -6,25 +6,29 @@
 //
 
 import UIKit
+import Combine
 
 final class EditPhysicalStateView: UIView {
     let viewModel: EditMedicalRecordViewModel
     weak var delegate: EditMedicalRecordViewControllerDelegate?
 
+    private var subscriptions = Set<AnyCancellable>()
+    private var oralHealthOptionButtons: [UIButton] = []
+
     private lazy var visionPopupButton: PopupMenuButton = {
-        let button = PopupMenuButton(title: "Sem alterações")
+        let button = PopupMenuButton(title: VisionEnum.noChanges.displayText)
         button.backgroundColor = .blue40
         return button
     }()
 
     private lazy var hearingPopupButton: PopupMenuButton = {
-        let button = PopupMenuButton(title: "Com déficit")
+        let button = PopupMenuButton(title: HearingEnum.withoutDeficit.displayText)
         button.backgroundColor = .blue40
         return button
     }()
 
     private lazy var locomotionPopupButton: PopupMenuButton = {
-        let button = PopupMenuButton(title: "Sem auxílio")
+        let button = PopupMenuButton(title: MobilityEnum.noAssistance.displayText)
         button.backgroundColor = .blue40
         return button
     }()
@@ -54,13 +58,9 @@ final class EditPhysicalStateView: UIView {
     }()
 
     private lazy var oralHealthOptionsStack: UIStackView = {
-        let stack = UIStackView(arrangedSubviews: [
-            makeOralHealthOptionRow(text: "Possui todos os dentes", isOn: false),
-            makeOralHealthOptionRow(text: "Possui dentes faltando", isOn: true),
-            makeOralHealthOptionRow(text: "Sem dentes", isOn: false),
-            makeOralHealthOptionRow(text: "Usa dentadura", isOn: true),
-            makeOralHealthOptionRow(text: "Usa aparelho ortodôntico", isOn: false)
-        ])
+        let titles: [String] = OralHealthEnum.allCases.map { $0.displayText }
+        let rows = titles.map { makeOralHealthOptionRow(text: $0) }
+        let stack = UIStackView(arrangedSubviews: rows)
         stack.axis = .vertical
         stack.alignment = .fill
         stack.spacing = 12
@@ -87,11 +87,11 @@ final class EditPhysicalStateView: UIView {
             locomotionSection,
             oralHealthContainer
         ])
-        
+
         NSLayoutConstraint.activate([
             locomotionSection.widthAnchor.constraint(equalToConstant: 175)
         ])
-        
+
         stack.axis = .vertical
         stack.alignment = .fill
         stack.spacing = 22
@@ -105,6 +105,8 @@ final class EditPhysicalStateView: UIView {
         translatesAutoresizingMaskIntoConstraints = false
         setupUI()
         configureMenus()
+        bindViewModel()
+        viewModel.loadInitialPhysicalStateFormState()
     }
 
     required init?(coder: NSCoder) { fatalError("init(coder:) has not been implemented") }
@@ -126,48 +128,73 @@ final class EditPhysicalStateView: UIView {
         ])
     }
 
+    private func bindViewModel() {
+        viewModel.$physicalStateFormState
+            .receive(on: DispatchQueue.main)
+            .sink { [weak self] state in
+                guard let self else { return }
+
+                if let v = state.visionState {
+                    self.visionPopupButton.setTitle(v.displayText, for: .normal)
+                }
+                if let h = state.hearingState {
+                    self.hearingPopupButton.setTitle(h.displayText, for: .normal)
+                }
+                if let m = state.mobilityState {
+                    self.locomotionPopupButton.setTitle(m.displayText, for: .normal)
+                }
+
+                if let oral = state.oralHealthState {
+                    self.selectOralHealth(optionText: oral.displayText)
+                } else {
+                    self.selectOralHealth(optionText: nil)
+                }
+            }
+            .store(in: &subscriptions)
+    }
+
     private func configureMenus() {
-        let visionActions: [UIAction] = [
-            UIAction(title: "Sem alterações", handler: { [weak self] _ in self?.visionPopupButton.setTitle("Sem alterações", for: .normal) }),
-            UIAction(title: "Com déficit", handler: { [weak self] _ in self?.visionPopupButton.setTitle("Com déficit", for: .normal) }),
-            UIAction(title: "Cegueira", handler: { [weak self] _ in self?.visionPopupButton.setTitle("Cegueira", for: .normal) })
-        ]
+        let visionActions: [UIAction] = VisionEnum.allCases.map { value in
+            UIAction(title: value.displayText, handler: { [weak self] _ in
+                self?.visionPopupButton.setTitle(value.displayText, for: .normal)
+                self?.viewModel.updateVisionState(value)
+            })
+        }
         visionPopupButton.menu = UIMenu(children: visionActions)
         visionPopupButton.showsMenuAsPrimaryAction = true
 
-        let hearingActions: [UIAction] = [
-            UIAction(title: "Sem alterações", handler: { [weak self] _ in self?.hearingPopupButton.setTitle("Sem alterações", for: .normal) }),
-            UIAction(title: "Com déficit", handler: { [weak self] _ in self?.hearingPopupButton.setTitle("Com déficit", for: .normal) }),
-            UIAction(title: "Surdez", handler: { [weak self] _ in self?.hearingPopupButton.setTitle("Surdez", for: .normal) })
-        ]
+        let hearingActions: [UIAction] = HearingEnum.allCases.map { value in
+            UIAction(title: value.displayText, handler: { [weak self] _ in
+                self?.hearingPopupButton.setTitle(value.displayText, for: .normal)
+                self?.viewModel.updateHearingState(value)
+            })
+        }
         hearingPopupButton.menu = UIMenu(children: hearingActions)
         hearingPopupButton.showsMenuAsPrimaryAction = true
 
-        let locomotionActions: [UIAction] = [
-            UIAction(title: "Sem auxílio", handler: { [weak self] _ in self?.locomotionPopupButton.setTitle("Sem auxílio", for: .normal) }),
-            UIAction(title: "Bengala", handler: { [weak self] _ in self?.locomotionPopupButton.setTitle("Bengala", for: .normal) }),
-            UIAction(title: "Andador", handler: { [weak self] _ in self?.locomotionPopupButton.setTitle("Andador", for: .normal) }),
-            UIAction(title: "Cadeira de rodas", handler: { [weak self] _ in self?.locomotionPopupButton.setTitle("Cadeira de rodas", for: .normal) })
-        ]
+        let locomotionActions: [UIAction] = MobilityEnum.allCases.map { value in
+            UIAction(title: value.displayText, handler: { [weak self] _ in
+                self?.locomotionPopupButton.setTitle(value.displayText, for: .normal)
+                self?.viewModel.updateMobilityState(value)
+            })
+        }
         locomotionPopupButton.menu = UIMenu(children: locomotionActions)
         locomotionPopupButton.showsMenuAsPrimaryAction = true
     }
 
-    private func makeOralHealthOptionRow(text: String, isOn: Bool) -> UIView {
+    private func makeOralHealthOptionRow(text: String) -> UIView {
         let button = UIButton(type: .system)
         button.layer.cornerRadius = 4
         button.layer.borderWidth = 2
         button.layer.borderColor = UIColor.blue40.cgColor
         button.tintColor = .white
-        button.backgroundColor = isOn ? .blue40 : .clear
-        button.setImage(
-            UIImage(systemName: isOn ? "checkmark" : ""),
-            for: .normal
-        )
+        button.backgroundColor = .clear
+        button.setImage(nil, for: .normal)
         button.setPreferredSymbolConfiguration(.init(pointSize: 14, weight: .bold), forImageIn: .normal)
         button.contentHorizontalAlignment = .center
         button.widthAnchor.constraint(equalToConstant: 22).isActive = true
         button.heightAnchor.constraint(equalToConstant: 22).isActive = true
+        button.accessibilityIdentifier = text
 
         let label = StandardLabel(
             labelText: text,
@@ -182,19 +209,31 @@ final class EditPhysicalStateView: UIView {
         container.alignment = .center
         container.spacing = 12
 
-        button.addAction(UIAction { [weak button] _ in
-            guard let button else { return }
-            let isSelected = button.backgroundColor == .blue40
-            button.backgroundColor = isSelected ? .clear : .blue40
-            button.layer.borderColor = UIColor.blue40.cgColor
-            button.tintColor = .white
-            if isSelected {
-                button.setImage(nil, for: .normal)
-            } else {
-                button.setImage(UIImage(systemName: "checkmark"), for: .normal)
+        oralHealthOptionButtons.append(button)
+
+        button.addAction(UIAction { [weak self, weak button] _ in
+            guard let self, let button else { return }
+            self.selectOralHealth(optionText: button.accessibilityIdentifier)
+            if let key = button.accessibilityIdentifier,
+               let oral = OralHealthEnum.allCases.first(where: { $0.displayText == key }) {
+                self.viewModel.updateOralHealthState(oral)
             }
         }, for: .touchUpInside)
 
         return container
+    }
+
+    private func selectOralHealth(optionText: String?) {
+        for button in oralHealthOptionButtons {
+            let match = (button.accessibilityIdentifier == optionText)
+            button.backgroundColor = match ? .blue40 : .clear
+            button.layer.borderColor = UIColor.blue40.cgColor
+            button.tintColor = .white
+            if match {
+                button.setImage(UIImage(systemName: "checkmark"), for: .normal)
+            } else {
+                button.setImage(nil, for: .normal)
+            }
+        }
     }
 }
