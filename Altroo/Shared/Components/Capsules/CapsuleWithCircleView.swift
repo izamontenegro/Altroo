@@ -19,11 +19,10 @@ class CapsuleWithCircleView: UIView {
         super.init(frame: frame)
         
         self.translatesAutoresizingMaskIntoConstraints = false
-        NSLayoutConstraint.activate([
-            self.widthAnchor.constraint(equalToConstant: 137),
-            self.heightAnchor.constraint(equalToConstant: 31)
-        ])
-
+//        NSLayoutConstraint.activate([
+//            self.widthAnchor.constraint(equalToConstant: 100),
+//            self.heightAnchor.constraint(equalToConstant: 31)
+//        ])
     }
     
     convenience init(text: String, textColor: UIColor, nameIcon: String, nameIconColor: UIColor, circleIconColor: UIColor) {
@@ -108,20 +107,10 @@ class CapsuleWithCircleView: UIView {
         
         stackView.addArrangedSubview(container)
     }
-    
-//    private func setupInnerShadow() {
-//        let shadow = InnerShadowView(frame: bounds,
-//                                     color: UIColor.blue40,
-//                                     opacity: 0.15)
-//        shadow.isUserInteractionEnabled = false
-//        shadow.layer.cornerRadius = layer.cornerRadius
-//        addSubview(shadow)
-//        innerShadowView = shadow
-//    }
 }
 
 //#Preview {
-//    let button = CapsuleWithCircleView(text: "Editar Seções",
+//    let button = CapsuleWithCircleView(text: "Editar",
 //                                       textColor: .teal20,
 //                                       nameIcon: "pencil",
 //                                       nameIconColor: .pureWhite,

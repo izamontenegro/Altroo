@@ -24,12 +24,18 @@ final class SettingsCoordinator: Coordinator {
 }
 
 extension SettingsCoordinator: SettingsViewControllerDelegate {
-    
-    func goToPrivacySecurity() {
-        let vc = factory.makePrivacySecurityViewController()
+    func goToMyProfile() {
+        let vc = factory.makeMyProfileViewController()
         navigation.pushViewController(vc, animated: true)
     }
-    
+    func goToPrivacy() {
+        let vc = factory.makePrivacyViewController()
+        navigation.pushViewController(vc, animated: true)
+    }
+    func goToPolicy() {
+        let vc = factory.makePolicyViewController()
+        navigation.pushViewController(vc, animated: true)
+    }
     func goToDevelopers() {
         let vc = factory.makeDevelopersViewController()
         navigation.pushViewController(vc, animated: true)

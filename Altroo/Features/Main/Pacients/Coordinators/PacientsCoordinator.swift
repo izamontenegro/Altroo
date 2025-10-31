@@ -1,24 +1,24 @@
 //
-//  AnalysisCoordinator.swift
+//  PacientsCoordinator.swift
 //  Altroo
 //
-//  Created by Izadora de Oliveira Albuquerque Montenegro on 22/09/25.
+//  Created by Marcelle Ribeiro Queiroz on 30/10/25.
 //
 
 import UIKit
 
-final class AnalysisCoordinator: Coordinator {
+final class PacientsCoordinator: Coordinator {
     var childCoordinators: [Coordinator] = []
     var navigation: UINavigationController
-    private let factory: AppFactory
-    
+    private let factory: AppFactory //This helps decouple screen creation from navigation logic.
+
     init(navigation: UINavigationController, factory: AppFactory) {
-        self.navigation = navigation
         self.factory = factory
+        self.navigation = navigation
     }
     
     func start() {
-        let vc = factory.makeAnalysisViewController()
+        let vc = factory.makePacientsViewController()
         navigation.setViewControllers([vc], animated: false)
     }
 }

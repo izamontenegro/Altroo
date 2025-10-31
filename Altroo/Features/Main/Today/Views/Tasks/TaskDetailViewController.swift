@@ -13,12 +13,12 @@ class TaskDetailViewController: UIViewController {
 
     var onEditTapped: ((TaskInstance) -> Void)?
     
-    let vStack: UIStackView = {
+    lazy var vStack: UIStackView = {
         let stackView = UIStackView(arrangedSubviews: [])
         stackView.axis = .vertical
         stackView.distribution = .fill
         stackView.spacing = 16
-        
+                
         stackView.translatesAutoresizingMaskIntoConstraints = false
         return stackView
     }()
@@ -64,7 +64,6 @@ class TaskDetailViewController: UIViewController {
             vStack.topAnchor.constraint(equalTo: view.safeAreaLayoutGuide.topAnchor, constant: Layout.mediumSpacing),
             vStack.leadingAnchor.constraint(equalTo: view.leadingAnchor, constant: Layout.mediumSpacing),
             vStack.trailingAnchor.constraint(equalTo: view.trailingAnchor, constant: -Layout.mediumSpacing),
-            
         ])
     }
     

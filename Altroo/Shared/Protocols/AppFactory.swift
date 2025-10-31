@@ -41,10 +41,11 @@ protocol AssociatePatientFactory {
 
 // MARK: - MAIN FLOW
 protocol MainFlowFactory {
-    func makeSettingsViewController(delegate: SettingsViewControllerDelegate) -> UIViewController
+    func makePacientsViewController() -> UIViewController
+    func makeAnalysisViewController() -> UIViewController
     func makeTodayViewController(delegate: TodayViewControllerDelegate) -> UIViewController
     func makeHistoryViewController(delegate: HistoryViewControllerDelegate) -> UIViewController
-    func makeAnalysisViewController() -> UIViewController
+    func makeSettingsViewController(delegate: SettingsViewControllerDelegate) -> UIViewController
 }
 
 // MARK: - TODAY FLOW
@@ -121,8 +122,9 @@ protocol HistoryFactory {
 
 // MARK: - SETTINGS FLOW
 protocol SettingsFactory {
-//    func makeUserProfileViewController() -> UIViewController
-    func makePrivacySecurityViewController() -> UIViewController
+    func makeMyProfileViewController() -> UIViewController
+    func makePrivacyViewController() -> UIViewController
+    func makePolicyViewController() -> UIViewController
     func makeDevelopersViewController() -> UIViewController
 }
 
