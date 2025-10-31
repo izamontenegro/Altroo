@@ -101,15 +101,21 @@ final class MedicalRecordViewModel {
 
     func personalCareText(person: CareRecipient) -> String {
         let personalCare = person.personalCare
-        let equipments = MedicalRecordFormatter.bulletList(fromCSV: personalCare?.equipmentState)
+
+        let bath = personalCare?.bathState.flatMap { BathEnum(rawValue: $0)?.displayText } ?? "—"
+        let hygiene = personalCare?.hygieneState.flatMap { HygieneEnum(rawValue: $0)?.displayText } ?? "—"
+        let excretion = personalCare?.excretionState.flatMap { ExcretionEnum(rawValue: $0)?.displayText } ?? "—"
+        let feeding = personalCare?.feedingState.flatMap { FeedingEnum(rawValue: $0)?.displayText } ?? "—"
+        let equipments = personalCare?.equipmentState ?? "—"
+
         return """
-        Banho: \(personalCare?.bathState ?? "—")
-        Higiene: \(personalCare?.hygieneState ?? "—")
-        Excreção: \(personalCare?.excretionState ?? "—")
-        Alimentação: \(personalCare?.feedingState ?? "—")
+        Banho: \(bath)
+        Higiene: \(hygiene)
+        Excreção: \(excretion)
+        Alimentação: \(feeding)
 
         Equipamentos
-        \(equipments.isEmpty ? "—" : equipments)
+        \(equipments)
         """
     }
     
@@ -190,13 +196,19 @@ final class MedicalRecordViewModel {
     
     private func rowsPersonalCare(from careRecipient: CareRecipient) -> [InfoRow] {
         let personalCare = careRecipient.personalCare
-        let equipments = MedicalRecordFormatter.bulletList(fromCSV: personalCare?.equipmentState)
+
+        let bath = personalCare?.bathState.flatMap { BathEnum(rawValue: $0)?.displayText } ?? "—"
+        let hygiene = personalCare?.hygieneState.flatMap { HygieneEnum(rawValue: $0)?.displayText } ?? "—"
+        let excretion = personalCare?.excretionState.flatMap { ExcretionEnum(rawValue: $0)?.displayText } ?? "—"
+        let feeding = personalCare?.feedingState.flatMap { FeedingEnum(rawValue: $0)?.displayText } ?? "—"
+        let equipments = personalCare?.equipmentState ?? "—"
+
         return [
-            ("Banho", personalCare?.bathState ?? "—"),
-            ("Higiene", personalCare?.hygieneState ?? "—"),
-            ("Excreção", personalCare?.excretionState ?? "—"),
-            ("Alimentação", personalCare?.feedingState ?? "—"),
-            ("Equipamentos", equipments.isEmpty ? "—" : equipments)
+            ("Banho", bath),
+            ("Higiene", hygiene),
+            ("Excreção", excretion),
+            ("Alimentação", feeding),
+            ("Equipamentos", equipments)
         ]
     }
     

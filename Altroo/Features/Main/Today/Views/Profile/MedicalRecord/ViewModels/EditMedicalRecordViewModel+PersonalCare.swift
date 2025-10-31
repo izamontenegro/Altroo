@@ -13,12 +13,11 @@ struct PersonalCareFormState: Equatable {
     var hygieneState: HygieneEnum? = nil
     var feedingState: FeedingEnum? = nil
     var excretionState: ExcretionEnum? = nil
-    var equipmentState: EquipmentEnum? = nil
     var bathState: BathEnum? = nil
+    var equipmentsText: String = ""
 }
 
 extension EditMedicalRecordViewModel {
-
     func loadInitialPersonalCareFormState() {
         guard let patient = currentPatient(),
               let personalCare = patient.personalCare else {
@@ -30,20 +29,20 @@ extension EditMedicalRecordViewModel {
             hygieneState: personalCare.hygieneState.flatMap { HygieneEnum(rawValue: $0) },
             feedingState: personalCare.feedingState.flatMap { FeedingEnum(rawValue: $0) },
             excretionState: personalCare.excretionState.flatMap { ExcretionEnum(rawValue: $0) },
-            equipmentState: personalCare.equipmentState.flatMap { EquipmentEnum(rawValue: $0) },
-            bathState: personalCare.bathState.flatMap { BathEnum(rawValue: $0) }
+            bathState: personalCare.bathState.flatMap { BathEnum(rawValue: $0) },
+            equipmentsText: personalCare.equipmentState ?? ""
         )
+    }
+
+    func updateBathState(_ value: BathEnum?) {
+        var draft = personalCareFormState
+        draft.bathState = value
+        personalCareFormState = draft
     }
 
     func updateHygieneState(_ value: HygieneEnum?) {
         var draft = personalCareFormState
         draft.hygieneState = value
-        personalCareFormState = draft
-    }
-
-    func updateFeedingState(_ value: FeedingEnum?) {
-        var draft = personalCareFormState
-        draft.feedingState = value
         personalCareFormState = draft
     }
 
@@ -53,15 +52,15 @@ extension EditMedicalRecordViewModel {
         personalCareFormState = draft
     }
 
-    func updateEquipmentState(_ value: EquipmentEnum?) {
+    func updateFeedingState(_ value: FeedingEnum?) {
         var draft = personalCareFormState
-        draft.equipmentState = value
+        draft.feedingState = value
         personalCareFormState = draft
     }
 
-    func updateBathState(_ value: BathEnum?) {
+    func updateEquipmentsText(_ text: String) {
         var draft = personalCareFormState
-        draft.bathState = value
+        draft.equipmentsText = text
         personalCareFormState = draft
     }
 
@@ -78,11 +77,11 @@ extension EditMedicalRecordViewModel {
         if let value = personalCareFormState.excretionState {
             careRecipientFacade.addExcretionState(excretionState: value, personalCare: personalCare)
         }
-        if let value = personalCareFormState.equipmentState {
-            careRecipientFacade.addEquipmentState(equipmentState: value, personalCare: personalCare)
-        }
         if let value = personalCareFormState.bathState {
             careRecipientFacade.addBathState(bathState: value, personalCare: personalCare)
         }
+
+        personalCare.equipmentState = personalCareFormState.equipmentsText
+        careRecipientFacade.persistenceService.save()
     }
 }

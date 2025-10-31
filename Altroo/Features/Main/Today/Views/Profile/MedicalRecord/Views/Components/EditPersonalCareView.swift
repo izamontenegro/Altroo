@@ -6,10 +6,13 @@
 //
 
 import UIKit
+import Combine
 
 final class EditPersonalCareView: UIView {
     let viewModel: EditMedicalRecordViewModel
     weak var delegate: EditMedicalRecordViewControllerDelegate?
+
+    private var subscriptions = Set<AnyCancellable>()
 
     private let header: EditSectionHeaderView = {
         let header = EditSectionHeaderView(
@@ -22,25 +25,25 @@ final class EditPersonalCareView: UIView {
     }()
 
     private lazy var bathPopupMenuButton: PopupMenuButton = {
-        let button = PopupMenuButton(title: "Com auxílio")
+        let button = PopupMenuButton(title: BathEnum.withAssistance.displayText)
         button.backgroundColor = .blue40
         return button
     }()
 
     private lazy var hygienePopupMenuButton: PopupMenuButton = {
-        let button = PopupMenuButton(title: "Sem auxílio")
+        let button = PopupMenuButton(title: HygieneEnum.withoutAssistance.displayText)
         button.backgroundColor = .blue40
         return button
     }()
 
     private lazy var excretionPopupMenuButton: PopupMenuButton = {
-        let button = PopupMenuButton(title: "Normal")
+        let button = PopupMenuButton(title: ExcretionEnum.normal.displayText)
         button.backgroundColor = .blue40
         return button
     }()
 
     private lazy var feedingPopupMenuButton: PopupMenuButton = {
-        let button = PopupMenuButton(title: "Comprometida")
+        let button = PopupMenuButton(title: FeedingEnum.soft.displayText)
         button.backgroundColor = .blue40
         return button
     }()
@@ -90,7 +93,10 @@ final class EditPersonalCareView: UIView {
         translatesAutoresizingMaskIntoConstraints = false
         setupUI()
         configureMenus()
-        fillInformations()
+        bindViewModel()
+        viewModel.loadInitialPersonalCareFormState()
+        fillInitialEquipmentsFromModel()
+        equipmentsTextField.addTarget(self, action: #selector(equipmentsTextChanged(_:)), for: .editingChanged)
     }
 
     required init?(coder: NSCoder) { fatalError("init(coder:) has not been implemented") }
@@ -113,41 +119,64 @@ final class EditPersonalCareView: UIView {
         ])
     }
 
+    private func bindViewModel() {
+            viewModel.$personalCareFormState
+                .receive(on: DispatchQueue.main)
+                .sink { [weak self] state in
+                    guard let self else { return }
+                    if let v = state.bathState { self.bathPopupMenuButton.setTitle(v.displayText, for: .normal) }
+                    if let v = state.hygieneState { self.hygienePopupMenuButton.setTitle(v.displayText, for: .normal) }
+                    if let v = state.excretionState { self.excretionPopupMenuButton.setTitle(v.displayText, for: .normal) }
+                    if let v = state.feedingState { self.feedingPopupMenuButton.setTitle(v.displayText, for: .normal) }
+                    if self.equipmentsTextField.text != state.equipmentsText {
+                        self.equipmentsTextField.text = state.equipmentsText
+                    }
+                }
+                .store(in: &subscriptions)
+        }
+
+        @objc private func equipmentsTextChanged(_ sender: UITextField) {
+            viewModel.updateEquipmentsText(sender.text ?? "")
+        }
+
     private func configureMenus() {
-        let bathActions: [UIAction] = [
-            UIAction(title: "Sem auxílio", handler: { [weak self] _ in self?.bathPopupMenuButton.setTitle("Sem auxílio", for: .normal) }),
-            UIAction(title: "Com auxílio", handler: { [weak self] _ in self?.bathPopupMenuButton.setTitle("Com auxílio", for: .normal) }),
-            UIAction(title: "Dependente", handler: { [weak self] _ in self?.bathPopupMenuButton.setTitle("Dependente", for: .normal) })
-        ]
-        bathPopupMenuButton.menu = UIMenu(children: bathActions)
+        bathPopupMenuButton.menu = UIMenu(children: BathEnum.allCases.map { option in
+            UIAction(title: option.displayText, handler: { [weak self] _ in
+                self?.bathPopupMenuButton.setTitle(option.displayText, for: .normal)
+                self?.viewModel.updateBathState(option)
+            })
+        })
         bathPopupMenuButton.showsMenuAsPrimaryAction = true
 
-        let hygieneActions: [UIAction] = [
-            UIAction(title: "Sem auxílio", handler: { [weak self] _ in self?.hygienePopupMenuButton.setTitle("Sem auxílio", for: .normal) }),
-            UIAction(title: "Com auxílio", handler: { [weak self] _ in self?.hygienePopupMenuButton.setTitle("Com auxílio", for: .normal) }),
-            UIAction(title: "Dependente", handler: { [weak self] _ in self?.hygienePopupMenuButton.setTitle("Dependente", for: .normal) })
-        ]
-        hygienePopupMenuButton.menu = UIMenu(children: hygieneActions)
+        hygienePopupMenuButton.menu = UIMenu(children: HygieneEnum.allCases.map { option in
+            UIAction(title: option.displayText, handler: { [weak self] _ in
+                self?.hygienePopupMenuButton.setTitle(option.displayText, for: .normal)
+                self?.viewModel.updateHygieneState(option)
+            })
+        })
         hygienePopupMenuButton.showsMenuAsPrimaryAction = true
 
-        let excretionActions: [UIAction] = [
-            UIAction(title: "Normal", handler: { [weak self] _ in self?.excretionPopupMenuButton.setTitle("Normal", for: .normal) }),
-            UIAction(title: "Incontinência", handler: { [weak self] _ in self?.excretionPopupMenuButton.setTitle("Incontinência", for: .normal) }),
-            UIAction(title: "Constipação", handler: { [weak self] _ in self?.excretionPopupMenuButton.setTitle("Constipação", for: .normal) })
-        ]
-        excretionPopupMenuButton.menu = UIMenu(children: excretionActions)
+        excretionPopupMenuButton.menu = UIMenu(children: ExcretionEnum.allCases.map { option in
+            UIAction(title: option.displayText, handler: { [weak self] _ in
+                self?.excretionPopupMenuButton.setTitle(option.displayText, for: .normal)
+                self?.viewModel.updateExcretionState(option)
+            })
+        })
         excretionPopupMenuButton.showsMenuAsPrimaryAction = true
 
-        let feedingActions: [UIAction] = [
-            UIAction(title: "Normal", handler: { [weak self] _ in self?.feedingPopupMenuButton.setTitle("Normal", for: .normal) }),
-            UIAction(title: "Comprometida", handler: { [weak self] _ in self?.feedingPopupMenuButton.setTitle("Comprometida", for: .normal) }),
-            UIAction(title: "Dependente", handler: { [weak self] _ in self?.feedingPopupMenuButton.setTitle("Dependente", for: .normal) })
-        ]
-        feedingPopupMenuButton.menu = UIMenu(children: feedingActions)
+        feedingPopupMenuButton.menu = UIMenu(children: FeedingEnum.allCases.map { option in
+            UIAction(title: option.displayText, handler: { [weak self] _ in
+                self?.feedingPopupMenuButton.setTitle(option.displayText, for: .normal)
+                self?.viewModel.updateFeedingState(option)
+            })
+        })
         feedingPopupMenuButton.showsMenuAsPrimaryAction = true
     }
 
-    func fillInformations() {
-        guard let patient = viewModel.userService.fetchCurrentPatient() else { return }
+    private func fillInitialEquipmentsFromModel() {
+        guard let patient = viewModel.userService.fetchCurrentPatient(),
+              let csv = patient.personalCare?.equipmentState, !csv.isEmpty else { return }
+        equipmentsTextField.text = csv
     }
+
 }
