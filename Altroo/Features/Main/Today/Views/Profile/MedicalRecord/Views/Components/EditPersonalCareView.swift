@@ -8,7 +8,7 @@
 import UIKit
 import Combine
 
-final class EditPersonalCareView: UIView {
+final class EditPersonalCareView: UIView, UITextFieldDelegate {
     let viewModel: EditMedicalRecordViewModel
     weak var delegate: EditMedicalRecordViewControllerDelegate?
 
@@ -48,7 +48,12 @@ final class EditPersonalCareView: UIView {
         return button
     }()
 
-    private lazy var equipmentsTextField = StandardTextfield(placeholder: "Equipamentos separados por vírgulas")
+    private lazy var equipmentsTextField: StandardTextfield = {
+        let textField = StandardTextfield(placeholder: "Equipamentos separados por vírgulas")
+      
+        textField.returnKeyType = .done
+        return textField
+    }()
 
     private lazy var bathSection = FormSectionView(title: "Banho", content: bathPopupMenuButton)
     private lazy var hygieneSection = FormSectionView(title: "Higiene", content: hygienePopupMenuButton)
@@ -87,6 +92,12 @@ final class EditPersonalCareView: UIView {
         return stack
     }()
 
+    private lazy var keyboardDismissTapGesture: UITapGestureRecognizer = {
+        let tap = UITapGestureRecognizer(target: self, action: #selector(dismissKeyboard))
+        tap.cancelsTouchesInView = false
+        return tap
+    }()
+
     init(viewModel: EditMedicalRecordViewModel) {
         self.viewModel = viewModel
         super.init(frame: .zero)
@@ -97,6 +108,11 @@ final class EditPersonalCareView: UIView {
         viewModel.loadInitialPersonalCareFormState()
         fillInitialEquipmentsFromModel()
         equipmentsTextField.addTarget(self, action: #selector(equipmentsTextChanged(_:)), for: .editingChanged)
+
+       
+        equipmentsTextField.delegate = self
+
+        addGestureRecognizer(keyboardDismissTapGesture)
     }
 
     required init?(coder: NSCoder) { fatalError("init(coder:) has not been implemented") }
@@ -120,24 +136,24 @@ final class EditPersonalCareView: UIView {
     }
 
     private func bindViewModel() {
-            viewModel.$personalCareFormState
-                .receive(on: DispatchQueue.main)
-                .sink { [weak self] state in
-                    guard let self else { return }
-                    if let v = state.bathState { self.bathPopupMenuButton.setTitle(v.displayText, for: .normal) }
-                    if let v = state.hygieneState { self.hygienePopupMenuButton.setTitle(v.displayText, for: .normal) }
-                    if let v = state.excretionState { self.excretionPopupMenuButton.setTitle(v.displayText, for: .normal) }
-                    if let v = state.feedingState { self.feedingPopupMenuButton.setTitle(v.displayText, for: .normal) }
-                    if self.equipmentsTextField.text != state.equipmentsText {
-                        self.equipmentsTextField.text = state.equipmentsText
-                    }
+        viewModel.$personalCareFormState
+            .receive(on: DispatchQueue.main)
+            .sink { [weak self] state in
+                guard let self else { return }
+                if let v = state.bathState { self.bathPopupMenuButton.setTitle(v.displayText, for: .normal) }
+                if let v = state.hygieneState { self.hygienePopupMenuButton.setTitle(v.displayText, for: .normal) }
+                if let v = state.excretionState { self.excretionPopupMenuButton.setTitle(v.displayText, for: .normal) }
+                if let v = state.feedingState { self.feedingPopupMenuButton.setTitle(v.displayText, for: .normal) }
+                if self.equipmentsTextField.text != state.equipmentsText {
+                    self.equipmentsTextField.text = state.equipmentsText
                 }
-                .store(in: &subscriptions)
-        }
+            }
+            .store(in: &subscriptions)
+    }
 
-        @objc private func equipmentsTextChanged(_ sender: UITextField) {
-            viewModel.updateEquipmentsText(sender.text ?? "")
-        }
+    @objc private func equipmentsTextChanged(_ sender: UITextField) {
+        viewModel.updateEquipmentsText(sender.text ?? "")
+    }
 
     private func configureMenus() {
         bathPopupMenuButton.menu = UIMenu(children: BathEnum.allCases.map { option in
@@ -179,4 +195,12 @@ final class EditPersonalCareView: UIView {
         equipmentsTextField.text = csv
     }
 
+    @objc private func dismissKeyboard() {
+        endEditing(true)
+    }
+
+    func textFieldShouldReturn(_ textField: UITextField) -> Bool {
+        textField.resignFirstResponder()
+        return true
+    }
 }

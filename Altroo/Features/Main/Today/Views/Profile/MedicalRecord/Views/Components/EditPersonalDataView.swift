@@ -7,7 +7,7 @@
 import UIKit
 import Combine
 
-final class EditPersonalDataView: UIView {
+final class EditPersonalDataView: UIView, UITextFieldDelegate {
     let viewModel: EditMedicalRecordViewModel
     weak var delegate: EditMedicalRecordViewControllerDelegate?
 
@@ -152,6 +152,12 @@ final class EditPersonalDataView: UIView {
         return header
     }()
 
+    private lazy var keyboardDismissTapGesture: UITapGestureRecognizer = {
+        let tap = UITapGestureRecognizer(target: self, action: #selector(dismissKeyboard))
+        tap.cancelsTouchesInView = false
+        return tap
+    }()
+
     init(viewModel: EditMedicalRecordViewModel) {
         self.viewModel = viewModel
         super.init(frame: .zero)
@@ -160,6 +166,8 @@ final class EditPersonalDataView: UIView {
         bindViewModel()
         bindInputs()
         fillInformations()
+        installKeyboardDismiss()
+        setTextFieldDelegates()
     }
     required init?(coder: NSCoder) { fatalError("init(coder:) has not been implemented") }
 
@@ -178,7 +186,7 @@ final class EditPersonalDataView: UIView {
             formStack.trailingAnchor.constraint(equalTo: trailingAnchor, constant: -16),
             formStack.bottomAnchor.constraint(lessThanOrEqualTo: bottomAnchor, constant: -20)
         ])
-        
+
         datePicker.addTarget(self, action: #selector(handleDateChanged), for: .valueChanged)
     }
 
@@ -221,6 +229,14 @@ final class EditPersonalDataView: UIView {
         genderSegmentedControl.addTarget(self, action: #selector(handleGenderChanged), for: .valueChanged)
     }
 
+    private func installKeyboardDismiss() {
+        addGestureRecognizer(keyboardDismissTapGesture)
+    }
+
+    private func setTextFieldDelegates() {
+        [nameTextField, heightTextField, weightTextField, addressTextField, contactTextField].forEach { $0.delegate = self }
+    }
+
     @objc private func handleDateChanged() {
         viewModel.updateDateOfBirth(datePicker.date)
         ageLabel.text = viewModel.personalDataFormState.ageText
@@ -248,11 +264,21 @@ final class EditPersonalDataView: UIView {
         viewModel.updateGender(value)
     }
 
+    @objc private func dismissKeyboard() {
+        endEditing(true)
+    }
+
     func fillInformations() {
         viewModel.loadInitialPersonalDataFormState()
         if let patient = viewModel.userService.fetchCurrentPatient(),
            let personalData = patient.personalData {
             contactTextField.text = MedicalRecordFormatter.contactsList(from: personalData.contacts as? Set<Contact>)
         }
+    }
+
+    // MARK: - UITextFieldDelegate
+    func textFieldShouldReturn(_ textField: UITextField) -> Bool {
+        textField.resignFirstResponder()
+        return true
     }
 }
