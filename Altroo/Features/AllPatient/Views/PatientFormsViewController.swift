@@ -58,7 +58,6 @@ class PatientFormsViewController: UIViewController {
         return tf
     }()
     
-    
     private lazy var weightInputStack: UIStackView = {
         let label = StandardLabel(
             labelText: "kg",
@@ -255,7 +254,6 @@ class PatientFormsViewController: UIViewController {
             formStack.trailingAnchor.constraint(equalTo: scrollView.contentLayoutGuide.trailingAnchor, constant: -Layout.mediumSpacing),
             formStack.bottomAnchor.constraint(equalTo: scrollView.contentLayoutGuide.bottomAnchor, constant: -Layout.smallSpacing),
             formStack.widthAnchor.constraint(equalTo: scrollView.frameLayoutGuide.widthAnchor, constant: -2 * Layout.mediumSpacing)
-
         ])
         
         datePicker.addTarget(self, action: #selector(updateAgeLabel), for: .valueChanged)
@@ -298,7 +296,6 @@ class PatientFormsViewController: UIViewController {
         viewModel.updateContact(name: contactName, phone: contactPhone)
         
         guard viewModel.validateProfile() else { return }
-        
         
         delegate?.goToComorbiditiesForms()
     }
