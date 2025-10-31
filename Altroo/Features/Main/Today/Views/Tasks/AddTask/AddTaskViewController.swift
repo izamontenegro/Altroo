@@ -33,7 +33,7 @@ class AddTaskViewController: TaskFormViewController {
         
         view.backgroundColor = .pureWhite
         
-        configure(title: "Adicionar Tarefa", confirmButtonText: "Adicionar")
+        configure(title: "Registrar Tarefa", subtitle: "Registre uma atividade a ser feita e sua duração ou repetições durante a semana.", confirmButtonText: "Adicionar")
         bindViewModel()
         setupContinuousButton()
         setupRepeatingDays()

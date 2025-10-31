@@ -11,7 +11,7 @@ import Combine
 class TaskFormViewController: GradientNavBarViewController {
     private var keyboardHandler: KeyboardHandler?
 
-    let titleLabel = StandardLabel(labelText: "", labelFont: .sfPro, labelType: .title2, labelColor: UIColor(resource: .black10), labelWeight: .semibold)
+    let titleLabel = StandardHeaderView(title: "", subtitle: "")
     
     let confirmButton = StandardConfirmationButton(title: "")
     let deleteButton = OutlineButton(title: "Deletar", color: .red20)
@@ -51,7 +51,6 @@ class TaskFormViewController: GradientNavBarViewController {
     private lazy var repeatSection = FormSectionView(title: "Repetir", content: weekdayRow)
     private lazy var startSection = FormSectionView(title: "Início", content: startDatePicker)
     private lazy var noteSection = FormSectionView(title: "Observações", content: noteTexfield)
-
 
     private lazy var contentStack: UIStackView = {
         let stackView = UIStackView(arrangedSubviews: [
@@ -111,8 +110,9 @@ class TaskFormViewController: GradientNavBarViewController {
         view.addGestureRecognizer(tapGesture)
     }
 
-    func configure(title: String, confirmButtonText: String, showDelete: Bool = false) {
-        titleLabel.text = title
+    func configure(title: String, subtitle: String, confirmButtonText: String, showDelete: Bool = false) {
+        titleLabel.update(title: title, subtitle: subtitle)
+        
         confirmButton.updateTitle(confirmButtonText)
         
         if showDelete {

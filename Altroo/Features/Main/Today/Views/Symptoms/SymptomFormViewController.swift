@@ -7,7 +7,7 @@
 import UIKit
 
 class SymptomFormViewController: GradientNavBarViewController {
-    let titleLabel = StandardLabel(labelText: "", labelFont: .sfPro, labelType: .title2, labelColor: .black, labelWeight: .semibold)
+    let titleLabel = StandardHeaderView(title: "", subtitle: "")
     
     let confirmButton = StandardConfirmationButton(title: "")
     let deleteButton = OutlineButton(title: "Deletar", color: .red20)
@@ -51,17 +51,13 @@ class SymptomFormViewController: GradientNavBarViewController {
     func setupUI() {
         view.backgroundColor = .white
         
-        view.addSubview(titleLabel)
         view.addSubview(confirmButton)
         
         setupContent()
         
         NSLayoutConstraint.activate([
-            titleLabel.topAnchor.constraint(equalTo: view.safeAreaLayoutGuide.topAnchor, constant: Layout.mediumSpacing),
-            titleLabel.leadingAnchor.constraint(equalTo: view.safeAreaLayoutGuide.leadingAnchor, constant: Layout.mediumSpacing),
-            titleLabel.trailingAnchor.constraint(equalTo: view.safeAreaLayoutGuide.trailingAnchor, constant: -Layout.mediumSpacing),
             
-            contentStack.topAnchor.constraint(equalTo: titleLabel.bottomAnchor, constant: Layout.mediumSpacing),
+            contentStack.topAnchor.constraint(equalTo: view.safeAreaLayoutGuide.topAnchor, constant: Layout.mediumSpacing),
             contentStack.leadingAnchor.constraint(equalTo: view.safeAreaLayoutGuide.leadingAnchor, constant: Layout.mediumSpacing),
             contentStack.trailingAnchor.constraint(equalTo: view.safeAreaLayoutGuide.trailingAnchor, constant: -Layout.mediumSpacing),
             
@@ -75,6 +71,8 @@ class SymptomFormViewController: GradientNavBarViewController {
     
     func setupContent() {
         view.addSubview(contentStack)
+        contentStack.addArrangedSubview(titleLabel)
+        
         //name
         nameTexfield.placeholder = "Nome da intercorrência"
         let nameSection = FormSectionView(title: "Nome", content: nameTexfield)
@@ -99,8 +97,8 @@ class SymptomFormViewController: GradientNavBarViewController {
         contentStack.addArrangedSubview(dateTimeStack)
     }
     
-    func configure(title: String, confirmButtonText: String, showDelete: Bool = false) {
-        titleLabel.text = title
+    func configure(title: String, subtitle: String, confirmButtonText: String, showDelete: Bool = false) {
+        titleLabel.update(title: title, subtitle: subtitle)
         confirmButton.updateTitle(confirmButtonText)
         
         if showDelete {

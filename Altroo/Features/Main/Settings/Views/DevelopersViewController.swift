@@ -67,6 +67,7 @@ class DevelopersViewController: GradientNavBarViewController {
             subtitleLabel.trailingAnchor.constraint(equalTo: view.safeAreaLayoutGuide.trailingAnchor, constant: -16)
         ])
     }
+    
     private func buttonsUI() {
         view.addSubview(buttonsView)
         
@@ -215,3 +216,6 @@ extension UIImage {
 //#Preview {
 //    DevelopersViewController()
 //}
+
+import UIKit
+
