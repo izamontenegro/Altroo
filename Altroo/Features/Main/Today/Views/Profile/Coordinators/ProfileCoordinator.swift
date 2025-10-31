@@ -49,9 +49,19 @@ extension ProfileCoordinator: ProfileViewControllerDelegate {
     }
     
     func goToMedicalRecordViewController() {
-        let vc = factory.makeMedicalRecordViewController()
-        
+        let editCoordinator = EditMedicalRecordCoordinator(
+            navigation: navigation,
+            factory: factory
+        )
+        add(child: editCoordinator)
+
+        let vc = factory.makeMedicalRecordViewController(delegate: editCoordinator)
         navigation.pushViewController(vc, animated: true)
+
+        editCoordinator.onFinish = { [weak self, weak editCoordinator] in
+            guard let self, let editCoordinator else { return }
+            self.remove(child: editCoordinator)
+        }
     }
     
     func openShareCareRecipientSheet(_ careRecipient: CareRecipient) {

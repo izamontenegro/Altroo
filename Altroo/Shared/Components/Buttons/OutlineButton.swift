@@ -17,22 +17,25 @@ final class OutlineButton: UIButton {
     )
     
     var color: UIColor
+    var customCornerRadius: CGFloat?
     
-    init(title: String, color: UIColor) {
+    init(title: String, color: UIColor, cornerRadius: CGFloat? = nil) {
         self.color = color
+        self.customCornerRadius = cornerRadius
         super.init(frame: .zero)
         setupButton(title: title)
     }
     
     required init?(coder: NSCoder) {
         self.color = .teal10
+        self.customCornerRadius = nil
         super.init(coder: coder)
         setupButton(title: "")
     }
     
     private func setupButton(title: String) {
         backgroundColor = .clear
-        layer.cornerRadius = 23
+        layer.cornerRadius = customCornerRadius ?? 23
         layer.borderWidth = 2
         layer.borderColor = color.cgColor
         
@@ -52,7 +55,6 @@ final class OutlineButton: UIButton {
         translatesAutoresizingMaskIntoConstraints = false
     }
     
-    // MARK: - Public funcs
     func updateTitle(_ title: String) {
         label.updateLabelText(title)
     }
@@ -62,6 +64,11 @@ final class OutlineButton: UIButton {
         label.labelColor = color
         label.configureLabelColor()
         layer.borderColor = color.cgColor
+    }
+    
+    func updateCornerRadius(_ radius: CGFloat) {
+        customCornerRadius = radius
+        layer.cornerRadius = radius
     }
 }
 

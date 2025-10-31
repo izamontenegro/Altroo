@@ -49,13 +49,13 @@ extension PersonalCare {
         }
     }
 
-    var equipment: EquipmentEnum? {
-        get {
-            guard let rawValue = self.equipmentState else { return nil }
-            return EquipmentEnum(rawValue: rawValue)
-        }
-        set {
-            self.equipmentState = newValue?.rawValue
-        }
-    }
+//    var equipment: EquipmentEnum? {
+//        get {
+//            guard let rawValue = self.equipmentState else { return nil }
+//            return EquipmentEnum(rawValue: rawValue)
+//        }
+//        set {
+//            self.equipmentState = newValue?.rawValue
+//        }
+//    }
 }

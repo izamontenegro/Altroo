@@ -19,7 +19,6 @@ public struct MedicalRecordSectionVM {
 final class MedicalRecordViewModel {
     var userService: UserServiceProtocol
     
-    // MARK: - Output
     @Published private(set) var sections: [MedicalRecordSectionVM] = []
     @Published private(set) var completionPercent: CGFloat = 0.0
     
@@ -36,7 +35,6 @@ final class MedicalRecordViewModel {
         userService.fetchCurrentPatient()
     }
 
-    // MARK: - Text builders
     func personalDataText(person: CareRecipient) -> String {
         let personalData = person.personalData
         let name = personalData?.name ?? "—"
@@ -77,39 +75,49 @@ final class MedicalRecordViewModel {
 
     func physicalStateText(person: CareRecipient) -> String {
         let physicalState = person.physicalState
+        let vision = physicalState?.visionState.flatMap { VisionEnum(rawValue: $0)?.displayText } ?? "—"
+        let hearing = physicalState?.hearingState.flatMap { HearingEnum(rawValue: $0)?.displayText } ?? "—"
+        let mobility = physicalState?.mobilityState.flatMap { MobilityEnum(rawValue: $0)?.displayText } ?? "—"
+        let oral = physicalState?.oralHealthState.flatMap { OralHealthEnum(rawValue: $0)?.displayText } ?? "—"
         return """
-        Visão: \(physicalState?.visionState ?? "—")
-        Audição: \(physicalState?.hearingState ?? "—")
-        Locomoção: \(physicalState?.mobilityState ?? "—")
-        Saúde bucal: \(physicalState?.oralHealthState ?? "—")
+        Visão: \(vision)
+        Audição: \(hearing)
+        Locomoção: \(mobility)
+        Saúde bucal: \(oral)
         """
     }
 
     func mentalStateText(person: CareRecipient) -> String {
         let mentalState = person.mentalState
+        let emotional = mentalState?.emotionalState.flatMap { EmotionalStateEnum(rawValue: $0)?.displayText } ?? "—"
+        let orientation = mentalState?.orientationState.flatMap { OrientationEnum(rawValue: $0)?.displayText } ?? "—"
+        let memory = mentalState?.memoryState.flatMap { MemoryEnum(rawValue: $0)?.displayText } ?? "—"
         return """
-        Comportamento: \(mentalState?.emotionalState ?? "—")
-        Orientação: \(mentalState?.orientationState ?? "—")
-        Memória: \(mentalState?.memoryState ?? "—")
-        Cognição: \(mentalState?.cognitionState ?? "—")
+        Comportamento: \(emotional)
+        Orientação: \(orientation)
+        Memória: \(memory)
         """
     }
 
     func personalCareText(person: CareRecipient) -> String {
         let personalCare = person.personalCare
-        let equipments = MedicalRecordFormatter.bulletList(fromCSV: personalCare?.equipmentState)
+
+        let bath = personalCare?.bathState.flatMap { BathEnum(rawValue: $0)?.displayText } ?? "—"
+        let hygiene = personalCare?.hygieneState.flatMap { HygieneEnum(rawValue: $0)?.displayText } ?? "—"
+        let excretion = personalCare?.excretionState.flatMap { ExcretionEnum(rawValue: $0)?.displayText } ?? "—"
+        let feeding = personalCare?.feedingState.flatMap { FeedingEnum(rawValue: $0)?.displayText } ?? "—"
+        let equipments = personalCare?.equipmentState ?? "—"
+
         return """
-        Banho: \(personalCare?.bathState ?? "—")
-        Higiene: \(personalCare?.hygieneState ?? "—")
-        Excreção: \(personalCare?.excretionState ?? "—")
-        Alimentação: \(personalCare?.feedingState ?? "—")
+        Banho: \(bath)
+        Higiene: \(hygiene)
+        Excreção: \(excretion)
+        Alimentação: \(feeding)
 
         Equipamentos
-        \(equipments.isEmpty ? "—" : equipments)
+        \(equipments)
         """
     }
-    
-    // MARK: - Build outputs
     
     private func rebuildOutputs() {
         guard let person = currentPatient() else {
@@ -120,7 +128,7 @@ final class MedicalRecordViewModel {
         completionPercent = calcCompletion(for: person)
         sections = [
             .init(title: "Dados Pessoais", iconSystemName: "person.fill", rows: rowsPersonalData(from: person)),
-            .init(title: "Problemas de Saúde", iconSystemName: "heart.fill", rows: rowsHealthProblems(from: person)),
+//            .init(title: "Problemas de Saúde", iconSystemName: "heart.fill", rows: rowsHealthProblems(from: person)),
             .init(title: "Estado físico", iconSystemName: "figure", rows: rowsPhysical(from: person)),
             .init(title: "Estado Mental", iconSystemName: "brain.head.profile.fill", rows: rowsMental(from: person)),
             .init(title: "Cuidados Pessoais", iconSystemName: "hand.raised.fill", rows: rowsPersonalCare(from: person))
@@ -161,37 +169,49 @@ final class MedicalRecordViewModel {
     
     private func rowsPhysical(from careRecipient: CareRecipient) -> [InfoRow] {
         let physicalState = careRecipient.physicalState
+        let vision = physicalState?.visionState.flatMap { VisionEnum(rawValue: $0)?.displayText } ?? "—"
+        let hearing = physicalState?.hearingState.flatMap { HearingEnum(rawValue: $0)?.displayText } ?? "—"
+        let mobility = physicalState?.mobilityState.flatMap { MobilityEnum(rawValue: $0)?.displayText } ?? "—"
+        let oral = physicalState?.oralHealthState.flatMap { OralHealthEnum(rawValue: $0)?.displayText } ?? "—"
         return [
-            ("Visão", physicalState?.visionState ?? "—"),
-            ("Audição", physicalState?.hearingState ?? "—"),
-            ("Locomoção", physicalState?.mobilityState ?? "—"),
-            ("Saúde bucal", physicalState?.oralHealthState ?? "—")
+            ("Visão", vision),
+            ("Audição", hearing),
+            ("Locomoção", mobility),
+            ("Saúde bucal", oral)
         ]
     }
     
+    
     private func rowsMental(from careRecipient: CareRecipient) -> [InfoRow] {
         let mentalState = careRecipient.mentalState
+        let emotional = mentalState?.emotionalState.flatMap { EmotionalStateEnum(rawValue: $0)?.displayText } ?? "—"
+        let orientation = mentalState?.orientationState.flatMap { OrientationEnum(rawValue: $0)?.displayText } ?? "—"
+        let memory = mentalState?.memoryState.flatMap { MemoryEnum(rawValue: $0)?.displayText } ?? "—"
         return [
-            ("Comportamento", mentalState?.emotionalState ?? "—"),
-            ("Orientação", mentalState?.orientationState ?? "—"),
-            ("Memória", mentalState?.memoryState ?? "—"),
-            ("Cognição", mentalState?.cognitionState ?? "—")
+            ("Comportamento", emotional),
+            ("Orientação", orientation),
+            ("Memória", memory),
         ]
     }
     
     private func rowsPersonalCare(from careRecipient: CareRecipient) -> [InfoRow] {
         let personalCare = careRecipient.personalCare
-        let equipments = MedicalRecordFormatter.bulletList(fromCSV: personalCare?.equipmentState)
+
+        let bath = personalCare?.bathState.flatMap { BathEnum(rawValue: $0)?.displayText } ?? "—"
+        let hygiene = personalCare?.hygieneState.flatMap { HygieneEnum(rawValue: $0)?.displayText } ?? "—"
+        let excretion = personalCare?.excretionState.flatMap { ExcretionEnum(rawValue: $0)?.displayText } ?? "—"
+        let feeding = personalCare?.feedingState.flatMap { FeedingEnum(rawValue: $0)?.displayText } ?? "—"
+        let equipments = personalCare?.equipmentState ?? "—"
+
         return [
-            ("Banho", personalCare?.bathState ?? "—"),
-            ("Higiene", personalCare?.hygieneState ?? "—"),
-            ("Excreção", personalCare?.excretionState ?? "—"),
-            ("Alimentação", personalCare?.feedingState ?? "—"),
-            ("Equipamentos", equipments.isEmpty ? "—" : equipments)
+            ("Banho", bath),
+            ("Higiene", hygiene),
+            ("Excreção", excretion),
+            ("Alimentação", feeding),
+            ("Equipamentos", equipments)
         ]
     }
     
-    // MARK: - Completion
     private func calcCompletion(for careRecipient: CareRecipient) -> CGFloat {
         var total = 0, filled = 0
         func check(_ value: String?) { total += 1; if let x = value, !x.trimmingCharacters(in: .whitespaces).isEmpty { filled += 1 } }

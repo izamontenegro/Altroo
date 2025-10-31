@@ -8,35 +8,54 @@
 import Foundation
 
 // MARK: PersonalCare -
-enum BathEnum: String {
-    case independent
-    case partiallyAssisted
-    case completelyAssisted
+enum BathEnum: String, CaseIterable {
+    case withoutAssistance
+    case withAssistance
+
+    var displayText: String {
+        switch self {
+        case .withoutAssistance: return "Sem auxílio"
+        case .withAssistance:    return "Com auxílio"
+        }
+    }
 }
 
-enum HygieneEnum: String {
-    case independent
-    case partiallyDependent
-    case completelyDependent
+enum HygieneEnum: String, CaseIterable {
+    case withoutAssistance
+    case withAssistance
+
+    var displayText: String {
+        switch self {
+        case .withoutAssistance: return "Sem auxílio"
+        case .withAssistance:    return "Com auxílio"
+        }
+    }
 }
 
-enum ExcretionEnum: String {
-    case independent
-    case partiallyDependent
-    case completelyDependent
-}
-
-enum FeedingEnum: String {
+enum ExcretionEnum: String, CaseIterable {
     case normal
-    case softFoods
-    case liquids
+    case usesDiaper
+    case usesEquipment
+
+    var displayText: String {
+        switch self {
+        case .normal:         return "Normal"
+        case .usesDiaper:     return "Usa fralda"
+        case .usesEquipment:  return "Usa equipamentos"
+        }
+    }
 }
 
-enum EquipmentEnum: String {
-    case probe
-    case colostomyBag
-    case serum
-    case pacemaker
-    case pumps
-    case none
+enum FeedingEnum: String, CaseIterable {
+    case solids
+    case soft
+    case liquids
+
+    var displayText: String {
+        switch self {
+        case .solids:  return "Sólidos"
+        case .soft:    return "Pastosos"
+        case .liquids: return "Líquidos"
+        }
+    }
 }
