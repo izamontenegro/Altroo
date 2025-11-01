@@ -112,7 +112,7 @@ class AssociatePatientViewController: UIViewController {
             self.loadingIndicator.stopAnimating()
             self.loadingIndicator.removeFromSuperview()
 
-            let careRecipients = self.viewModel.allPatients
+            let careRecipients = self.viewModel.fetchAvailableCareRecipients()
             self.vStack.arrangedSubviews.forEach { $0.removeFromSuperview() }
             
             if careRecipients.isEmpty {

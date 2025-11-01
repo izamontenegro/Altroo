@@ -92,80 +92,8 @@ final class CloudSharingCoordinator: NSObject, UICloudSharingControllerDelegate 
     }
     
     func cloudSharingControllerDidStopSharing(_ csc: UICloudSharingController) {
-        if !coreDataService.stack.isOwner(object: careRecipient) {
-            coreDataService.deleteCareRecipient(careRecipient)
-        }
-    }
-}
-
-extension CoreDataStack {
-    
-//    DEBUG: print state of container, stores and zones
-    func debugCloudKitState() {
-//        print("🔹 CKContainer identifier:", ckContainer.containerIdentifier)
-        
-        if let stores = persistentContainer.persistentStoreDescriptions as? [NSPersistentStoreDescription] {
-            for desc in stores {
-                print("🔹 Store URL:", desc.url?.lastPathComponent ?? "nil")
-                print("  Scope:", desc.cloudKitContainerOptions?.databaseScope ?? "nil")
-                print("  Options identifier:", desc.cloudKitContainerOptions?.containerIdentifier ?? "nil")
-            }
-        }
-//        
-//        print("🔹 _privatePersistentStore:", _privatePersistentStore != nil)
-//        print("🔹 _sharedPersistentStore:", _sharedPersistentStore != nil)
-//        
-        ckContainer.sharedCloudDatabase.fetchAllRecordZones { zones, error in
-            if let error = error {
-                print("❌ Error fetching shared zones:", error)
-            } else {
-                print("🔹 Shared zones count:", zones?.count ?? 0)
-                zones?.forEach { zone in
-                    print("   Zone:", zone.zoneID.zoneName)
-                }
-            }
-        }
-        
-        ckContainer.accountStatus { status, error in
-            if let error = error {
-                print("❌ Error fetching account status:", error)
-            } else {
-                print("🔹 Account status:", status.rawValue)
-            }
-        }
-    }
-    
-//    DEBUG: wrapper to test share() with timeout
-    func debugShare(_ objects: [NSManagedObject], timeoutSeconds: Int = 15) async {
-        print("🔵 Starting debugShare()")
-        
-        await debugCloudKitState()
-        
-        do {
-            let result = try await withThrowingTaskGroup(of: (Set<NSManagedObjectID>, CKShare, CKContainer).self) { group in
-                group.addTask {
-                    print("⏳ Calling share() …")
-                    let res = try await self.persistentContainer.share(objects, to: nil)
-                    print("✅ share() returned")
-                    return res
-                }
-                
-                group.addTask {
-                    try await Task.sleep(nanoseconds: UInt64(timeoutSeconds) * 1_000_000_000)
-                    throw NSError(domain: "DebugShare", code: 999, userInfo: [NSLocalizedDescriptionKey: "share() timeout"])
-                }
-                
-                let result = try await group.next()!
-                group.cancelAll()
-                return result
-            }
-            
-            let (_, share, _) = result
-            print("🟢 Share created:", share)
-
-            
-        } catch {
-            print("❌ Share failed / timed out:", error)
+        if !coreDataService.isOwner(object: careRecipient) {
+            coreDataService.delete(careRecipient)
         }
     }
 }

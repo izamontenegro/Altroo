@@ -51,24 +51,6 @@ class UserServiceSession: UserServiceProtocol {
     
     func addPatient(_ patient: CareRecipient) {
         guard let user = fetchUser() else { return }
-        user.addToCareRecipient(patient)
-        save()
-    }
-    
-    func removePatient(_ patient: CareRecipient) {
-        guard let user = fetchUser() else { return }
-        user.removeFromCareRecipient(patient)
-        save()
-    }
-    
-    func fetchPatients() -> [CareRecipient] {
-        guard let user = fetchUser() else { return [] }
-        _ = user.name // se tiver um atributo simples
-        print("user \(user)")
-
-        var patients = user.careRecipient?.allObjects as? [CareRecipient] ?? []
-        print("user.careRecipient count:", user.careRecipient?.count ?? 0)
-
         
         if user.careRecipient == nil {
             user.careRecipient = []
@@ -78,7 +60,7 @@ class UserServiceSession: UserServiceProtocol {
             user.careRecipient?.append(id)
             save()
         } else {
-            print("⚠️ Paciente já está na lista ou sem ID válido")
+            print("Patient already added or invalid ID")
         }
     }
     
@@ -107,7 +89,6 @@ class UserServiceSession: UserServiceProtocol {
             return result
         }
 
-        // fallback caso o store registrado não exista mais
         request.affectedStores = coordinator?.persistentStores
         return try? context.fetch(request).first
     }
