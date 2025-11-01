@@ -198,6 +198,7 @@
         <attribute name="category" optional="YES" attributeType="String"/>
         <attribute name="cloudKitRecordName" optional="YES" attributeType="String"/>
         <attribute name="email" optional="YES" attributeType="String"/>
+        <attribute name="id" optional="YES" attributeType="UUID" usesScalarValueType="NO"/>
         <attribute name="name" optional="YES" attributeType="String"/>
         <attribute name="phone" optional="YES" attributeType="String"/>
         <attribute name="preferenceNotification" optional="YES" attributeType="String"/>
