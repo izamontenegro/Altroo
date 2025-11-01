@@ -44,11 +44,12 @@ class TodayViewModel {
     }
     
     private func fetchCareRecipient() {
-        currentCareRecipient = userService.fetchCurrentPatient()
+        currentCareRecipient = userService.fetchCurrentPatient() ?? userService.fetchPatients().last
     }
     
     func fetchAllTodaySymptoms() {
-        todaySymptoms = careRecipientFacade.fetchAllSymptomForDate(.now, from: currentCareRecipient ?? .init())
+        guard let currentCareRecipient = currentCareRecipient else { return }
+        todaySymptoms = careRecipientFacade.fetchAllSymptomForDate(.now, from: (currentCareRecipient))
     }
     
     func fetchAllPeriodTasks() {

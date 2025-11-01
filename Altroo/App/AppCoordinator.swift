@@ -41,9 +41,6 @@ final class AppCoordinator: Coordinator {
             } else {
                 print("Nenhum CareRecipient encontrado no shared store ainda.")
             }
-            
-            showMainFlow()
-            return
         }
         
         if UserDefaults.standard.isFirstLaunch {
