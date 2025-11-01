@@ -44,41 +44,85 @@ class UserServiceSession: UserServiceProtocol {
     
     func setCurrentPatient(_ patient: CareRecipient) {
         guard let user = fetchUser() else { return }
-        user.activeCareRecipient = patient
+        user.activeCareRecipient = patient.id
         save()
     }
+
     
     func addPatient(_ patient: CareRecipient) {
         guard let user = fetchUser() else { return }
-        user.addToCareRecipient(patient)
-        save()
+        
+        if user.careRecipient == nil {
+            user.careRecipient = []
+        }
+
+        if let id = patient.id, !(user.careRecipient?.contains(id) ?? false) {
+            user.careRecipient?.append(id)
+            save()
+        } else {
+            print("⚠️ Paciente já está na lista ou sem ID válido")
+        }
     }
     
     func removePatient(_ patient: CareRecipient) {
-        guard let user = fetchUser() else { return }
-        user.removeFromCareRecipient(patient)
-        save()
-    }
-    
-    func fetchPatients() -> [CareRecipient] {
-        guard let user = fetchUser() else { return [] }
-        var patients = user.careRecipient?.allObjects as? [CareRecipient] ?? []
-        
-        let sharedFetch = NSFetchRequest<CareRecipient>(entityName: "CareRecipient")
-            if let sharedObjects = try? context.fetch(sharedFetch) {
-                for shared in sharedObjects where !patients.contains(shared) {
-                    patients.append(shared)
-                }
-            }
+        guard let user = fetchUser(),
+              var ids = user.careRecipient,
+              let id = patient.id
+        else { return }
 
-            return patients
+        if let index = ids.firstIndex(of: id) {
+            ids.remove(at: index)
+            user.careRecipient = ids
+            save()
+        }
     }
+
+    
+    func fetchCareRecipient(id: UUID) -> CareRecipient? {
+        let context = CoreDataStack.shared.context
+        let request: NSFetchRequest<CareRecipient> = CareRecipient.fetchRequest()
+        request.predicate = NSPredicate(format: "id == %@", id as CVarArg)
+
+        let coordinator = context.persistentStoreCoordinator
+
+        if let result = try? context.fetch(request).first, result != nil {
+            return result
+        }
+
+        // fallback caso o store registrado não exista mais
+        request.affectedStores = coordinator?.persistentStores
+        return try? context.fetch(request).first
+    }
+
     
     func fetchCurrentPatient() -> CareRecipient? {
-        guard let user = fetchUser(), let patient = user.activeCareRecipient else {
+        guard
+            let user = fetchUser(),
+            let id = user.activeCareRecipient
+        else {
             return nil
         }
-        return patient
+
+        return fetchCareRecipient(id: id)
+    }
+
+    func fetchPatients() -> [CareRecipient] {
+        guard
+            let user = fetchUser(),
+            let ids = user.careRecipient
+        else {
+            return []
+        }
+
+        var patients: [CareRecipient] = []
+
+        for (index, id) in ids.enumerated() {
+            if let patient = fetchCareRecipient(id: id) {
+                patients.append(patient)
+            }
+        }
+
+        return patients
     }
     
     func removeCurrentPatient() {
