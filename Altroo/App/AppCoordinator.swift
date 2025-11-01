@@ -28,7 +28,7 @@ final class AppCoordinator: Coordinator {
     
     func start() {
         if userService.fetchUser() == nil {
-            _ = userService.createUser(name: "User Teste", category: "Cuidador")
+            _ = userService.createUser(name: "\(UUID())", category: "Cuidador")
         }
         
         if receivedPatientViaShare {
@@ -41,9 +41,6 @@ final class AppCoordinator: Coordinator {
             } else {
                 print("Nenhum CareRecipient encontrado no shared store ainda.")
             }
-            
-            showMainFlow()
-            return
         }
         
         if UserDefaults.standard.isFirstLaunch {
