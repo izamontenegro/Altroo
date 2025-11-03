@@ -158,11 +158,7 @@ final class ChangeCareRecipientViewController: UIViewController {
         let data = viewModel.fetchAvailableCareRecipients()
 
         for (index, careRecipient) in data.enumerated() {
-            let card = makeRecipientCard(
-                name: careRecipient.personalData?.name ?? "Nome não informado",
-                age: careRecipient.personalData?.age ?? 0,
-                initials: initialsFromName(careRecipient.personalData?.name ?? "")
-            )
+            let card = CareRecipientCard(name: careRecipient.personalData?.name ?? "??")
             card.tag = index
             stack.addArrangedSubview(card)
         }
