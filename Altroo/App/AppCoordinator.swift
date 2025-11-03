@@ -32,19 +32,71 @@ final class AppCoordinator: Coordinator {
         }
         
         if receivedPatientViaShare {
-            let fetchRequest = NSFetchRequest<CareRecipient>(entityName: "CareRecipient")
-            if let sharedPatients = try? CoreDataStack.shared.context.fetch(fetchRequest),
-               let newPatient = sharedPatients.last {
-                print("Paciente recebido via share: \(newPatient)")
-                userService.setCurrentPatient(newPatient)
-                userService.addPatient(newPatient)
-            } else {
-                print("Nenhum CareRecipient encontrado no shared store ainda.")
+            
+            NotificationCenter.default.addObserver(
+                forName: .didFinishCloudKitSync,
+                object: nil,
+                queue: .main
+            ) { _ in
+                self.waitForSharedPatientAndStart()
+                return
             }
+
         }
         
+        let fetchRequest = NSFetchRequest<CareRecipient>(entityName: "CareRecipient")
+        if let sharedPatients = try? CoreDataStack.shared.context.fetch(fetchRequest),
+           let newPatient = sharedPatients.last {
+            print(newPatient.personalData?.name)
+        }
+        
+        proceedToUI()
+//        if UserDefaults.standard.isFirstLaunch {
+//            //            showOnboardingFlow()
+//            showAllPatientsFlow()
+//        } else if userService.fetchCurrentPatient() == nil {
+//            showAllPatientsFlow()
+//        } else {
+//            showMainFlow()
+//        }
+    }
+    
+    private var cloudSyncObserver: NSObjectProtocol?
+
+    func waitForSharedPatientAndStart() {
+        cloudSyncObserver = NotificationCenter.default.addObserver(
+            forName: .NSPersistentStoreRemoteChange,
+            object: CoreDataStack.shared.persistentContainer.persistentStoreCoordinator,
+            queue: .main
+        ) { [weak self] _ in
+            self?.tryLoadSharedPatient()
+        }
+        
+        tryLoadSharedPatient()
+    }
+
+    private func tryLoadSharedPatient() {
+        let fetchRequest = NSFetchRequest<CareRecipient>(entityName: "CareRecipient")
+
+        if let sharedPatients = try? CoreDataStack.shared.context.fetch(fetchRequest),
+           let newPatient = sharedPatients.last {
+
+            print("Paciente sincronizado e disponível: \(newPatient)")
+            userService.setCurrentPatient(newPatient)
+            userService.addPatient(newPatient)
+
+            if let observer = cloudSyncObserver {
+                NotificationCenter.default.removeObserver(observer)
+            }
+
+            proceedToUI()
+        } else {
+            print("Paciente ainda não sincronizou, aguardando CloudKit…")
+        }
+    }
+    
+    func proceedToUI() {
         if UserDefaults.standard.isFirstLaunch {
-            //            showOnboardingFlow()
             showAllPatientsFlow()
         } else if userService.fetchCurrentPatient() == nil {
             showAllPatientsFlow()

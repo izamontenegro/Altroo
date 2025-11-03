@@ -11,7 +11,6 @@ import CloudKit
 
 class CoreDataStack {
     static let shared = CoreDataStack()
-    private(set) var isCloudSynced = false
 //    init() {}
     
     //MARK: Utility vars
@@ -92,20 +91,6 @@ class CoreDataStack {
                 }
             }
         }
-        
-//        NotificationCenter.default.addObserver(
-//            forName: NSPersistentCloudKitContainer.eventChangedNotification,
-//            object: container,
-//            queue: .main
-//        ) { notification in
-//            guard let event = notification.userInfo?[NSPersistentCloudKitContainer.eventNotificationUserInfoKey] as? NSPersistentCloudKitContainer.Event else { return }
-//
-//            if event.type == .import && event.endDate != nil {
-//                self.isCloudSynced = true
-//                NotificationCenter.default.post(name: .didFinishCloudKitSync, object: nil)
-//            }
-//        }
-
         
         //MARK: Context setup
         container.viewContext.mergePolicy = NSMergeByPropertyObjectTrumpMergePolicy
