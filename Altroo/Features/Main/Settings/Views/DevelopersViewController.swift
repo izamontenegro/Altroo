@@ -14,9 +14,9 @@ class DevelopersViewController: GradientNavBarViewController {
         
         view.backgroundColor = .pureWhite
         
-        headerUI()
-        buttonsUI()
-        createButton()
+        setupHeaderUI()
+        setupButtonsUI()
+        setupCreateButton()
     }
     
     // MARK: - Subviews
@@ -40,7 +40,7 @@ class DevelopersViewController: GradientNavBarViewController {
     }()
     private let subtitleLabel: StandardLabel = {
         let label = StandardLabel(
-            labelText: "Equipe responsável pela criação e desenvolvimento do Altroo.",
+            labelText: "Equipe responsável pela criação e desenvolvimento do Altroo",
             labelFont: .sfPro,
             labelType: .headline,
             labelColor: .black30,
@@ -50,7 +50,7 @@ class DevelopersViewController: GradientNavBarViewController {
         return label
     }()
     
-    private func headerUI() {
+    private func setupHeaderUI() {
         view.addSubview(titleLabel)
         view.addSubview(subtitleLabel)
         
@@ -67,7 +67,7 @@ class DevelopersViewController: GradientNavBarViewController {
             subtitleLabel.trailingAnchor.constraint(equalTo: view.safeAreaLayoutGuide.trailingAnchor, constant: -16)
         ])
     }
-    private func buttonsUI() {
+    private func setupButtonsUI() {
         view.addSubview(buttonsView)
         
         NSLayoutConstraint.activate([
@@ -77,7 +77,7 @@ class DevelopersViewController: GradientNavBarViewController {
         ])
     }
     
-    private func createButton() {
+    private func setupCreateButton() {
         let devs: [Devs] = [.izadora, .layza, .marcelle, .clara, .raissa]
         
         for dev in devs {
