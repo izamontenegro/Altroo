@@ -113,26 +113,26 @@ class ComorbidityButton: UIButton {
     
     //TODO: Take this to the viewmodel
     enum Comorbidity {
-        case heartFailure, diabetes, hypertension
+        case circulatory, diabetes, cognition
         
         var iconName: String {
             switch self {
-            case .heartFailure:
+            case .circulatory:
                 return "stethoscope"
             case .diabetes:
                 return "syringe.fill"
-            case .hypertension:
-                return "cross.vial.fill"
+            case .cognition:
+                return "brain.fill"
             }
         }
         var name: String {
             switch self {
-            case .heartFailure:
-                return "Doenças Cardíacas"
+            case .circulatory:
+                return "Doenças Circulatórias"
             case .diabetes:
                 return "Diabetes"
-            case .hypertension:
-                return "Hipertensão"
+            case .cognition:
+                return "Alterações Cognitivas"
 
             }
         }

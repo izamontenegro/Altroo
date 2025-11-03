@@ -52,7 +52,7 @@ class AddSymptomViewModel {
     
     func createSymptom() -> Bool {
         guard let careRecipient = currentCareRecipient else { return false }
-        guard validator.isEmpty(name, fieldName: "Nome", error: &nameError) else { return false }
+        guard validator.isEmpty(name, error: &nameError) else { return false }
         guard validator.checkFutureDate(fullDate, error: &dateError) else { return false }
         
        

@@ -56,7 +56,7 @@ class EditSymptomViewModel {
     }
     
     func updateSymptom() -> Bool {
-        guard validator.isEmpty(name, fieldName: "Nome", error: &nameError) else { return false }
+        guard validator.isEmpty(name, error: &nameError) else { return false }
         guard validator.checkFutureDate(fullDate, error: &dateError) else { return false }
         
         careRecipientFacade.editSymptom(symptom: symptom, name: name, symptomDescription: note, date: fullDate)

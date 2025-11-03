@@ -12,7 +12,6 @@ import SwiftUI
 
 class StandardTextfield: UITextField {
     private var containerView = UIView()
-
     
     init(placeholder: String = "") {
         super.init(frame: .zero)
