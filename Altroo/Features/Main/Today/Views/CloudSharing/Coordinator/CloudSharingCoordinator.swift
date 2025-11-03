@@ -39,26 +39,14 @@ final class CloudSharingCoordinator: NSObject, UICloudSharingControllerDelegate 
     }
     
     func createShareAndPresent(_ careRecipient: CareRecipient, timeoutSeconds: Int = 15) async {
+
         do {
-            let result = try await withThrowingTaskGroup(of: (Set<NSManagedObjectID>, CKShare, CKContainer).self) { group in
-                group.addTask {
-                    let res = try await self.coreDataService.stack.persistentContainer.share([careRecipient], to: nil)
-                    return res
-                }
-                
-                group.addTask {
-                    try await Task.sleep(nanoseconds: UInt64(timeoutSeconds) * 1_000_000_000)
-                    throw NSError(domain: "DebugShare", code: 999, userInfo: [NSLocalizedDescriptionKey: "share() timeout"])
-                }
-                
-                let result = try await group.next()!
-                group.cancelAll()
-                return result
+            let task = Task.detached {
+                return try await self.coreDataService.stack.persistentContainer.share([careRecipient], to: nil)
             }
             
-            let (_, share, _) = result
+            let (_, share, _) = await task.value
             share[CKShare.SystemFieldKey.title] = careRecipient.personalData?.name ?? "Shared Item"
-            share.publicPermission = .readWrite
             
             let sharingController = UICloudSharingController(share: share, container: self.coreDataService.stack.ckContainer)
             configureAndPresent(sharingController)
