@@ -19,10 +19,6 @@ class CapsuleWithCircleView: UIView {
         super.init(frame: frame)
         
         self.translatesAutoresizingMaskIntoConstraints = false
-//        NSLayoutConstraint.activate([
-//            self.widthAnchor.constraint(equalToConstant: 100),
-//            self.heightAnchor.constraint(equalToConstant: 31)
-//        ])
     }
     
     convenience init(text: String, textColor: UIColor, nameIcon: String, nameIconColor: UIColor, circleIconColor: UIColor) {

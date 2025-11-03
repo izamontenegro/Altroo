@@ -14,8 +14,8 @@ class MyProfileViewController: GradientNavBarViewController {
 
         view.backgroundColor = .pureWhite
         
-        headerUI()
-        infoProfileUI()
+        setupHeaderUI()
+        setupInfoProfileUI()
     }
     
     private let titleLabel: StandardLabel = {
@@ -76,7 +76,7 @@ class MyProfileViewController: GradientNavBarViewController {
         return stackView
     }()
     
-    private func headerUI() {
+    private func setupHeaderUI() {
         view.addSubview(titleLabel)
         view.addSubview(subtitleLabel)
         view.addSubview(editButton)
@@ -99,7 +99,7 @@ class MyProfileViewController: GradientNavBarViewController {
         ])
     }
     
-    private func infoProfileUI() {
+    private func setupInfoProfileUI() {
         view.addSubview(vStack)
         vStack.translatesAutoresizingMaskIntoConstraints = false
         

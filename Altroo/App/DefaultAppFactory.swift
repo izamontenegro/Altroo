@@ -68,8 +68,8 @@ extension DefaultAppFactory {
 
 // MARK: - MainFlowFactory
 extension DefaultAppFactory {
-    func makePacientsViewController() -> UIViewController {
-        let vc = PacientsViewController()
+    func makePatientsViewController() -> UIViewController {
+        let vc = PatientsViewController()
         return vc
     }
     

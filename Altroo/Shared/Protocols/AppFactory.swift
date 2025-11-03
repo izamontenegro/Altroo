@@ -41,7 +41,7 @@ protocol AssociatePatientFactory {
 
 // MARK: - MAIN FLOW
 protocol MainFlowFactory {
-    func makePacientsViewController() -> UIViewController
+    func makePatientsViewController() -> UIViewController
     func makeAnalysisViewController() -> UIViewController
     func makeTodayViewController(delegate: TodayViewControllerDelegate) -> UIViewController
     func makeHistoryViewController(delegate: HistoryViewControllerDelegate) -> UIViewController

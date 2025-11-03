@@ -84,7 +84,7 @@ final class AppTabBarController: UITabBarController, UITabBarControllerDelegate 
     
     private func selectTab(_ tab: Tab) {
         switch tab {
-        case .pacientes: selectedIndex = 0
+        case .patients: selectedIndex = 0
         case .report: selectedIndex = 1
         case .today: selectedIndex = 2
         case .history: selectedIndex = 3
@@ -95,7 +95,7 @@ final class AppTabBarController: UITabBarController, UITabBarControllerDelegate 
     func tabBarController(_ tabBarController: UITabBarController, didSelect viewController: UIViewController) {
         let newTab: Tab
         switch selectedIndex {
-        case 0: newTab = .pacientes
+        case 0: newTab = .patients
         case 1: newTab = .report
         case 2: newTab = .today
         case 3: newTab = .history
