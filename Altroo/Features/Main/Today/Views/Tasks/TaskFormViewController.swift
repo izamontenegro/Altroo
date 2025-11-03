@@ -46,10 +46,12 @@ class TaskFormViewController: GradientNavBarViewController {
     }()
     
     //sections
-    private lazy var nameSection = FormSectionView(title: "Nome", content: nameTexfield)
+    lazy var nameSection = FormSectionView(title: "Nome", content: nameTexfield)
     private lazy var hourSection = FormSectionView(title: "Horário", content: hourStack)
     private lazy var repeatSection = FormSectionView(title: "Repetir", content: weekdayRow)
-    private lazy var startSection = FormSectionView(title: "Início", content: startDatePicker)
+    lazy var startSection = FormSectionView(title: "Início", content: startDatePicker)
+    var endDateSection: UIView!
+    var continuousButton: PopupMenuButton!
     private lazy var noteSection = FormSectionView(title: "Observações", content: noteTexfield)
 
     private lazy var contentStack: UIStackView = {
@@ -72,8 +74,6 @@ class TaskFormViewController: GradientNavBarViewController {
         return stackView
     }()
 
-    var endDateSection: UIView!
-    var continuousButton: PopupMenuButton!
     var weekdayRow: RepeatDaysRow = RepeatDaysRow()
     
     private let scrollView = UIScrollView.make(direction: .vertical)

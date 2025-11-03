@@ -33,12 +33,12 @@ class AddTaskViewController: TaskFormViewController {
         
         view.backgroundColor = .pureWhite
         
+        setupContent()
         configure(title: "Registrar Tarefa", subtitle: "Registre uma atividade a ser feita e sua duração ou repetições durante a semana.", confirmButtonText: "Adicionar")
         bindViewModel()
         setupContinuousButton()
         setupRepeatingDays()
         setupTimes()
-        setupContent()
         
         confirmButton.addTarget(self, action: #selector(didFinishCreating), for: .touchUpInside)
         
@@ -78,6 +78,15 @@ class AddTaskViewController: TaskFormViewController {
                 } else {
                     addEndDate()
                 }
+            }
+            .store(in: &cancellables)
+        
+        //validation
+        viewModel.$fieldErrors
+            .receive(on: RunLoop.main)
+            .sink { [weak self] errors in
+                self?.nameSection.setError(errors["name"])
+                self?.startSection.setError(errors["date"])
             }
             .store(in: &cancellables)
     }
@@ -158,6 +167,9 @@ class AddTaskViewController: TaskFormViewController {
     }
     
     @objc func didFinishCreating() {
+        
+        guard viewModel.validateTask() else { return }
+        
         viewModel.createTask()
         coordinator?.didFinishAddingTask()
     }

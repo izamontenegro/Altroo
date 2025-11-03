@@ -71,13 +71,9 @@ final class PopupMenuButton: PrimaryStyleButton {
             
             let currentInsets = self.contentEdgeInsets
             self.contentEdgeInsets = UIEdgeInsets(top: currentInsets.top,
-                                                  left: currentInsets.left + 16,
+                                                  left: currentInsets.left,
                                                   bottom: currentInsets.bottom,
-                                                  right: currentInsets.right + icon.size.width)
+                                                  right: currentInsets.right)
         }
     }
 }
-
-//#Preview {
-//    PopupMenuButton(title: "Filha")
-//}
