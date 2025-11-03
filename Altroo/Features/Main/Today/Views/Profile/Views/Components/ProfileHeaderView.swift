@@ -39,23 +39,19 @@ private extension ProfileHeader {
         let headerStack = setupHeaderSection()
         addSubview(headerStack)
 
-//        let medicalRecordCard = setupMedicalRecordCard()
-//        addSubview(medicalRecordCard)
+        let medicalRecordCard = setupMedicalRecordCard()
+        addSubview(medicalRecordCard)
 
         NSLayoutConstraint.activate([
             headerStack.topAnchor.constraint(equalTo: topAnchor, constant: 12),
             headerStack.leadingAnchor.constraint(equalTo: leadingAnchor, constant: 12),
             headerStack.trailingAnchor.constraint(equalTo: trailingAnchor, constant: -12),
 
-//            medicalRecordCard.topAnchor.constraint(equalTo: headerStack.bottomAnchor, constant: 10),
-//            medicalRecordCard.leadingAnchor.constraint(equalTo: leadingAnchor),
-//            medicalRecordCard.trailingAnchor.constraint(equalTo: trailingAnchor),
-//            medicalRecordCard.bottomAnchor.constraint(equalTo: bottomAnchor)
+            medicalRecordCard.topAnchor.constraint(equalTo: headerStack.bottomAnchor, constant: 10),
+            medicalRecordCard.leadingAnchor.constraint(equalTo: leadingAnchor),
+            medicalRecordCard.trailingAnchor.constraint(equalTo: trailingAnchor),
+            medicalRecordCard.bottomAnchor.constraint(equalTo: bottomAnchor)
         ])
-        
-        let bottom = headerStack.bottomAnchor.constraint(equalTo: bottomAnchor, constant: -12)
-                    bottom.priority = .required
-                    bottom.isActive = true
     }
 
     func setupHeaderSection() -> UIStackView {

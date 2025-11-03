@@ -9,7 +9,7 @@ protocol PersonalCareProtocol {
     func addHygieneState(hygieneState: HygieneEnum, personalCare: PersonalCare)
     func addFeedingState(feedingState: FeedingEnum, personalCare: PersonalCare)
     func addExcretionState(excretionState: ExcretionEnum, personalCare: PersonalCare)
-    func addEquipmentState(equipmentState: EquipmentEnum, personalCare: PersonalCare)
+//    func addEquipmentState(equipmentState: EquipmentEnum, personalCare: PersonalCare)
     func addBathState(bathState: BathEnum, personalCare: PersonalCare)
 }
 
@@ -32,12 +32,12 @@ extension CareRecipientFacade: PersonalCareProtocol {
         persistenceService.save()
     }
     
-    func addEquipmentState(equipmentState: EquipmentEnum, personalCare: PersonalCare) {
-        personalCare.equipmentState = equipmentState.rawValue
-        
-        persistenceService.save()
-    }
-    
+//    func addEquipmentState(equipmentState: EquipmentEnum, personalCare: PersonalCare) {
+//        personalCare.equipmentState = equipmentState.rawValue
+//        
+//        persistenceService.save()
+//    }
+//    
     func addBathState(bathState: BathEnum, personalCare: PersonalCare) {
         personalCare.bathState = bathState.rawValue
         

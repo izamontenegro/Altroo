@@ -8,9 +8,19 @@
 import UIKit
 import Combine
 
+protocol EditMedicalRecordViewControllerDelegate: AnyObject {
+    func goToPersonalData()
+    func goToMentalState()
+    func goToPersonalCare()
+    func goToPhysicalState()
+    func goToHealthProblems()
+}
+
 final class MedicalRecordViewController: GradientNavBarViewController {
     
     let viewModel: MedicalRecordViewModel
+    
+    weak var delegate: EditMedicalRecordViewControllerDelegate?
 
     // MARK: - Properties
     private var cancellables = Set<AnyCancellable>()
@@ -26,6 +36,7 @@ final class MedicalRecordViewController: GradientNavBarViewController {
     
     override func viewWillAppear(_ animated: Bool) {
         viewModel.reload()
+        NotificationCenter.default.post(name: .toggleTabBarVisibility, object: nil, userInfo: ["hidden": true])
     }
     
     // MARK: - Life cycle
@@ -117,14 +128,13 @@ final class MedicalRecordViewController: GradientNavBarViewController {
         
         let track = UIView()
         track.translatesAutoresizingMaskIntoConstraints = false
-        track.backgroundColor = .blue80
+        track.backgroundColor = .pureWhite
         track.layer.cornerRadius = 8
         
         let fill = UIView()
         fill.translatesAutoresizingMaskIntoConstraints = false
         fill.layer.cornerRadius = 8
         fill.clipsToBounds = true
-        // Fallback imediato: já pinta algo mesmo sem gradient
         fill.backgroundColor = .blue10
         
         track.addSubview(fill)
@@ -136,18 +146,26 @@ final class MedicalRecordViewController: GradientNavBarViewController {
             labelColor: .blue20,
             labelWeight: .medium
         )
+        percentLabel.setContentHuggingPriority(.required, for: .horizontal)
+        percentLabel.setContentCompressionResistancePriority(.required, for: .horizontal)
+        
         
         let progressRow = UIStackView(arrangedSubviews: [track, percentLabel])
         progressRow.axis = .horizontal
         progressRow.alignment = .center
         progressRow.spacing = 10
         
+        
         let stack = UIStackView(arrangedSubviews: [title, subtitle, progressRow])
         stack.axis = .vertical
-        stack.spacing = 8
+        stack.spacing = 4
         stack.translatesAutoresizingMaskIntoConstraints = false
         
         container.addSubview(stack)
+        
+        NSLayoutConstraint.activate([
+            track.trailingAnchor.constraint(equalTo: percentLabel.leadingAnchor, constant: -10)
+        ])
         
         NSLayoutConstraint.activate([
             track.heightAnchor.constraint(equalToConstant: 15),
@@ -225,6 +243,11 @@ final class MedicalRecordViewController: GradientNavBarViewController {
 
         wrapper.addArrangedSubview(alertBox)
         wrapper.addArrangedSubview(editButton)
+        
+        editButton.isUserInteractionEnabled = true
+        let tap = UITapGestureRecognizer(target: self, action: #selector(didTapEditButton))
+        editButton.addGestureRecognizer(tap)
+        
         return wrapper
     }
 
@@ -336,8 +359,8 @@ final class MedicalRecordViewController: GradientNavBarViewController {
 
         return button
     }
+    
+    @objc func didTapEditButton() {
+        delegate?.goToPersonalData()
+    }
 }
-//
-//#Preview {
-//    UINavigationController(rootViewController: MedicalRecordViewController())
-//}
