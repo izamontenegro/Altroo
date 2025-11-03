@@ -68,10 +68,13 @@ extension DefaultAppFactory {
 
 // MARK: - MainFlowFactory
 extension DefaultAppFactory {
-    func makeSettingsViewController(delegate: SettingsViewControllerDelegate) -> UIViewController {
-        let vc = SettingsViewController()
-//        vc.title = "Ajustes"
-        vc.delegate = delegate
+    func makePatientsViewController() -> UIViewController {
+        let vc = PatientsViewController()
+        return vc
+    }
+    
+    func makeAnalysisViewController() -> UIViewController {
+        let vc = AnalysisViewController()
         return vc
     }
     
@@ -89,13 +92,12 @@ extension DefaultAppFactory {
             historyService: dependencies.historyService
         )
         let vc = HistoryViewController(viewModel: vm, delegate: delegate)
-        vc.title = ""
         return vc
     }
     
-    func makeAnalysisViewController() -> UIViewController {
-        let vc = AnalysisViewController()
-//        vc.title = "Relatórios"
+    func makeSettingsViewController(delegate: SettingsViewControllerDelegate) -> UIViewController {
+        let vc = SettingsViewController()
+        vc.delegate = delegate
         return vc
     }
 }
@@ -325,8 +327,16 @@ extension DefaultAppFactory {
 
 //MARK: - SettingsFactory
 extension DefaultAppFactory {
-    func makePrivacySecurityViewController() -> UIViewController {
-        let vc = PrivacySecurityViewController()
+    func makeMyProfileViewController() -> UIViewController {
+        let vc = MyProfileViewController()
+        return vc
+    }
+    func makePrivacyViewController() -> UIViewController {
+        let vc = PrivacyViewController()
+        return vc
+    }
+    func makePolicyViewController() -> UIViewController {
+        let vc = PolicyViewController()
         return vc
     }
     func makeDevelopersViewController() -> UIViewController{
