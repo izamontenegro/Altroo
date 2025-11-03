@@ -26,16 +26,16 @@ class EnumsTest: XCTestCase {
     // MARK: PhysicalStateTest -
     func testVision_whenSettingEnum_storesCorrectString() {
         let physicalState = PhysicalState(context: coreDataStack.managedObjectContext)
-        physicalState.vision = .partiallyImpaired
+        physicalState.vision = .lowVision
 
-        XCTAssertEqual(physicalState.visionState, VisionEnum.partiallyImpaired.rawValue)
+        XCTAssertEqual(physicalState.visionState, VisionEnum.lowVision.rawValue)
     }
 
     func testMobility_whenSettingEnum_storesWrongString() {
         let physicalState = PhysicalState(context: coreDataStack.managedObjectContext)
-        physicalState.mobility = .humanAssisted
+        physicalState.mobility = .bedridden
         
-        XCTAssertNotEqual(physicalState.mobilityState, MobilityEnum.independent.rawValue)
+        XCTAssertEqual(physicalState.mobilityState, MobilityEnum.bedridden.rawValue)
     }
 }
 
