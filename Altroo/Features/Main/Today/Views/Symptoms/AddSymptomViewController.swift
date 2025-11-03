@@ -53,6 +53,15 @@ class AddSymptomViewController: SymptomFormViewController {
             .assign(to: \.note, on: viewModel)
             .store(in: &cancellables)
         
+        //validation
+        viewModel.$fieldErrors
+            .receive(on: RunLoop.main)
+            .sink { [weak self] errors in
+                self?.nameSection.setError(errors["name"])
+                self?.dateSection.setError(errors["date"])
+            }
+            .store(in: &cancellables)
+        
     }
 
     private func setupActions() {
@@ -63,8 +72,9 @@ class AddSymptomViewController: SymptomFormViewController {
     
     
     @objc func didFinishCreating() {
-        guard viewModel.createSymptom() else { return }
+        guard viewModel.validateSymptom() else { return }
         
+        viewModel.createSymptom()
         coordinator?.goToRoot()
     }
     

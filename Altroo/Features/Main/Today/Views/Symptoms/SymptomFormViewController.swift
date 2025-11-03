@@ -20,6 +20,9 @@ class SymptomFormViewController: GradientNavBarViewController {
     let timePicker: UIDatePicker = UIDatePicker.make(mode: .time)
     let datePicker: UIDatePicker = UIDatePicker.make(mode: .date)
     
+    lazy var nameSection = FormSectionView(title: "Nome", content: nameTexfield)
+    lazy var dateSection = FormSectionView(title: "Data", content: datePicker)
+
     let contentStack: UIStackView = {
         let stackView = UIStackView(arrangedSubviews: [])
         stackView.axis = .vertical
@@ -75,7 +78,6 @@ class SymptomFormViewController: GradientNavBarViewController {
         
         //name
         nameTexfield.placeholder = "Nome da intercorrência"
-        let nameSection = FormSectionView(title: "Nome", content: nameTexfield)
         contentStack.addArrangedSubview(nameSection)
         
         //notes
@@ -85,10 +87,7 @@ class SymptomFormViewController: GradientNavBarViewController {
         
         //time
         let timeSection = FormSectionView(title: "Horário", content: timePicker)
-        
-        //start
-        let dateSection = FormSectionView(title: "Data", content: datePicker)
-        
+                
         //date and time
         let dateTimeStack = UIStackView(arrangedSubviews: [dateSection, timeSection])
         dateTimeStack.axis = .horizontal
