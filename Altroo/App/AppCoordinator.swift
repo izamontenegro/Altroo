@@ -37,7 +37,6 @@ final class AppCoordinator: Coordinator {
             await waitForSharedPatientSync(timeout: 15)
         }
 
-        userService.removeCurrentPatient()
         
         if UserDefaults.standard.isFirstLaunch {
             //            showOnboardingFlow()
