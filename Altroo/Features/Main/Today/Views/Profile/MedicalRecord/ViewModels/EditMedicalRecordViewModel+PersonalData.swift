@@ -82,7 +82,31 @@ extension EditMedicalRecordViewModel {
         draft.dateOfBirth = date
         personalDataFormState = draft
     }
+    
+    func validatePersonalData() -> Bool {
+        var newErrors: [String: String] = [:]
 
+        _ = validator.isEmpty(personalDataFormState.name, error: &newErrors["name"])
+        
+        if let weight = personalDataFormState.weight, !weight.isZero {
+            _ = validator.invalidValue(value: Int(weight), minValue: 0, maxValue: 999, error: &newErrors["weight"])
+        }
+        
+        if  let height = personalDataFormState.height, !height.isZero {
+            _ = validator.invalidValue(value: Int(height), minValue: 9, maxValue: 999, error: &newErrors["height"])
+        }
+        
+        if let dateOfBirth = personalDataFormState.dateOfBirth {
+            _ = validator.checkAge(13, date: dateOfBirth, error: &newErrors["age"])
+        }
+
+        fieldErrors = newErrors
+
+        return newErrors.isEmpty
+    }
+
+
+    
     func persistPersonalDataFormState() {
         guard let patient = currentPatient(),
               let personalData = patient.personalData else { return }

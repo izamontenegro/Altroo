@@ -58,7 +58,7 @@ final class StoolRecordViewController: GradientNavBarViewController {
     // MARK: - View Layout
     
     private func setupLayout() {
-        let viewTitle = StandardLabel(labelText: "Registrar fezes", labelFont: .sfPro, labelType: .title2, labelColor: .black10, labelWeight: .semibold)
+        let viewTitle = StandardHeaderView(title: "Registrar fezes", subtitle: "Registre uma evacuação e as características das fezes do assistido.")
         
         let content = UIStackView()
         content.axis = .vertical

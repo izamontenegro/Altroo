@@ -13,6 +13,9 @@ extension UIDatePicker {
         picker.datePickerMode = mode
         picker.tintColor = tint
         picker.translatesAutoresizingMaskIntoConstraints = false
+        picker.setContentHuggingPriority(.required, for: .horizontal)
+        picker.setContentCompressionResistancePriority(.required, for: .horizontal)
+        picker.contentHorizontalAlignment = .leading
         return picker
     }
 }

@@ -19,7 +19,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
         }
         
         _ = CoreDataStack.shared
-        
+
         NotificationCenter.default.addObserver(
             forName: NSPersistentCloudKitContainer.eventChangedNotification,
             object: CoreDataStack.shared.persistentContainer,

@@ -8,6 +8,7 @@ import UIKit
 
 protocol MedicalRecordSectionSelectorViewDelegate: AnyObject {
     func medicalRecordSectionSelectorView(_ selectorView: MedicalRecordSectionSelectorView, didSelectIndex index: Int)
+    func medicalRecordSectionSelectorView(_ selectorView: MedicalRecordSectionSelectorView, shouldChangeAppearanceTo index: Int) -> Bool
 }
 
 final class MedicalRecordSectionSelectorView: UIView {
@@ -18,8 +19,8 @@ final class MedicalRecordSectionSelectorView: UIView {
     private var iconButtons: [UIButton] = []
     private(set) var selectedIndex: Int = 0 {
         didSet {
-            updateSelectionAppearance()
             delegate?.medicalRecordSectionSelectorView(self, didSelectIndex: selectedIndex)
+            updateSelectionAppearance()
         }
     }
     
@@ -130,14 +131,24 @@ final class MedicalRecordSectionSelectorView: UIView {
     // MARK: - Ações
     @objc private func handleIconTap(_ sender: UIButton) {
         guard sender.tag != selectedIndex else { return }
+        
+        let canSelect = delegate?.medicalRecordSectionSelectorView(self, shouldChangeAppearanceTo: selectedIndex) ?? true
+        guard canSelect else { return }
+        
         selectedIndex = sender.tag
     }
     
     @objc private func handleLeftArrowTap() {
+        let canSelect = delegate?.medicalRecordSectionSelectorView(self, shouldChangeAppearanceTo: selectedIndex) ?? true
+        guard canSelect else { return }
+        
         selectedIndex = (selectedIndex - 1 + iconButtons.count) % iconButtons.count
     }
     
     @objc private func handleRightArrowTap() {
+        let canSelect = delegate?.medicalRecordSectionSelectorView(self, shouldChangeAppearanceTo: selectedIndex) ?? true
+        guard canSelect else { return }
+        
         selectedIndex = (selectedIndex + 1) % iconButtons.count
     }
 }
