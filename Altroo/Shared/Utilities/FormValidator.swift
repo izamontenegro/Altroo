@@ -49,6 +49,20 @@ class FormValidator {
         }
     }
     
+    
+    func invalidDateRange(startDate: Date, endDate: Date, error: inout String?) -> Bool {
+        let start = Calendar.current.startOfDay(for: startDate)
+        let end = Calendar.current.startOfDay(for: endDate)
+
+        if end < start {
+            error = "Data final inválida" //TODO: Redigir
+            return false
+        } else {
+            error = nil
+            return true
+        }
+    }
+    
     func checkAge(_ age: Int, date: Date, error: inout String?) -> Bool {
         let calendar = Calendar.current
         let today = calendar.startOfDay(for: Date())

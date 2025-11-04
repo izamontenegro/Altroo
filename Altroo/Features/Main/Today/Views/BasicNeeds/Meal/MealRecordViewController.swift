@@ -14,6 +14,7 @@ protocol MealRecordNavigationDelegate: AnyObject {
 
 final class MealRecordViewController: GradientNavBarViewController {
     weak var delegate: MealRecordNavigationDelegate?
+    private var keyboardHandler: KeyboardHandler?
     
     private let viewModel: MealRecordViewModel
     private var cancellables = Set<AnyCancellable>()
@@ -40,6 +41,8 @@ final class MealRecordViewController: GradientNavBarViewController {
         setupLayout()
         bindViewModel()
         setupTapToDismiss()
+        
+        keyboardHandler = KeyboardHandler(viewController: self)
     }
     
     override func viewWillAppear(_ animated: Bool) {
@@ -55,33 +58,7 @@ final class MealRecordViewController: GradientNavBarViewController {
     // MARK: - Layout
     
     private func setupLayout() {
-        let viewTitle = StandardLabel(
-            labelText: "Adicionar Alimentação",
-            labelFont: .sfPro,
-            labelType: .title2,
-            labelColor: .black10,
-            labelWeight: .semibold
-        )
-        
-        let viewSubtitle = StandardLabel(
-            labelText: "Registre uma refeição e o nível de aceitação do assistido a comida.",
-            labelFont: .sfPro,
-            labelType: .body,
-            labelColor: .black30,
-            labelWeight: .regular
-        )
-        
-        viewSubtitle.numberOfLines = 0
-        viewSubtitle.lineBreakMode = .byWordWrapping
-        
-        let headerStackView = UIStackView()
-        headerStackView.axis = .vertical
-        headerStackView.alignment = .fill
-        headerStackView.spacing = 4
-        headerStackView.translatesAutoresizingMaskIntoConstraints = false
-        
-        headerStackView.addArrangedSubview(viewTitle)
-        headerStackView.addArrangedSubview(viewSubtitle)
+        let headerView = StandardHeaderView(title: "Registrar Alimentação", subtitle: "Registre uma refeição e o nível de aceitação do assistido com a comida.")
         
         let contentStackView = UIStackView()
         contentStackView.axis = .vertical
@@ -95,7 +72,7 @@ final class MealRecordViewController: GradientNavBarViewController {
         
         confirmationButton = configureConfirmationButton()
         
-        contentStackView.addArrangedSubview(headerStackView)
+        contentStackView.addArrangedSubview(headerView)
         contentStackView.addArrangedSubview(mealCategorySection)
         contentStackView.addArrangedSubview(mealAmountEatenSection)
         contentStackView.addArrangedSubview(mealObservationSection)

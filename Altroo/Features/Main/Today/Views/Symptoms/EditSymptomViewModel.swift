@@ -15,13 +15,12 @@ class EditSymptomViewModel {
     var currentCareRecipient: CareRecipient?
     
     @Published var name: String = ""
-    @Published var nameError: String?
     @Published var time: Date = .now
     @Published var date: Date = .now
-    @Published var dateError: String?
 
     @Published var note: String = ""
     
+    @Published private(set) var fieldErrors: [String: String] = [:]
     private let validator = FormValidator()
     
     var fullDate: Date {
@@ -55,13 +54,19 @@ class EditSymptomViewModel {
         currentCareRecipient = userService.fetchCurrentPatient()
     }
     
-    func updateSymptom() -> Bool {
-        guard validator.isEmpty(name, error: &nameError) else { return false }
-        guard validator.checkFutureDate(fullDate, error: &dateError) else { return false }
+    func validateSymptom() -> Bool {
+        var newErrors: [String: String] = [:]
+
+       _ = validator.isEmpty(name, error: &newErrors["name"])
+       _ = validator.checkFutureDate(fullDate, error: &newErrors["date"])
         
+        fieldErrors = newErrors
+
+        return newErrors.isEmpty
+    }
+    
+    func updateSymptom() {
         careRecipientFacade.editSymptom(symptom: symptom, name: name, symptomDescription: note, date: fullDate)
-        
-        return true
     }
     
     func deleteSymptom() {

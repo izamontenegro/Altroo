@@ -54,12 +54,13 @@ final class HydrationRecordViewController: GradientNavBarViewController {
     // MARK: - Layout
     private func setupLayout() {
 
+        let header = StandardHeaderView(title: "Registrar Hidratação", subtitle: "Registre a quantidade ingerida de líquidos")
         let amountSection = makeAmountSection()
         let customSection = makeCustomValueSection()
         
         confirmationButton = configureConfirmationButton()
         
-        let contentStack = UIStackView(arrangedSubviews: [amountSection, customSection])
+        let contentStack = UIStackView(arrangedSubviews: [header, amountSection, customSection])
         contentStack.axis = .vertical
         contentStack.spacing = 24
         contentStack.translatesAutoresizingMaskIntoConstraints = false
