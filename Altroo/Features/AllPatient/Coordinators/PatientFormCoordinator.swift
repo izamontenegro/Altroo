@@ -36,6 +36,10 @@ extension PatientFormsCoordinator: AssociatePatientViewControllerDelegate {
         let vc = factory.makeShiftFormViewController(delegate: self)
         navigation.pushViewController(vc, animated: true)
     }
+//    func goToLoading() {
+//        let vc = factory.makeLoadingViewController(delegate: self)
+//        navigation.pushViewController(vc, animated: true)
+//    }
     func goToTutorialAddSheet() { }
 }
 
