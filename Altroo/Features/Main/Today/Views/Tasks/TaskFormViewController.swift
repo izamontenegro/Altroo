@@ -89,7 +89,7 @@ class TaskFormViewController: GradientNavBarViewController {
         confirmButton.updateTitle(confirmButtonText)
         
         if showDelete {
-            deleteButton.updateColor(.red10)
+//            deleteButton.updateColor(.red10)
             view.addSubview(deleteButton)
             NSLayoutConstraint.activate([
                 deleteButton.centerXAnchor.constraint(equalTo: view.centerXAnchor),
