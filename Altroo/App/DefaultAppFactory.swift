@@ -15,8 +15,9 @@ final class DefaultAppFactory: AppFactory {
     
     init(dependencies: AppDependencies) {
         self.dependencies = dependencies
-        self.addPatientViewModel = AddPatientViewModel(careRecipientFacade: dependencies.careRecipientFacade,
-                                                       userService: dependencies.userService)
+        self.addPatientViewModel = AddPatientViewModel(
+            careRecipientFacade: dependencies.careRecipientFacade,
+            userService: dependencies.userService)
     }
 }
 
@@ -31,25 +32,30 @@ extension DefaultAppFactory {
 
 // MARK: - AssociatePatientFactory
 extension DefaultAppFactory {
+    
     func makeAssociatePatientViewController(delegate: AssociatePatientViewControllerDelegate) -> UIViewController {
         let vc = AssociatePatientViewController(viewModel: AssociatePatientViewModel(userService: dependencies.userService))
         vc.delegate = delegate
         return vc
     }
+    
     func makeTutorialAddSheet() -> UIViewController {
         let vc = TutorialAddSheet()
         return vc
     }
+    
     func makePatientFormViewController(delegate: AssociatePatientViewControllerDelegate) -> UIViewController {
         let vc = PatientFormsViewController(viewModel: addPatientViewModel)
         vc.delegate = delegate
         return vc
     }
+    
     func makeComorbiditiesFormViewController(delegate: AssociatePatientViewControllerDelegate) -> UIViewController {
         let vc = ComorbiditiesFormsViewController(viewModel: addPatientViewModel)
         vc.delegate = delegate
         return vc
     }
+    
     func makeShiftFormViewController(delegate: ShiftFormsViewControllerDelegate) -> UIViewController {
         let vc = ShiftFormViewController(viewModel: addPatientViewModel)
         vc.delegate = delegate
@@ -69,9 +75,7 @@ extension DefaultAppFactory {
 
 // MARK: - MainFlowFactory
 extension DefaultAppFactory {
-    func makeSettingsViewController(delegate: SettingsViewControllerDelegate) -> UIViewController {
-        let vc = SettingsViewController()
-        vc.delegate = delegate
+    
     func makePatientsViewController() -> UIViewController {
         let vc = PatientsViewController()
         return vc
@@ -81,6 +85,7 @@ extension DefaultAppFactory {
         let vc = AnalysisViewController()
         return vc
     }
+    
     func makeTodayViewController(delegate: TodayViewControllerDelegate) -> UIViewController {
         let vm = TodayViewModel(careRecipientFacade: dependencies.careRecipientFacade,
                                 basicNeedsFacade: dependencies.basicNeedsFacade,
@@ -92,6 +97,7 @@ extension DefaultAppFactory {
         vc.delegate = delegate
         return vc
     }
+    
     func makeHistoryViewController(delegate: HistoryViewControllerDelegate) -> UIViewController {
         let vm = HistoryViewModel(userService: dependencies.userService,
                                   coreDataService: dependencies.coreDataService,
@@ -99,8 +105,6 @@ extension DefaultAppFactory {
         let vc = HistoryViewController(viewModel: vm, delegate: delegate)
         return vc
     }
-    func makeAnalysisViewController() -> UIViewController {
-        let vc = AnalysisViewController()
     
     func makeSettingsViewController(delegate: SettingsViewControllerDelegate) -> UIViewController {
         let vc = SettingsViewController()
@@ -119,6 +123,7 @@ extension DefaultAppFactory {
 
 // MARK: - SymptomFactory
 extension DefaultAppFactory {
+    
     func makeAddSymptomViewController() -> UIViewController {
         let vm = AddSymptomViewModel(careRecipientFacade: dependencies.careRecipientFacade,
                                      userService: dependencies.userService,
@@ -127,10 +132,12 @@ extension DefaultAppFactory {
         let vc = AddSymptomViewController(viewModel: vm)
         return vc
     }
+    
     func makeSymptomDetailViewController(from symptom: Symptom) -> UIViewController {
         let vc = SymptomDetailViewController(symptom: symptom)
         return vc
     }
+    
     func makeEditSymptom(from symptom: Symptom) -> UIViewController {
         let vm = EditSymptomViewModel(careRecipientFacade: dependencies.careRecipientFacade,
                                       userService: dependencies.userService,
@@ -142,6 +149,7 @@ extension DefaultAppFactory {
 
 //MARK: - ProfileFactory
 extension DefaultAppFactory {
+    
     func makeProfileViewController(delegate: ProfileViewControllerDelegate) -> UIViewController {
         let vm = CareRecipientProfileViewModel(userService: dependencies.userService,
                                                coreDataService: dependencies.coreDataService)
@@ -149,6 +157,7 @@ extension DefaultAppFactory {
         vc.delegate = delegate
         return vc
     }
+    
     func makeChangeCareRecipientViewController(delegate: ChangeCareRecipientViewControllerDelegate) -> UIViewController {
         let vm = ChangeCareRecipientViewModel(userService: dependencies.userService,
                                               coreDataService: dependencies.coreDataService)
@@ -156,7 +165,6 @@ extension DefaultAppFactory {
         (vc as? ChangeCareRecipientViewController)?.delegate = delegate
         return vc
     }
-    func makeMedicalRecordViewController() -> UIViewController {
     
     func makeMedicalRecordViewController(delegate: EditMedicalRecordViewControllerDelegate?) -> UIViewController {
         let vm = MedicalRecordViewModel(userService: dependencies.userService)
@@ -200,7 +208,6 @@ extension DefaultAppFactory {
         vc.delegate = delegate
         return vc
     }
-    
 }
 
 // MARK: - EventsFactory
