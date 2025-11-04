@@ -57,7 +57,7 @@ final class UrineRecordViewController: GradientNavBarViewController {
     // MARK: - View Layout
     
     private func setupLayout() {
-        let viewTitle = StandardLabel(labelText: "Registrar urina", labelFont: .sfPro, labelType: .title2, labelColor: .black10, labelWeight: .semibold)
+        let viewTitle = StandardHeaderView(title: "Registrar urina", subtitle: "Registre uma micção  e as características da urina do assistido.")
         
         let content = UIStackView()
         content.axis = .vertical

@@ -20,7 +20,6 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
         
         _ = CoreDataStack.shared
 
-        
         return true
     }
 

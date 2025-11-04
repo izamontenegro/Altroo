@@ -23,7 +23,7 @@ class EditSymptomViewController: SymptomFormViewController {
     
     override func viewDidLoad() {
         super.viewDidLoad()
-        configure(title: "Editar Intercorrência", confirmButtonText: "Salvar", showDelete: true)
+        configure(title: "Editar Intercorrência", subtitle: "", confirmButtonText: "Salvar", showDelete: true)
         bindViewModel()
         
         confirmButton.addTarget(self, action: #selector(didTapSave), for: .touchUpInside)
@@ -43,6 +43,16 @@ class EditSymptomViewController: SymptomFormViewController {
             .assign(to: \.note, on: viewModel)
             .store(in: &cancellables)
         
+        //validation
+        viewModel.$fieldErrors
+            .receive(on: RunLoop.main)
+            .sink { [weak self] errors in
+                self?.nameSection.setError(errors["name"])
+                self?.dateSection.setError(errors["date"])
+            }
+            .store(in: &cancellables)
+        
+        //update fields
         viewModel.$name
             .receive(on: DispatchQueue.main)
             .sink { [weak self] name in
@@ -74,7 +84,8 @@ class EditSymptomViewController: SymptomFormViewController {
     
     
     @objc private func didTapSave() {
-        guard viewModel.updateSymptom() else { return }
+        guard viewModel.validateSymptom() else { return }
+        viewModel.updateSymptom()
         coordinator?.goToRoot()
     }
     

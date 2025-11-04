@@ -10,12 +10,12 @@ import Combine
 class EditTaskViewController: TaskFormViewController {
     weak var coordinator: TodayCoordinator?
     var viewModel: EditTaskViewModel
+    private var cancellables = Set<AnyCancellable>()
+
     
     init(viewModel: EditTaskViewModel) {
         self.viewModel = viewModel
         super.init(nibName: nil, bundle: nil)
-        nameTexfield.delegate = self
-        noteTexfield.delegate = self
         hidesBottomBarWhenPushed = true
     }
     
@@ -27,7 +27,7 @@ class EditTaskViewController: TaskFormViewController {
         setupContinuousButton()
         setupRepeatingDays()
         setupTimes()
-        configure(title: "Editar Tarefa", confirmButtonText: "Salvar", showDelete: true)
+        configure(title: "Editar Tarefa", subtitle: "Registre uma atividade a ser feita e sua duração ou repetições durante a semana.", confirmButtonText: "Salvar", showDelete: true)
         bindViewModel()
         
         confirmButton.addTarget(self, action: #selector(saveChanges), for: .touchUpInside)
@@ -55,7 +55,7 @@ class EditTaskViewController: TaskFormViewController {
         viewModel.$note
             .receive(on: DispatchQueue.main)
             .sink { [weak self] note in
-                self?.noteTexfield.text = note
+                self?.noteTexfield.textView.text = note
             }
             .store(in: &cancellables)
         
@@ -153,9 +153,7 @@ class EditTaskViewController: TaskFormViewController {
     func addTimeAction(date: Date = .now, isInitial: Bool = false) {
         let newPicker = UIDatePicker.make(mode: .time)
         newPicker.date = date
-        
         newPicker.tag = hourPickers.count
-
         newPicker.addTarget(self, action: #selector(timeChanged(_:)), for: .valueChanged)
         
         if let _ = hourStack.arrangedSubviews.last as? PrimaryStyleButton {
@@ -204,9 +202,3 @@ class EditTaskViewController: TaskFormViewController {
     }
 }
 
-extension EditTaskViewController: UITextFieldDelegate {
-    func textFieldShouldReturn(_ textField: UITextField) -> Bool {
-        textField.resignFirstResponder()
-        return true
-    }
-}
