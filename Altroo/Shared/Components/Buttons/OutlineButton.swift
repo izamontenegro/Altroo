@@ -4,6 +4,7 @@
 //
 //  Created by Raissa Parente on 15/10/25.
 //
+
 import UIKit
 
 final class OutlineButton: UIButton {
@@ -16,8 +17,19 @@ final class OutlineButton: UIButton {
         labelWeight: .semibold
     )
     
-    var color: UIColor
-    var customCornerRadius: CGFloat?
+    var color: UIColor {
+        didSet {
+            label.labelColor = color
+            label.configureLabelColor()
+            layer.borderColor = color.cgColor
+        }
+    }
+    
+    var customCornerRadius: CGFloat? {
+        didSet {
+            layer.cornerRadius = customCornerRadius ?? 23
+        }
+    }
     
     init(title: String, color: UIColor, cornerRadius: CGFloat? = nil) {
         self.color = color
@@ -33,6 +45,7 @@ final class OutlineButton: UIButton {
         setupButton(title: "")
     }
     
+    // MARK: - Setup
     private func setupButton(title: String) {
         backgroundColor = .clear
         layer.cornerRadius = customCornerRadius ?? 23
@@ -58,20 +71,9 @@ final class OutlineButton: UIButton {
     func updateTitle(_ title: String) {
         label.updateLabelText(title)
     }
-    
-    func updateColor(_ color: UIColor) {
-        self.color = color
-        label.labelColor = color
-        label.configureLabelColor()
-        layer.borderColor = color.cgColor
-    }
-    
-    func updateCornerRadius(_ radius: CGFloat) {
-        customCornerRadius = radius
-        layer.cornerRadius = radius
-    }
 }
 
-//#Preview {
-//    OutlineButton(title: "texto", color: .teal20)
-//}
+
+#Preview {
+    OutlineButton(title: "botao", color: .red10, cornerRadius: 23)
+}
