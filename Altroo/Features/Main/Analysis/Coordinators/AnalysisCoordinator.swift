@@ -11,9 +11,12 @@ final class AnalysisCoordinator: Coordinator {
     var childCoordinators: [Coordinator] = []
     var navigation: UINavigationController
     private let factory: AppFactory
+    
     init(navigation: UINavigationController, factory: AppFactory) {
-        self.navigation = navigation; self.factory = factory
+        self.navigation = navigation
+        self.factory = factory
     }
+    
     func start() {
         let vc = factory.makeAnalysisViewController()
         navigation.setViewControllers([vc], animated: false)

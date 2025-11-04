@@ -8,13 +8,12 @@
 import UIKit
 
 class StandardSegmentedControl: UISegmentedControl {
-    
     private var itemsList: [String]
     
-    private var selectedColor: UIColor
-    private var backgroundColorNormal: UIColor
-    private var selectedFontColor: UIColor
-    private var unselectedFontColor: UIColor
+     var selectedColor: UIColor
+     var backgroundColorNormal: UIColor
+     var selectedFontColor: UIColor
+     var unselectedFontColor: UIColor
     private var cornerRadius: CGFloat
     
     init(items: [String],
@@ -47,8 +46,8 @@ class StandardSegmentedControl: UISegmentedControl {
             items: items,
             width: 113,
             height: 35,
-            backgroundColor: .pureWhite,
-            selectedColor: .teal20,
+            backgroundColor: .white70,
+            selectedColor: .blue30,
             selectedFontColor: .pureWhite,
             unselectedFontColor: .black30,
             cornerRadius: 8

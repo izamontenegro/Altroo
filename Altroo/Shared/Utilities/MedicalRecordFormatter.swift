@@ -24,7 +24,7 @@ enum MedicalRecordFormatter {
         guard let set, !set.isEmpty else { return "—" }
         return set
             .sorted { ($0.name ?? "") < ($1.name ?? "") }
-            .map { "\($0.name ?? "Contato") \(String(describing: $0.contactDescription))" }
+            .map { "\($0.name ?? "Contato") \(String(describing: $0.relationship))" }
             .joined(separator: "\n")
     }
 
