@@ -39,6 +39,9 @@ final class AppTabBarController: UITabBarController, UITabBarControllerDelegate 
         setupAppearance()
         setupCustomTabBar()
         
+        customTabBar.isHidden = true
+        customTabBar.alpha = 0
+        
         NotificationCenter.default.addObserver(
             self,
             selector: #selector(handleTabBarVisibility(_:)),
@@ -84,22 +87,22 @@ final class AppTabBarController: UITabBarController, UITabBarControllerDelegate 
     
     private func selectTab(_ tab: Tab) {
         switch tab {
-        case .patients: selectedIndex = 0
-        case .report: selectedIndex = 1
-        case .today: selectedIndex = 2
-        case .history: selectedIndex = 3
-        case .settings: selectedIndex = 4
+//        case .patients: selectedIndex = 0
+        case .report: selectedIndex = 0
+        case .today: selectedIndex = 1
+        case .history: selectedIndex = 2
+        case .settings: selectedIndex = 3
         }
     }
     // MARK: - UIKit → SwiftUI synchronization
     func tabBarController(_ tabBarController: UITabBarController, didSelect viewController: UIViewController) {
         let newTab: Tab
         switch selectedIndex {
-        case 0: newTab = .patients
-        case 1: newTab = .report
-        case 2: newTab = .today
-        case 3: newTab = .history
-        case 4: newTab = .settings
+//        case 0: newTab = .patients
+        case 0: newTab = .report
+        case 1: newTab = .today
+        case 2: newTab = .history
+        case 3: newTab = .settings
         default: newTab = .today
         }
         
@@ -148,4 +151,14 @@ extension AppTabBarController {
 
 extension Notification.Name {
     static let toggleTabBarVisibility = Notification.Name("toggleTabBarVisibility")
+}
+
+extension UIViewController {
+    func showTabBar(_ show: Bool) {
+        NotificationCenter.default.post(
+            name: .toggleTabBarVisibility,
+            object: nil,
+            userInfo: ["hidden": !show]
+        )
+    }
 }
