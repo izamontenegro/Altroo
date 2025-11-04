@@ -36,18 +36,8 @@ final class CareRecipientProfileViewController: GradientNavBarViewController {
         super.viewWillAppear(animated)
         goToEdit = false
         viewModel.buildData()
-        NotificationCenter.default.post(name: .toggleTabBarVisibility, object: nil, userInfo: ["hidden": true])
     }
-    
-    override func viewWillDisappear(_ animated: Bool) {
-        super.viewWillDisappear(animated)
-        if goToEdit {
-            
-        } else {
-            NotificationCenter.default.post(name: .toggleTabBarVisibility, object: nil, userInfo: ["hidden": false])
-        }
-    }
-    
+
     override func viewDidLoad() {
         super.viewDidLoad()
         viewModel.buildData()
@@ -120,6 +110,7 @@ final class CareRecipientProfileViewController: GradientNavBarViewController {
         ])
         
         let caregivers = viewModel.caregiversForCurrentRecipient()
+        let uniqueCaregivers = caregivers.unique { $0.name }
         
         let cardsStack = UIStackView()
         cardsStack.axis = .vertical
@@ -127,7 +118,7 @@ final class CareRecipientProfileViewController: GradientNavBarViewController {
         cardsStack.translatesAutoresizingMaskIntoConstraints = false
         view.addSubview(cardsStack)
         
-        if caregivers.isEmpty {
+        if uniqueCaregivers.isEmpty {
             let none = StandardLabel(
                 labelText: "Nenhum cuidador ainda. Toque em “Convidar cuidador”.",
                 labelFont: .sfPro,
@@ -137,7 +128,7 @@ final class CareRecipientProfileViewController: GradientNavBarViewController {
             )
             cardsStack.addArrangedSubview(none)
         } else {
-            for item in caregivers {
+            for item in uniqueCaregivers {
                 print("Nome: \(item.name) | Categoria: \(item.category) | Permissão: \(item.permission.rawValue)")
                 
                 let card = CaregiverProfileCardView(
@@ -257,9 +248,9 @@ final class CareRecipientProfileViewController: GradientNavBarViewController {
     
     @objc private func didTapHeader() {
         goToEdit = true
-        NotificationCenter.default.post(name: .toggleTabBarVisibility, object: nil, userInfo: ["hidden": true])
         delegate?.goToMedicalRecordViewController()
     }
+    
     @objc private func didTapChangeCareRecipientButton() { delegate?.openChangeCareRecipientSheet() }
     @objc private func didTapShareCareRecipientButton() {
         guard let careRecipient = viewModel.currentCareRecipient() else { return }
@@ -288,7 +279,7 @@ final class CareRecipientProfileViewController: GradientNavBarViewController {
     }
     //    @objc private func didTapEditCaregiverButton() { delegate?.openEditCaregiversSheet() }
 }
-//
+
 //#Preview {
 //    UINavigationController(rootViewController: CareRecipientProfileViewController()
 //}
