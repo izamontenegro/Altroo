@@ -26,7 +26,6 @@ class PrivacyViewController: GradientNavBarViewController {
             labelWeight: .semibold
         )
         label.numberOfLines = 0
-        
         return label
     }()
     private let subtitleLabel: StandardLabel = {
@@ -38,7 +37,6 @@ class PrivacyViewController: GradientNavBarViewController {
             labelWeight: .regular
         )
         label.numberOfLines = 0
-        
         return label
     }()
     private let headertext: StandardLabel = {
@@ -50,7 +48,6 @@ class PrivacyViewController: GradientNavBarViewController {
             labelWeight: .regular
         )
         label.numberOfLines = 0
-        
         return label
     }()
     lazy var header: UIStackView = {
@@ -72,7 +69,7 @@ class PrivacyViewController: GradientNavBarViewController {
             labelColor: .blue20,
             labelWeight: .medium
         )
-        
+        label.numberOfLines = 0
         return label
     }()
     private let PolicyAcceptanceText: StandardLabel = {
@@ -83,7 +80,6 @@ class PrivacyViewController: GradientNavBarViewController {
             labelColor: .black0,
             labelWeight: .regular
         )
-        
         label.numberOfLines = 0
         return label
     }()
@@ -105,7 +101,7 @@ class PrivacyViewController: GradientNavBarViewController {
             labelColor: .blue20,
             labelWeight: .medium
         )
-        
+        label.numberOfLines = 0
         return label
     }()
     private let InformationWeCollectText: StandardLabel = {
@@ -116,7 +112,6 @@ class PrivacyViewController: GradientNavBarViewController {
             labelColor: .black0,
             labelWeight: .regular
         )
-        
         label.numberOfLines = 0
         return label
     }()
@@ -138,7 +133,7 @@ class PrivacyViewController: GradientNavBarViewController {
             labelColor: .blue20,
             labelWeight: .medium
         )
-        
+        label.numberOfLines = 0
         return label
     }()
     private let HowWeUsetheInformationText: StandardLabel = {
@@ -149,7 +144,6 @@ class PrivacyViewController: GradientNavBarViewController {
             labelColor: .black0,
             labelWeight: .regular
         )
-        
         label.numberOfLines = 0
         return label
     }()
@@ -171,7 +165,7 @@ class PrivacyViewController: GradientNavBarViewController {
             labelColor: .blue20,
             labelWeight: .medium
         )
-        
+        label.numberOfLines = 0
         return label
     }()
     private let DataStorageSecurityText: StandardLabel = {
@@ -182,7 +176,6 @@ class PrivacyViewController: GradientNavBarViewController {
             labelColor: .black0,
             labelWeight: .regular
         )
-        
         label.numberOfLines = 0
         return label
     }()
@@ -204,7 +197,7 @@ class PrivacyViewController: GradientNavBarViewController {
             labelColor: .blue20,
             labelWeight: .medium
         )
-        
+        label.numberOfLines = 0
         return label
     }()
     private let InformationSharingText: StandardLabel = {
@@ -215,7 +208,6 @@ class PrivacyViewController: GradientNavBarViewController {
             labelColor: .black0,
             labelWeight: .regular
         )
-        
         label.numberOfLines = 0
         return label
     }()
@@ -237,7 +229,7 @@ class PrivacyViewController: GradientNavBarViewController {
             labelColor: .blue20,
             labelWeight: .medium
         )
-        
+        label.numberOfLines = 0
         return label
     }()
     private let UserRightsText: StandardLabel = {
@@ -248,7 +240,6 @@ class PrivacyViewController: GradientNavBarViewController {
             labelColor: .black0,
             labelWeight: .regular
         )
-        
         label.numberOfLines = 0
         return label
     }()
@@ -270,7 +261,7 @@ class PrivacyViewController: GradientNavBarViewController {
             labelColor: .blue20,
             labelWeight: .medium
         )
-        
+        label.numberOfLines = 0
         return label
     }()
     private let DataRetentionText: StandardLabel = {
@@ -281,7 +272,6 @@ class PrivacyViewController: GradientNavBarViewController {
             labelColor: .black0,
             labelWeight: .regular
         )
-        
         label.numberOfLines = 0
         return label
     }()
@@ -303,7 +293,7 @@ class PrivacyViewController: GradientNavBarViewController {
             labelColor: .blue20,
             labelWeight: .medium
         )
-        
+        label.numberOfLines = 0
         return label
     }()
     private let ChangesPolicyText: StandardLabel = {
@@ -314,7 +304,6 @@ class PrivacyViewController: GradientNavBarViewController {
             labelColor: .black0,
             labelWeight: .regular
         )
-        
         label.numberOfLines = 0
         return label
     }()
@@ -336,7 +325,7 @@ class PrivacyViewController: GradientNavBarViewController {
             labelColor: .blue20,
             labelWeight: .medium
         )
-        
+        label.numberOfLines = 0
         return label
     }()
     private let ContactText: StandardLabel = {
@@ -347,7 +336,6 @@ class PrivacyViewController: GradientNavBarViewController {
             labelColor: .black0,
             labelWeight: .regular
         )
-        
         label.numberOfLines = 0
         return label
     }()

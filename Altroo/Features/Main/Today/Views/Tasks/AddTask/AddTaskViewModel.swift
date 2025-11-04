@@ -20,6 +20,9 @@ class AddTaskViewModel {
     @Published var endDate: Date = .now
     @Published var note: String = ""
     
+    private let validator = FormValidator()
+    @Published private(set) var fieldErrors: [String: String] = [:]
+
     @Published var isContinuous: Bool = true
     let continuousOptions = ["Contínuo", "Data Final"]
     var continuousButtonTitle: String {
@@ -49,6 +52,16 @@ class AddTaskViewModel {
         if repeatingDays.isEmpty {
             repeatingDays = Locale.Weekday.allCases
         }
+    }
+    
+    func validateTask() -> Bool {
+        var newErrors: [String: String] = [:]
+
+        _ = validator.isEmpty(name, error: &newErrors["name"])
+        _ = validator.invalidDateRange(startDate: startDate, endDate: endDate, error: &newErrors["date"])
+        
+        fieldErrors = newErrors
+        return newErrors.isEmpty
     }
     
     func addTime(from date: Date, at index: Int? = nil) {

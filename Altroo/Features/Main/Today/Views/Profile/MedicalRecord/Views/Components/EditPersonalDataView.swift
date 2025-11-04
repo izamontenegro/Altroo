@@ -10,7 +10,7 @@ import Combine
 final class EditPersonalDataView: UIView, UITextFieldDelegate {
     let viewModel: EditMedicalRecordViewModel
     weak var delegate: EditMedicalRecordViewControllerDelegate?
-
+    
     private var subscriptions = Set<AnyCancellable>()
 
     private let genderSegmentedControl: StandardSegmentedControl = {
@@ -217,6 +217,16 @@ final class EditPersonalDataView: UIView, UITextFieldDelegate {
                     self.genderSegmentedControl.selectedSegmentIndex = index
                 }
                 self.ageLabel.text = state.ageText
+            }
+            .store(in: &subscriptions)
+        
+        viewModel.$fieldErrors
+            .receive(on: RunLoop.main)
+            .sink { [weak self] errors in
+                self?.nameSection.setError(errors["name"])
+                self?.weightSection.setError(errors["weight"])
+                self?.heightSection.setError(errors["height"])
+                self?.birthDateSection.setError(errors["age"])
             }
             .store(in: &subscriptions)
     }

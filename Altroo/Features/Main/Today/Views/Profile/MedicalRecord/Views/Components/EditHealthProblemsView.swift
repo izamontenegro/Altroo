@@ -29,7 +29,7 @@ final class EditHealthProblemsView: UIView {
     private lazy var addSurgeryButton: OutlineButton = {
         let button = OutlineButton(title: "+", color: .blue40, cornerRadius: 8)
         button.translatesAutoresizingMaskIntoConstraints = false
-        button.updateColor(.blue40)
+//        button.updateColor(.blue40)
         return button
     }()
 

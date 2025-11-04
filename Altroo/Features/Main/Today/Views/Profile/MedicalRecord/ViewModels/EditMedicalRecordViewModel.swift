@@ -16,6 +16,9 @@ final class EditMedicalRecordViewModel {
     @Published var physicalStateFormState = PhysicalStateFormState()
     @Published var mentalStateFormState = MentalStateFormState()
     @Published var personalCareFormState = PersonalCareFormState()
+    
+    @Published var fieldErrors: [String: String] = [:]
+    let validator = FormValidator()
 
     init(userService: UserServiceProtocol, careRecipientFacade: CareRecipientFacade) {
         self.userService = userService
@@ -24,6 +27,10 @@ final class EditMedicalRecordViewModel {
     
     func currentPatient() -> CareRecipient? {
         userService.fetchCurrentPatient()
+    }
+    
+    func validateEditProfile() -> Bool {
+        return validatePersonalData()
     }
 }
 

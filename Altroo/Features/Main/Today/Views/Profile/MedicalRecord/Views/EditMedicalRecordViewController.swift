@@ -103,7 +103,10 @@ final class EditMedicalRecordViewController: GradientNavBarViewController, Medic
     }
 
     func medicalRecordSectionSelectorView(_ selectorView: MedicalRecordSectionSelectorView, didSelectIndex index: Int) {
+        
+        guard viewModel.validatePersonalData() else { return }
         currentSectionIndex = index
+        
         switch index {
         case 0:
             displaySection(editPersonalDataForms)
@@ -127,6 +130,10 @@ final class EditMedicalRecordViewController: GradientNavBarViewController, Medic
         let currentPatient = viewModel.userService.fetchCurrentPatient()
         progressView.setCareRecipient(currentPatient, animated: true)
     }
+    
+    func medicalRecordSectionSelectorView(_ selectorView: MedicalRecordSectionSelectorView, shouldChangeAppearanceTo index: Int) -> Bool {
+        return viewModel.validatePersonalData()
+    }
 
     private func displaySection(_ newContentView: UIView) {
         if let currentContentView {
@@ -147,6 +154,8 @@ final class EditMedicalRecordViewController: GradientNavBarViewController, Medic
     }
 
     @objc func handleSaveTapped() {
+        guard viewModel.validatePersonalData() else { return }
+        
         viewModel.persistFormState()
         let currentPatient = viewModel.userService.fetchCurrentPatient()
         progressView.setCareRecipient(currentPatient, animated: true)

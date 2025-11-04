@@ -58,7 +58,6 @@ class PatientFormsViewController: UIViewController {
         return tf
     }()
     
-    
     private lazy var weightInputStack: UIStackView = {
         let label = StandardLabel(
             labelText: "kg",
@@ -255,7 +254,6 @@ class PatientFormsViewController: UIViewController {
             formStack.trailingAnchor.constraint(equalTo: scrollView.contentLayoutGuide.trailingAnchor, constant: -Layout.mediumSpacing),
             formStack.bottomAnchor.constraint(equalTo: scrollView.contentLayoutGuide.bottomAnchor, constant: -Layout.smallSpacing),
             formStack.widthAnchor.constraint(equalTo: scrollView.frameLayoutGuide.widthAnchor, constant: -2 * Layout.mediumSpacing)
-
         ])
         
         datePicker.addTarget(self, action: #selector(updateAgeLabel), for: .valueChanged)
@@ -265,17 +263,6 @@ class PatientFormsViewController: UIViewController {
         tapGesture.cancelsTouchesInView = false
         view.addGestureRecognizer(tapGesture)
     }
-    
-
-//    @objc
-//    private func didTapAddContactButton() {
-//        guard let text = contactTextField.text, !text.isEmpty else { return }
-//
-//        let contact = ContactDraft(name: text, relationship: "", phone: "")
-//        contactsList.append(contact)
-//
-//        contactTextField.text = ""
-//    }
 
     @objc
     private func dismissKeyboard() {
@@ -284,9 +271,6 @@ class PatientFormsViewController: UIViewController {
     
     @objc
     func didTapNextStepButton(_ sender: UIButton) {
-        //FIXME: Emergency for apple presentation
-//        didTapAddContactButton()
-        
         let selectedIndex = genderSegmentedControl.selectedSegmentIndex
         let gender = selectedIndex == 0 ? "female" : "male"
         
@@ -312,7 +296,6 @@ class PatientFormsViewController: UIViewController {
         viewModel.updateContact(name: contactName, phone: contactPhone)
         
         guard viewModel.validateProfile() else { return }
-        
         
         delegate?.goToComorbiditiesForms()
     }
