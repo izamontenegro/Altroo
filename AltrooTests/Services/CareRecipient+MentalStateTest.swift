@@ -71,9 +71,9 @@ class CareRecipientFacadeTests: XCTestCase {
     }
     
     func test_addMemoryState_updatesProperty_andCallsSave() {
-        sut.addMemoryState(memoryState: .frequentForgetfulness, mentalState: mentalState)
+        sut.addMemoryState(memoryState: .impaired, mentalState: mentalState)
         
-        XCTAssertEqual(mentalState.memoryState, MemoryEnum.frequentForgetfulness.rawValue)
+        XCTAssertEqual(mentalState.memoryState, MemoryEnum.impaired.rawValue)
         XCTAssertEqual(persistenceMock.saveCalledCount, 1)
     }
     
@@ -102,12 +102,12 @@ class CareRecipientFacadeTests: XCTestCase {
     
     func test_updateAllMentalStates_together() {
         sut.addEmotionalState(emotionalState: .aggressive, mentalState: mentalState)
-        sut.addMemoryState(memoryState: .frequentForgetfulness, mentalState: mentalState)
+        sut.addMemoryState(memoryState: .impaired, mentalState: mentalState)
         sut.addOrientationState(orientationState: .disorientedInAll, mentalState: mentalState)
         sut.addCognitionState(cognitionState: .lowCapacity, mentalState: mentalState)
         
         XCTAssertEqual(mentalState.emotionalState, EmotionalStateEnum.aggressive.rawValue)
-        XCTAssertEqual(mentalState.memoryState, MemoryEnum.frequentForgetfulness.rawValue)
+        XCTAssertEqual(mentalState.memoryState, MemoryEnum.impaired.rawValue)
         XCTAssertEqual(mentalState.orientationState, OrientationEnum.disorientedInAll.rawValue)
         XCTAssertEqual(mentalState.cognitionState, CognitionEnum.lowCapacity.rawValue)
         XCTAssertEqual(persistenceMock.saveCalledCount, 4)

@@ -1,5 +1,5 @@
 //
-//  PacientsViewControllerr.swift
+//  PatientsViewControllerr.swift
 //  Altroo
 //
 //  Created by Marcelle Ribeiro Queiroz on 30/10/25.
@@ -7,7 +7,7 @@
 
 import UIKit
 
-class PacientsViewController: GradientNavBarViewController {
+class PatientsViewController: GradientNavBarViewController {
 
     let viewLabel: UILabel = {
         let label = UILabel()

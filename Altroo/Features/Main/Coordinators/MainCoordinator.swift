@@ -26,14 +26,14 @@ final class MainCoordinator: Coordinator {
         let tabBar = AppTabBarController()
         self.tabBar = tabBar
         
-        // MARK: - PACIENTS
-        let pacientsNav = UINavigationController()
-        let pacientsCoord = PacientsCoordinator(
-            navigation: pacientsNav, factory: factory
+        // MARK: - PATIENTS
+        let patientsNav = UINavigationController()
+        let patientsCoord = PatientsCoordinator(
+            navigation: patientsNav, factory: factory
         )
-        add(child: pacientsCoord)
-        pacientsCoord.start()
-        pacientsNav.tabBarItem = UITabBarItem(title: "Assistidos", image: UIImage(systemName: "person.fill"), tag: 0)
+        add(child: patientsCoord)
+        patientsCoord.start()
+        patientsNav.tabBarItem = UITabBarItem(title: "Assistidos", image: UIImage(systemName: "person.fill"), tag: 0)
         
         // MARK: - REPORTS
         let analysisNav = UINavigationController()
@@ -71,7 +71,7 @@ final class MainCoordinator: Coordinator {
         settingsNav.tabBarItem = UITabBarItem(title: "Ajustes", image: UIImage(systemName: "gear"), tag: 4)
         
         // MARK: - TAB BAR CONFIGURATION
-        tabBar.viewControllers = [pacientsNav, analysisNav, todayNav, histNav, settingsNav]
+        tabBar.viewControllers = [patientsNav, analysisNav, todayNav, histNav, settingsNav]
         
         navigation.setNavigationBarHidden(true, animated: false)
         navigation.setViewControllers([tabBar], animated: false)

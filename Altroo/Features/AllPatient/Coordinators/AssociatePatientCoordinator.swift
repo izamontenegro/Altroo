@@ -24,27 +24,31 @@ final class AssociatePatientCoordinator: Coordinator {
         navigation.pushViewController(vc, animated: true)
     }
 
-    enum Destination { case patientForms, comorbiditiesForms, shiftForms, tutorialAdd, mainFlow }
+    enum Destination { case patientForms, tutorialAdd, mainFlow }
 
     private func show(_ destination: Destination) {
         switch destination {
         case .patientForms:
-            let vc = factory.makePatientFormViewController(delegate: self)
-            navigation.pushViewController(vc, animated: true)
-        case .comorbiditiesForms:
-            let vc = factory.makeComorbiditiesFormViewController(delegate: self)
-            navigation.pushViewController(vc, animated: true)
-        case .shiftForms:
-            let vc = factory.makeShiftFormViewController(delegate: self)
-            navigation.pushViewController(vc, animated: true)
+            let child = PatientFormsCoordinator(factory: factory)
+                    add(child: child)
+
+                    child.onFinish = { [weak self, weak child] in
+                        if let child = child { self?.remove(child: child) }
+                        self?.navigation.dismiss(animated: true)
+                        self?.onFinish?()
+                    }
+
+                    child.start()
+
+                    presentSheet(
+                        child.navigation,
+                        from: navigation,
+                        detents: [.large()],
+                        grabber: true
+                    )
         case .tutorialAdd:
             let vc = factory.makeTutorialAddSheet()
-            vc.modalPresentationStyle = .pageSheet
-            if let sheet = vc.sheetPresentationController {
-                sheet.detents = [.medium()]
-                sheet.prefersGrabberVisible = true
-            }
-            navigation.present(vc, animated: true)
+            presentSheet(vc, from: navigation)
         case .mainFlow:
             onFinish?()
         }
@@ -54,8 +58,8 @@ final class AssociatePatientCoordinator: Coordinator {
 extension AssociatePatientCoordinator: AssociatePatientViewControllerDelegate {
     func goToMainFlow() { onFinish?() }
     func goToPatientForms() { show(.patientForms) }
-    func goToComorbiditiesForms() { show(.comorbiditiesForms) }
-    func goToShiftForms() { show(.shiftForms) }
+    func goToComorbiditiesForms() {  }
+    func goToShiftForms() {  }
     func goToTutorialAddSheet() { show(.tutorialAdd) }
 }
 

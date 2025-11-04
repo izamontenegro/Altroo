@@ -19,15 +19,17 @@ extension UIScrollView {
         switch direction {
         case .vertical:
             scroll.alwaysBounceVertical = true
-            scroll.showsVerticalScrollIndicator = true
+            scroll.showsVerticalScrollIndicator = false
             scroll.alwaysBounceHorizontal = false
             scroll.showsHorizontalScrollIndicator = false
         case .horizontal:
             scroll.alwaysBounceHorizontal = true
-            scroll.showsHorizontalScrollIndicator = true
+            scroll.showsHorizontalScrollIndicator = false
             scroll.alwaysBounceVertical = false
             scroll.showsVerticalScrollIndicator = false
         }
+        
+        scroll.isDirectionalLockEnabled = true
 
         return scroll
     }
