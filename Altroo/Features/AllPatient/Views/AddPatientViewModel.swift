@@ -105,7 +105,6 @@ final class AddPatientViewModel: ObservableObject {
         guard let user = userService.fetchUser() else { return }
         careRecipientFacade.addCaregiver(newPatient, for: user)
                 
-        contacts = []
         diseases = []
         bedriddenStatus = .notBedridden
     }

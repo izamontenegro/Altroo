@@ -100,58 +100,56 @@ class AssociatePatientViewController: GradientHeader {
         setupLayout()
         updateView()
         
-        NotificationCenter.default.addObserver(
-            self,
-            selector: #selector(remoteDataChanged),
-            name: .didFinishCloudKitSync,
-            object: nil
-        )
+//        NotificationCenter.default.addObserver(
+//            self,
+//            selector: #selector(remoteDataChanged),
+//            name: .didFinishCloudKitSync,
+//            object: nil
+//        )
     }
 
-    @objc private func remoteDataChanged() {
-        DispatchQueue.main.async {
-            self.loadingIndicator.stopAnimating()
-            self.loadingIndicator.removeFromSuperview()
-
-            let careRecipients = self.viewModel.fetchAvailableCareRecipients()
-            self.vStack.arrangedSubviews.forEach { $0.removeFromSuperview() }
-            
-            if careRecipients.isEmpty {
-                self.viewLabel.numberOfLines = 0
-                self.viewLabel.textAlignment = .center
-
-                let emptyStateContainer = UIView()
-                emptyStateContainer.translatesAutoresizingMaskIntoConstraints = false
-                emptyStateContainer.addSubview(self.viewLabel)
-
-                NSLayoutConstraint.activate([
-                    self.viewLabel.centerXAnchor.constraint(equalTo: emptyStateContainer.centerXAnchor),
-                    self.viewLabel.centerYAnchor.constraint(equalTo: emptyStateContainer.centerYAnchor),
-                    self.viewLabel.leadingAnchor.constraint(equalTo: emptyStateContainer.leadingAnchor, constant: Layout.mediumSpacing),
-                    self.viewLabel.trailingAnchor.constraint(equalTo: emptyStateContainer.trailingAnchor, constant: -Layout.mediumSpacing)
-                ])
-
-                self.vStack.addArrangedSubview(emptyStateContainer)
-                NSLayoutConstraint.activate([
-                    emptyStateContainer.heightAnchor.constraint(equalTo: self.view.heightAnchor, multiplier: 0.6)
-                ])
-            } else {
-                for careRecipient in careRecipients {
-                    let card = CareRecipientCard(
-                        name: careRecipient.personalData?.name ?? "",
-                        age: careRecipient.personalData?.age ?? 0,
-                        careRecipient: careRecipient
-                    )
-
-                    let tapGesture = UITapGestureRecognizer(target: self, action: #selector(self.didTapCareRecipientCard(_:)))
-                    card.addGestureRecognizer(tapGesture)
-                    card.isUserInteractionEnabled = true
-
-                    self.vStack.addArrangedSubview(card)
-                }
-            }
-        }
-    }
+    //TODO: - Add loading view
+//    @objc private func remoteDataChanged() {
+//        DispatchQueue.main.async {
+//            self.loadingIndicator.stopAnimating()
+//            self.loadingIndicator.removeFromSuperview()
+//
+//            let careRecipients = self.viewModel.fetchAvailableCareRecipients()
+//            self.vStack.arrangedSubviews.forEach { $0.removeFromSuperview() }
+//            
+//            if careRecipients.isEmpty {
+//                let emptyStateContainer = UIView()
+//                emptyStateContainer.translatesAutoresizingMaskIntoConstraints = false
+//                emptyStateContainer.addSubview(self.viewLabel)
+//
+//                NSLayoutConstraint.activate([
+//                    self.viewLabel.centerXAnchor.constraint(equalTo: emptyStateContainer.centerXAnchor),
+//                    self.viewLabel.centerYAnchor.constraint(equalTo: emptyStateContainer.centerYAnchor),
+//                    self.viewLabel.leadingAnchor.constraint(equalTo: emptyStateContainer.leadingAnchor, constant: Layout.mediumSpacing),
+//                    self.viewLabel.trailingAnchor.constraint(equalTo: emptyStateContainer.trailingAnchor, constant: -Layout.mediumSpacing)
+//                ])
+//
+//                self.vStack.addArrangedSubview(emptyStateContainer)
+//                NSLayoutConstraint.activate([
+//                    emptyStateContainer.heightAnchor.constraint(equalTo: self.view.heightAnchor, multiplier: 0.6)
+//                ])
+//            } else {
+//                for careRecipient in careRecipients {
+//                    let card = CareRecipientCard(
+//                        name: careRecipient.personalData?.name ?? "",
+//                        age: careRecipient.personalData?.age ?? 0,
+//                        careRecipient: careRecipient
+//                    )
+//
+//                    let tapGesture = UITapGestureRecognizer(target: self, action: #selector(self.didTapCareRecipientCard(_:)))
+//                    card.addGestureRecognizer(tapGesture)
+//                    card.isUserInteractionEnabled = true
+//
+//                    self.vStack.addArrangedSubview(card)
+//                }
+//            }
+//        }
+//    }
 
     private func setupLayout() {
         view.addSubview(scrollView)
