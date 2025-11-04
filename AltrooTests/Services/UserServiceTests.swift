@@ -77,13 +77,14 @@ final class UserServiceTests: XCTestCase {
     func test_setCurrentPatient_updatesUserActiveCareRecipient() {
         let user = createUser()
         let patient = createCareRecipient(name: "Elton")
-        user.addToCareRecipient(patient)
+//        user.addToCareRecipient(patient)
         try? context.save()
         
         userService.setCurrentPatient(patient)
         
         let fetchedUser = userService.fetchUser()
-        XCTAssertEqual(fetchedUser?.activeCareRecipient?.value(forKeyPath: "personalData.name") as? String, "Elton")
+        let fetchCareRecipient = userService.fetchCareRecipient(id: fetchedUser?.activeCareRecipient ?? UUID())
+        XCTAssertEqual(fetchCareRecipient?.value(forKeyPath: "personalData.name") as? String, "Elton")
     }
     
     func test_setName_updatesUserName() {
@@ -139,8 +140,8 @@ final class UserServiceTests: XCTestCase {
         let user = createUser()
         let patient1 = createCareRecipient(name: "John")
         let patient2 = createCareRecipient(name: "Marie")
-        user.addToCareRecipient(patient1)
-        user.addToCareRecipient(patient2)
+//        user.addToCareRecipient(patient1)
+//        user.addToCareRecipient(patient2)
         try? context.save()
         
         let patients = userService.fetchPatients()
@@ -181,7 +182,7 @@ final class UserServiceTests: XCTestCase {
     func test_fetchCurrentPatient_returnsPatient_whenExists() {
         let user = createUser()
         let patient = createCareRecipient(name: "John")
-        user.addToCareRecipient(patient)
+//        user.addToCareRecipient(patient)
         userService.setCurrentPatient(patient)
         try? context.save()
         
@@ -201,7 +202,7 @@ final class UserServiceTests: XCTestCase {
     func test_removeCurrentPatient_removesActivePatient() {
         let user = createUser()
         let patient = createCareRecipient(name: "Jake")
-        user.addToCareRecipient(patient)
+//        user.addToCareRecipient(patient)
         userService.setCurrentPatient(patient)
         try? context.save()
         
