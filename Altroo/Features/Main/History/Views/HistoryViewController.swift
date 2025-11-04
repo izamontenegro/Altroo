@@ -52,6 +52,9 @@ final class HistoryViewController: GradientNavBarViewController {
 
     override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
+        showTabBar(true)
         if viewModel.sections.isEmpty { viewModel.reloadHistory() }
     }
+    
 }
+

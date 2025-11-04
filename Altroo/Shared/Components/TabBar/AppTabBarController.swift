@@ -54,7 +54,6 @@ final class AppTabBarController: UITabBarController, UITabBarControllerDelegate 
     override func viewWillLayoutSubviews() {
         super.viewWillLayoutSubviews()
         tabBar.isHidden = true
-        tabBar.frame = .zero
     }
     
     private func setupAppearance() {
@@ -74,6 +73,9 @@ final class AppTabBarController: UITabBarController, UITabBarControllerDelegate 
             customTabBar.bottomAnchor.constraint(equalTo: view.bottomAnchor, constant: 12),
             customTabBar.heightAnchor.constraint(equalToConstant: 70)
         ])
+        
+        customTabBar.isHidden = true
+        customTabBar.alpha = 0
         
         cancallable = model.$currentTab.sink { [weak self] value in
             guard let self else { return }
@@ -145,6 +147,17 @@ extension AppTabBarController {
             customTabBar.alpha = hidden ? 0 : 1
             customTabBar.transform = .identity
         }
+    }
+}
+
+extension AppTabBarController: UINavigationControllerDelegate {
+    func navigationController(
+        _ navigationController: UINavigationController,
+        willShow viewController: UIViewController,
+        animated: Bool
+    ) {
+        let isRoot = navigationController.viewControllers.count == 1
+        setTabBar(hidden: !isRoot, animated: false)
     }
 }
 

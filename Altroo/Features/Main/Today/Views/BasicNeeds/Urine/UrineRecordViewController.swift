@@ -44,16 +44,6 @@ final class UrineRecordViewController: GradientNavBarViewController {
         setupTapToDismiss()
     }
     
-    override func viewWillAppear(_ animated: Bool) {
-        super.viewWillAppear(animated)
-        NotificationCenter.default.post(name: .toggleTabBarVisibility, object: nil, userInfo: ["hidden": true])
-    }
-    
-    override func viewWillDisappear(_ animated: Bool) {
-        super.viewWillDisappear(animated)
-        NotificationCenter.default.post(name: .toggleTabBarVisibility, object: nil, userInfo: ["hidden": false])
-    }
-    
     // MARK: - View Layout
     
     private func setupLayout() {
