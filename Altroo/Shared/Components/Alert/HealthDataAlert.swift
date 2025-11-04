@@ -149,6 +149,6 @@ class HealthDataAlert: UIView {
     }
 }
  
-#Preview {
-    HealthDataAlert()
-}
+//#Preview {
+//    HealthDataAlert()
+//}

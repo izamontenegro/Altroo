@@ -74,6 +74,6 @@ final class OutlineButton: UIButton {
 }
 
 
-#Preview {
-    OutlineButton(title: "botao", color: .red10, cornerRadius: 23)
-}
+//#Preview {
+//    OutlineButton(title: "botao", color: .red10, cornerRadius: 23)
+//}
