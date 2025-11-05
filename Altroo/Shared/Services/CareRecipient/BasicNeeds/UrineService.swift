@@ -13,7 +13,7 @@ protocol UrineServiceProtocol {
     func addUrineRecord(
         period: PeriodEnum,
         date: Date,
-        color: String,
+        color: UrineColorsEnum,
         characteristics: [UrineCharacteristicsEnum],
         observation: String?, author: String,
         to careRecipient: CareRecipient
@@ -23,7 +23,7 @@ protocol UrineServiceProtocol {
         _ record: UrineRecord,
         period: PeriodEnum?,
         date: Date?,
-        color: String?,
+        color: UrineColorsEnum?,
         characteristics: [UrineCharacteristicsEnum]?,
         observation: String?
     )
@@ -42,7 +42,7 @@ final class UrineService: UrineServiceProtocol {
     func addUrineRecord(
         period: PeriodEnum,
         date: Date,
-        color: String,
+        color: UrineColorsEnum,
         characteristics: [UrineCharacteristicsEnum],
         observation: String?, author: String,
         to careRecipient: CareRecipient
@@ -51,7 +51,7 @@ final class UrineService: UrineServiceProtocol {
         
         let record = UrineRecord(context: context)
         record.id = UUID()
-        record.color = color
+        record.colorType = color
         record.date = date
         record.period = period.rawValue
         record.urineCharacteristics = encode(characteristics)
@@ -70,13 +70,13 @@ final class UrineService: UrineServiceProtocol {
         _ record: UrineRecord,
         period: PeriodEnum? = nil,
         date: Date? = nil,
-        color: String? = nil,
+        color: UrineColorsEnum? = nil,
         characteristics: [UrineCharacteristicsEnum]? = nil,
         observation: String? = nil
     ) {
         if let period { record.period = period.rawValue }
         if let date { record.date = date }
-        if let color { record.color = color }
+        if let color { record.colorType = color }
         if let characteristics { record.urineCharacteristics = encode(characteristics) }
         if let observation { record.urineObservation = observation }
     }
@@ -99,13 +99,13 @@ final class UrineService: UrineServiceProtocol {
     func fetchUrines(for careRecipient: CareRecipient) -> [UrineRecord] {
         guard let context = careRecipient.managedObjectContext else { return [] }
         let request: NSFetchRequest<UrineRecord> = UrineRecord.fetchRequest()
-        request.predicate = NSPredicate(format: "careRecipient == %@", careRecipient)
+        request.predicate = NSPredicate(format: "basicNeeds.careRecipient == %@", careRecipient)
         request.sortDescriptors = [NSSortDescriptor(key: "date", ascending: false)]
         
         do {
             return try context.fetch(request)
         } catch {
-            print("❌ Error fetching urine records: \(error.localizedDescription)")
+            print("Error fetching urine records: \(error.localizedDescription)")
             return []
         }
     }

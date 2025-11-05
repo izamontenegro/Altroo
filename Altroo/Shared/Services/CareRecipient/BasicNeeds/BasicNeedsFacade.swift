@@ -63,7 +63,7 @@ final class BasicNeedsFacade: BasicNeedsFacadeProtocol {
 
     
     // MARK: - STOOL ACTIONS
-    func addStool(period: PeriodEnum, date: Date, format: String, notes: String, color: String, author: String, in careRecipient: CareRecipient) {
+    func addStool(period: PeriodEnum, date: Date, format: StoolTypesEnum, notes: String, color: StoolColorsEnum, author: String, in careRecipient: CareRecipient) {
         stoolService.addStoolRecord(period: period, date: date, format: format, notes: notes, color: color, author: author, in: careRecipient)
         persistenceService.save()
     }
@@ -82,7 +82,7 @@ final class BasicNeedsFacade: BasicNeedsFacadeProtocol {
     func addUrine(
         period: PeriodEnum,
         date: Date,
-        color: String,
+        color: UrineColorsEnum,
         in careRecipient: CareRecipient,
         urineCharacteristics: [UrineCharacteristicsEnum],
         author: String,
@@ -103,7 +103,7 @@ final class BasicNeedsFacade: BasicNeedsFacadeProtocol {
         _ record: UrineRecord,
         period: PeriodEnum? = nil,
         date: Date? = nil,
-        color: String? = nil,
+        color: UrineColorsEnum? = nil,
         characteristics: [UrineCharacteristicsEnum]? = nil,
         observation: String? = nil
     ) {

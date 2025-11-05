@@ -18,7 +18,7 @@ final class StoolRecordViewModel {
 
     
     @Published var selectedStoolType: StoolTypesEnum? = nil
-    @Published var selectedStoolColor: UIColor? = nil
+    @Published var selectedStoolColor: StoolColorsEnum? = nil
     @Published var selectedCharacteristics: [UrineCharacteristicsEnum] = []
     @Published var notes: String = ""
     
@@ -37,7 +37,7 @@ final class StoolRecordViewModel {
         
         let author = coreDataService.currentPerformerName(for: careRecipient)
         
-        stoolService.addStool(period: PeriodEnum.current, date: Date(), format: selectedStoolType?.rawValue ?? "", notes: notes, color: selectedStoolColor?.hexString ?? "", author: author, in: careRecipient)
+        stoolService.addStool(period: PeriodEnum.current, date: Date(), format: selectedStoolType ?? .smoothSausage, notes: notes, color: selectedStoolColor ?? .brown, author: author, in: careRecipient)
         
         historyService.addHistoryItem(title: "Registrou fezes \(selectedStoolType?.displayText ?? "")", author: author, date: Date(), type: .stool, to: careRecipient)
     }

@@ -18,9 +18,7 @@ final class UrineRecordViewController: GradientNavBarViewController {
     private let viewModel: UrineRecordViewModel
     private var cancellables = Set<AnyCancellable>()
     
-    private let urineColors: [UIColor] = [
-        .urineLight, .urineLightYellow, .urineYellow, .urineOrange, .urineRed
-    ]
+
     
     private var colorButtons: [UIButton] = []
     private var characteristicButtons: [UIButton] = []
@@ -92,10 +90,10 @@ final class UrineRecordViewController: GradientNavBarViewController {
         row.alignment = .center
         row.distribution = .fillEqually
         
-        for color in urineColors {
+        for color in UrineColorsEnum.allCases {
             let button = UIButton(type: .system)
             button.translatesAutoresizingMaskIntoConstraints = false
-            button.backgroundColor = color
+            button.backgroundColor = color.color
             button.layer.borderWidth = 2
             button.layer.borderColor = UIColor.white70.cgColor
             button.addTarget(self, action: #selector(colorTapped(_:)), for: .touchUpInside)
@@ -200,7 +198,7 @@ final class UrineRecordViewController: GradientNavBarViewController {
     
     @objc private func colorTapped(_ sender: UIButton) {
         guard let index = colorButtons.firstIndex(of: sender) else { return }
-        let selectedColor = urineColors[index]
+        let selectedColor = UrineColorsEnum.allCases[index]
         viewModel.selectedUrineColor = selectedColor
 
         colorButtons.forEach { button in
@@ -271,7 +269,7 @@ final class UrineRecordViewController: GradientNavBarViewController {
             .sink { [weak self] color in
                 guard let color, let self else { return }
                 for button in self.colorButtons {
-                    if button.backgroundColor == color {
+                    if button.backgroundColor == color.color {
                         button.layer.borderColor = UIColor.blue50.cgColor
                     } else {
                         button.layer.borderColor = UIColor.white70.cgColor

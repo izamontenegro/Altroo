@@ -17,7 +17,7 @@ final class UrineRecordViewModel {
     private let historyService: HistoryService
 
     
-    @Published var selectedUrineColor: UIColor? = nil
+    @Published var selectedUrineColor: UrineColorsEnum? = nil
     @Published var selectedCharacteristics: [UrineCharacteristicsEnum] = []
     @Published var urineObservation: String = ""
     
@@ -38,7 +38,7 @@ final class UrineRecordViewModel {
         urineService.addUrine(
             period: PeriodEnum.current,
             date: Date(),
-            color: selectedUrineColor?.hexString ?? "",
+            color: selectedUrineColor ?? .light,
             in: careRecipient,
             urineCharacteristics: selectedCharacteristics, author: author,
             observation: urineObservation
