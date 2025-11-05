@@ -89,8 +89,8 @@ class TodayViewController: UIViewController {
     
     override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
-        tabBarController?.tabBar.isHidden = true
         navigationController?.setNavigationBarHidden(true, animated: false)
+        showTabBar(true)
         
         viewModel.fetchAllTodaySymptoms()
         viewModel.fetchStoolQuantity()
@@ -103,12 +103,7 @@ class TodayViewController: UIViewController {
         symptomsCard.updateSymptoms(viewModel.todaySymptoms)
         addSections()
     }
-    
-    override func viewWillDisappear(_ animated: Bool) {
-        super.viewWillDisappear(animated)
-        navigationController?.setNavigationBarHidden(false, animated: false)
-    }
-    
+
     func makeCardByPeriod() -> UIView {
         let cardStack = UIStackView()
         cardStack.axis = .vertical
