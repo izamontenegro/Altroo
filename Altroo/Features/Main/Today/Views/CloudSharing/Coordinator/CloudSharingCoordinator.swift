@@ -22,36 +22,37 @@ final class CloudSharingCoordinator: NSObject, UICloudSharingControllerDelegate 
     }
     
     func presentSharingSheet() {
-        CoreDataStack.shared.cloudKitReady { [self] in
-            
+        if !coreDataService.isShared(object: careRecipient) {
             Task {
-                if let share = try coreDataService.getShare(careRecipient) {
-                    // if a share already exists\
-                    let sharingController = UICloudSharingController(share: share, container: coreDataService.stack.ckContainer)
-                    configureAndPresent(sharingController)
-                } else {
-                    // if a new share needs to be created
-                    await createShareAndPresent()
-                }
+                await createShareAndPresent(careRecipient)
             }
+        }
+        
+        if let share = self.coreDataService.getShare(self.careRecipient) {
+            let sharingController = UICloudSharingController(
+                share: share,
+                container: self.coreDataService.stack.ckContainer
+            )
+            
+            self.configureAndPresent(sharingController)
         }
     }
     
-    private func createShareAndPresent() async {
+    func createShareAndPresent(_ careRecipient: CareRecipient, timeoutSeconds: Int = 15) async {
+
         do {
-            let (_, share, container) = try await coreDataService.stack.persistentContainer.share([careRecipient as NSManagedObject], to: nil)
+            let task = Task.detached {
+                return try await self.coreDataService.stack.persistentContainer.share([careRecipient], to: nil)
+            }
             
+            let (_, share, _) = await task.value
             share[CKShare.SystemFieldKey.title] = careRecipient.personalData?.name ?? "Shared Item"
             
-            let sharingController = UICloudSharingController(share: share, container: container)
+            let sharingController = UICloudSharingController(share: share, container: self.coreDataService.stack.ckContainer)
             configureAndPresent(sharingController)
             
         } catch {
-            print("Failed to create share: \(error.localizedDescription)")
-            if let ckError = error as? CKError {
-                    print("CloudKit error: \(ckError.errorCode), \(ckError.localizedDescription)")
-                }
-            // handle error, show an alert etc
+            print("Share failed / timed out:", error)
         }
     }
     
@@ -80,7 +81,7 @@ final class CloudSharingCoordinator: NSObject, UICloudSharingControllerDelegate 
     
     func cloudSharingControllerDidStopSharing(_ csc: UICloudSharingController) {
         if !coreDataService.isOwner(object: careRecipient) {
-            coreDataService.deleteCareRecipient(careRecipient)
+            coreDataService.delete(careRecipient)
         }
     }
 }
