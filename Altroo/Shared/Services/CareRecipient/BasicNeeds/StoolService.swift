@@ -6,11 +6,14 @@
 //
 
 import Foundation
+import CoreData
 
 protocol StoolServiceProtocol {
     func addStoolRecord(period: PeriodEnum, date: Date, format: String, notes: String, color: String, author: String, in careRecipient: CareRecipient)
     
     func deleteStoolRecord(stoolRecord: StoolRecord, from careRecipient: CareRecipient)
+    
+    func fetchStools(for careRecipient: CareRecipient) -> [StoolRecord]
 }
 
 class StoolService: StoolServiceProtocol {
@@ -38,5 +41,19 @@ class StoolService: StoolServiceProtocol {
             mutableStool.remove(stoolRecord)
         }
     }
+    
+    func fetchStools(for careRecipient: CareRecipient) -> [StoolRecord] {
+        guard let context = careRecipient.managedObjectContext else { return [] }
+            let request: NSFetchRequest<StoolRecord> = StoolRecord.fetchRequest()
+            request.predicate = NSPredicate(format: "careRecipient == %@", careRecipient)
+            request.sortDescriptors = [NSSortDescriptor(key: "date", ascending: false)]
+
+            do {
+                return try context.fetch(request)
+            } catch {
+                print("Error fetching stool records: \(error.localizedDescription)")
+                return []
+            }
+        }
     
 }

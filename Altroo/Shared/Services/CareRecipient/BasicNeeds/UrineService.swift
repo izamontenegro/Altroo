@@ -31,10 +31,12 @@ protocol UrineServiceProtocol {
     func deleteUrineRecord(_ record: UrineRecord, from careRecipient: CareRecipient)
 
     func urineRecord(with id: UUID, for careRecipient: CareRecipient) -> UrineRecord?
+    
+    func fetchUrines(for careRecipient: CareRecipient) -> [UrineRecord]
 }
 
 final class UrineService: UrineServiceProtocol {
-
+    
     // MARK: - Create
     @discardableResult
     func addUrineRecord(
@@ -46,7 +48,7 @@ final class UrineService: UrineServiceProtocol {
         to careRecipient: CareRecipient
     ) -> UrineRecord? {
         guard let context = careRecipient.managedObjectContext else { return nil }
-
+        
         let record = UrineRecord(context: context)
         record.id = UUID()
         record.color = color
@@ -55,14 +57,14 @@ final class UrineService: UrineServiceProtocol {
         record.urineCharacteristics = encode(characteristics)
         record.urineObservation = observation
         record.author = author
-
+        
         if let basicNeeds = careRecipient.basicNeeds {
             let set = basicNeeds.mutableSetValue(forKey: "urine")
             set.add(record)
         }
         return record
     }
-
+    
     // MARK: - Update
     func updateUrineRecord(
         _ record: UrineRecord,
@@ -78,20 +80,34 @@ final class UrineService: UrineServiceProtocol {
         if let characteristics { record.urineCharacteristics = encode(characteristics) }
         if let observation { record.urineObservation = observation }
     }
-
+    
     // MARK: - Delete (remove só do relacionamento, igual seu padrão)
     func deleteUrineRecord(_ record: UrineRecord, from careRecipient: CareRecipient) {
         guard let basicNeeds = careRecipient.basicNeeds else { return }
         let set = basicNeeds.mutableSetValue(forKey: "urine")
         set.remove(record)
     }
-
+    
     // MARK: - Fetch by id
     func urineRecord(with id: UUID, for careRecipient: CareRecipient) -> UrineRecord? {
         guard let urine = careRecipient.basicNeeds?.value(forKey: "urine") as? Set<UrineRecord> else {
             return nil
         }
         return urine.first(where: { $0.id == id })
+    }
+    
+    func fetchUrines(for careRecipient: CareRecipient) -> [UrineRecord] {
+        guard let context = careRecipient.managedObjectContext else { return [] }
+        let request: NSFetchRequest<UrineRecord> = UrineRecord.fetchRequest()
+        request.predicate = NSPredicate(format: "careRecipient == %@", careRecipient)
+        request.sortDescriptors = [NSSortDescriptor(key: "date", ascending: false)]
+        
+        do {
+            return try context.fetch(request)
+        } catch {
+            print("❌ Error fetching urine records: \(error.localizedDescription)")
+            return []
+        }
     }
 }
 

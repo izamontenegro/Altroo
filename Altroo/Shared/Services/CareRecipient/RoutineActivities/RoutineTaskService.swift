@@ -25,7 +25,7 @@ protocol RoutineTaskServiceProtocol {
     
     func addInstanceRoutineTask(from template: RoutineTask, on date: Date)
     
-    func toggleInstanceIsDone(_ instance: TaskInstance)
+    func toggleInstanceIsDone(_ instance: TaskInstance, author: String, onTime: Date)
         
     func deleteInstanceRoutineTask(_ instance: TaskInstance)
     
@@ -106,7 +106,15 @@ class RoutineTaskService: RoutineTaskServiceProtocol {
                 instance.template = template
     }
     
-    func toggleInstanceIsDone(_ instance: TaskInstance) {
+    func toggleInstanceIsDone(_ instance: TaskInstance, author: String, onTime: Date) {
+        if instance.isDone {
+            instance.author = nil
+            instance.doneTime = nil
+        } else {
+            instance.author = author
+            instance.doneTime = onTime
+        }
+        
         instance.isDone.toggle()
     }
 
