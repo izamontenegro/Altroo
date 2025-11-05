@@ -7,7 +7,6 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
-		AE47551E2EB04F270019B3F8 /* Lottie in Frameworks */ = {isa = PBXBuildFile; productRef = AE47551D2EB04F270019B3F8 /* Lottie */; };
 		B61A785E2E818D7A00BC204C /* Gemfile in Resources */ = {isa = PBXBuildFile; fileRef = B61A785D2E818D7A00BC204C /* Gemfile */; };
 		B61A78732E81C5B600BC204C /* .ruby-version in Resources */ = {isa = PBXBuildFile; fileRef = B61A78722E81C5B600BC204C /* .ruby-version */; };
 /* End PBXBuildFile section */
@@ -63,7 +62,6 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				AE47551E2EB04F270019B3F8 /* Lottie in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -144,7 +142,6 @@
 			);
 			name = Altroo;
 			packageProductDependencies = (
-				AE47551D2EB04F270019B3F8 /* Lottie */,
 			);
 			productName = Altroo;
 			productReference = 367EC48F2E7CB1AA008B22D1 /* Altroo.app */;
@@ -203,7 +200,6 @@
 			mainGroup = 367EC4862E7CB1AA008B22D1;
 			minimizedProjectReferenceProxies = 1;
 			packageReferences = (
-				AE47551C2EB04F270019B3F8 /* XCRemoteSwiftPackageReference "lottie-ios" */,
 			);
 			preferredProjectObjectVersion = 77;
 			productRefGroup = 367EC4902E7CB1AA008B22D1 /* Products */;
@@ -519,25 +515,6 @@
 			defaultConfigurationName = Release;
 		};
 /* End XCConfigurationList section */
-
-/* Begin XCRemoteSwiftPackageReference section */
-		AE47551C2EB04F270019B3F8 /* XCRemoteSwiftPackageReference "lottie-ios" */ = {
-			isa = XCRemoteSwiftPackageReference;
-			repositoryURL = "https://github.com/airbnb/lottie-ios.git";
-			requirement = {
-				kind = upToNextMajorVersion;
-				minimumVersion = 4.5.2;
-			};
-		};
-/* End XCRemoteSwiftPackageReference section */
-
-/* Begin XCSwiftPackageProductDependency section */
-		AE47551D2EB04F270019B3F8 /* Lottie */ = {
-			isa = XCSwiftPackageProductDependency;
-			package = AE47551C2EB04F270019B3F8 /* XCRemoteSwiftPackageReference "lottie-ios" */;
-			productName = Lottie;
-		};
-/* End XCSwiftPackageProductDependency section */
 	};
 	rootObject = 367EC4872E7CB1AA008B22D1 /* Project object */;
 }

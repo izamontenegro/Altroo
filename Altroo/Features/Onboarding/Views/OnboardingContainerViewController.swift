@@ -47,64 +47,9 @@ class OnboardingContainerViewController: UIViewController {
                                                    options: nil)
         super.init(nibName: nil, bundle: nil)
         
-        let page1 = OnboardingPageViewController(
-            imageNames: ["onboarding1_0", "onboarding1_1"],
-            title: "Sem mais bagunça",
-            description: "Gerencie necessidades básicas, medicamentos, tarefas, ocorrências, tudo em um só lugar",
-            animations: [
-                { iv in
-                    guard let superview = iv.superview else { return }
-
-                    UIView.animateKeyframes(withDuration: 1.8, delay: 0, options: [.calculationModeCubic]) {
-                        UIView.addKeyframe(withRelativeStartTime: 0.2, relativeDuration: 0.6) {
-                            iv.alpha = 0
-                        }
-                    }
-                },
-                { iv in
-                    iv.alpha = 0
-                    iv.transform = CGAffineTransform(translationX: -UIScreen.main.bounds.width, y: 0)
-
-                    UIView.animateKeyframes(withDuration: 1.8, delay: 0, options: [.calculationModeCubic]) {
-                        UIView.addKeyframe(withRelativeStartTime: 0.3, relativeDuration: 0.6) {
-                            iv.alpha = 1
-                            iv.transform = .identity
-                        }
-                    }
-                }
-            ]
-        )
-
-        let page2 = OnboardingPageViewController(
-            imageNames: ["onboarding2_0", "onboarding2_1"],
-            imageHeights: [100, 100],
-            title: "Sem mais bagunça",
-            description: "Gerencie necessidades básicas, medicamentos, tarefas, ocorrências, tudo em um só lugar",
-            animations: [
-            ]
-        ).addLottieAnimation(named: "onboarding_page2")
-
-        let page3 = OnboardingPageViewController(
-            imageNames: ["onboarding1_0", "onboarding1_1"],
-            title: "Sem mais bagunça",
-            description: "Gerencie necessidades básicas, medicamentos, tarefas, ocorrências, tudo em um só lugar",
-            animations: [
-                { iv in
-                    iv.alpha = 1
-                    UIView.animate(withDuration: 1.5) {
-                        iv.alpha = 0
-                    }
-                },
-                { iv in
-                    iv.alpha = 0
-                    iv.transform = CGAffineTransform(translationX: -UIScreen.main.bounds.width, y: 0).rotated(by: -.pi/8)
-                    UIView.animate(withDuration: 1.5, delay: 0.2, options: [.curveEaseOut]) {
-                        iv.alpha = 1
-                        iv.transform = .identity
-                    }
-                }
-            ]
-        )
+        let page1 = OnboardingPageViewController(imageName: "onboarding1", title: "Sem mais bagunça", description: "Gerencie necessidades básicas, medicamentos, tarefas, ocorrências, tudo em um só lugar")
+        let page2 = OnboardingPageViewController(imageName: "onboarding2", title: "Conexão é a chave", description: "Compartilhe o perfil do paciente com familiares e outros cuidadores")
+        let page3 = OnboardingPageViewController(imageName: "onboarding3", title: "Relatórios mostram o que importa", description: "Acompanhe as atividades de atendimento e obtenha insights claros dos relatórios dos pacientes", imageHeightMultiplier: 0.6)
 
         pages = [page1, page2, page3]
         pageController.dataSource = self
@@ -246,11 +191,3 @@ extension OnboardingContainerViewController: UIPageViewControllerDataSource, UIP
     }
     
 }
-
-//import SwiftUI
-//#Preview {
-//    OnboardingPageViewController(imageName: "onboard1",
-//                                 title: "Bem-vindo!",
-//                                 description: "Conheça nosso aplicativo.")
-//    
-//}
