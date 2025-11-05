@@ -82,8 +82,8 @@ class CareRecipientTests: XCTestCase {
         personalData.name = "Steve Jobs"
         personalData.dateOfBirth = dateOfBirth
         
-        physicalState.oralHealth = .usesProsthesis
-        physicalState.mobility = .bedriddenWithMovement
+        physicalState.oralHealth = .allTeethPresent
+        physicalState.mobility = .noAssistance
         
         healthProblems.allergies = ["milk", "gluten"]
 
@@ -105,10 +105,10 @@ class CareRecipientTests: XCTestCase {
         
         XCTAssertEqual(savedRecipient.personalData?.name, "Steve Jobs")
         XCTAssertEqual(savedRecipient.personalData?.age, 75)
-        XCTAssertEqual(savedRecipient.physicalState?.oralHealth, .usesProsthesis)
+        XCTAssertEqual(savedRecipient.physicalState?.oralHealth, .allTeethPresent)
         XCTAssertEqual(savedRecipient.healthProblems?.allergies, ["milk", "gluten"])
                 
-        savedRecipient.physicalState?.mobility = .bedriddenWithoutMovement
+        savedRecipient.physicalState?.mobility = .bedridden
         
         try context.save()
         
@@ -118,7 +118,7 @@ class CareRecipientTests: XCTestCase {
             return
         }
         
-        XCTAssertEqual(updatedRecipient.physicalState?.mobility, .bedriddenWithoutMovement)
+        XCTAssertEqual(updatedRecipient.physicalState?.mobility, .bedridden)
         
         context.delete(updatedRecipient)
         

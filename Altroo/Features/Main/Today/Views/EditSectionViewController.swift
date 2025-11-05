@@ -30,31 +30,10 @@ class EditSectionViewController: GradientNavBarViewController {
     }
 
     // MARK: - Subviews
-    private let titleLabel: StandardLabel = {
-        let label = StandardLabel(
-            labelText: "Editar Seção",
-            labelFont: .sfPro,
-            labelType: .title2,
-            labelColor: .black10,
-            labelWeight: .semibold
-        )
-        return label
-    }()
+    private let header = StandardHeaderView(title: "Editar Seção", subtitle: "Reordene ou oculte seção para personalizar a visualização.")
     
-    private let subtitleLabel: StandardLabel = {
-        let label = StandardLabel(
-            labelText: "Reordene ou oculte seção para personalizar a visualização.",
-            labelFont: .sfPro,
-            labelType: .headline,
-            labelColor: .black30,
-            labelWeight: .regular
-        )
-        label.numberOfLines = 0
-        return label
-    }()
-    
-    private let stackView: UIStackView = {
-        let stack = UIStackView()
+    private lazy var stackView: UIStackView = {
+        let stack = UIStackView(arrangedSubviews: [])
         stack.axis = .vertical
         stack.spacing = 12
         stack.translatesAutoresizingMaskIntoConstraints = false
@@ -63,26 +42,13 @@ class EditSectionViewController: GradientNavBarViewController {
 
     // MARK: - Layout
     private func setupLayout() {
-        view.addSubview(titleLabel)
-        view.addSubview(subtitleLabel)
         view.addSubview(stackView)
         
-        titleLabel.translatesAutoresizingMaskIntoConstraints = false
-        subtitleLabel.translatesAutoresizingMaskIntoConstraints = false
-        
         NSLayoutConstraint.activate([
-            titleLabel.topAnchor.constraint(equalTo: view.safeAreaLayoutGuide.topAnchor, constant: 16),
-            titleLabel.leadingAnchor.constraint(equalTo: view.leadingAnchor, constant: 17),
-            titleLabel.trailingAnchor.constraint(equalTo: view.trailingAnchor, constant: -17),
-            
-            subtitleLabel.topAnchor.constraint(equalTo: titleLabel.bottomAnchor, constant: 4),
-            subtitleLabel.leadingAnchor.constraint(equalTo: titleLabel.leadingAnchor),
-            subtitleLabel.trailingAnchor.constraint(equalTo: titleLabel.trailingAnchor),
-            
-            stackView.topAnchor.constraint(equalTo: subtitleLabel.bottomAnchor, constant: 12),
-            stackView.leadingAnchor.constraint(equalTo: view.leadingAnchor, constant: 17),
-            stackView.trailingAnchor.constraint(equalTo: view.trailingAnchor, constant: -17),
-            stackView.bottomAnchor.constraint(lessThanOrEqualTo: view.bottomAnchor, constant: -16)
+            stackView.topAnchor.constraint(equalTo: view.safeAreaLayoutGuide.topAnchor, constant: 12),
+            stackView.leadingAnchor.constraint(equalTo: view.leadingAnchor, constant: Layout.mediumSpacing),
+            stackView.trailingAnchor.constraint(equalTo: view.trailingAnchor, constant: -Layout.mediumSpacing),
+            stackView.bottomAnchor.constraint(lessThanOrEqualTo: view.bottomAnchor, constant: -Layout.mediumSpacing)
         ])
     }
     
@@ -94,6 +60,8 @@ class EditSectionViewController: GradientNavBarViewController {
             stackView.removeArrangedSubview($0)
             $0.removeFromSuperview()
         }
+        
+        stackView.addArrangedSubview(header)
 
         for config in configs {
             switch config.type {

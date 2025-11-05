@@ -22,7 +22,9 @@ protocol AppFactory:
     GeneralFactory,
     HistoryFactory,
     SettingsFactory,
-    ServiceFactory {
+    ServiceFactory,
+    EditMedicalRecordFactory
+{
 }
 
 // MARK: - ONBOARDING FLOW
@@ -41,10 +43,11 @@ protocol AssociatePatientFactory {
 
 // MARK: - MAIN FLOW
 protocol MainFlowFactory {
-    func makeSettingsViewController(delegate: SettingsViewControllerDelegate) -> UIViewController
+    func makePatientsViewController() -> UIViewController
+    func makeAnalysisViewController() -> UIViewController
     func makeTodayViewController(delegate: TodayViewControllerDelegate) -> UIViewController
     func makeHistoryViewController(delegate: HistoryViewControllerDelegate) -> UIViewController
-    func makeAnalysisViewController() -> UIViewController
+    func makeSettingsViewController(delegate: SettingsViewControllerDelegate) -> UIViewController
 }
 
 // MARK: - TODAY FLOW
@@ -61,12 +64,19 @@ protocol SymptomFactory {
 }
 
 // MARK: - PROFILE FLOW
+
+protocol EditMedicalRecordFactory {
+    func makeEditPersonalDataViewController(delegate: EditMedicalRecordViewControllerDelegate) -> UIViewController
+    func makeEditHealthProblemsViewController(delegate: EditMedicalRecordViewControllerDelegate) -> UIViewController
+    func makeEditPhysicalStateViewController(delegate: EditMedicalRecordViewControllerDelegate) -> UIViewController
+    func makeEditMentalStateViewController(delegate: EditMedicalRecordViewControllerDelegate) -> UIViewController
+    func makeEditPersonalCareViewController(delegate: EditMedicalRecordViewControllerDelegate) -> UIViewController
+}
+
 protocol ProfileFactory {
     func makeProfileViewController(delegate: ProfileViewControllerDelegate) -> UIViewController
     func makeChangeCareRecipientViewController(delegate: ChangeCareRecipientViewControllerDelegate) -> UIViewController
-    func makeMedicalRecordViewController() -> UIViewController
-    
-//    func makeEditCaregiverViewController() -> UIViewController
+    func makeMedicalRecordViewController(delegate: EditMedicalRecordViewControllerDelegate?) -> UIViewController
 }
 
 // MARK: - EVENTS FLOW
@@ -121,8 +131,9 @@ protocol HistoryFactory {
 
 // MARK: - SETTINGS FLOW
 protocol SettingsFactory {
-//    func makeUserProfileViewController() -> UIViewController
-    func makePrivacySecurityViewController() -> UIViewController
+    func makeMyProfileViewController() -> UIViewController
+    func makePrivacyViewController() -> UIViewController
+    func makePolicyViewController() -> UIViewController
     func makeDevelopersViewController() -> UIViewController
 }
 

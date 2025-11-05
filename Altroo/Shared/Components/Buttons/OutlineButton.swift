@@ -4,6 +4,7 @@
 //
 //  Created by Raissa Parente on 15/10/25.
 //
+
 import UIKit
 
 final class OutlineButton: UIButton {
@@ -16,23 +17,38 @@ final class OutlineButton: UIButton {
         labelWeight: .semibold
     )
     
-    var color: UIColor
+    var color: UIColor {
+        didSet {
+            label.labelColor = color
+            label.configureLabelColor()
+            layer.borderColor = color.cgColor
+        }
+    }
     
-    init(title: String, color: UIColor) {
+    var customCornerRadius: CGFloat? {
+        didSet {
+            layer.cornerRadius = customCornerRadius ?? 23
+        }
+    }
+    
+    init(title: String, color: UIColor, cornerRadius: CGFloat? = nil) {
         self.color = color
+        self.customCornerRadius = cornerRadius
         super.init(frame: .zero)
         setupButton(title: title)
     }
     
     required init?(coder: NSCoder) {
         self.color = .teal10
+        self.customCornerRadius = nil
         super.init(coder: coder)
         setupButton(title: "")
     }
     
+    // MARK: - Setup
     private func setupButton(title: String) {
         backgroundColor = .clear
-        layer.cornerRadius = 23
+        layer.cornerRadius = customCornerRadius ?? 23
         layer.borderWidth = 2
         layer.borderColor = color.cgColor
         
@@ -52,19 +68,12 @@ final class OutlineButton: UIButton {
         translatesAutoresizingMaskIntoConstraints = false
     }
     
-    // MARK: - Public funcs
     func updateTitle(_ title: String) {
         label.updateLabelText(title)
     }
-    
-    func updateColor(_ color: UIColor) {
-        self.color = color
-        label.labelColor = color
-        label.configureLabelColor()
-        layer.borderColor = color.cgColor
-    }
 }
 
+
 //#Preview {
-//    OutlineButton(title: "texto", color: .teal20)
+//    OutlineButton(title: "botao", color: .red10, cornerRadius: 23)
 //}

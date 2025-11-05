@@ -15,20 +15,13 @@ final class ObservationView: UIView, UITextViewDelegate {
     
     weak var delegate: ObservationViewDelegate?
     
-//    private let titleLabel: StandardLabel = StandardLabel(
-//        labelText: "Observação",
-//        labelFont: .sfPro,
-//        labelType: .title3,
-//        labelColor: UIColor(resource: .black10),
-//        labelWeight: .semibold)
-    
     let textView: UITextView = {
         let textView = UITextView()
         textView.backgroundColor = UIColor(resource: .white70)
         textView.layer.cornerRadius = 8
         textView.font = UIFont.systemFont(ofSize: 16)
         textView.textColor = UIColor(resource: .black10)
-        textView.isScrollEnabled = true
+        textView.isScrollEnabled = false
         textView.textContainerInset = UIEdgeInsets(top: 12, left: 16,
                                                    bottom: 16, right: 16)
         textView.translatesAutoresizingMaskIntoConstraints = false
@@ -48,17 +41,17 @@ final class ObservationView: UIView, UITextViewDelegate {
     }
     
     private func setupLayout() {
-//        addSubview(titleLabel)
         addSubview(textView)
         
         NSLayoutConstraint.activate([
-//            titleLabel.topAnchor.constraint(equalTo: topAnchor),
-//            titleLabel.leadingAnchor.constraint(equalTo: leadingAnchor),
+            textView.topAnchor.constraint(equalTo: topAnchor),
+            textView.leadingAnchor.constraint(equalTo: leadingAnchor),
+            textView.trailingAnchor.constraint(equalTo: trailingAnchor),
+            textView.bottomAnchor.constraint(equalTo: bottomAnchor),
             
-//            textView.topAnchor.constraint(equalTo: titleLabel.bottomAnchor, constant: 8),
-            textView.widthAnchor.constraint(equalToConstant: 371),
-            textView.heightAnchor.constraint(equalToConstant: 72)
+            textView.heightAnchor.constraint(greaterThanOrEqualToConstant: 72)
         ])
+        
     }
     
     // MARK: - UITextViewDelegate
@@ -68,7 +61,6 @@ final class ObservationView: UIView, UITextViewDelegate {
 }
 
 class ViewController: UIViewController {
-    
     private let observationView = ObservationView()
     private var observationText: String = ""
     
