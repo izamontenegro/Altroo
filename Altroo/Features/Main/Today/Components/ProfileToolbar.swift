@@ -72,9 +72,10 @@ class ProfileToolbarContainer: UIView {
         headerProfile.isUserInteractionEnabled = true
         headerProfile.addGestureRecognizer(tapProfileGesture)
         
-        let tapEditGesture = UITapGestureRecognizer(target: self, action: #selector(didTapEditCapsuleView))
-        capsuleButton.isUserInteractionEnabled = true
-        capsuleButton.addGestureRecognizer(tapEditGesture)
+        capsuleButton.onTap = { [weak self] in
+            self?.didTapEditCapsuleView()
+        }
+
     }
     
     @objc private func didTapProfileView() {

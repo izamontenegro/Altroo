@@ -88,11 +88,17 @@ class RecordCard: InnerShadowView {
         }
         
         if showPlusButton {
-            addButton.addTarget(self, action: #selector(buttonWasTapped), for: .touchUpInside)
+            addButton.onTap = { [weak self] in
+                DispatchQueue.main.asyncAfter(deadline: .now() + 0.1) {
+                    self?.buttonWasTapped()
+                }
+            }
         } else {
-            let tap = UITapGestureRecognizer(target: self, action: #selector(buttonWasTapped))
-            waterCapsule.isUserInteractionEnabled = true
-            waterCapsule.addGestureRecognizer(tap)
+            waterCapsule.onTap = { [weak self] in
+                DispatchQueue.main.asyncAfter(deadline: .now() + 0.1) {
+                    self?.buttonWasTapped()
+                }
+            }
         }
     }
     

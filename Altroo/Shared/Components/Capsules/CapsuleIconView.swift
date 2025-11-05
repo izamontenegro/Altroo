@@ -15,6 +15,9 @@ class CapsuleIconView: UIView {
     var accentColor: UIColor = UIColor(.white)
     var iconSize: CGFloat = 18
     
+    var onTap: (() -> Void)?
+    var isTapEnabled: Bool = true
+    
     var labelIconSpacing: CGFloat = 6
     
     var contentInsets: UIEdgeInsets = UIEdgeInsets(top: 8, left: 16, bottom: 8, right: 16) {
@@ -135,6 +138,43 @@ class CapsuleIconView: UIView {
         shadow.layer.cornerRadius = layer.cornerRadius
         addSubview(shadow)
         innerShadowView = shadow
+    }
+    
+    override func touchesBegan(_ touches: Set<UITouch>, with event: UIEvent?) {
+        guard isTapEnabled else { return }
+        super.touchesBegan(touches, with: event)
+
+        UIView.animate(withDuration: 0.12, animations: {
+            self.alpha = 0.85
+            self.transform = CGAffineTransform(scaleX: 0.97, y: 0.97)
+        })
+    }
+
+    override func touchesEnded(_ touches: Set<UITouch>, with event: UIEvent?) {
+        guard isTapEnabled else { return }
+        super.touchesEnded(touches, with: event)
+
+        UIView.animate(
+            withDuration: 0.22,
+            delay: 0,
+            usingSpringWithDamping: 0.55,
+            initialSpringVelocity: 4,
+            options: [.curveEaseOut],
+            animations: {
+                self.alpha = 1
+                self.transform = .identity
+            }
+        ) { _ in
+            self.onTap?()
+        }
+    }
+
+    override func touchesCancelled(_ touches: Set<UITouch>, with event: UIEvent?) {
+        super.touchesCancelled(touches, with: event)
+        UIView.animate(withDuration: 0.1) {
+            self.alpha = 1
+            self.transform = .identity
+        }
     }
 }
 

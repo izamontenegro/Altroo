@@ -15,10 +15,13 @@ class CapsuleWithCircleView: UIView {
     var nameIconColor: UIColor = UIColor(resource: .pureWhite)
     var circleIconColor: UIColor = UIColor(resource: .teal20)
     
+    var onTap: (() -> Void)?
+    var isTapEnabled: Bool = true
+    
     override init(frame: CGRect) {
         super.init(frame: frame)
-        
         self.translatesAutoresizingMaskIntoConstraints = false
+        self.isUserInteractionEnabled = true
     }
     
     convenience init(text: String, textColor: UIColor, nameIcon: String, nameIconColor: UIColor, circleIconColor: UIColor) {
@@ -102,6 +105,43 @@ class CapsuleWithCircleView: UIView {
         ])
         
         stackView.addArrangedSubview(container)
+    }
+    
+    override func touchesBegan(_ touches: Set<UITouch>, with event: UIEvent?) {
+        guard isTapEnabled else { return }
+        super.touchesBegan(touches, with: event)
+        
+        UIView.animate(withDuration: 0.1) {
+            self.alpha = 0.85
+            self.transform = CGAffineTransform(scaleX: 0.97, y: 0.97)
+        }
+    }
+    
+    override func touchesEnded(_ touches: Set<UITouch>, with event: UIEvent?) {
+        guard isTapEnabled else { return }
+        super.touchesEnded(touches, with: event)
+
+        UIView.animate(
+            withDuration: 0.22,
+            delay: 0,
+            usingSpringWithDamping: 0.55,
+            initialSpringVelocity: 4,
+            animations: {
+                self.alpha = 1
+                self.transform = .identity
+            },
+            completion: { _ in
+                self.onTap?()
+            }
+        )
+    }
+
+    override func touchesCancelled(_ touches: Set<UITouch>, with event: UIEvent?) {
+        super.touchesCancelled(touches, with: event)
+        UIView.animate(withDuration: 0.1) {
+            self.alpha = 1
+            self.transform = .identity
+        }
     }
 }
 

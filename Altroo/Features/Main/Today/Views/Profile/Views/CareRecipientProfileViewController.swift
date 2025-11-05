@@ -166,11 +166,13 @@ final class CareRecipientProfileViewController: GradientNavBarViewController {
             title: "Trocar Perfil de Assistido",
             action: #selector(didTapChangeCareRecipientButton)
         )
+        swapButton.enablePressAnimation()
         
         let endButton = makeOutlineButton(
             title: "Encerrar Cuidado",
             action: #selector(didTapEndCareButton)
         )
+        endButton.enablePressAnimation()
         
         let buttonsStack = UIStackView(arrangedSubviews: [swapButton, endButton])
         buttonsStack.axis = .vertical
