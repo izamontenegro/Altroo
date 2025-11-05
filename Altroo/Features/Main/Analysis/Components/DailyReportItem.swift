@@ -7,17 +7,17 @@
 
 import SwiftUI
 
-struct TaskReportItem: View {
+struct DailyReportItem: View {
     let title: String
     
     let coloration: ExcretionColor?
     let reception: String?
 
-    let observation: String
+    let observation: String?
     let time: Date
     let author: String
     
-    init(title: String, coloration: ExcretionColor? = nil, reception: String? = nil, observation: String, time: Date, author: String) {
+    init(title: String, coloration: ExcretionColor? = nil, reception: String? = nil, observation: String?, time: Date, author: String) {
         self.title = title
         self.coloration = coloration
         self.reception = reception
@@ -77,19 +77,21 @@ struct TaskReportItem: View {
                 )
             }
             
-            StandardLabelRepresentable(
-                labelFont: .sfPro,
-                labelType: .footnote,
-                labelWeight: .regular,
-                text: "Observação: \(observation)",
-                color: UIColor.black20
-            )
+            if let observation {
+                StandardLabelRepresentable(
+                    labelFont: .sfPro,
+                    labelType: .footnote,
+                    labelWeight: .regular,
+                    text: "Observação: \(observation)",
+                    color: UIColor.black20
+                )
+            }
         }
     }
 }
 
 #Preview {
-    TaskReportItem(title: "Tomar banho", reception: "Bom bom", observation: "Houve dor e resquicios", time: .now, author: "Maria Clara")
+    DailyReportItem(title: "Tomar banho", reception: "Bom bom", observation: "Houve dor e resquicios", time: .now, author: "Maria Clara")
 }
 
 enum ExcretionColor {
