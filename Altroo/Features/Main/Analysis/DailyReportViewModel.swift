@@ -14,14 +14,13 @@ class DailyReportViewModel: ObservableObject {
     var basicNeedsFacade: BasicNeedsFacade
     var routineActivitiesFacade: RoutineActivitiesFacade
     
-    var hydrationRecords: [HydrationRecord] = []
-    var feedingRecords: [FeedingRecord] = []
-    var stoolRecords: [StoolRecord] = []
-    var urineRecords: [UrineRecord] = []
+    var hydrationRecords: [ReportItem] = []
+    var feedingRecords: [ReportItem] = []
+    var stoolRecords: [ReportItem] = []
+    var urineRecords: [ReportItem] = []
     
-    var tasksRecords: [TaskInstance] = []
-    var symptomRecords: [Symptom] = []
-
+    var tasksRecords: [ReportItem] = []
+    var symptomRecords: [ReportItem] = []
 
     init(basicNeedsFacade: BasicNeedsFacade, userService: UserServiceProtocol, careRecipientFacade: CareRecipientFacade, routineActivitiesFacade: RoutineActivitiesFacade) {
         self.basicNeedsFacade = basicNeedsFacade
@@ -40,13 +39,29 @@ class DailyReportViewModel: ObservableObject {
         guard let currentCareRecipient else { return }
                 
         hydrationRecords = basicNeedsFacade.fetchHydrations(for: currentCareRecipient)
+            .map { .hydration($0) }
         feedingRecords = basicNeedsFacade.fetchFeedings(for: currentCareRecipient)
+            .map { .feeding($0) }
+
         stoolRecords = basicNeedsFacade.fetchStools(for: currentCareRecipient)
+            .map { .stool($0) }
+
         urineRecords = basicNeedsFacade.fetchUrines(for: currentCareRecipient)
+            .map { .urine($0) }
         
         tasksRecords = routineActivitiesFacade.fetchAllInstanceRoutineTasks(from: currentCareRecipient)
-            .filter({$0.isDone})
-        symptomRecords = careRecipientFacade.fetchAllSymptoms(from: currentCareRecipient)
+            .filter { $0.isDone }
+            .map { .task($0) }
+
+        symptomRecords = careRecipientFacade.fetchAllSymptoms(from: currentCareRecipient)            .map { .symptom($0) }
+        
+        
+        print("Agua: \(hydrationRecords)")
+        print("Xixi: \(urineRecords)")
+        print("Coco: \(stoolRecords)")
+        print("Sintomas: \(symptomRecords)")
+        print("Gagau: \(tasksRecords)")
+
     }
     
     

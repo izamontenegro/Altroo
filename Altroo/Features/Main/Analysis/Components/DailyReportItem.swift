@@ -1,5 +1,5 @@
 //
-//  TaskReportItem.swift
+//  DailyReportItem.swift
 //  Altroo
 //
 //  Created by Raissa Parente on 04/11/25.
@@ -10,16 +10,17 @@ import SwiftUI
 struct DailyReportItem: View {
     let title: String
     
-    let coloration: ExcretionColor?
+    let stoolColoration: StoolColorsEnum?
+//    let urineColoration: StoolColorsEnum?
     let reception: String?
 
     let observation: String?
     let time: Date
     let author: String
     
-    init(title: String, coloration: ExcretionColor? = nil, reception: String? = nil, observation: String?, time: Date, author: String) {
+    init(title: String, stoolColoration: StoolColorsEnum? = nil, reception: String? = nil, observation: String?, time: Date, author: String) {
         self.title = title
-        self.coloration = coloration
+        self.stoolColoration = stoolColoration
         self.reception = reception
         self.observation = observation
         self.time = time
@@ -45,7 +46,7 @@ struct DailyReportItem: View {
                     .foregroundStyle(.blue20)
             }
             
-            if let coloration {
+            if let stoolColoration {
                 HStack {
                     Text("Coloração:")
                         .fontDesign(.rounded)
@@ -90,10 +91,3 @@ struct DailyReportItem: View {
     }
 }
 
-#Preview {
-    DailyReportItem(title: "Tomar banho", reception: "Bom bom", observation: "Houve dor e resquicios", time: .now, author: "Maria Clara")
-}
-
-enum ExcretionColor {
-    case piss, poop
-}
