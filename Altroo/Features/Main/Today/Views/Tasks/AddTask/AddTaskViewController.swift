@@ -44,16 +44,6 @@ class AddTaskViewController: TaskFormViewController {
         
     }
     
-    override func viewWillAppear(_ animated: Bool) {
-        super.viewWillAppear(animated)
-        NotificationCenter.default.post(name: .toggleTabBarVisibility, object: nil, userInfo: ["hidden": true])
-    }
-    
-    override func viewWillDisappear(_ animated: Bool) {
-        super.viewWillDisappear(animated)
-        NotificationCenter.default.post(name: .toggleTabBarVisibility, object: nil, userInfo: ["hidden": false])
-    }
-    
     func bindViewModel() {
         //name textfield
         NotificationCenter.default.publisher(for: UITextField.textDidChangeNotification, object: nameTexfield)

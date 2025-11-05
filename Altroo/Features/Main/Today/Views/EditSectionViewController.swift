@@ -18,16 +18,6 @@ class EditSectionViewController: GradientNavBarViewController {
         setupLayout()
         setupItems()
     }
-    
-    override func viewWillAppear(_ animated: Bool) {
-        super.viewWillAppear(animated)
-        NotificationCenter.default.post(name: .toggleTabBarVisibility, object: nil, userInfo: ["hidden": true])
-    }
-    
-    override func viewWillDisappear(_ animated: Bool) {
-        super.viewWillDisappear(animated)
-        NotificationCenter.default.post(name: .toggleTabBarVisibility, object: nil, userInfo: ["hidden": false])
-    }
 
     // MARK: - Subviews
     private let header = StandardHeaderView(title: "Editar Seção", subtitle: "Reordene ou oculte seção para personalizar a visualização.")

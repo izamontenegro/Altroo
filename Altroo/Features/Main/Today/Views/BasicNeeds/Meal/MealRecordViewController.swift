@@ -45,16 +45,6 @@ final class MealRecordViewController: GradientNavBarViewController {
         keyboardHandler = KeyboardHandler(viewController: self)
     }
     
-    override func viewWillAppear(_ animated: Bool) {
-        super.viewWillAppear(animated)
-        NotificationCenter.default.post(name: .toggleTabBarVisibility, object: nil, userInfo: ["hidden": true])
-    }
-    
-    override func viewWillDisappear(_ animated: Bool) {
-        super.viewWillDisappear(animated)
-        NotificationCenter.default.post(name: .toggleTabBarVisibility, object: nil, userInfo: ["hidden": false])
-    }
-    
     // MARK: - Layout
     
     private func setupLayout() {

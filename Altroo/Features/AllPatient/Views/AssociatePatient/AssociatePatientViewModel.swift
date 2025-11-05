@@ -11,9 +11,10 @@ final class AssociatePatientViewModel {
     init(userService: UserServiceProtocol) {
         self.userService = userService
     }
-
-    var allPatients: [CareRecipient] {
-        userService.fetchPatients()
+    
+    func fetchAvailableCareRecipients() -> [CareRecipient] {
+        let all = userService.fetchPatients()
+        return all
     }
     
     func setCurrentPatient(_ careRecipient: CareRecipient) {

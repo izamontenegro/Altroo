@@ -18,6 +18,7 @@ class AnalysisViewController: GradientNavBarViewController {
         label.translatesAutoresizingMaskIntoConstraints = false
         return label
     }()
+    
     override func viewDidLoad() {
         showBackButton = false
         super.viewDidLoad()
@@ -31,4 +32,10 @@ class AnalysisViewController: GradientNavBarViewController {
             viewLabel.centerYAnchor.constraint(equalTo: view.centerYAnchor)
         ])
     }
+    
+    override func viewWillAppear(_ animated: Bool) {
+        super.viewWillAppear(animated)
+        showTabBar(true)
+    }
+    
 }
