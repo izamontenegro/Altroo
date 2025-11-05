@@ -9,15 +9,16 @@ import UIKit
 import Combine
 
 class TaskFormViewController: GradientNavBarViewController {
+    private var keyboardHandler: KeyboardHandler?
 
-    let titleLabel = StandardLabel(labelText: "", labelFont: .sfPro, labelType: .title2, labelColor: UIColor(resource: .black10), labelWeight: .semibold)
+    let titleLabel = StandardHeaderView(title: "", subtitle: "")
     
     let confirmButton = StandardConfirmationButton(title: "")
     let deleteButton = OutlineButton(title: "Deletar", color: .red20)
     private var confirmBottomConstraint: NSLayoutConstraint?
 
     let nameTexfield = StandardTextfield(placeholder: "Nome")
-    let noteTexfield = StandardTextfield(placeholder: "Observação")
+    let noteTexfield = ObservationView()
 
     var hourPickers: [UIDatePicker] = []
     let addTimeButton = PrimaryStyleButton(title: "Novo Horário")
@@ -43,53 +44,79 @@ class TaskFormViewController: GradientNavBarViewController {
         stackView.translatesAutoresizingMaskIntoConstraints = false
         return stackView
     }()
+    
+    //sections
+    lazy var nameSection = FormSectionView(title: "Nome", content: nameTexfield)
+    private lazy var hourSection = FormSectionView(title: "Horário", content: hourStack)
+    private lazy var repeatSection = FormSectionView(title: "Repetir", content: weekdayRow)
+    lazy var startSection = FormSectionView(title: "Início", content: startDatePicker)
+    var endDateSection: UIView!
+    var continuousButton: PopupMenuButton!
+    private lazy var noteSection = FormSectionView(title: "Observações", content: noteTexfield)
 
-    let contentStack: UIStackView = {
-        let stackView = UIStackView()
+    private lazy var contentStack: UIStackView = {
+        let stackView = UIStackView(arrangedSubviews: [
+            titleLabel,
+            nameSection,
+            hourSection,
+            repeatSection,
+            dateStack,
+            noteSection,
+            confirmButton,
+            deleteButton
+        ])
         stackView.axis = .vertical
         stackView.alignment = .fill
         stackView.distribution = .fill
         stackView.spacing = 16
         stackView.translatesAutoresizingMaskIntoConstraints = false
+        
         return stackView
     }()
 
-    var endDateSection: UIView!
-    var continuousButton: PopupMenuButton!
-    var weekdayRow: RepeatDaysRow!
+    var weekdayRow: RepeatDaysRow = RepeatDaysRow()
     
-    var cancellables = Set<AnyCancellable>()
-    
+    private let scrollView = UIScrollView.make(direction: .vertical)
+        
     override func viewDidLoad() {
         super.viewDidLoad()
         setupUI()
+        keyboardHandler = KeyboardHandler(viewController: self)
     }
     
     func setupUI() {
         view.backgroundColor = .pureWhite
-        view.addSubview(titleLabel)
-        view.addSubview(confirmButton)
-        view.addSubview(contentStack)
+        view.addSubview(scrollView)
+        scrollView.addSubview(contentStack)
+        
+        nameTexfield.delegate = self
+        noteTexfield.textView.delegate = self
         
         NSLayoutConstraint.activate([
-            titleLabel.topAnchor.constraint(equalTo: view.safeAreaLayoutGuide.topAnchor, constant: 16),
-            titleLabel.leadingAnchor.constraint(equalTo: view.safeAreaLayoutGuide.leadingAnchor, constant: 16),
-            titleLabel.trailingAnchor.constraint(equalTo: view.safeAreaLayoutGuide.trailingAnchor, constant: -16),
+            scrollView.topAnchor.constraint(equalTo: view.safeAreaLayoutGuide.topAnchor),
+            scrollView.leadingAnchor.constraint(equalTo: view.leadingAnchor),
+            scrollView.trailingAnchor.constraint(equalTo: view.trailingAnchor),
+            scrollView.bottomAnchor.constraint(equalTo: view.bottomAnchor),
             
-            contentStack.topAnchor.constraint(equalTo: titleLabel.bottomAnchor, constant: 16),
-            contentStack.leadingAnchor.constraint(equalTo: view.safeAreaLayoutGuide.leadingAnchor, constant: 16),
-            contentStack.trailingAnchor.constraint(equalTo: view.safeAreaLayoutGuide.trailingAnchor, constant: -16),
-            
-            confirmButton.centerXAnchor.constraint(equalTo: view.centerXAnchor),
+            contentStack.topAnchor.constraint(equalTo: scrollView.contentLayoutGuide.topAnchor, constant: Layout.smallSpacing),
+            contentStack.leadingAnchor.constraint(equalTo: scrollView.contentLayoutGuide.leadingAnchor, constant: Layout.mediumSpacing),
+            contentStack.trailingAnchor.constraint(equalTo: scrollView.contentLayoutGuide.trailingAnchor, constant: -Layout.mediumSpacing),
+            contentStack.bottomAnchor.constraint(equalTo: scrollView.contentLayoutGuide.bottomAnchor, constant: -Layout.smallSpacing),
+            contentStack.widthAnchor.constraint(equalTo: scrollView.frameLayoutGuide.widthAnchor, constant: -2 * Layout.mediumSpacing)
         ])
+        
+        let tapGesture = UITapGestureRecognizer(target: self, action: #selector(dismissKeyboard))
+        tapGesture.cancelsTouchesInView = false
+        view.addGestureRecognizer(tapGesture)
     }
 
-    func configure(title: String, confirmButtonText: String, showDelete: Bool = false) {
-        titleLabel.text = title
+    func configure(title: String, subtitle: String, confirmButtonText: String, showDelete: Bool = false) {
+        titleLabel.update(title: title, subtitle: subtitle)
+        
         confirmButton.updateTitle(confirmButtonText)
         
         if showDelete {
-            deleteButton.updateColor(.red10)
+//            deleteButton.updateColor(.red10)
             view.addSubview(deleteButton)
             NSLayoutConstraint.activate([
                 deleteButton.centerXAnchor.constraint(equalTo: view.centerXAnchor),
@@ -105,32 +132,14 @@ class TaskFormViewController: GradientNavBarViewController {
     }
 
     func setupContent() {
-            //name
-            let nameSection = FormSectionView(title: "Nome", content: nameTexfield)
-            contentStack.addArrangedSubview(nameSection)
-
-            //time
-            let hourSection = FormSectionView(title: "Horário", content: hourStack)
             hourStack.addArrangedSubview(addTimeButton)
-            contentStack.addArrangedSubview(hourSection)
-
-            //repeat
-            weekdayRow = RepeatDaysRow()
-            let repeatSection = FormSectionView(title: "Repetir", content: weekdayRow)
-            contentStack.addArrangedSubview(repeatSection)
 
             //duration
             startDatePicker.addTarget(self, action: #selector(startDateChanged(_:)), for: .valueChanged)
-            let startSection = FormSectionView(title: "Início", content: startDatePicker)
             endDatePicker.addTarget(self, action: #selector(endDateChanged(_:)), for: .valueChanged)
             endDateSection = FormSectionView(title: "Término", content: endDatePicker)
             
             dateStack.addArrangedSubview(startSection)
-            contentStack.addArrangedSubview(dateStack)
-
-            //notes
-            let noteSection = FormSectionView(title: "Observações", content: noteTexfield)
-            contentStack.addArrangedSubview(noteSection)
         }
     
     private func updateEndDateVisibility(_ isContinuous: Bool) {
@@ -160,5 +169,27 @@ class TaskFormViewController: GradientNavBarViewController {
 
     @objc func startDateChanged(_ picker: UIDatePicker) {}
     @objc func endDateChanged(_ picker: UIDatePicker) {}
+    
+    @objc private func dismissKeyboard() {
+        view.endEditing(true)
+    }
 }
 
+extension TaskFormViewController: UITextFieldDelegate {
+    func textFieldShouldReturn(_ textField: UITextField) -> Bool {
+        textField.resignFirstResponder()
+        return true
+    }
+}
+
+extension TaskFormViewController: UITextViewDelegate {
+    func textView(_ textView: UITextView,
+                  shouldChangeTextIn range: NSRange,
+                  replacementText text: String) -> Bool {
+        if text == "\n" {
+            textView.resignFirstResponder()
+            return false
+        }
+        return true
+    }
+}

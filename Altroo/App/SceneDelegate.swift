@@ -23,20 +23,21 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
         let navigation = UINavigationController()
         
         let appCoordinator = AppCoordinator(rootNavigation: navigation)
-        appCoordinator.start()
-        
-        window.overrideUserInterfaceStyle = .light
+                
         window.rootViewController = navigation
         window.makeKeyAndVisible()
+        window.overrideUserInterfaceStyle = .light
         
         self.window = window
         self.appCoordinator = appCoordinator
+        
+        Task {
+            await appCoordinator.start()
+        }
     }
     
     func windowScene(_ windowScene: UIWindowScene,
                      userDidAcceptCloudKitShareWith cloudKitShareMetadata: CKShare.Metadata) {
-
-        print("Usuário aceitou um CloudKit Share")
 
         let shareStore = CoreDataStack.shared.sharedPersistentStore
         let persistentContainer = CoreDataStack.shared.persistentContainer
@@ -44,17 +45,18 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
         persistentContainer.acceptShareInvitations(from: [cloudKitShareMetadata],
                                                    into: shareStore) { _, error in
             if let error {
-                print("Erro ao aceitar o CloudKit Share: \(error)")
+                print("Error accepting CloudKit Share: \(error)")
             } else {
-                print("Convite CloudKit Share aceito com sucesso.")
+                print("CloudKit Share invitation successfully accepted..")
                 
                 DispatchQueue.main.async {
                     self.appCoordinator?.receivedPatientViaShare = true
-                    self.appCoordinator?.start()
+                    
+                    Task {
+                        await self.appCoordinator?.start()
+                    }
                 }
             }
-            
-
         }
     }
 }

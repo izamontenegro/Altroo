@@ -7,7 +7,7 @@
 
 import UIKit
 
-class ComorbiditiesFormsViewController: GradientNavBarViewController {
+class ComorbiditiesFormsViewController: UIViewController {
     
     weak var delegate: AssociatePatientViewControllerDelegate?
     private let viewModel: AddPatientViewModel
@@ -43,11 +43,8 @@ class ComorbiditiesFormsViewController: GradientNavBarViewController {
     
     private let nextStepButton = StandardConfirmationButton(title: "Próximo")
     
-    private lazy var bedriddenButton: BedriddenButton = {
-        let button = BedriddenButton(bedriddenState: .movement)
-        button.translatesAutoresizingMaskIntoConstraints = false
-        return button
-    }()
+    let bedriddenMovableButton = BedriddenButton(bedriddenState: .movement)
+    let bedriddenNoMovementButton = BedriddenButton(bedriddenState: .noMovement)
     
     private let firstRowStack: UIStackView = {
         let stack = UIStackView()
@@ -71,7 +68,7 @@ class ComorbiditiesFormsViewController: GradientNavBarViewController {
         let stack = UIStackView()
         stack.axis = .vertical
         stack.spacing = Layout.largeSpacing
-        stack.alignment = .center
+        stack.alignment = .fill
         stack.translatesAutoresizingMaskIntoConstraints = false
         return stack
     }()
@@ -79,11 +76,8 @@ class ComorbiditiesFormsViewController: GradientNavBarViewController {
     private var selectedComorbidities: Set<String> = []
 
     override func viewDidLoad() {
-        super.viewDidLoad()
-
         view.backgroundColor = .pureWhite
         
-        setupNavBar()
         setupComorbidityButtons()
         
         label1.numberOfLines = 0
@@ -97,9 +91,9 @@ class ComorbiditiesFormsViewController: GradientNavBarViewController {
         mainStack.addArrangedSubview(label2)
         mainStack.setCustomSpacing(Layout.smallSpacing, after: label2)
         mainStack.addArrangedSubview(secondRowStack)
-        mainStack.addArrangedSubview(nextStepButton)
         
         view.addSubview(mainStack)
+        view.addSubview(nextStepButton)
         
         NSLayoutConstraint.activate([
             mainStack.topAnchor.constraint(equalTo: view.safeAreaLayoutGuide.topAnchor, constant: Layout.smallSpacing),
@@ -112,19 +106,17 @@ class ComorbiditiesFormsViewController: GradientNavBarViewController {
             label2.widthAnchor.constraint(equalTo: mainStack.widthAnchor),
             secondRowStack.widthAnchor.constraint(equalTo: mainStack.widthAnchor),
             
-            nextStepButton.heightAnchor.constraint(equalToConstant: 46),
-            nextStepButton.widthAnchor.constraint(equalToConstant: 215),
+            nextStepButton.bottomAnchor.constraint(equalTo: view.safeAreaLayoutGuide.bottomAnchor, constant: -Layout.mediumSpacing),
+            nextStepButton.centerXAnchor.constraint(equalTo: view.centerXAnchor),
+            nextStepButton.heightAnchor.constraint(equalToConstant: 44)
         ])
         
         nextStepButton.addTarget(self, action: #selector(didTapDoneButton), for: .touchUpInside)
     }
     
-    private func setupNavBar() {
-        setNavbarTitle("Adicionar Paciente")
-    }
     
     private func setupComorbidityButtons() {
-        let firstRowDiseases: [ComorbidityButton.Comorbidity] = [.heartFailure, .diabetes, .hypertension]
+        let firstRowDiseases: [ComorbidityButton.Comorbidity] = [.circulatory, .diabetes, .cognition]
         for disease in firstRowDiseases {
             let button = ComorbidityButton(comorbidity: disease)
             button.addTarget(self, action: #selector(didTapComorbidityButton(_:)), for: .touchUpInside)
@@ -137,9 +129,6 @@ class ComorbiditiesFormsViewController: GradientNavBarViewController {
             
             firstRowStack.addArrangedSubview(button)
         }
-        
-        let bedriddenMovableButton = BedriddenButton(bedriddenState: .movement)
-        let bedriddenNoMovementButton = BedriddenButton(bedriddenState: .noMovement)
 
         bedriddenMovableButton.addTarget(self, action: #selector(didTapBedriddenButton(_:)), for: .touchUpInside)
         bedriddenNoMovementButton.addTarget(self, action: #selector(didTapBedriddenButton(_:)), for: .touchUpInside)
@@ -173,9 +162,16 @@ class ComorbiditiesFormsViewController: GradientNavBarViewController {
 
         switch sender.bedriddenState {
         case .movement:
+            if bedriddenStatus != .notBedridden {
+                bedriddenNoMovementButton.toggleState()
+            }
             bedriddenStatus = .bedriddenMovable
+        
         case .noMovement:
-            bedriddenStatus = .notBedridden
+            if bedriddenStatus != .notBedridden {
+                bedriddenMovableButton.toggleState()
+            }
+            bedriddenStatus = .bedriddenImmobile
         }
     }
     

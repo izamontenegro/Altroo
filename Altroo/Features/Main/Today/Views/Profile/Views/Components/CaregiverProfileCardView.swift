@@ -91,7 +91,6 @@ class CaregiverProfileCardView: UIView {
             labelColor: .black10,
             labelWeight: .medium
         )
-
        
         let subtitleLabel = StandardLabel(
             labelText: "Cuidador",

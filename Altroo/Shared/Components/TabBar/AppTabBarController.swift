@@ -39,6 +39,9 @@ final class AppTabBarController: UITabBarController, UITabBarControllerDelegate 
         setupAppearance()
         setupCustomTabBar()
         
+        customTabBar.isHidden = true
+        customTabBar.alpha = 0
+        
         NotificationCenter.default.addObserver(
             self,
             selector: #selector(handleTabBarVisibility(_:)),
@@ -51,7 +54,6 @@ final class AppTabBarController: UITabBarController, UITabBarControllerDelegate 
     override func viewWillLayoutSubviews() {
         super.viewWillLayoutSubviews()
         tabBar.isHidden = true
-        tabBar.frame = .zero
     }
     
     private func setupAppearance() {
@@ -72,6 +74,9 @@ final class AppTabBarController: UITabBarController, UITabBarControllerDelegate 
             customTabBar.heightAnchor.constraint(equalToConstant: 70)
         ])
         
+        customTabBar.isHidden = true
+        customTabBar.alpha = 0
+        
         cancallable = model.$currentTab.sink { [weak self] value in
             guard let self else { return }
             self.selectTab(value)
@@ -84,9 +89,10 @@ final class AppTabBarController: UITabBarController, UITabBarControllerDelegate 
     
     private func selectTab(_ tab: Tab) {
         switch tab {
-        case .today: selectedIndex = 0
-        case .history: selectedIndex = 1
-        case .report: selectedIndex = 2
+//        case .patients: selectedIndex = 0
+        case .report: selectedIndex = 0
+        case .today: selectedIndex = 1
+        case .history: selectedIndex = 2
         case .settings: selectedIndex = 3
         }
     }
@@ -94,9 +100,10 @@ final class AppTabBarController: UITabBarController, UITabBarControllerDelegate 
     func tabBarController(_ tabBarController: UITabBarController, didSelect viewController: UIViewController) {
         let newTab: Tab
         switch selectedIndex {
-        case 0: newTab = .today
-        case 1: newTab = .history
-        case 2: newTab = .report
+//        case 0: newTab = .patients
+        case 0: newTab = .report
+        case 1: newTab = .today
+        case 2: newTab = .history
         case 3: newTab = .settings
         default: newTab = .today
         }
@@ -143,7 +150,28 @@ extension AppTabBarController {
     }
 }
 
+extension AppTabBarController: UINavigationControllerDelegate {
+    func navigationController(
+        _ navigationController: UINavigationController,
+        willShow viewController: UIViewController,
+        animated: Bool
+    ) {
+        let isRoot = navigationController.viewControllers.count == 1
+        setTabBar(hidden: !isRoot, animated: false)
+    }
+}
+
 
 extension Notification.Name {
     static let toggleTabBarVisibility = Notification.Name("toggleTabBarVisibility")
+}
+
+extension UIViewController {
+    func showTabBar(_ show: Bool) {
+        NotificationCenter.default.post(
+            name: .toggleTabBarVisibility,
+            object: nil,
+            userInfo: ["hidden": !show]
+        )
+    }
 }

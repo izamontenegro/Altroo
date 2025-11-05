@@ -26,16 +26,6 @@ final class HydrationRecordViewController: GradientNavBarViewController {
         fatalError("init(coder:) has not been implemented")
     }
 
-    override func viewWillAppear(_ animated: Bool) {
-        super.viewWillAppear(animated)
-        tabBarController?.tabBar.isHidden = true
-    }
-
-    override func viewWillDisappear(_ animated: Bool) {
-        super.viewWillDisappear(animated)
-        tabBarController?.tabBar.isHidden = false
-    }
-
     override func viewDidLoad() {
         super.viewDidLoad()
         view.backgroundColor = .pureWhite
@@ -54,12 +44,13 @@ final class HydrationRecordViewController: GradientNavBarViewController {
     // MARK: - Layout
     private func setupLayout() {
 
+        let header = StandardHeaderView(title: "Registrar Hidratação", subtitle: "Registre a quantidade ingerida de líquidos")
         let amountSection = makeAmountSection()
         let customSection = makeCustomValueSection()
         
         confirmationButton = configureConfirmationButton()
         
-        let contentStack = UIStackView(arrangedSubviews: [amountSection, customSection])
+        let contentStack = UIStackView(arrangedSubviews: [header, amountSection, customSection])
         contentStack.axis = .vertical
         contentStack.spacing = 24
         contentStack.translatesAutoresizingMaskIntoConstraints = false

@@ -21,15 +21,17 @@ final class AddPatientViewModel: ObservableObject {
     @Published var weight: Double = 0
     @Published var address: String = ""
     
-    @Published var contacts: [ContactDraft] = []
+    @Published var contact: ContactDraft = ContactDraft(name: "")
     @Published var diseases: [DiseaseDraft] = []
     @Published var bedriddenStatus: BedriddenStatus = .notBedridden
     
     @Published var userName: String = ""
     @Published var userNameError: String?
-    let relationshipOptions = ["Cuidador","Mãe", "Pai", "Filho", "Filha", "Familiar", "Amigo", "Outro"]
-    @Published var selectedRelationship: String = "Cuidador"
-    var isAllDay = false
+    let relationshipOptions = ["Cuidador", "Mãe/Pai", "Filha/Filho", "Neta/Neto", "Familiar", "Amigo", "Outro"]
+    @Published var selectedUserRelationship: String = "Cuidador"
+    @Published var selectedContactRelationship: String = "Filha/Filho"
+
+    @Published var isAllDay = true
     
     @Published private(set) var fieldErrors: [String: String] = [:]
     private let validator = FormValidator()
@@ -57,9 +59,10 @@ final class AddPatientViewModel: ObservableObject {
         self.address = address
     }
     
-    func addContact(name: String, contactDescription: String?, contactMethod: String?) {
-        let contact = ContactDraft(name: name, description: contactDescription, method: contactMethod)
-        contacts.append(contact)
+    func updateContact(name: String, phone: String?) {
+        contact.name = name
+        contact.phone = phone
+        contact.relationship = selectedContactRelationship
     }
     
     func updateHealthProblems(diseases: [DiseaseDraft], bedriddenStatus: BedriddenStatus) {
@@ -68,45 +71,47 @@ final class AddPatientViewModel: ObservableObject {
     }
     
     func finalizeCareRecipient() {        
-        newPatient = careRecipientFacade.buildCareRecipient { pd, pc, hp, mental, physical, routine, basicNeeds, event, symptom in
+        newPatient = careRecipientFacade.buildCareRecipient { personalData, personalCare, healthProblems, mental, physical, routine, basicNeeds, event, symptom in
             
             // Personal Data
-            self.careRecipientFacade.addName(name: self.name, in: pd)
-            self.careRecipientFacade.addGender(gender: self.gender, in: pd)
-            self.careRecipientFacade.addDateOfBirth(birthDate: self.dateOfBirth, in: pd)
-            self.careRecipientFacade.addHeight(height: self.height, in: pd)
-            self.careRecipientFacade.addWeight(weight: self.weight, in: pd)
-            self.careRecipientFacade.addAddress(address: self.address, in: pd)
+            self.careRecipientFacade.addName(name: self.name, in: personalData)
+            self.careRecipientFacade.addGender(gender: self.gender, in: personalData)
+            self.careRecipientFacade.addDateOfBirth(birthDate: self.dateOfBirth, in: personalData)
+            self.careRecipientFacade.addHeight(height: self.height, in: personalData)
+            self.careRecipientFacade.addWeight(weight: self.weight, in: personalData)
+            self.careRecipientFacade.addAddress(address: self.address, in: personalData)
             
             // Contacts
-            for contact in self.contacts {
+            if !contact.name.isEmpty {
                 self.careRecipientFacade.addContact(
                     name: contact.name,
-                    contactDescription: contact.description,
-                    contactMethod: contact.method,
-                    in: pd
+                    relationship: contact.relationship,
+                    phone: contact.phone,
+                    in: personalData
                 )
             }
             
             // Health Problems
             for disease in self.diseases {
-                self.careRecipientFacade.addDisease(name: disease.name, in: hp)
+                self.careRecipientFacade.addDisease(name: disease.name, in: healthProblems)
             }
-            hp.bedridden = self.bedriddenStatus.rawValue
+            healthProblems.bedridden = self.bedriddenStatus.rawValue
         }
         
         guard let newPatient else { return }
         userService.addPatient(newPatient)
         userService.setCurrentPatient(newPatient)
         
-        contacts = []
+        guard let user = userService.fetchUser() else { return }
+        careRecipientFacade.addCaregiver(newPatient, for: user)
+                
         diseases = []
         bedriddenStatus = .notBedridden
     }
     
     func finalizeUser(startDate: Date, endDate: Date) {
         userService.setName(userName)
-        userService.setCategory(selectedRelationship)
+        userService.setCategory(selectedUserRelationship)
         
         if isAllDay {
             userService.setShift([.afternoon, .overnight, .morning, .night])
@@ -120,8 +125,8 @@ final class AddPatientViewModel: ObservableObject {
 struct ContactDraft: Identifiable {
     let id = UUID()
     var name: String
-    var description: String?
-    var method: String?
+    var relationship: String?
+    var phone: String?
 }
 
 struct DiseaseDraft: Identifiable {
@@ -135,11 +140,17 @@ extension AddPatientViewModel {
     func validateProfile() -> Bool {
         var newErrors: [String: String] = [:]
 
-        _ = validator.isEmpty(name, fieldName: "Nome", error: &newErrors["name"])
+        _ = validator.isEmpty(name, error: &newErrors["name"])
         
-        //FIXME: COMO É A VALIDAÇÃO?
-//        _ = validator.invalidValue(value: Int(weight), minValue: 30, maxValue: 300, error: &newErrors["weight"])
-//        _ = validator.invalidValue(value: Int(height), minValue: 50, maxValue: 300, error: &newErrors["height"])
+        if !weight.isZero {
+            _ = validator.invalidValue(value: Int(weight), minValue: 0, maxValue: 999, error: &newErrors["weight"])
+        }
+        
+        if !height.isZero {
+            _ = validator.invalidValue(value: Int(height), minValue: 9, maxValue: 999, error: &newErrors["height"])
+        }
+        
+        _ = validator.checkAge(13, date: dateOfBirth, error: &newErrors["age"])
 
         fieldErrors = newErrors
 
@@ -147,7 +158,7 @@ extension AddPatientViewModel {
     }
     
     func validateUser() -> Bool {
-        guard validator.isEmpty(userName, fieldName: "Nome", error: &userNameError) else { return false }
+        guard validator.isEmpty(userName, error: &userNameError) else { return false }
         return true
     }
 }

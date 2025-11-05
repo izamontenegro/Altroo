@@ -1,17 +1,18 @@
 //
-//  PrivacySecurityViewController.swift
+//  AnalysisViewController.swift
 //  Altroo
 //
-//  Created by Raissa Parente on 02/10/25.
+//  Created by Izadora de Oliveira Albuquerque Montenegro on 22/09/25.
 //
 
 import UIKit
 
-class PrivacySecurityViewController: UIViewController {
+class AnalysisViewController: GradientNavBarViewController {
 
     let viewLabel: UILabel = {
         let label = UILabel()
-        label.text = "Privacy Policy View"
+        label.text = "Relatórios Em breve"
+        label.tintColor = .black10
         label.textAlignment = .center
         
         label.translatesAutoresizingMaskIntoConstraints = false
@@ -19,9 +20,10 @@ class PrivacySecurityViewController: UIViewController {
     }()
     
     override func viewDidLoad() {
+        showBackButton = false
         super.viewDidLoad()
 
-        view.backgroundColor = .systemIndigo
+        view.backgroundColor = .blue80
         
         view.addSubview(viewLabel)
         
@@ -30,4 +32,10 @@ class PrivacySecurityViewController: UIViewController {
             viewLabel.centerYAnchor.constraint(equalTo: view.centerYAnchor)
         ])
     }
+    
+    override func viewWillAppear(_ animated: Bool) {
+        super.viewWillAppear(animated)
+        showTabBar(true)
+    }
+    
 }

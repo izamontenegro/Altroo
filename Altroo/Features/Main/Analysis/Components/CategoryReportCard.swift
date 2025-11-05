@@ -9,6 +9,7 @@ import SwiftUI
 
 struct CategoryReportCard: View {
     let categoryName: String
+    let categoryIconName: String
     let reports: [String]
     
     @State var isOpen: Bool = true
@@ -21,14 +22,14 @@ struct CategoryReportCard: View {
                 .foregroundStyle(.blue30)
                 .overlay {
                     HStack {
-                        Image(systemName: "waterbottle.fill")
+                        Image(systemName: categoryIconName)
                             .foregroundStyle(.white)
                         
                         StandardLabelRepresentable(
                             labelFont: .sfPro,
                             labelType: .body,
                             labelWeight: .semibold,
-                            text: "Alimentação",
+                            text: categoryName,
                             color: UIColor.white
                         )
                         
@@ -53,7 +54,7 @@ struct CategoryReportCard: View {
         }
     }
 }
-
-#Preview {
-    CategoryReportCard(categoryName: "Fezes", reports: [])
-}
+//
+//#Preview {
+//    CategoryReportCard(categoryName: "Fezes", reports: [])
+//}

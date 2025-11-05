@@ -7,7 +7,7 @@
 import UIKit
 
 class SymptomFormViewController: GradientNavBarViewController {
-    let titleLabel = StandardLabel(labelText: "", labelFont: .sfPro, labelType: .title2, labelColor: .black, labelWeight: .semibold)
+    let titleLabel = StandardHeaderView(title: "", subtitle: "")
     
     let confirmButton = StandardConfirmationButton(title: "")
     let deleteButton = OutlineButton(title: "Deletar", color: .red20)
@@ -20,6 +20,9 @@ class SymptomFormViewController: GradientNavBarViewController {
     let timePicker: UIDatePicker = UIDatePicker.make(mode: .time)
     let datePicker: UIDatePicker = UIDatePicker.make(mode: .date)
     
+    lazy var nameSection = FormSectionView(title: "Nome", content: nameTexfield)
+    lazy var dateSection = FormSectionView(title: "Data", content: datePicker)
+
     let contentStack: UIStackView = {
         let stackView = UIStackView(arrangedSubviews: [])
         stackView.axis = .vertical
@@ -51,29 +54,30 @@ class SymptomFormViewController: GradientNavBarViewController {
     func setupUI() {
         view.backgroundColor = .white
         
-        view.addSubview(titleLabel)
         view.addSubview(confirmButton)
         
         setupContent()
         
         NSLayoutConstraint.activate([
-            titleLabel.topAnchor.constraint(equalTo: view.safeAreaLayoutGuide.topAnchor, constant: Layout.mediumSpacing),
-            titleLabel.leadingAnchor.constraint(equalTo: view.safeAreaLayoutGuide.leadingAnchor, constant: Layout.mediumSpacing),
-            titleLabel.trailingAnchor.constraint(equalTo: view.safeAreaLayoutGuide.trailingAnchor, constant: -Layout.mediumSpacing),
             
-            contentStack.topAnchor.constraint(equalTo: titleLabel.bottomAnchor, constant: Layout.mediumSpacing),
+            contentStack.topAnchor.constraint(equalTo: view.safeAreaLayoutGuide.topAnchor, constant: Layout.mediumSpacing),
             contentStack.leadingAnchor.constraint(equalTo: view.safeAreaLayoutGuide.leadingAnchor, constant: Layout.mediumSpacing),
             contentStack.trailingAnchor.constraint(equalTo: view.safeAreaLayoutGuide.trailingAnchor, constant: -Layout.mediumSpacing),
             
             confirmButton.centerXAnchor.constraint(equalTo: view.centerXAnchor),
         ])
+        
+        let tapGesture = UITapGestureRecognizer(target: self, action: #selector(dismissKeyboard))
+        tapGesture.cancelsTouchesInView = false
+        view.addGestureRecognizer(tapGesture)
     }
     
     func setupContent() {
         view.addSubview(contentStack)
+        contentStack.addArrangedSubview(titleLabel)
+        
         //name
         nameTexfield.placeholder = "Nome da intercorrência"
-        let nameSection = FormSectionView(title: "Nome", content: nameTexfield)
         contentStack.addArrangedSubview(nameSection)
         
         //notes
@@ -83,26 +87,21 @@ class SymptomFormViewController: GradientNavBarViewController {
         
         //time
         let timeSection = FormSectionView(title: "Horário", content: timePicker)
-        
-        //start
-        let dateSection = FormSectionView(title: "Data", content: datePicker)
-        
+                
         //date and time
-        let dateTimeStack = UIStackView(arrangedSubviews: [])
+        let dateTimeStack = UIStackView(arrangedSubviews: [dateSection, timeSection])
         dateTimeStack.axis = .horizontal
         dateTimeStack.distribution = .equalSpacing
         dateTimeStack.translatesAutoresizingMaskIntoConstraints = false
-        dateTimeStack.addArrangedSubview(dateSection)
-        dateTimeStack.addArrangedSubview(timeSection)
         contentStack.addArrangedSubview(dateTimeStack)
     }
     
-    func configure(title: String, confirmButtonText: String, showDelete: Bool = false) {
-        titleLabel.text = title
+    func configure(title: String, subtitle: String, confirmButtonText: String, showDelete: Bool = false) {
+        titleLabel.update(title: title, subtitle: subtitle)
         confirmButton.updateTitle(confirmButtonText)
         
         if showDelete {
-            deleteButton.updateColor(.red10)
+//            deleteButton.updateColor(.red10)
             view.addSubview(deleteButton)
             NSLayoutConstraint.activate([
                 deleteButton.centerXAnchor.constraint(equalTo: view.centerXAnchor),
@@ -115,6 +114,11 @@ class SymptomFormViewController: GradientNavBarViewController {
             confirmBottomConstraint = confirmButton.bottomAnchor.constraint(equalTo: view.safeAreaLayoutGuide.bottomAnchor, constant: -Layout.smallButtonBottomPadding)
             confirmBottomConstraint?.isActive = true
         }
+    }
+    
+    @objc
+    private func dismissKeyboard() {
+        view.endEditing(true)
     }
 }
 

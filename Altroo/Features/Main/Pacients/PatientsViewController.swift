@@ -1,17 +1,17 @@
 //
-//  AnalysisViewController.swift
+//  PatientsViewControllerr.swift
 //  Altroo
 //
-//  Created by Izadora de Oliveira Albuquerque Montenegro on 22/09/25.
+//  Created by Marcelle Ribeiro Queiroz on 30/10/25.
 //
 
 import UIKit
 
-class AnalysisViewController: GradientNavBarViewController {
+class PatientsViewController: GradientNavBarViewController {
 
     let viewLabel: UILabel = {
         let label = UILabel()
-        label.text = "Relatórios Em breve"
+        label.text = "Assistidos"
         label.tintColor = .black10
         label.textAlignment = .center
         

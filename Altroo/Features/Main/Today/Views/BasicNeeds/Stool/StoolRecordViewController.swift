@@ -45,20 +45,10 @@ final class StoolRecordViewController: GradientNavBarViewController {
         bindViewModel()
     }
     
-    override func viewWillAppear(_ animated: Bool) {
-        super.viewWillAppear(animated)
-        NotificationCenter.default.post(name: .toggleTabBarVisibility, object: nil, userInfo: ["hidden": true])
-    }
-    
-    override func viewWillDisappear(_ animated: Bool) {
-        super.viewWillDisappear(animated)
-        NotificationCenter.default.post(name: .toggleTabBarVisibility, object: nil, userInfo: ["hidden": false])
-    }
-    
     // MARK: - View Layout
     
     private func setupLayout() {
-        let viewTitle = StandardLabel(labelText: "Registrar fezes", labelFont: .sfPro, labelType: .title2, labelColor: .black10, labelWeight: .semibold)
+        let viewTitle = StandardHeaderView(title: "Registrar fezes", subtitle: "Registre uma evacuação e as características das fezes do assistido.")
         
         let content = UIStackView()
         content.axis = .vertical
