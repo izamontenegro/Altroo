@@ -74,7 +74,8 @@ extension DefaultAppFactory {
     }
     
     func makeAnalysisViewController() -> UIViewController {
-        let vc = AnalysisViewController()
+        let vm = DailyReportViewModel(basicNeedsFacade: dependencies.basicNeedsFacade, userService: dependencies.userService, careRecipientFacade: dependencies.careRecipientFacade, routineActivitiesFacade: dependencies.routineActivitiesFacade)
+        let vc = AnalysisViewController(viewModel: vm)
         return vc
     }
     
