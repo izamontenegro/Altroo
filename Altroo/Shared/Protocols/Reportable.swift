@@ -14,7 +14,7 @@ protocol Reportable {
 }
 
 extension StoolRecord: Reportable {
-    var reportTitle: String { "Fezes" }
+    var reportTitle: String { self.formatType?.displayText ?? "Fezes" }
     var reportTime: Date? { self.date }
     var reportAuthor: String? { self.author }
     var reportNotes: String? { self.notes }
@@ -82,12 +82,21 @@ enum ReportItem: Identifiable {
     
     var base: Reportable {
         switch self {
-        case .urine(let r): return r
-        case .stool(let r): return r
-        case .feeding(let r): return r
-        case .task(let r): return r
-        case .hydration(let r): return r
-        case .symptom(let r): return r
+        case .urine(let record): return record
+        case .stool(let record): return record
+        case .feeding(let record): return record
+        case .task(let record): return record
+        case .hydration(let record): return record
+        case .symptom(let record): return record
         }
     }
+}
+
+enum ReportItemType: CaseIterable {
+    case stool
+    case urine
+    case feeding
+    case hydration
+    case task
+    case symptom
 }

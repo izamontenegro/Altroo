@@ -44,7 +44,7 @@ class HydrationService: HydrationServiceProtocol {
     func fetchHydrations(for careRecipient: CareRecipient) -> [HydrationRecord] {
         guard let context = careRecipient.managedObjectContext else { return [] }
         let request: NSFetchRequest<HydrationRecord> = HydrationRecord.fetchRequest()
-        request.predicate = NSPredicate(format: "careRecipient == %@", careRecipient)
+        request.predicate = NSPredicate(format: "basicNeeds.careRecipient == %@", careRecipient)
         request.sortDescriptors = [NSSortDescriptor(key: "date", ascending: false)]
 
         do {

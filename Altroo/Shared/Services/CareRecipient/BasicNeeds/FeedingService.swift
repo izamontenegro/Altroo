@@ -46,7 +46,7 @@ class FeedingService: FeedingServiceProtocol {
     func fetchFeedings(for careRecipient: CareRecipient) -> [FeedingRecord] {
         guard let context = careRecipient.managedObjectContext else { return []}
         let request: NSFetchRequest<FeedingRecord> = FeedingRecord.fetchRequest()
-        request.predicate = NSPredicate(format: "careRecipient == %@", careRecipient)
+        request.predicate = NSPredicate(format: "basicNeeds.careRecipient == %@", careRecipient)
         request.sortDescriptors = [
             NSSortDescriptor(key: "date", ascending: false)
         ]
