@@ -163,7 +163,11 @@ final class MedicalRecordProgressView: UIView {
         let healthProblems = careRecipient.healthProblems
         check(healthProblems?.observation)
         checkArray(healthProblems?.allergies)
-        checkArray(healthProblems?.surgery)
+        // REMOVIDO DA PORCENTAGEM DE CONCLUSÃO:
+        // O que faz: exclui o campo "cirurgia" do cálculo de conclusão.
+        // Como faz: não chama nenhuma função de "check" para cirurgia.
+        // Por quê: por regra de produto você solicitou que cirurgias não influenciem a porcentagem.
+        // checkArray(healthProblems?.surgery)
 
         let mentalState = careRecipient.mentalState
         check(mentalState?.cognitionState)

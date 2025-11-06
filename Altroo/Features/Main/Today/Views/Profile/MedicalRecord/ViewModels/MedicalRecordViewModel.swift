@@ -22,6 +22,19 @@ final class MedicalRecordViewModel {
     @Published private(set) var sections: [MedicalRecordSectionVM] = []
     @Published private(set) var completionPercent: CGFloat = 0.0
     
+    // NOVO: itens formatados especificamente para "Cirurgias" (nome + data)
+    // O que é: armazena os itens que a View usará para renderizar com duas linhas.
+    // Como: cada tupla traz o título da seção (sempre "Cirurgias"), o texto principal (nome) e o secundário (data formatada).
+    // Por quê: precisamos aplicar cor/tamanho diferentes para a data sem alterar o contrato de InfoRow.
+    var surgeryDisplayItems: [(title: String, primary: String, secondary: String)] = []
+    
+    // NOVO: formatter para data de cirurgia no padrão dd/MM/yyyy
+    private let surgeryDateFormatter: DateFormatter = {
+        let dateFormatter = DateFormatter()
+        dateFormatter.dateFormat = "dd/MM/yyyy"
+        return dateFormatter
+    }()
+    
     init(userService: UserServiceProtocol) {
         self.userService = userService
         rebuildOutputs()
@@ -55,15 +68,27 @@ final class MedicalRecordViewModel {
     func healthProblemsText(person: CareRecipient) -> String {
         let healthProblems = person.healthProblems
         let diseasesList = MedicalRecordFormatter.diseasesBulletList(from: healthProblems?.diseases as? Set<Disease>)
-        let surgeries = (healthProblems?.surgery as? [String])?.joined(separator: "\n") ?? "—"
-        let allergies = (healthProblems?.allergies as? [String])?.joined(separator: ", ") ?? "—"
+        
+        // AJUSTE: ler do relacionamento to-many "surgeries" e montar "Nome\nData"
+        let surgeriesSet = healthProblems?.surgeries as? Set<Surgery> ?? []
+        let surgeriesBlocks = surgeriesSet
+            .sorted { ($0.date ?? .distantPast) < ($1.date ?? .distantPast) }
+            .map { surgery -> String in
+                let name = surgery.name ?? "—"
+                let dateString = surgery.date.map { surgeryDateFormatter.string(from: $0) } ?? "—"
+                return "\(name)\n\(dateString)"
+            }
+            .joined(separator: "\n\n")
+        let surgeriesText = surgeriesBlocks.isEmpty ? "—" : surgeriesBlocks
+        
+        let allergies = healthProblems?.allergies ?? "—"
         let observation = healthProblems?.observation ?? "—"
         return """
         Doenças:
         \(diseasesList)
 
         Cirurgias
-        \(surgeries)
+        \(surgeriesText)
 
         Alergias
         \(allergies)
@@ -123,12 +148,13 @@ final class MedicalRecordViewModel {
         guard let person = currentPatient() else {
             completionPercent = 0
             sections = []
+            surgeryDisplayItems = [] // NOVO: limpa a cache de cirurgias formatadas
             return
         }
         completionPercent = calcCompletion(for: person)
         sections = [
             .init(title: "Dados Pessoais", iconSystemName: "person.fill", rows: rowsPersonalData(from: person)),
-//            .init(title: "Problemas de Saúde", iconSystemName: "heart.fill", rows: rowsHealthProblems(from: person)),
+            .init(title: "Problemas de Saúde", iconSystemName: "heart.fill", rows: rowsHealthProblems(from: person)),
             .init(title: "Estado físico", iconSystemName: "figure", rows: rowsPhysical(from: person)),
             .init(title: "Estado Mental", iconSystemName: "brain.head.profile.fill", rows: rowsMental(from: person)),
             .init(title: "Cuidados Pessoais", iconSystemName: "hand.raised.fill", rows: rowsPersonalCare(from: person))
@@ -156,12 +182,28 @@ final class MedicalRecordViewModel {
     private func rowsHealthProblems(from careRecipient: CareRecipient) -> [InfoRow] {
         let healthProblems = careRecipient.healthProblems
         let diseasesList = MedicalRecordFormatter.diseasesBulletList(from: healthProblems?.diseases as? Set<Disease>)
-        let surgeries = (healthProblems?.surgery as? [String])?.joined(separator: "\n") ?? "—"
-        let allergies = (healthProblems?.allergies as? [String])?.joined(separator: ", ") ?? "—"
+        
+        // NOVO: popular os itens específicos de "Cirurgias" (nome + data)
+        surgeryDisplayItems = [] // zera antes de reconstruir
+        let surgeriesSet = healthProblems?.surgeries as? Set<Surgery> ?? []
+        let sortedSurgeries = surgeriesSet
+            .sorted { ($0.date ?? .distantPast) < ($1.date ?? .distantPast) }
+        
+        for surgery in sortedSurgeries {
+            let name = surgery.name ?? "—"
+            let dateString = surgery.date.map { surgeryDateFormatter.string(from: $0) } ?? "—"
+            surgeryDisplayItems.append((title: "Cirurgias", primary: name, secondary: dateString)) // o que faz: empilha para a View renderizar com duas linhas
+        }
+        
+        // Como faz: se houver cirurgias, retornamos o row "Cirurgias" com value vazio para sinalizar renderização customizada;
+        // se não houver, retornamos "—" como fallback de texto simples.
+        let surgeriesRow: InfoRow = surgeryDisplayItems.isEmpty ? ("Cirurgias", "—") : ("Cirurgias", "")
+        
+        let allergies = healthProblems?.allergies ?? "—"
         let observation = healthProblems?.observation ?? "—"
         return [
             ("Doenças", diseasesList),
-            ("Cirurgias", surgeries),
+            surgeriesRow,
             ("Alergias", allergies),
             ("Observação", observation)
         ]
@@ -218,6 +260,7 @@ final class MedicalRecordViewModel {
         func checkDate(_ value: Date?) { total += 1; if value != nil { filled += 1 } }
         func checkDouble(_ value: Double?) { total += 1; if let x = value, !x.isNaN { filled += 1 } }
         func checkArray(_ value: Any?) { total += 1; if let a = value as? [Any], !a.isEmpty { filled += 1 } }
+        func checkToManySet<T>(_ value: Set<T>?) { total += 1; if let set = value, !set.isEmpty { filled += 1 } } // NOVO: para relationships to-many
         
         let personalData = careRecipient.personalData
         check(personalData?.name)
@@ -229,8 +272,8 @@ final class MedicalRecordViewModel {
         
         let healthProblems = careRecipient.healthProblems
         check(healthProblems?.observation)
-        checkArray(healthProblems?.allergies)
-        checkArray(healthProblems?.surgery)
+        check(healthProblems?.allergies)
+        checkToManySet(healthProblems?.surgeries as? Set<Surgery>) // cirurgias é relacionamento
         
         let mentalState = careRecipient.mentalState
         check(mentalState?.cognitionState)

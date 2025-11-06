@@ -263,12 +263,28 @@ final class MedicalRecordViewController: GradientNavBarViewController {
         itemsStack.translatesAutoresizingMaskIntoConstraints = false
 
         for row in rows {
-            let item = MedicalRecordInfoItemView(
-                infotitle: row.title,
-                infoDescription: row.value
-            )
-            item.translatesAutoresizingMaskIntoConstraints = false
-            itemsStack.addArrangedSubview(item)
+            if row.title == "Cirurgias", row.value.isEmpty {
+                // NOVO: renderização customizada para "Cirurgias"
+                // O que faz: cria um card por cirurgia com nome + data estilizados
+                // Como: usa a lista preparada pela ViewModel
+                // Por quê: precisamos de cores/tamanhos diferentes para a data.
+                for triple in viewModel.surgeryDisplayItems {
+                    let item = MedicalRecordInfoItemView(
+                        infotitle: triple.title,
+                        primaryText: triple.primary,
+                        secondaryText: triple.secondary
+                    )
+                    item.translatesAutoresizingMaskIntoConstraints = false
+                    itemsStack.addArrangedSubview(item)
+                }
+            } else {
+                let item = MedicalRecordInfoItemView(
+                    infotitle: row.title,
+                    infoDescription: row.value
+                )
+                item.translatesAutoresizingMaskIntoConstraints = false
+                itemsStack.addArrangedSubview(item)
+            }
         }
 
         container.addSubview(header)

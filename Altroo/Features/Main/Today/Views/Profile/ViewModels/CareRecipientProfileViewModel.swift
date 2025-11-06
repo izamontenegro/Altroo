@@ -55,13 +55,24 @@ final class CareRecipientProfileViewModel {
         func checkDate(_ v: Date?) { total += 1; if v != nil { filled += 1 } }
         func checkDouble(_ v: Double?) { total += 1; if let x = v, !x.isNaN { filled += 1 } }
         func checkArray(_ v: Any?) { total += 1; if let a = v as? [Any], !a.isEmpty { filled += 1 } }
+        // NOVO: checagem para relationships to-many (ex.: Set<Surgery>), caso precise em outros pontos.
+        // O que faz: contabiliza um campo do tipo Set como preenchido se não estiver vazio.
+        // Como faz: verifica se existe e se o set não está vazio.
+        // Por quê: manter utilitário pronto sem incluir “cirurgias” na porcentagem (não usamos para cirurgias).
+        func checkToManySet<T>(_ v: Set<T>?) { total += 1; if let s = v, !s.isEmpty { filled += 1 } }
 
         let personalData = recipient.personalData
         checkString(personalData?.name); checkString(personalData?.address); checkString(personalData?.gender)
         checkDate(personalData?.dateOfBirth); checkDouble(personalData?.height); checkDouble(personalData?.weight)
 
         let healthProblems = recipient.healthProblems
-        checkString(healthProblems?.observation); checkArray(healthProblems?.allergies); checkArray(healthProblems?.surgery)
+        checkString(healthProblems?.observation)
+        checkString(healthProblems?.allergies) // AJUSTE: alergias é String no modelo; conta com checkString
+        // AJUSTE: NÃO CONTAR CIRURGIAS NA PORCENTAGEM
+        // O que faz: exclui cirurgias do cálculo de conclusão.
+        // Como faz: não chamamos checkArray/checkToManySet para cirurgias.
+        // Por quê: regra de produto solicitada.
+        // (exemplo do que NÃO fazer: // checkToManySet(healthProblems?.surgeries as? Set<Surgery>))
 
         let mentalState = recipient.mentalState
         checkString(mentalState?.cognitionState); checkString(mentalState?.emotionalState); checkString(mentalState?.memoryState); checkString(mentalState?.orientationState)
@@ -83,4 +94,3 @@ final class CareRecipientProfileViewModel {
         coreDataService.updateParticipantPermission(for: object, participant: participant, to: newPermission, completion: completion)
     }
 }
-
