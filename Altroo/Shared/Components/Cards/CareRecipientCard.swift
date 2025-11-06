@@ -95,7 +95,7 @@ class CareRecipientCard: UIView {
             avatar.widthAnchor.constraint(equalToConstant: 44),
             avatar.heightAnchor.constraint(equalToConstant: 44),
             initialsLabel.centerXAnchor.constraint(equalTo: avatar.centerXAnchor),
-            initialsLabel.centerYAnchor.constraint(equalTo: avatar.centerYAnchor)
+            initialsLabel.centerYAnchor.constraint(equalTo: avatar.centerYAnchor, constant: isPlusButton ? -2 : 0)
         ])
         return avatar
     }

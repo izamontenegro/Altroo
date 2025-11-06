@@ -27,6 +27,7 @@ class AssociatePatientViewController: GradientHeader {
         let tapGesture = UITapGestureRecognizer(target: self, action: #selector(didTapAddNewPatientButton))
         btn.addGestureRecognizer(tapGesture)
         btn.isUserInteractionEnabled = true
+        btn.enablePressEffect(withHaptics: true)
         
         return btn
     }()
@@ -54,6 +55,8 @@ class AssociatePatientViewController: GradientHeader {
         
         button.backgroundColor = .clear
         button.translatesAutoresizingMaskIntoConstraints = false
+        
+        button.enableHighlightEffect()
         return button
     }()
     
