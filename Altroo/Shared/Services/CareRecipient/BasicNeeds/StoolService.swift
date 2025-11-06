@@ -9,7 +9,7 @@ import Foundation
 import CoreData
 
 protocol StoolServiceProtocol {
-    func addStoolRecord(period: PeriodEnum, date: Date, format: StoolTypesEnum, notes: String, color: StoolColorsEnum, author: String, in careRecipient: CareRecipient)
+    func addStoolRecord(period: PeriodEnum, date: Date, format: StoolTypesEnum?, notes: String, color: StoolColorsEnum?, author: String, in careRecipient: CareRecipient)
     
     func deleteStoolRecord(stoolRecord: StoolRecord, from careRecipient: CareRecipient)
     
@@ -17,7 +17,7 @@ protocol StoolServiceProtocol {
 }
 
 class StoolService: StoolServiceProtocol {
-    func addStoolRecord(period: PeriodEnum, date: Date, format: StoolTypesEnum, notes: String, color: StoolColorsEnum, author: String, in careRecipient: CareRecipient) {
+    func addStoolRecord(period: PeriodEnum, date: Date, format: StoolTypesEnum?, notes: String, color: StoolColorsEnum?, author: String, in careRecipient: CareRecipient) {
         
         guard let context = careRecipient.managedObjectContext else { return }
         let newStoolRecord = StoolRecord(context: context)

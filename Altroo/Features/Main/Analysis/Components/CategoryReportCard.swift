@@ -15,52 +15,49 @@ struct CategoryReportCard: View {
     @State var isOpen: Bool = true
     
     var body: some View {
-        VStack {
+        VStack(spacing: 0) {
             //HEADER
-            UnevenRoundedRectangle(topLeadingRadius: 10, topTrailingRadius: 10)
-                .foregroundStyle(.blue30)
-                .overlay {
-                    HStack {
-                        Image(systemName: categoryIconName)
-                            .foregroundStyle(.white)
-                        
-                        StandardLabelRepresentable(
-                            labelFont: .sfPro,
-                            labelType: .body,
-                            labelWeight: .semibold,
-                            text: categoryName,
-                            color: UIColor.white
-                        )
-                        .padding()
-                        
-                        Button {
-                            isOpen.toggle()
-                        } label: {
-                            Image(systemName: isOpen ? "chevron.up" : "chevron.down")
-                                .foregroundStyle(.white)
-                        }
-                    }
-                    .padding()
-                }
-                .frame(height: 38)
-            
-            
-            
-            //CONTENT
-            if isOpen {
-                ForEach(reports) { report in
-                    
-                    configureItem(report)
-                    
-                    Divider()
-                }
-                .padding(.horizontal ,10)
-
+            HStack {
+                Image(systemName: categoryIconName)
+                    .foregroundStyle(.white)
                 
+                StandardLabelRepresentable(
+                    labelFont: .sfPro,
+                    labelType: .body,
+                    labelWeight: .semibold,
+                    text: categoryName,
+                    color: UIColor.white
+                )
                 
+                Button {
+                    isOpen.toggle()
+                } label: {
+                    Image(systemName: isOpen ? "chevron.up" : "chevron.down")
+                        .foregroundStyle(.white)
+                }
             }
+            .padding(8)
+            .background(.blue30)
             
+            VStack {
+                //CONTENT
+                if isOpen {
+                    ForEach(reports) { report in
+                        configureItem(report)
+                            .onAppear {
+                                print(report.base.reportTitle)
+                            }
+                        
+                        Divider()
+                    }
+                    .padding(.horizontal ,10)
+                }
+            }
+            .background(.pureWhite)
         }
+        .clipShape(
+            RoundedRectangle(cornerRadius: 10)
+        )
     }
     
     @ViewBuilder
@@ -70,7 +67,7 @@ struct CategoryReportCard: View {
             case .stool(let stoolRecord):
                 DailyReportItem(title: item.base.reportTitle, stoolColoration: stoolRecord.colorType, observation: item.base.reportNotes, time: time, author: author)
             case .urine(let urineRecord):
-                DailyReportItem(title: item.base.reportTitle, stoolColoration: nil, observation: item.base.reportNotes, time: time, author: author)
+                DailyReportItem(title: item.base.reportTitle, urineColoration: urineRecord.colorType, observation: item.base.reportNotes, time: time, author: author)
             case .feeding(let feedingRecord):
                 DailyReportItem(title: item.base.reportTitle, reception: feedingRecord.amountEaten, observation: item.base.reportNotes, time: time, author: author)
             case .hydration(let hydrationRecord):
@@ -78,7 +75,7 @@ struct CategoryReportCard: View {
             case .task(let taskInstance):
                 DailyReportItem(title: item.base.reportTitle, observation: item.base.reportNotes, time: time, author: author)
             case .symptom(let symptom):
-                DailyReportItem(title: item.base.reportTitle, observation: item.base.reportNotes, time: time, author: author)
+                DailyReportItem(title: item.base.reportTitle, observation: item.base.reportNotes, time: .now, author: author)
             }
         }
     }

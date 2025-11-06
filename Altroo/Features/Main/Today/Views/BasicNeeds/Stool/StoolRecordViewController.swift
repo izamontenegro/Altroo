@@ -285,7 +285,7 @@ final class StoolRecordViewController: GradientNavBarViewController {
     }
     
     @objc private func observationChanged(_ sender: UITextField) {
-        viewModel.notes = sender.text ?? ""
+        viewModel.notes = sender.text ?? "--"
     }
     
     @objc private func createStoolRecord() {

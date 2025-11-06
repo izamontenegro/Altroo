@@ -37,7 +37,7 @@ final class StoolRecordViewModel {
         
         let author = coreDataService.currentPerformerName(for: careRecipient)
         
-        stoolService.addStool(period: PeriodEnum.current, date: Date(), format: selectedStoolType ?? .smoothSausage, notes: notes, color: selectedStoolColor ?? .brown, author: author, in: careRecipient)
+        stoolService.addStool(period: PeriodEnum.current, date: Date(), format: selectedStoolType, notes: notes, color: selectedStoolColor, author: author, in: careRecipient)
         
         historyService.addHistoryItem(title: "Registrou fezes \(selectedStoolType?.displayText ?? "")", author: author, date: Date(), type: .stool, to: careRecipient)
     }

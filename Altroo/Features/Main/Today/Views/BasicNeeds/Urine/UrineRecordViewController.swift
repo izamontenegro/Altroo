@@ -242,7 +242,7 @@ final class UrineRecordViewController: GradientNavBarViewController {
     }
     
     @objc private func observationChanged(_ sender: UITextField) {
-        viewModel.urineObservation = sender.text ?? ""
+        viewModel.urineObservation = sender.text ?? "--"
     }
     
     @objc private func createUrineRecord() {

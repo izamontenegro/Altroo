@@ -14,7 +14,7 @@ protocol Reportable {
 }
 
 extension StoolRecord: Reportable {
-    var reportTitle: String { self.formatType?.displayText ?? "Fezes" }
+    var reportTitle: String { self.formatType?.displayText ?? "Tipo não registrado" }
     var reportTime: Date? { self.date }
     var reportAuthor: String? { self.author }
     var reportNotes: String? { self.notes }
@@ -99,4 +99,6 @@ enum ReportItemType: CaseIterable {
     case hydration
     case task
     case symptom
+    
+
 }

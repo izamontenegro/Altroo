@@ -7,6 +7,13 @@
 
 import Foundation
 
+struct CategoryInfo {
+    let name: String
+    let icon: String
+    let reports: [ReportItem]
+}
+
+
 class DailyReportViewModel: ObservableObject {
     
     let userService: UserServiceProtocol
@@ -21,6 +28,17 @@ class DailyReportViewModel: ObservableObject {
     
     var tasksRecords: [ReportItem] = []
     var symptomRecords: [ReportItem] = []
+    
+    var nonEmptyCategories: [CategoryInfo] {
+           [
+               CategoryInfo(name: "Urina", icon: "drop.halffull", reports: urineRecords),
+               CategoryInfo(name: "Alimentação", icon: "takeoutbag.and.cup.and.straw.fill", reports: feedingRecords),
+               CategoryInfo(name: "Hidratação", icon: "waterbottle.fill", reports: hydrationRecords),
+               CategoryInfo(name: "Intercorrência", icon: "exclamationmark.triangle.fill", reports: symptomRecords),
+               CategoryInfo(name: "Tarefas", icon: "newspaper", reports: tasksRecords)
+           ]
+           .filter { !$0.reports.isEmpty }
+       }
 
     init(basicNeedsFacade: BasicNeedsFacade, userService: UserServiceProtocol, careRecipientFacade: CareRecipientFacade, routineActivitiesFacade: RoutineActivitiesFacade) {
         self.basicNeedsFacade = basicNeedsFacade
@@ -53,16 +71,14 @@ class DailyReportViewModel: ObservableObject {
             .filter { $0.isDone }
             .map { .task($0) }
 
-        symptomRecords = careRecipientFacade.fetchAllSymptoms(from: currentCareRecipient)            .map { .symptom($0) }
+        symptomRecords = careRecipientFacade.fetchAllSymptoms(from: currentCareRecipient)
+            .map { .symptom($0) }
         
         
-        print("Agua: \(hydrationRecords)")
-        print("Xixi: \(urineRecords)")
-        print("Coco: \(stoolRecords)")
-        print("Sintomas: \(symptomRecords)")
-        print("Gagau: \(tasksRecords)")
-
+//        print("Agua: \(hydrationRecords)")
+//        print("Xixi: \(urineRecords)")
+//        print("Coco: \(stoolRecords)")
+        print("Sintomas: \(symptomRecords.map({$0.base.reportTitle}))")
+//        print("Gagau: \(tasksRecords)")
     }
-    
-    
 }

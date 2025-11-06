@@ -38,7 +38,7 @@ final class UrineRecordViewModel {
         urineService.addUrine(
             period: PeriodEnum.current,
             date: Date(),
-            color: selectedUrineColor ?? .light,
+            color: selectedUrineColor,
             in: careRecipient,
             urineCharacteristics: selectedCharacteristics, author: author,
             observation: urineObservation

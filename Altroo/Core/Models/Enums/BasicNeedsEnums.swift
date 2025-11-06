@@ -39,15 +39,15 @@ enum UrineColorsEnum: String, CaseIterable {
     var displayText: String {
         switch self {
         case .light:
-            "Claro"
+            "Translúcido"
         case .lightYellow:
             "Amarelo claro"
         case .yellow:
             "Amarelo"
         case .orange:
-            "Laranja"
+            "Alaranjado"
         case .red:
-            "Vermelho"
+            "Avermelhado"
         }
     }
     
@@ -130,13 +130,13 @@ enum StoolColorsEnum: String, CaseIterable {
         case .brown:
             "Marrom médio"
         case .yellow:
-            "Marrom médio"
+            "Amarelado"
         case .black:
-            "Marrom médio"
+            "Marrom escuro"
         case .red:
-            "Marrom médio"
+            "Avermelhado"
         case .green:
-            "Marrom médio"
+            "Esverdeado"
         }
     }
     

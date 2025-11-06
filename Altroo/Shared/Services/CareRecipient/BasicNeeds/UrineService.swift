@@ -13,7 +13,7 @@ protocol UrineServiceProtocol {
     func addUrineRecord(
         period: PeriodEnum,
         date: Date,
-        color: UrineColorsEnum,
+        color: UrineColorsEnum?,
         characteristics: [UrineCharacteristicsEnum],
         observation: String?, author: String,
         to careRecipient: CareRecipient
@@ -42,7 +42,7 @@ final class UrineService: UrineServiceProtocol {
     func addUrineRecord(
         period: PeriodEnum,
         date: Date,
-        color: UrineColorsEnum,
+        color: UrineColorsEnum?,
         characteristics: [UrineCharacteristicsEnum],
         observation: String?, author: String,
         to careRecipient: CareRecipient
