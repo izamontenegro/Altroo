@@ -18,6 +18,7 @@ class WaterCapsule: InnerShadowView {
         self.text = ""
         super.init(frame: frame, color: .teal50.withAlphaComponent(0.85))
         self.translatesAutoresizingMaskIntoConstraints = false
+        setupTapGesture()
     }
     
     convenience init(text: String) {
@@ -110,41 +111,15 @@ class WaterCapsule: InnerShadowView {
         stackView.addArrangedSubview(container)
     }
     
-    override func touchesBegan(_ touches: Set<UITouch>, with event: UIEvent?) {
-        guard isTapEnabled else { return }
-        super.touchesBegan(touches, with: event)
-        
-        UIView.animate(withDuration: 0.1) {
-            self.alpha = 0.85
-            self.transform = CGAffineTransform(scaleX: 0.97, y: 0.97)
-        }
+    private func setupTapGesture() {
+        let tapGesture = UITapGestureRecognizer(target: self, action: #selector(handleTap))
+        addGestureRecognizer(tapGesture)
+        isUserInteractionEnabled = true
     }
     
-    override func touchesEnded(_ touches: Set<UITouch>, with event: UIEvent?) {
+    @objc private func handleTap() {
         guard isTapEnabled else { return }
-        super.touchesEnded(touches, with: event)
-
-        UIView.animate(
-            withDuration: 0.22,
-            delay: 0,
-            usingSpringWithDamping: 0.55,
-            initialSpringVelocity: 4,
-            animations: {
-                self.alpha = 1
-                self.transform = .identity
-            },
-            completion: { _ in
-                self.onTap?()
-            }
-        )
-    }
-
-    override func touchesCancelled(_ touches: Set<UITouch>, with event: UIEvent?) {
-        super.touchesCancelled(touches, with: event)
-        UIView.animate(withDuration: 0.1) {
-            self.alpha = 1
-            self.transform = .identity
-        }
+        onTap?()
     }
 }
 

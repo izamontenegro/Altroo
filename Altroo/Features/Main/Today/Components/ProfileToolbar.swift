@@ -72,10 +72,12 @@ class ProfileToolbarContainer: UIView {
         headerProfile.isUserInteractionEnabled = true
         headerProfile.addGestureRecognizer(tapProfileGesture)
         
+        capsuleButton.enablePressEffect(withHaptics: true)
         capsuleButton.onTap = { [weak self] in
-            self?.didTapEditCapsuleView()
+            DispatchQueue.main.asyncAfter(deadline: .now() + 0.1) {
+                self?.didTapEditCapsuleView()
+            }
         }
-
     }
     
     @objc private func didTapProfileView() {

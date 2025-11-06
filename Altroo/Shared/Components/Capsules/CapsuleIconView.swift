@@ -7,7 +7,7 @@
 
 import UIKit
 
-class CapsuleIconView: UIView {
+class CapsuleIconView: InnerShadowView {
     
     var iconName: String!
     var text: String!
@@ -33,8 +33,9 @@ class CapsuleIconView: UIView {
     private var leadingConstraint: NSLayoutConstraint?
     private var trailingConstraint: NSLayoutConstraint?
     
-    override init(frame: CGRect) {
+    init(frame: CGRect) {
         super.init(frame: frame)
+        setupTapGesture()
     }
     
     convenience init(
@@ -56,14 +57,12 @@ class CapsuleIconView: UIView {
         }
         
         makeCapsule()
-        setupInnerShadow()
     }
     
     required init?(coder: NSCoder) { super.init(coder: coder) }
     
     override func layoutSubviews() {
         super.layoutSubviews()
-        innerShadowView?.frame = bounds
         self.layer.cornerRadius = self.bounds.height / 2
     }
     
@@ -128,53 +127,15 @@ class CapsuleIconView: UIView {
         layoutIfNeeded()
     }
     
-    private func setupInnerShadow() {
-        let shadow = InnerShadowView(
-            frame: bounds,
-            color: UIColor.blue40,
-            opacity: 0.15
-        )
-        shadow.isUserInteractionEnabled = false
-        shadow.layer.cornerRadius = layer.cornerRadius
-        addSubview(shadow)
-        innerShadowView = shadow
+    private func setupTapGesture() {
+        let tapGesture = UITapGestureRecognizer(target: self, action: #selector(handleTap))
+        addGestureRecognizer(tapGesture)
+        isUserInteractionEnabled = true
     }
     
-    override func touchesBegan(_ touches: Set<UITouch>, with event: UIEvent?) {
+    @objc private func handleTap() {
         guard isTapEnabled else { return }
-        super.touchesBegan(touches, with: event)
-
-        UIView.animate(withDuration: 0.12, animations: {
-            self.alpha = 0.85
-            self.transform = CGAffineTransform(scaleX: 0.97, y: 0.97)
-        })
-    }
-
-    override func touchesEnded(_ touches: Set<UITouch>, with event: UIEvent?) {
-        guard isTapEnabled else { return }
-        super.touchesEnded(touches, with: event)
-
-        UIView.animate(
-            withDuration: 0.22,
-            delay: 0,
-            usingSpringWithDamping: 0.55,
-            initialSpringVelocity: 4,
-            options: [.curveEaseOut],
-            animations: {
-                self.alpha = 1
-                self.transform = .identity
-            }
-        ) { _ in
-            self.onTap?()
-        }
-    }
-
-    override func touchesCancelled(_ touches: Set<UITouch>, with event: UIEvent?) {
-        super.touchesCancelled(touches, with: event)
-        UIView.animate(withDuration: 0.1) {
-            self.alpha = 1
-            self.transform = .identity
-        }
+        onTap?()
     }
 }
 

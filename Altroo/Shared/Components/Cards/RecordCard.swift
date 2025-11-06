@@ -88,12 +88,10 @@ class RecordCard: InnerShadowView {
         }
         
         if showPlusButton {
-            addButton.onTap = { [weak self] in
-                DispatchQueue.main.asyncAfter(deadline: .now() + 0.1) {
-                    self?.buttonWasTapped()
-                }
-            }
+            addButton.enablePressEffect()
+            addButton.addTarget(self, action: #selector(buttonWasTapped), for: .touchUpInside)
         } else {
+            waterCapsule.enablePressEffect()
             waterCapsule.onTap = { [weak self] in
                 DispatchQueue.main.asyncAfter(deadline: .now() + 0.1) {
                     self?.buttonWasTapped()

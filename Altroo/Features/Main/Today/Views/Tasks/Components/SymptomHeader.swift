@@ -28,11 +28,8 @@ class IntercurrenceHeader: UIView {
 
     private lazy var plusButton: PlusButton = {
         let button = PlusButton()
-        button.onTap = { [weak self] in
-            DispatchQueue.main.asyncAfter(deadline: .now() + 0.1) {
-                self?.didTapPlusButton()
-            }
-        }
+        button.enablePressEffect()
+        button.addTarget(self, action: #selector(didTapPlusButton), for: .touchUpInside)
         return button
     }()
     

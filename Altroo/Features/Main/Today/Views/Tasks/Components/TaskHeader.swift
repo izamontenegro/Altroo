@@ -28,25 +28,20 @@ class TaskHeader: UIView {
     }()
     
     private lazy var periodTag: CapsuleIconView = {
-        let currentPeriod = PeriodEnum.current
-        let capsule = CapsuleIconView(iconName: currentPeriod.iconName, text: "Ver Tudo")
-        
+        let capsule = CapsuleIconView(iconName: "pencil.and.list.clipboard", text: "Ver Tudo")
+        capsule.enablePressEffect(withHaptics: true)
         capsule.onTap = { [weak self] in
             DispatchQueue.main.asyncAfter(deadline: .now() + 0.1) {
                 self?.didTapPeriodTag()
             }
         }
-        
         return capsule
     }()
 
     private lazy var plusButton: PlusButton = {
         let plusButton = PlusButton()
-        plusButton.onTap = { [weak self] in
-            DispatchQueue.main.asyncAfter(deadline: .now() + 0.1) {
-                self?.didTapPlusButton()
-            }
-        }
+        plusButton.enablePressEffect()
+        plusButton.addTarget(self, action: #selector(didTapPlusButton), for: .touchUpInside)
         return plusButton
     }()
 
