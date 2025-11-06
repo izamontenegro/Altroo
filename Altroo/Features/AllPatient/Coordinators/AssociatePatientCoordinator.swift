@@ -46,9 +46,11 @@ final class AssociatePatientCoordinator: Coordinator {
                         detents: [.large()],
                         grabber: true
                     )
+            
         case .tutorialAdd:
             let vc = factory.makeTutorialAddSheet()
             presentSheet(vc, from: navigation)
+            
         case .mainFlow:
             onFinish?()
         }
@@ -56,6 +58,7 @@ final class AssociatePatientCoordinator: Coordinator {
 }
 
 extension AssociatePatientCoordinator: AssociatePatientViewControllerDelegate {
+    func goToLoadingFlow() { }
     func goToMainFlow() { onFinish?() }
     func goToPatientForms() { show(.patientForms) }
     func goToComorbiditiesForms() {  }
@@ -63,8 +66,14 @@ extension AssociatePatientCoordinator: AssociatePatientViewControllerDelegate {
     func goToTutorialAddSheet() { show(.tutorialAdd) }
 }
 
-extension AssociatePatientCoordinator: ShiftFormsViewControllerDelegate {
-    func shiftFormsDidFinish() {
+//extension AssociatePatientCoordinator: ShiftFormsViewControllerDelegate {
+//    func shiftFormsDidFinish() {
+//        onFinish?()
+//    }
+//}
+
+extension AssociatePatientCoordinator: LoadingViewControllerDelegate {
+    func loadingDidFinish() {
         onFinish?()
     }
 }

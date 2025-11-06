@@ -13,20 +13,21 @@ final class LoadingCoordinator: Coordinator {
     var navigation: UINavigationController
     private let factory: AppFactory
     
+    var onFinish: (() -> Void)?
+
     init(navigation: UINavigationController, factory: AppFactory) {
         self.navigation = navigation; self.factory = factory
     }
     
     func start() {
         let vc = factory.makeLoadingViewController(delegate: self)
-        navigation.setViewControllers([vc], animated: false)
+        navigation.pushViewController(vc, animated: true)
     }
 }
 
 // MARK: - LoadingViewControllerDelegate
 extension LoadingCoordinator: LoadingViewControllerDelegate {
     func loadingDidFinish() {
-//        let vc = factory.makeTodayViewController()
-//        navigation.pushViewController(vc, animated: true)
+        onFinish?()
     }
 }

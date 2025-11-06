@@ -10,7 +10,6 @@ import UIKit
 protocol AppFactory:
     OnboardingFactory,
     AssociatePatientFactory,
-    LoadingFactory,
     MainFlowFactory,
     TodayFactory,
     SymptomFactory,
@@ -35,16 +34,13 @@ protocol OnboardingFactory {
 
 // MARK: - ALL PATIENT FLOW
 protocol AssociatePatientFactory {
+    // loading
+    func makeLoadingViewController(delegate: LoadingViewControllerDelegate) -> UIViewController
     func makeAssociatePatientViewController(delegate: AssociatePatientViewControllerDelegate) -> UIViewController
     func makeTutorialAddSheet() -> UIViewController
     func makePatientFormViewController(delegate: AssociatePatientViewControllerDelegate) -> UIViewController
     func makeComorbiditiesFormViewController(delegate: AssociatePatientViewControllerDelegate) -> UIViewController
     func makeShiftFormViewController(delegate: ShiftFormsViewControllerDelegate) -> UIViewController
-}
-
-// MARK: - LOADING FLOW
-protocol LoadingFactory {
-    func makeLoadingViewController(delegate: LoadingViewControllerDelegate) -> UIViewController
 }
 
 // MARK: - MAIN FLOW

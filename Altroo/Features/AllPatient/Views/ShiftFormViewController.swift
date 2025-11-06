@@ -10,6 +10,7 @@ import Combine
 
 protocol ShiftFormsViewControllerDelegate: AnyObject {
     func shiftFormsDidFinish()
+    func goToLoadingFlow()
 }
 
 class ShiftFormViewController: UIViewController {
@@ -203,6 +204,7 @@ class ShiftFormViewController: UIViewController {
 
         viewModel.finalizeUser(startDate: startTimePicker.date, endDate: endTimePicker.date)
         viewModel.finalizeCareRecipient()
+        delegate?.goToLoadingFlow()
         delegate?.shiftFormsDidFinish()
     }
 }

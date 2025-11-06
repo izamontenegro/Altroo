@@ -9,6 +9,7 @@ import UIKit
 
 // MARK: - DefaultAppFactory
 final class DefaultAppFactory: AppFactory {
+
     
     private let dependencies: AppDependencies
     private let addPatientViewModel: AddPatientViewModel
@@ -32,6 +33,13 @@ extension DefaultAppFactory {
 
 // MARK: - AssociatePatientFactory
 extension DefaultAppFactory {
+    // loading
+    func makeLoadingViewController(delegate: LoadingViewControllerDelegate) -> UIViewController {
+        let viewModel = LoadingViewModel()
+        let vc = LoadingViewController(viewModel: viewModel)
+        vc.delegate = delegate
+        return vc
+    }
     
     func makeAssociatePatientViewController(delegate: AssociatePatientViewControllerDelegate) -> UIViewController {
         let vc = AssociatePatientViewController(viewModel: AssociatePatientViewModel(userService: dependencies.userService))
@@ -58,16 +66,6 @@ extension DefaultAppFactory {
     
     func makeShiftFormViewController(delegate: ShiftFormsViewControllerDelegate) -> UIViewController {
         let vc = ShiftFormViewController(viewModel: addPatientViewModel)
-        vc.delegate = delegate
-        return vc
-    }
-}
-
-// MARK: - LoadingFactory
-extension DefaultAppFactory {
-    func makeLoadingViewController(delegate: LoadingViewControllerDelegate) -> UIViewController {
-        let viewModel = LoadingViewModel()
-        let vc = LoadingViewController(viewModel: viewModel)
         vc.delegate = delegate
         return vc
     }
