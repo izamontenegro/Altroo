@@ -16,6 +16,7 @@ final class EditMedicalRecordViewModel {
     @Published var physicalStateFormState = PhysicalStateFormState()
     @Published var mentalStateFormState = MentalStateFormState()
     @Published var personalCareFormState = PersonalCareFormState()
+    @Published var diseaseFormState = DiseaseFormState()
     
     @Published var fieldErrors: [String: String] = [:]
     let validator = FormValidator()
