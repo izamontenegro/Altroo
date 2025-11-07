@@ -103,11 +103,11 @@ class OnboardingPageViewController: UIViewController {
     }
 }
 
-import SwiftUI
-#Preview {
-    OnboardingPageViewController(
-        imageName: "onboarding2",
-        title: "Sem mais bagunça",
-        description: "Gerencie tarefas, medicamentos e ocorrências em um só lugar"
-    )
-}
+//import SwiftUI
+//#Preview {
+//    OnboardingPageViewController(
+//        imageName: "onboarding2",
+//        title: "Sem mais bagunça",
+//        description: "Gerencie tarefas, medicamentos e ocorrências em um só lugar"
+//    )
+//}

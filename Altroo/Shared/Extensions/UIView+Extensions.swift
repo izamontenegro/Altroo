@@ -49,6 +49,26 @@ extension UIView {
             break
         }
     }
+    
+    func enableHighlightEffect(withHaptics: Bool = false) {
+        if withHaptics {
+            let generator = UIImpactFeedbackGenerator(style: .light)
+            generator.prepare()
+            generator.impactOccurred()
+        }
+        
+        UIView.animate(withDuration: 0.08, delay: 0, options: [.allowUserInteraction]) {
+            self.alpha = 0.7
+        } completion: { _ in
+            UIView.animate(
+                withDuration: 0.25,
+                delay: 0,
+                options: [.curveEaseOut, .allowUserInteraction]
+            ) {
+                self.alpha = 1
+            }
+        }
+    }
 
     private func triggerHapticFeedback() {
         let generator = UIImpactFeedbackGenerator(style: .light)

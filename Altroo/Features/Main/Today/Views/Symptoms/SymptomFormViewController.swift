@@ -81,7 +81,7 @@ class SymptomFormViewController: GradientNavBarViewController {
         contentStack.addArrangedSubview(nameSection)
         
         //notes
-        noteTexfield.placeholder = "Enter observations"
+        noteTexfield.placeholder = "Registrar observações"
         let noteSection = FormSectionView(title: "Observações", content: noteTexfield)
         contentStack.addArrangedSubview(noteSection)
         

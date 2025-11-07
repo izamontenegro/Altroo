@@ -71,6 +71,7 @@ class ProfileToolbarContainer: UIView {
         let tapProfileGesture = UITapGestureRecognizer(target: self, action: #selector(didTapProfileView))
         headerProfile.isUserInteractionEnabled = true
         headerProfile.addGestureRecognizer(tapProfileGesture)
+        headerProfile.enablePressEffect(withHaptics: true)
         
         capsuleButton.enablePressEffect(withHaptics: true)
         capsuleButton.onTap = { [weak self] in

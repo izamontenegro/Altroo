@@ -21,7 +21,6 @@ class HeaderProfile: UIView {
         
         let view = ProfileCareRecipient(name: String(initials), strokeColor: .pureWhite)
         view.translatesAutoresizingMaskIntoConstraints = false
-        view.enablePressEffect(withHaptics: true)
         return view
     }()
     
