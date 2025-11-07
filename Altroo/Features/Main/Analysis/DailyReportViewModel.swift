@@ -115,6 +115,16 @@ class DailyReportViewModel: ObservableObject {
         hydrationRecords + feedingRecords + stoolRecords + urineRecords + tasksRecords + symptomRecords
     }
     
+    var reportsByAuthor: [String : Int] {
+        var result: [String : Int] = [:]
+        for record in combinedRecords {
+            let author = record.base.reportAuthor ?? "Desconhecido"
+            result[author, default: 0] += 1
+        }
+        
+        return result
+    }
+    
     //MARK: - UTIL
     func combine(date datePart: Date, withTimeFrom timePart: Date, using calendar: Calendar = .current) -> Date? {
         let dateComponents = calendar.dateComponents([.year, .month, .day], from: datePart)

@@ -63,19 +63,37 @@ struct DailyReportAppView: View {
                                 .font(.largeTitle)
                             Text("Registros")
                                 .font(.callout)
+                                .fixedSize(horizontal: true, vertical: false)
                         }
+                        .padding(Layout.standardSpacing)
+                        .frame(maxWidth: .infinity, minHeight: 100, alignment: .top)
                         .fontDesign(.rounded)
                         .foregroundStyle(.black10)
+                        .background(.pureWhite)
+                        .clipShape(RoundedRectangle(cornerRadius: 10))
                     }
                     
                     VStack {
                         SectionTitle("Registros por cuidador")
+                        
+                        VStack {
+                            ForEach(viewModel.reportsByAuthor.keys.sorted(), id: \.self) { author in
+                                CaretakerCount(for: author, count: viewModel.reportsByAuthor[author] ?? 0)
+                            }
+                            .frame(maxWidth: .infinity)
+                        }
+                        .padding(Layout.standardSpacing)
+                        .frame(maxWidth: .infinity, minHeight: 100, alignment: .top)
+                        .fontDesign(.rounded)
+                        .foregroundStyle(.black10)
+                        .background(.pureWhite)
+                        .clipShape(RoundedRectangle(cornerRadius: 10))
                     }
+                    .layoutPriority(1)
                 }
                 
                 //CHART
-                SectionTitle("Registros por Hora")
-                
+//                SectionTitle("Registros por Hora")
                 
                 //CATEGORIES
                 SectionTitle("Histórico de Registros")
@@ -110,6 +128,23 @@ struct DailyReportAppView: View {
             text: text,
             color: UIColor.blue20
         )
+    }
+    
+    
+    @ViewBuilder
+    func CaretakerCount(for name: String, count: Int) -> some View {
+        VStack(spacing: 0) {
+            HStack {
+                Text(name)
+                    .font(.callout)
+                Spacer()
+                
+                Text("\(count) registros")
+                    .font(.footnote)
+                    .foregroundStyle(.black30)
+            }
+            Divider()
+        }
     }
 }
 
