@@ -33,14 +33,7 @@ extension DefaultAppFactory {
 
 // MARK: - AssociatePatientFactory
 extension DefaultAppFactory {
-    // loading
-    func makeLoadingViewController(delegate: LoadingViewControllerDelegate) -> UIViewController {
-        let viewModel = LoadingViewModel()
-        let vc = LoadingViewController(viewModel: viewModel)
-        vc.delegate = delegate
-        return vc
-    }
-    
+
     func makeAssociatePatientViewController(delegate: AssociatePatientViewControllerDelegate) -> UIViewController {
         let vc = AssociatePatientViewController(viewModel: AssociatePatientViewModel(userService: dependencies.userService))
         vc.delegate = delegate
@@ -49,6 +42,12 @@ extension DefaultAppFactory {
     
     func makeTutorialAddSheet() -> UIViewController {
         let vc = TutorialAddSheet()
+        return vc
+    }
+    
+    func makeLoading() -> UIViewController {
+        let loadingviewModel = LoadingViewModel()
+        let vc = LoadingViewController(viewModel: loadingviewModel)
         return vc
     }
     

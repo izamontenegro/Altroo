@@ -41,36 +41,12 @@ extension PatientFormsCoordinator: AssociatePatientViewControllerDelegate {
         let vc = factory.makeShiftFormViewController(delegate: self)
         navigation.pushViewController(vc, animated: true)
     }
-    func goToLoadingFlow() {
-        let vc = factory.makeLoadingViewController(delegate: self)
-        navigation.pushViewController(vc, animated: true)
-    }
+
     func goToTutorialAddSheet() { }
 }
 
-//extension PatientFormsCoordinator: PatientFormViewControllerDelegate {
-//    func goToComorbidities() {
-//        let vc = factory.makeComorbiditiesFormViewController(delegate: self)
-//        navigation.pushViewController(vc, animated: true)
-//    }
-//}
-//
-//extension PatientFormsCoordinator: ComorbiditiesFormViewControllerDelegate {
-//    func goToShiftForms() {
-//        let vc = factory.makeShiftFormViewController(delegate: self)
-//        navigation.pushViewController(vc, animated: true)
-//    }
-//}
-//
-
 extension PatientFormsCoordinator: ShiftFormsViewControllerDelegate {
     func shiftFormsDidFinish() {
-        onFinish?()
-    }
-}
-
-extension PatientFormsCoordinator: LoadingViewControllerDelegate {
-    func loadingDidFinish() {
         onFinish?()
     }
 }

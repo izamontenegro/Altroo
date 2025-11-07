@@ -34,10 +34,9 @@ protocol OnboardingFactory {
 
 // MARK: - ALL PATIENT FLOW
 protocol AssociatePatientFactory {
-    // loading
-    func makeLoadingViewController(delegate: LoadingViewControllerDelegate) -> UIViewController
     func makeAssociatePatientViewController(delegate: AssociatePatientViewControllerDelegate) -> UIViewController
     func makeTutorialAddSheet() -> UIViewController
+    func makeLoading() -> UIViewController
     func makePatientFormViewController(delegate: AssociatePatientViewControllerDelegate) -> UIViewController
     func makeComorbiditiesFormViewController(delegate: AssociatePatientViewControllerDelegate) -> UIViewController
     func makeShiftFormViewController(delegate: ShiftFormsViewControllerDelegate) -> UIViewController

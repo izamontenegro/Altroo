@@ -17,7 +17,6 @@ class TutorialAddSheet: UIViewController {
             action: #selector(didTapClose)
         )
     }()
-    
     private lazy var stackView: UIStackView = {
         let stack = UIStackView()
         stack.axis = .vertical
@@ -57,7 +56,6 @@ class TutorialAddSheet: UIViewController {
     }
     
     private func setupContent() {
-        // Título principal
         let mainTitle = StandardLabel(
             labelText: "Tutorial",
             labelFont: .sfPro,
@@ -67,7 +65,6 @@ class TutorialAddSheet: UIViewController {
         )
         mainTitle.numberOfLines = 0
         
-        // Subtítulo
         let subTitle = StandardLabel(
             labelText: "Siga o passo-a-passo a seguir para acessar um perfil já cadastrado na plataforma. ",
             labelFont: .sfPro,

@@ -10,7 +10,6 @@ import Combine
 
 protocol ShiftFormsViewControllerDelegate: AnyObject {
     func shiftFormsDidFinish()
-    func goToLoadingFlow()
 }
 
 class ShiftFormViewController: UIViewController {
@@ -90,9 +89,9 @@ class ShiftFormViewController: UIViewController {
         return stack
     }()
     
-    
     //Relationship
-    private lazy var relationshipSection = FormSectionView(title: "Qual a sua relação com o assistido?", content: relationshipButton, isObligatory: true)
+    private lazy var relationshipSection = FormSectionView(title: "Qual a sua relação com o assistido?",
+                                                           content: relationshipButton, isObligatory: true)
     private lazy var relationshipButton: PopupMenuButton = {
         let button = PopupMenuButton(title: viewModel.selectedUserRelationship)
         button.showsMenuAsPrimaryAction = true
@@ -114,7 +113,6 @@ class ShiftFormViewController: UIViewController {
         return button
     }()
 
-    
     private let doneButton = StandardConfirmationButton(title: "Concluir")
     
     private lazy var formStack: UIStackView = {
@@ -204,7 +202,6 @@ class ShiftFormViewController: UIViewController {
 
         viewModel.finalizeUser(startDate: startTimePicker.date, endDate: endTimePicker.date)
         viewModel.finalizeCareRecipient()
-        delegate?.goToLoadingFlow()
         delegate?.shiftFormsDidFinish()
     }
 }

@@ -76,9 +76,12 @@ struct LoadingView: View {
         .background {
             Color.blue20.ignoresSafeArea()
         }
+        .onAppear {
+            viewModel.startLoading()
+        }
     }
 }
 
 //#Preview {
-//    LoadingView()
+//    LoadingView(viewModel: LoadingViewModel())
 //}

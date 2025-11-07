@@ -13,10 +13,10 @@ protocol AssociatePatientViewControllerDelegate: AnyObject {
     func goToShiftForms()
     func goToTutorialAddSheet()
     func goToMainFlow()
-    func goToLoadingFlow()
 }
 
 class AssociatePatientViewController: GradientHeader {
+    
     weak var delegate: AssociatePatientViewControllerDelegate?
     private let viewModel: AssociatePatientViewModel
     
@@ -142,8 +142,7 @@ class AssociatePatientViewController: GradientHeader {
               let careRecipient = card.careRecipient else { return }
         
         viewModel.setCurrentPatient(careRecipient)
-//        delegate?.goToMainFlow()
-        delegate?.goToLoadingFlow()
+        delegate?.goToMainFlow()
     }
     
     @objc func didTapAddNewPatientButton() { delegate?.goToPatientForms() }

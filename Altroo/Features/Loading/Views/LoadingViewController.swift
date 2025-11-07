@@ -9,13 +9,8 @@ import UIKit
 import SwiftUI
 import Combine
 
-protocol LoadingViewControllerDelegate: AnyObject {
-    func loadingDidFinish()
-}
-
 final class LoadingViewController: UIViewController {
     
-    weak var delegate: LoadingViewControllerDelegate?
     private let viewModel: LoadingViewModel
     
     init(viewModel: LoadingViewModel) {
@@ -43,9 +38,5 @@ final class LoadingViewController: UIViewController {
         ])
         
         hostingController.didMove(toParent: self)
-        
-        DispatchQueue.main.asyncAfter(deadline: .now() + 3) {
-            self.delegate?.loadingDidFinish()
-        }
     }
 }
