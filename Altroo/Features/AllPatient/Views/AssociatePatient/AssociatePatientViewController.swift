@@ -16,6 +16,7 @@ protocol AssociatePatientViewControllerDelegate: AnyObject {
 }
 
 class AssociatePatientViewController: GradientHeader {
+    
     weak var delegate: AssociatePatientViewControllerDelegate?
     private let viewModel: AssociatePatientViewModel
     
