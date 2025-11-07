@@ -22,7 +22,6 @@
 /* End PBXContainerItemProxy section */
 
 /* Begin PBXFileReference section */
-		305F2A762EBDA32900ADE4C1 /* unitTests.yml */ = {isa = PBXFileReference; lastKnownFileType = text.yaml; path = unitTests.yml; sourceTree = "<group>"; };
 		367EC48F2E7CB1AA008B22D1 /* Altroo.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = Altroo.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		B61A785C2E818C7B00BC204C /* pullRequest.yml */ = {isa = PBXFileReference; lastKnownFileType = text.yaml; path = pullRequest.yml; sourceTree = "<group>"; };
 		B61A785D2E818D7A00BC204C /* Gemfile */ = {isa = PBXFileReference; lastKnownFileType = text; path = Gemfile; sourceTree = "<group>"; };
@@ -109,7 +108,6 @@
 		B61A785B2E818C6300BC204C /* workflows */ = {
 			isa = PBXGroup;
 			children = (
-				305F2A762EBDA32900ADE4C1 /* unitTests.yml */,
 				B61A785C2E818C7B00BC204C /* pullRequest.yml */,
 			);
 			path = workflows;
