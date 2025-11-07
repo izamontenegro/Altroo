@@ -27,13 +27,13 @@ final class MainCoordinator: Coordinator {
         self.tabBar = tabBar
         
         // MARK: - PATIENTS
-//        let patientsNav = UINavigationController()
-//        let patientsCoord = PatientsCoordinator(
-//            navigation: patientsNav, factory: factory
-//        )
-//        add(child: patientsCoord)
-//        patientsCoord.start()
-//        patientsNav.tabBarItem = UITabBarItem(title: "Assistidos", image: UIImage(systemName: "person.fill"), tag: 0)
+        let patientsNav = UINavigationController()
+        let patientsCoord = PatientsCoordinator(
+            navigation: patientsNav, factory: factory
+        )
+        add(child: patientsCoord)
+        patientsCoord.start()
+        patientsNav.tabBarItem = UITabBarItem(title: "Assistidos", image: UIImage(systemName: "person.fill"), tag: 0)
         
         // MARK: - REPORTS
         let analysisNav = UINavigationController()
@@ -71,13 +71,13 @@ final class MainCoordinator: Coordinator {
         settingsNav.tabBarItem = UITabBarItem(title: "Ajustes", image: UIImage(systemName: "gear"), tag: 3)
         
         // MARK: - TAB BAR CONFIGURATION
-        tabBar.viewControllers = [analysisNav, todayNav, histNav, settingsNav]
+        tabBar.viewControllers = [patientsNav, analysisNav, todayNav, histNav, settingsNav]
         
         for case let nav as UINavigationController in tabBar.viewControllers ?? [] {
             nav.delegate = tabBar
         }
         
-        tabBar.selectedIndex = 1
+        tabBar.selectedIndex = 2
         tabBar.model.currentTab = .today
         
         navigation.setNavigationBarHidden(true, animated: false)
