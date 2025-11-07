@@ -108,30 +108,11 @@ class DailyReportViewModel: ObservableObject {
         symptomRecords = careRecipientFacade.fetchAllSymptoms(from: currentCareRecipient)
             .filter { timeRange.contains($0.reportTime ?? .now)}
             .map { .symptom($0) }
-        
-        print("RANGE: \(timeRange)")
-                
-        print("\n=== FEED ARRAYS SUMMARY ===")
-        print("Hydration Records: \(hydrationRecords.count)")
-        hydrationRecords.forEach { print("  💧 \($0.base.reportTitle)") }
-
-        print("Feeding Records: \(feedingRecords.count)")
-        feedingRecords.forEach { print("  🍽️ \($0.base.reportTitle)") }
-
-        print("Stool Records: \(stoolRecords.count)")
-        stoolRecords.forEach { print("  💩 \($0.base.reportTitle)") }
-
-        print("Urine Records: \(urineRecords.count)")
-        urineRecords.forEach { print("  💛 \($0.base.reportTitle)") }
-
-        print("Task Records: \(tasksRecords.count)")
-        tasksRecords.forEach { print("  📋 \($0.base.reportTitle)") }
-
-        print("Symptom Records: \(symptomRecords.count)")
-        symptomRecords.forEach { print("  ⚠️ \($0.base.reportTitle)") }
-
-        print("===========================\n")
-
+    }
+    
+    //MARK: - COUNTING
+    var combinedRecords: [ReportItem] {
+        hydrationRecords + feedingRecords + stoolRecords + urineRecords + tasksRecords + symptomRecords
     }
     
     //MARK: - UTIL

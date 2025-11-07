@@ -42,15 +42,18 @@ struct CategoryReportCard: View {
             VStack {
                 //CONTENT
                 if isOpen {
-                    ForEach(reports) { report in
-                        configureItem(report)
-                            .onAppear {
-                                print(report.base.reportTitle)
-                            }
-                        
-                        Divider()
+                    VStack {
+                        ForEach(reports) { report in
+                            configureItem(report)
+                                .onAppear {
+                                    print(report.base.reportTitle)
+                                }
+                            
+                            Divider()
+                        }
+                        .padding(.horizontal, 10)
                     }
-                    .padding(.horizontal ,10)
+                    .padding(.top, 10)
                 }
             }
             .background(.pureWhite)
