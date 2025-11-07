@@ -4,7 +4,6 @@
 project "Altroo.xcodeproj"
 scheme "Altroo"
 sdk "iphonesimulator"
-device "iPhone 15 (17.0)"
 code_coverage true
 xcargs '-parallelizeTargets'
 prelaunch_simulator true
