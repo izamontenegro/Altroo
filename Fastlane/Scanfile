@@ -8,3 +8,5 @@ code_coverage true
 xcargs '-parallelizeTargets'
 prelaunch_simulator true
 derived_data_path "Build/"
+destination "platform=iOS Simulator,name=iPhone 15"
+device "iPhone 15" rescue device "iPhone 14"
