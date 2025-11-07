@@ -8,11 +8,37 @@
 import SwiftUI
 
 struct DailyReportAppView: View {
-    let viewModel: DailyReportViewModel
+    @ObservedObject var viewModel: DailyReportViewModel
     
     var body: some View {
-        ScrollView {
             VStack (spacing: 16) {
+                //SUBHEADER
+                HStack(alignment: .bottom) {
+                    TimeSection(text: "Data", dataSource: $viewModel.startDate, type: .date)
+
+                    Spacer()
+
+                    TimeSection(text: "Hora Inicial", dataSource: $viewModel.startTime, type: .time)
+
+                    Image(systemName: "arrow.right")
+                        .resizable()
+                        .scaledToFit()
+                        .frame(width: 14)
+                        .padding(.bottom, 10)
+                    
+                    TimeSection(text: "Hora Final", dataSource: $viewModel.endTime, type: .time)
+                }
+                .padding(Layout.standardSpacing)
+                .background(.blue70)
+                .clipShape(
+                    RoundedRectangle(cornerRadius: 20)
+                )
+                .onChange(of: viewModel.startDate) { _ in viewModel.feedArrays() }
+                .onChange(of: viewModel.startTime) { _ in viewModel.feedArrays() }
+                .onChange(of: viewModel.endTime) { _ in viewModel.feedArrays() }
+                
+                ScrollView {
+                //CARDS
                 HStack {
                     StandardLabelRepresentable(
                         labelFont: .sfPro,
@@ -31,12 +57,30 @@ struct DailyReportAppView: View {
                     }
                 }
                 
+                //CHART
+                
+                
+                //CATEGORIES
                 ForEach(viewModel.nonEmptyCategories, id: \.name) { category in
                     CategoryReportCard(categoryName: category.name, categoryIconName: category.icon, reports: category.reports)
                 }
             }
+                .padding(.horizontal)
         }
         .background(.blue80)
+    }
+    
+    @ViewBuilder
+    func TimeSection(text: String, dataSource: Binding<Date>, type: UIDatePicker.Mode) -> some View {
+        VStack(alignment: .leading, spacing: 2) {
+            Text(text)
+                .font(.callout)
+                .fontDesign(.rounded)
+                .foregroundStyle(.black10)
+            UIDatePickerWrapper(date: dataSource, type: type)
+                .frame(height: 35)
+                .frame(width: type == .time ? 80 : 150)
+        }
     }
 }
 

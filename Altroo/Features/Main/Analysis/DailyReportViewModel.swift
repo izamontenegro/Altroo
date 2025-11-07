@@ -22,12 +22,12 @@ class DailyReportViewModel: ObservableObject {
     var routineActivitiesFacade: RoutineActivitiesFacade
     
     //MARK: - RECORDS
-    var hydrationRecords: [ReportItem] = []
-    var feedingRecords: [ReportItem] = []
-    var stoolRecords: [ReportItem] = []
-    var urineRecords: [ReportItem] = []
-    var tasksRecords: [ReportItem] = []
-    var symptomRecords: [ReportItem] = []
+    @Published var hydrationRecords: [ReportItem] = []
+    @Published var feedingRecords: [ReportItem] = []
+    @Published var stoolRecords: [ReportItem] = []
+    @Published var urineRecords: [ReportItem] = []
+    @Published var tasksRecords: [ReportItem] = []
+    @Published var symptomRecords: [ReportItem] = []
     
     var nonEmptyCategories: [CategoryInfo] {
            [
@@ -108,6 +108,30 @@ class DailyReportViewModel: ObservableObject {
         symptomRecords = careRecipientFacade.fetchAllSymptoms(from: currentCareRecipient)
             .filter { timeRange.contains($0.reportTime ?? .now)}
             .map { .symptom($0) }
+        
+        print("RANGE: \(timeRange)")
+                
+        print("\n=== FEED ARRAYS SUMMARY ===")
+        print("Hydration Records: \(hydrationRecords.count)")
+        hydrationRecords.forEach { print("  💧 \($0.base.reportTitle)") }
+
+        print("Feeding Records: \(feedingRecords.count)")
+        feedingRecords.forEach { print("  🍽️ \($0.base.reportTitle)") }
+
+        print("Stool Records: \(stoolRecords.count)")
+        stoolRecords.forEach { print("  💩 \($0.base.reportTitle)") }
+
+        print("Urine Records: \(urineRecords.count)")
+        urineRecords.forEach { print("  💛 \($0.base.reportTitle)") }
+
+        print("Task Records: \(tasksRecords.count)")
+        tasksRecords.forEach { print("  📋 \($0.base.reportTitle)") }
+
+        print("Symptom Records: \(symptomRecords.count)")
+        symptomRecords.forEach { print("  ⚠️ \($0.base.reportTitle)") }
+
+        print("===========================\n")
+
     }
     
     //MARK: - UTIL
