@@ -31,6 +31,12 @@ class SettingsViewController: GradientNavBarViewController {
         devsbutton.addTarget(self, action: #selector(didTapDevelopersButton), for: .touchUpInside)
     }
     
+    override func viewWillAppear(_ animated: Bool) {
+        super.viewWillAppear(animated)
+        showTabBar(true)
+    }
+    
+    
     // MARK: - Subviews
     private let titleLabel: StandardLabel = {
         let label = StandardLabel(

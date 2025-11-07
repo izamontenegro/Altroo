@@ -26,25 +26,17 @@ final class AppCoordinator: Coordinator {
         rootNavigation.setNavigationBarHidden(true, animated: false)
     }
     
-    func start() {
+    
+    @MainActor
+    func start() async {
         if userService.fetchUser() == nil {
-            _ = userService.createUser(name: "User Teste", category: "Cuidador")
+            _ = userService.createUser(name: "\(UUID())", category: "Cuidador")
         }
         
         if receivedPatientViaShare {
-            let fetchRequest = NSFetchRequest<CareRecipient>(entityName: "CareRecipient")
-            if let sharedPatients = try? CoreDataStack.shared.context.fetch(fetchRequest),
-               let newPatient = sharedPatients.last {
-                print("Paciente recebido via share: \(newPatient)")
-                userService.setCurrentPatient(newPatient)
-                userService.addPatient(newPatient)
-            } else {
-                print("Nenhum CareRecipient encontrado no shared store ainda.")
-            }
-            
-            showMainFlow()
-            return
+            await waitForSharedPatientSync(timeout: 15)
         }
+
         
         if UserDefaults.standard.isFirstLaunch {
             //            showOnboardingFlow()
@@ -56,6 +48,22 @@ final class AppCoordinator: Coordinator {
         }
     }
     
+    @MainActor
+    private func waitForSharedPatientSync(timeout: Int) async {
+        for i in 1...timeout {
+            try? await Task.sleep(nanoseconds: 1_000_000_000)
+            
+            let fetchRequest = NSFetchRequest<CareRecipient>(entityName: "CareRecipient")
+            if let sharedPatients = try? CoreDataStack.shared.context.fetch(fetchRequest),
+               let newPatient = sharedPatients.last {
+                userService.setCurrentPatient(newPatient)
+                userService.addPatient(newPatient)
+                return
+            }
+        }
+        return
+    }
+
     private func showOnboardingFlow() {
         let onboardingCoordinator = OnboardingCoordinator(navigation: navigation,
                                                           factory: factory)

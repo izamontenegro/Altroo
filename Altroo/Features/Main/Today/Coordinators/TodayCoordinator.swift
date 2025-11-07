@@ -208,24 +208,18 @@ extension TodayCoordinator: AddTaskNavigationDelegate {
 
 extension TodayCoordinator: UrineRecordNavigationDelegate {
     func didFinishAddingUrineRecord() {
-        if let todayVC = navigation.viewControllers.first {
-            navigation.setViewControllers([todayVC], animated: true)
-        }
+        navigation.popToRootViewController(animated: true)
     }
 }
 
 extension TodayCoordinator: StoolRecordNavigationDelegate {
     func didFinishAddingStoolRecord() {
-        if let todayVC = navigation.viewControllers.first {
-            navigation.setViewControllers([todayVC], animated: true)
-        }
+        navigation.popToRootViewController(animated: true)
     }
 }
 
 extension TodayCoordinator: MealRecordNavigationDelegate {
     func didFinishAddingMealRecord() {
-        if let todayVC = navigation.viewControllers.first {
-            navigation.setViewControllers([todayVC], animated: true)
-        }
+        navigation.popToRootViewController(animated: true)
     }
 }

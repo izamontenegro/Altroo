@@ -64,6 +64,15 @@ extension CareRecipientFacade {
         return careRecipient
     }
     
+    func addCaregiver(_ careRecipient: CareRecipient, for user: User) {
+        if let id = user.id, !(careRecipient.usersID?.contains(id) ?? false) {
+            careRecipient.usersID?.append(id)
+            persistenceService.save()
+        } else {
+            print("Caregiver already added or invalid ID")
+        }
+    }
+    
     func fetchCareRecipient(by id: UUID) -> CareRecipient? {
         return persistenceService.fetchAllCareRecipients().first(where: { $0.id == id })
     }
