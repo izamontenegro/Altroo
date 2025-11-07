@@ -10,6 +10,8 @@ import SwiftUI
 struct DailyReportAppView: View {
     @ObservedObject var viewModel: DailyReportViewModel
     
+    @State private var pdfURL: URL?
+    
     var body: some View {
         VStack (spacing: 16) {
             //SUBHEADER
@@ -43,13 +45,23 @@ struct DailyReportAppView: View {
                         text: "Relatório Diário",
                         color: UIColor.black10
                     )
-                    //                    .padding(.horizontal, 16)
                     .padding(.top, 8)
                     
-                    Button {
-                        
-                    } label: {
-                        Text("Exportar")
+                    VStack {
+                        if let pdfURL {
+                            ShareLink(item: pdfURL) {
+                                Label("Share PDF", systemImage: "square.and.arrow.up")
+                            }
+                        } else {
+                            Button("Generate Report PDF") {
+                                Task { @MainActor in
+                                    let pdfCreator = PDFCreator()
+                                    pdfURL = pdfCreator.createPDF(
+                                        from: DailyReportPDFView(viewModel: viewModel)
+                                    )
+                                }
+                            }
+                        }
                     }
                 }
                 
