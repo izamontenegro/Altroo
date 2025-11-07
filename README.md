@@ -49,35 +49,34 @@ Altroo offers a range of functionalities designed to streamline caregiving:
 
 <table>
 <tr>
-<td align="center" width="160">
-  <img src="https://img.icons8.com/ios-filled/100/11B8AD/stethoscope.png" alt="Patient Management"/>
-  <br>
-  <b>Patient Management</b>
-  <br>Organize patient records efficiently and access history easily.
+<td align="center" valign="top" width="170" style="padding: 10px;">
+  <img src="https://github.com/user-attachments/assets/b4169275-b7f4-4239-bed1-85c1908ae799" width="120"/><br><br>
+  <b>Patient Management</b><br>
+  Organize patient records efficiently and access history easily.
 </td>
-<td align="center" width="160">
-  <img src="https://img.icons8.com/ios-filled/100/11B8AD/calendar.png" alt="Care Scheduling"/>
-  <br>
-  <b>Care Scheduling</b>
-  <br>Plan and track daily care activities with notifications.
+
+<td align="center" valign="top" width="170" style="padding: 10px;">
+  <img src="https://github.com/user-attachments/assets/6d72930e-9492-4793-a5af-736c6cf54587" width="120"/><br><br>
+  <b>Care Scheduling</b><br>
+  Plan and track daily care activities with notifications.
 </td>
-<td align="center" width="160">
-  <img src="https://img.icons8.com/ios-filled/100/11B8AD/report-card.png" alt="Reports & Analytics"/>
-  <br>
-  <b>Reports & Analytics</b>
-  <br>Generate personalized reports for patients and families.
+
+<td align="center" valign="top" width="170" style="padding: 10px;">
+  <img src="https://github.com/user-attachments/assets/d721300a-3dea-4ee9-bc09-580b5f1d5643" width="120"/><br><br>
+  <b>Reports & Analytics</b><br>
+  Generate personalized reports for patients and families.
 </td>
-<td align="center" width="160">
-  <img src="https://img.icons8.com/ios-filled/100/11B8AD/cloud.png" alt="Cloud Sync"/>
-  <br>
-  <b>Cloud Sync</b>
-  <br>Securely synchronize data across multiple devices via CloudKit.
+
+<td align="center" valign="top" width="170" style="padding: 10px;">
+  <img src="https://github.com/user-attachments/assets/b289ecf7-5bb6-4117-ac38-6488ce563820" width="120"/><br><br>
+  <b>Cloud Sync</b><br>
+  Securely synchronize data across multiple devices via CloudKit.
 </td>
-<td align="center" width="160">
-  <img src="https://img.icons8.com/ios-filled/100/11B8AD/settings.png" alt="Settings & Customization"/>
-  <br>
-  <b>Settings & Customization</b>
-  <br>Personalize the app to match your workflow and preferences.
+
+<td align="center" valign="top" width="170" style="padding: 10px;">
+  <img src="https://github.com/user-attachments/assets/34575a7b-2fcc-4c37-82a5-ae6654a84be1" width="120"/><br><br>
+  <b>Settings & Customization</b><br>
+  Personalize the app to match your workflow and preferences.
 </td>
 </tr>
 </table>

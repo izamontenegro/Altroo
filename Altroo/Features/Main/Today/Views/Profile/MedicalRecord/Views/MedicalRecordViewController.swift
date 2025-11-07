@@ -36,7 +36,6 @@ final class MedicalRecordViewController: GradientNavBarViewController {
     
     override func viewWillAppear(_ animated: Bool) {
         viewModel.reload()
-        NotificationCenter.default.post(name: .toggleTabBarVisibility, object: nil, userInfo: ["hidden": true])
     }
     
     // MARK: - Life cycle

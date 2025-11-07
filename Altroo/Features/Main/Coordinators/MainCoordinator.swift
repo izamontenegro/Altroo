@@ -27,13 +27,13 @@ final class MainCoordinator: Coordinator {
         self.tabBar = tabBar
         
         // MARK: - PATIENTS
-        let patientsNav = UINavigationController()
-        let patientsCoord = PatientsCoordinator(
-            navigation: patientsNav, factory: factory
-        )
-        add(child: patientsCoord)
-        patientsCoord.start()
-        patientsNav.tabBarItem = UITabBarItem(title: "Assistidos", image: UIImage(systemName: "person.fill"), tag: 0)
+//        let patientsNav = UINavigationController()
+//        let patientsCoord = PatientsCoordinator(
+//            navigation: patientsNav, factory: factory
+//        )
+//        add(child: patientsCoord)
+//        patientsCoord.start()
+//        patientsNav.tabBarItem = UITabBarItem(title: "Assistidos", image: UIImage(systemName: "person.fill"), tag: 0)
         
         // MARK: - REPORTS
         let analysisNav = UINavigationController()
@@ -42,7 +42,7 @@ final class MainCoordinator: Coordinator {
         )
         add(child: analysisCoord)
         analysisCoord.start()
-        analysisNav.tabBarItem = UITabBarItem(title: "Relatório", image: UIImage(systemName: "chart.bar.xaxis.ascending.badge.clock"), tag: 1)
+        analysisNav.tabBarItem = UITabBarItem(title: "Relatório", image: UIImage(systemName: "chart.bar.xaxis.ascending.badge.clock"), tag: 0)
         
         // MARK: - TODAY
         let todayNav = UINavigationController()
@@ -51,7 +51,7 @@ final class MainCoordinator: Coordinator {
         )
         add(child: todayCoord)
         todayCoord.start()
-        todayNav.tabBarItem = UITabBarItem(title: "Hoje", image: UIImage(systemName: "heart.text.square.fill"), tag: 2)
+        todayNav.tabBarItem = UITabBarItem(title: "Hoje", image: UIImage(systemName: "heart.text.square.fill"), tag: 1)
         
         // MARK: - HISTORY
         let histNav = UINavigationController()
@@ -59,7 +59,7 @@ final class MainCoordinator: Coordinator {
             navigation: histNav, factory: factory
         )
         add(child: histCoord); histCoord.start()
-        histNav.tabBarItem = UITabBarItem(title: "Histórico", image: UIImage(systemName: "folder.fill"), tag: 3)
+        histNav.tabBarItem = UITabBarItem(title: "Histórico", image: UIImage(systemName: "folder.fill"), tag: 2)
         
         // MARK: - SETTINGS
         let settingsNav = UINavigationController()
@@ -68,10 +68,17 @@ final class MainCoordinator: Coordinator {
         )
         add(child: settingsCoord)
         settingsCoord.start()
-        settingsNav.tabBarItem = UITabBarItem(title: "Ajustes", image: UIImage(systemName: "gear"), tag: 4)
+        settingsNav.tabBarItem = UITabBarItem(title: "Ajustes", image: UIImage(systemName: "gear"), tag: 3)
         
         // MARK: - TAB BAR CONFIGURATION
-        tabBar.viewControllers = [patientsNav, analysisNav, todayNav, histNav, settingsNav]
+        tabBar.viewControllers = [analysisNav, todayNav, histNav, settingsNav]
+        
+        for case let nav as UINavigationController in tabBar.viewControllers ?? [] {
+            nav.delegate = tabBar
+        }
+        
+        tabBar.selectedIndex = 1
+        tabBar.model.currentTab = .today
         
         navigation.setNavigationBarHidden(true, animated: false)
         navigation.setViewControllers([tabBar], animated: false)

@@ -10,7 +10,7 @@ import UIKit
 protocol Coordinator: AnyObject {
     var childCoordinators: [Coordinator] { get set }
     var navigation: UINavigationController { get set }
-    func start()
+    func start() async
     func goToRoot()
 }
 
