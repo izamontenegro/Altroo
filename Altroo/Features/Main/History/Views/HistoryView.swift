@@ -5,7 +5,6 @@
 //  Created by Izadora de Oliveira Albuquerque Montenegro on 23/10/25.
 //
 
-
 import SwiftUI
 import UIKit
 
@@ -25,6 +24,7 @@ struct HistoryView: View {
                 )
                 .padding(.horizontal, 16)
                 .padding(.top, 8)
+                
                 if(viewModel.sections.isEmpty) {
                     Text("Você ainda não adicionou nenhum registro ou atividade.")
                         .font(.headline)
