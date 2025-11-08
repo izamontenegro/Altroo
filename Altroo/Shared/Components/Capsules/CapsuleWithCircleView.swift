@@ -15,10 +15,14 @@ class CapsuleWithCircleView: UIView {
     var nameIconColor: UIColor = UIColor(resource: .pureWhite)
     var circleIconColor: UIColor = UIColor(resource: .teal20)
     
+    var onTap: (() -> Void)?
+    var isTapEnabled: Bool = true
+    
     override init(frame: CGRect) {
         super.init(frame: frame)
-        
         self.translatesAutoresizingMaskIntoConstraints = false
+        self.isUserInteractionEnabled = true
+        setupTapGesture()
     }
     
     convenience init(text: String, textColor: UIColor, nameIcon: String, nameIconColor: UIColor, circleIconColor: UIColor) {
@@ -102,6 +106,17 @@ class CapsuleWithCircleView: UIView {
         ])
         
         stackView.addArrangedSubview(container)
+    }
+    
+    private func setupTapGesture() {
+        let tapGesture = UITapGestureRecognizer(target: self, action: #selector(handleTap))
+        addGestureRecognizer(tapGesture)
+        isUserInteractionEnabled = true
+    }
+    
+    @objc private func handleTap() {
+        guard isTapEnabled else { return }
+        onTap?()
     }
 }
 

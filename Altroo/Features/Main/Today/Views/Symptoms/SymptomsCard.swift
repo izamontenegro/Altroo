@@ -80,7 +80,7 @@ class SymptomsCard: UIView {
     
     func makeEmptyState() {
         
-        let text = StandardLabel(labelText: "Nenhuma intercorrência reportada hoje", labelFont: .sfPro, labelType: .callOut, labelColor: .black30)
+        let text = StandardLabel(labelText: "Nenhuma intercorrência reportada hoje.", labelFont: .sfPro, labelType: .callOut, labelColor: .black30)
         vStack.addArrangedSubview(text)
         vStack.alignment = .center
     }
