@@ -17,7 +17,11 @@ final class AssociatePatientViewModel {
         return all
     }
     
-    func setCurrentPatient(_ careRecipient: CareRecipient) {
+    func setCurrentCareRecipient(_ careRecipient: CareRecipient) {
         userService.setCurrentPatient(careRecipient)
+    }
+    
+    func getCurrentCareRecipient() -> CareRecipient? {
+        return userService.fetchCurrentPatient()
     }
 }

@@ -179,7 +179,8 @@ class AssociatePatientViewController: GradientHeader {
             for careRecipient in careRecipients {
                 let card = CareRecipientCard(
                     name: careRecipient.personalData?.name ?? "",
-                    careRecipient: careRecipient
+                    careRecipient: careRecipient,
+                    currentCareRecipient: careRecipient == viewModel.getCurrentCareRecipient()
                 )
                 
                 let tapGesture = UITapGestureRecognizer(target: self, action: #selector(didTapCareRecipientCard(_:)))
@@ -198,7 +199,7 @@ class AssociatePatientViewController: GradientHeader {
         guard let card = sender.view as? CareRecipientCard,
               let careRecipient = card.careRecipient else { return }
         
-        viewModel.setCurrentPatient(careRecipient)
+        viewModel.setCurrentCareRecipient(careRecipient)
         delegate?.goToMainFlow()
     }
     

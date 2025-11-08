@@ -20,14 +20,11 @@ final class PatientsCoordinator: Coordinator {
     }
     
     func start() {
-//        let vc = factory.makePatientsViewController()
-//        navigation.setViewControllers([vc], animated: false)
-        
         let vc = factory.makeAssociatePatientViewController(delegate: self)
         navigation.pushViewController(vc, animated: true)
     }
     
-    enum Destination { case patientForms }
+    enum Destination { case patientForms, tutorialAdd }
 
     private func show(_ destination: Destination) {
         switch destination {
@@ -49,6 +46,10 @@ final class PatientsCoordinator: Coordinator {
                         detents: [.large()],
                         grabber: true
                     )
+            
+        case .tutorialAdd:
+            let vc = factory.makeTutorialAddSheet()
+            presentSheet(vc, from: navigation)
         }
     }
 }
