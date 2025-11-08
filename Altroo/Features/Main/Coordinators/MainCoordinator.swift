@@ -78,7 +78,6 @@ final class MainCoordinator: Coordinator {
         }
         
         tabBar.selectedIndex = 2
-        tabBar.model.currentTab = .today
         
         navigation.setNavigationBarHidden(true, animated: false)
         navigation.setViewControllers([tabBar], animated: false)

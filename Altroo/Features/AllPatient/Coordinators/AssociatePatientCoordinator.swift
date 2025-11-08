@@ -20,7 +20,7 @@ final class AssociatePatientCoordinator: Coordinator {
     }
     
     func start() {
-        let vc = factory.makeAssociatePatientViewController(delegate: self)
+        let vc = factory.makeAssociatePatientViewController(delegate: self, context: .associatePatient)
         navigation.pushViewController(vc, animated: true)
     }
     

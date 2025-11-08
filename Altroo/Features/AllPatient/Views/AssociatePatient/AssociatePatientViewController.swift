@@ -15,11 +15,14 @@ protocol AssociatePatientViewControllerDelegate: AnyObject {
     func goToMainFlow()
 }
 
+enum CareRecipientContext { case associatePatient, patientSelection }
+
 class AssociatePatientViewController: GradientHeader {
     
     weak var delegate: AssociatePatientViewControllerDelegate?
     private let viewModel: AssociatePatientViewModel
-    
+    let context: CareRecipientContext
+
     private lazy var addNewPatientButton: CareRecipientCard = {
         let btn = CareRecipientCard(
             name: "Adicionar assistido",
@@ -83,8 +86,9 @@ class AssociatePatientViewController: GradientHeader {
         return indicator
     }()
     
-    init(viewModel: AssociatePatientViewModel) {
+    init(viewModel: AssociatePatientViewModel, context: CareRecipientContext) {
         self.viewModel = viewModel
+        self.context = context
         super.init(nibName: nil, bundle: nil)
     }
     
@@ -200,8 +204,17 @@ class AssociatePatientViewController: GradientHeader {
         guard let card = sender.view as? CareRecipientCard,
               let careRecipient = card.careRecipient else { return }
         
-        viewModel.setCurrentCareRecipient(careRecipient)
-        delegate?.goToMainFlow()
+        switch context {
+        case .associatePatient:
+            viewModel.setCurrentCareRecipient(careRecipient)
+            delegate?.goToMainFlow()
+        case .patientSelection:
+            if viewModel.getCurrentCareRecipient() == careRecipient {
+                delegate?.goToMainFlow()
+            } else {
+                viewModel.setCurrentCareRecipient(careRecipient)
+            }
+        }
     }
     
     @objc func didTapAddNewPatientButton() { delegate?.goToPatientForms() }

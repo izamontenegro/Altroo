@@ -34,8 +34,8 @@ extension DefaultAppFactory {
 // MARK: - AssociatePatientFactory
 extension DefaultAppFactory {
 
-    func makeAssociatePatientViewController(delegate: AssociatePatientViewControllerDelegate) -> UIViewController {
-        let vc = AssociatePatientViewController(viewModel: AssociatePatientViewModel(userService: dependencies.userService))
+    func makeAssociatePatientViewController(delegate: AssociatePatientViewControllerDelegate, context: CareRecipientContext) -> UIViewController {
+        let vc = AssociatePatientViewController(viewModel: AssociatePatientViewModel(userService: dependencies.userService), context: context)
         vc.delegate = delegate
         return vc
     }
