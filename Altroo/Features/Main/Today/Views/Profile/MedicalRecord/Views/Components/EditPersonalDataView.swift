@@ -4,289 +4,239 @@
 //
 //  Created by Izadora de Oliveira Albuquerque Montenegro on 28/10/25.
 //
+//
+//  EditPersonalDataView.swift
+//
+
 import UIKit
 import Combine
+import CoreData
+import CloudKit
 
 final class EditPersonalDataView: UIView, UITextFieldDelegate {
     let viewModel: EditMedicalRecordViewModel
     weak var delegate: EditMedicalRecordViewControllerDelegate?
-    
+
     private var subscriptions = Set<AnyCancellable>()
+    private let relationshipOptions = ["Cuidador", "Mãe/Pai", "Filha/Filho", "Neta/Neto", "Familiar", "Amigo", "Outro"]
 
-    private let genderSegmentedControl: StandardSegmentedControl = {
-        let items = ["F", "M"]
-        let control = StandardSegmentedControl(items: items)
-        return control
+    // MARK: - Subviews
+    private let scrollView = UIScrollView.make(direction: .vertical)
+    private let contentStack = UIStackView()
+
+    private let genderSegmentedControl = StandardSegmentedControl(items: ["F", "M"])
+    private let nameTextField = StandardTextfield(placeholder: "Nome do assistido")
+    private let addressTextField = StandardTextfield(placeholder: "Endereço do assistido")
+
+    private let heightTextField: StandardTextfield = {
+        let tf = StandardTextfield()
+        tf.placeholder = "0"
+        tf.keyboardType = .numberPad
+        return tf
     }()
 
-    private lazy var nameTextField = StandardTextfield(placeholder: "Nome do assistido")
-
-    private lazy var heightTextField: StandardTextfield = {
-        let textField = StandardTextfield()
-        textField.placeholder = "0"
-        textField.backgroundColor = .white70
-        textField.textColor = .black10
-        textField.keyboardType = .numberPad
-        textField.translatesAutoresizingMaskIntoConstraints = false
-        return textField
+    private let weightTextField: StandardTextfield = {
+        let tf = StandardTextfield()
+        tf.placeholder = "0"
+        tf.keyboardType = .numberPad
+        return tf
     }()
 
-    private lazy var heightInputStack: UIStackView = {
-        let label = StandardLabel(
-            labelText: "cm",
-            labelFont: .sfPro,
-            labelType: .callOut,
-            labelColor: .black10,
-            labelWeight: .regular
-        )
+    private let contactNameTextField = StandardTextfield(placeholder: "Nome do contato")
+    private let contactPhoneTextField: StandardTextfield = {
+        let tf = StandardTextfield()
+        tf.placeholder = "Telefone com DDI"
+        tf.keyboardType = .numberPad
+        return tf
+    }()
+
+    private lazy var relationshipButton: PopupMenuButton = {
+        let button = PopupMenuButton(title: relationshipOptions.first!)
+        button.showsMenuAsPrimaryAction = true
+        button.backgroundColor = .blue40
+        button.menu = makeRelationshipMenu(selected: relationshipOptions.first!)
+        return button
+    }()
+
+    private let datePicker: UIDatePicker = {
+        let p = UIDatePicker()
+        p.datePickerMode = .date
+        p.maximumDate = Date()
+        p.preferredDatePickerStyle = .compact
+        return p
+    }()
+
+    private let ageLabel = StandardLabel(
+        labelText: "0 anos",
+        labelFont: .sfPro,
+        labelType: .largeTitle,
+        labelColor: .blue10,
+        labelWeight: .regular
+    )
+
+    // MARK: - Sections
+    private lazy var header = EditSectionHeaderView(
+        sectionTitle: "Dados Pessoais",
+        sectionDescription: "Preencha os campos a seguir quanto aos dados básicos da pessoa cuidada.",
+        sectionIcon: "person.fill"
+    )
+
+    private lazy var nameSection = FormSectionView(title: "Nome", content: nameTextField, isObligatory: true)
+    private lazy var birthSection = FormSectionView(title: "Data de Nascimento", content: datePicker)
+    private lazy var ageSection = FormSectionView(title: "Idade", content: ageLabel)
+    private lazy var heightSection = FormSectionView(title: "Altura", content: heightStack)
+    private lazy var weightSection = FormSectionView(title: "Peso", content: weightStack)
+    private lazy var genderSection = FormSectionView(title: "Sexo", content: genderSegmentedControl)
+    private lazy var addressSection = FormSectionView(title: "Endereço", content: addressTextField)
+    private lazy var contactSection = FormSectionView(title: "Contato de Emergência", content: contactStack)
+
+    // MARK: - Stacks
+    private lazy var heightStack: UIStackView = {
+        let label = StandardLabel(labelText: "cm", labelFont: .sfPro, labelType: .callOut, labelColor: .black10, labelWeight: .regular)
         let stack = UIStackView(arrangedSubviews: [heightTextField, label])
         stack.axis = .horizontal
         stack.spacing = 8
-        stack.distribution = .fill
-        heightTextField.setContentHuggingPriority(.defaultLow, for: .horizontal)
-        label.setContentHuggingPriority(.required, for: .horizontal)
         return stack
     }()
 
-    private lazy var weightTextField: StandardTextfield = {
-        let textField = StandardTextfield()
-        textField.placeholder = "0"
-        textField.backgroundColor = .white70
-        textField.textColor = .black10
-        textField.keyboardType = .numberPad
-        textField.translatesAutoresizingMaskIntoConstraints = false
-        return textField
-    }()
-
-    private lazy var weightInputStack: UIStackView = {
-        let label = StandardLabel(
-            labelText: "kg",
-            labelFont: .sfPro,
-            labelType: .callOut,
-            labelColor: .black10,
-            labelWeight: .regular
-        )
+    private lazy var weightStack: UIStackView = {
+        let label = StandardLabel(labelText: "kg", labelFont: .sfPro, labelType: .callOut, labelColor: .black10, labelWeight: .regular)
         let stack = UIStackView(arrangedSubviews: [weightTextField, label])
         stack.axis = .horizontal
         stack.spacing = 8
-        weightTextField.setContentHuggingPriority(.defaultLow, for: .horizontal)
-        label.setContentHuggingPriority(.required, for: .horizontal)
-        return stack
-    }()
-
-    private lazy var addressTextField = StandardTextfield(placeholder: "Endereço do assistido")
-    private lazy var contactTextField = StandardTextfield(placeholder: "(00) 0 0000-0000")
-
-    private let datePicker: UIDatePicker = {
-        let picker = UIDatePicker()
-        picker.datePickerMode = .date
-        picker.maximumDate = Date()
-        picker.preferredDatePickerStyle = .compact
-        picker.translatesAutoresizingMaskIntoConstraints = false
-        picker.setContentHuggingPriority(.required, for: .horizontal)
-        picker.setContentCompressionResistancePriority(.required, for: .horizontal)
-        picker.contentHorizontalAlignment = .leading
-        return picker
-    }()
-
-    private lazy var ageLabel: StandardLabel = {
-        let label = StandardLabel(
-            labelText: "0 anos",
-            labelFont: .sfPro,
-            labelType: .largeTitle,
-            labelColor: .blue10,
-            labelWeight: .regular
-        )
-        return label
-    }()
-
-    private lazy var nameSection = FormSectionView(title: "Nome", content: nameTextField, isObligatory: true)
-    private lazy var birthDateSection = FormSectionView(title: "Data de Nascimento", content: datePicker)
-    private lazy var ageSection = FormSectionView(title: "Idade", content: ageLabel)
-    private lazy var heightSection = FormSectionView(title: "Altura", content: heightInputStack)
-    private lazy var weightSection = FormSectionView(title: "Peso", content: weightInputStack)
-    private lazy var genderSection = FormSectionView(title: "Sexo", content: genderSegmentedControl)
-    private lazy var addressSection = FormSectionView(title: "Endereço", content: addressTextField)
-    private lazy var contactSection = FormSectionView(title: "Contato", content: contactTextField)
-
-    private lazy var birthAndAgeStack: UIStackView = {
-        let stack = UIStackView(arrangedSubviews: [birthDateSection, ageLabel])
-        stack.axis = .horizontal
-        stack.spacing = Layout.mediumSpacing
-        stack.alignment = .bottom
-        stack.distribution = .fillEqually
         return stack
     }()
 
     private lazy var physicalInfoStack: UIStackView = {
-        let stack = UIStackView(arrangedSubviews: [weightSection, heightSection, genderSection])
-        stack.axis = .horizontal
-        stack.spacing = Layout.largeSpacing
-        stack.alignment = .top
-        stack.distribution = .fillEqually
-        return stack
+        let s = UIStackView(arrangedSubviews: [weightSection, heightSection, genderSection])
+        s.axis = .horizontal
+        s.spacing = Layout.smallSpacing
+        s.distribution = .fillEqually
+        return s
     }()
 
-    private lazy var formStack: UIStackView = {
-        let stack = UIStackView(arrangedSubviews: [
-            nameSection,
-            birthAndAgeStack,
-            physicalInfoStack,
-            addressSection,
-            contactSection
-        ])
-        stack.axis = .vertical
-        stack.alignment = .fill
-        stack.spacing = 22
-        stack.translatesAutoresizingMaskIntoConstraints = false
-        return stack
+    private lazy var birthAndAgeStack: UIStackView = {
+        let s = UIStackView(arrangedSubviews: [birthSection, ageSection])
+        s.axis = .horizontal
+        s.spacing = Layout.mediumSpacing
+        s.distribution = .fillEqually
+        return s
     }()
 
-    private let header: EditSectionHeaderView = {
-        let header = EditSectionHeaderView(
-            sectionTitle: "Dados Pessoais",
-            sectionDescription: "Preencha os campos a seguir quanto aos dados básicos da pessoa cuidada.",
-            sectionIcon: "person.fill"
-        )
-        header.translatesAutoresizingMaskIntoConstraints = false
-        return header
+    private lazy var contactStack: UIStackView = {
+        let nameSec = FormSectionView(title: "Nome", content: contactNameTextField, isSubsection: true)
+        let phoneSec = FormSectionView(title: "Telefone", content: contactPhoneTextField, isSubsection: true)
+        let relSec = FormSectionView(title: "Relação", content: relationshipButton, isSubsection: true)
+        let hStack = UIStackView(arrangedSubviews: [phoneSec, relSec])
+        hStack.axis = .horizontal
+        hStack.spacing = Layout.smallSpacing
+        hStack.distribution = .fillEqually
+        let vStack = UIStackView(arrangedSubviews: [nameSec, hStack])
+        vStack.axis = .vertical
+        vStack.spacing = Layout.verySmallSpacing
+        return vStack
     }()
 
-    private lazy var keyboardDismissTapGesture: UITapGestureRecognizer = {
-        let tap = UITapGestureRecognizer(target: self, action: #selector(dismissKeyboard))
-        tap.cancelsTouchesInView = false
-        return tap
-    }()
-
+    // MARK: - Init
     init(viewModel: EditMedicalRecordViewModel) {
         self.viewModel = viewModel
         super.init(frame: .zero)
-        translatesAutoresizingMaskIntoConstraints = false
         setupUI()
         bindViewModel()
         bindInputs()
         fillInformations()
-        installKeyboardDismiss()
-        setTextFieldDelegates()
     }
+
     required init?(coder: NSCoder) { fatalError("init(coder:) has not been implemented") }
+
+    // MARK: - Setup
 
     private func setupUI() {
         backgroundColor = .pureWhite
-        addSubview(header)
-        addSubview(formStack)
+        addSubview(scrollView)
+        scrollView.addSubview(contentStack)
+
+        contentStack.axis = .vertical
+        contentStack.spacing = 22
+        contentStack.alignment = .fill
+        contentStack.translatesAutoresizingMaskIntoConstraints = false
+
+        [header, nameSection, birthAndAgeStack, physicalInfoStack, addressSection, contactSection].forEach {
+            contentStack.addArrangedSubview($0)
+        }
 
         NSLayoutConstraint.activate([
-            header.topAnchor.constraint(equalTo: safeAreaLayoutGuide.topAnchor, constant: 15),
-            header.leadingAnchor.constraint(equalTo: leadingAnchor, constant: 16),
-            header.trailingAnchor.constraint(equalTo: trailingAnchor, constant: -16),
+            scrollView.topAnchor.constraint(equalTo: safeAreaLayoutGuide.topAnchor),
+            scrollView.leadingAnchor.constraint(equalTo: leadingAnchor),
+            scrollView.trailingAnchor.constraint(equalTo: trailingAnchor),
+            scrollView.bottomAnchor.constraint(equalTo: bottomAnchor),
 
-            formStack.topAnchor.constraint(equalTo: header.bottomAnchor, constant: 15),
-            formStack.leadingAnchor.constraint(equalTo: leadingAnchor, constant: 16),
-            formStack.trailingAnchor.constraint(equalTo: trailingAnchor, constant: -16),
-            formStack.bottomAnchor.constraint(lessThanOrEqualTo: bottomAnchor, constant: -20)
+            contentStack.topAnchor.constraint(equalTo: scrollView.contentLayoutGuide.topAnchor, constant: Layout.smallSpacing),
+            contentStack.leadingAnchor.constraint(equalTo: scrollView.contentLayoutGuide.leadingAnchor, constant: Layout.mediumSpacing),
+            contentStack.trailingAnchor.constraint(equalTo: scrollView.contentLayoutGuide.trailingAnchor, constant: -Layout.mediumSpacing),
+            contentStack.bottomAnchor.constraint(equalTo: scrollView.contentLayoutGuide.bottomAnchor, constant: -Layout.smallSpacing),
+            contentStack.widthAnchor.constraint(equalTo: scrollView.frameLayoutGuide.widthAnchor, constant: -2 * Layout.mediumSpacing)
         ])
 
-        datePicker.addTarget(self, action: #selector(handleDateChanged), for: .valueChanged)
+        datePicker.addTarget(self, action: #selector(updateAgeLabel), for: .valueChanged)
     }
 
+    private func makeRelationshipMenu(selected: String) -> UIMenu {
+        let actions: [UIAction] = relationshipOptions.map { option in
+            let isSelected = (option == selected)
+            return UIAction(title: option, state: isSelected ? .on : .off) { [weak self] action in
+                guard let self else { return }
+                self.relationshipButton.setTitle(action.title, for: .normal)
+                self.relationshipButton.menu = self.makeRelationshipMenu(selected: action.title)
+                self.viewModel.updateContactRelationship(action.title)
+            }
+        }
+        return UIMenu(options: .singleSelection, children: actions)
+    }
+
+    // MARK: - Bindings
     private func bindViewModel() {
         viewModel.$personalDataFormState
-            .receive(on: DispatchQueue.main)
-            .sink { [weak self] state in
-                guard let self else { return }
-                if self.nameTextField.text != state.name { self.nameTextField.text = state.name }
-                if self.addressTextField.text != state.address { self.addressTextField.text = state.address }
-                if let height = state.height {
-                    let text = height.truncatingRemainder(dividingBy: 1) == 0 ? String(Int(height)) : String(height)
-                    if self.heightTextField.text != text { self.heightTextField.text = text }
-                } else if self.heightTextField.text?.isEmpty == false {
-                    self.heightTextField.text = ""
-                }
-                if let weight = state.weight {
-                    let text = weight.truncatingRemainder(dividingBy: 1) == 0 ? String(Int(weight)) : String(weight)
-                    if self.weightTextField.text != text { self.weightTextField.text = text }
-                } else if self.weightTextField.text?.isEmpty == false {
-                    self.weightTextField.text = ""
-                }
-                if let date = state.dateOfBirth, self.datePicker.date != date {
-                    self.datePicker.date = date
-                }
-                let index = state.gender == "M" ? 1 : (state.gender == "F" ? 0 : UISegmentedControl.noSegment)
-                if self.genderSegmentedControl.selectedSegmentIndex != index {
-                    self.genderSegmentedControl.selectedSegmentIndex = index
-                }
-                self.ageLabel.text = state.ageText
-            }
-            .store(in: &subscriptions)
-        
-        viewModel.$fieldErrors
             .receive(on: RunLoop.main)
-            .sink { [weak self] errors in
-                self?.nameSection.setError(errors["name"])
-                self?.weightSection.setError(errors["weight"])
-                self?.heightSection.setError(errors["height"])
-                self?.birthDateSection.setError(errors["age"])
+            .sink { [weak self] s in
+                guard let self else { return }
+                if nameTextField.text != s.name { nameTextField.text = s.name }
+                if addressTextField.text != s.address { addressTextField.text = s.address }
+                if let c = s.emergencyContact {
+                    contactNameTextField.text = c.name
+                    contactPhoneTextField.text = c.phone
+                    if let rel = c.relationship {
+                        relationshipButton.setTitle(rel, for: .normal)
+                        relationshipButton.menu = makeRelationshipMenu(selected: rel)
+                    }
+                }
             }
             .store(in: &subscriptions)
     }
 
     private func bindInputs() {
-        nameTextField.addTarget(self, action: #selector(handleNameChanged), for: .editingChanged)
-        addressTextField.addTarget(self, action: #selector(handleAddressChanged), for: .editingChanged)
-        heightTextField.addTarget(self, action: #selector(handleHeightChanged), for: .editingChanged)
-        weightTextField.addTarget(self, action: #selector(handleWeightChanged), for: .editingChanged)
-        genderSegmentedControl.addTarget(self, action: #selector(handleGenderChanged), for: .valueChanged)
+        nameTextField.addTarget(self, action: #selector(nameChanged), for: .editingChanged)
+        addressTextField.addTarget(self, action: #selector(addressChanged), for: .editingChanged)
+        contactNameTextField.addTarget(self, action: #selector(contactNameChanged), for: .editingChanged)
+        contactPhoneTextField.addTarget(self, action: #selector(contactPhoneChanged), for: .editingChanged)
     }
 
-    private func installKeyboardDismiss() {
-        addGestureRecognizer(keyboardDismissTapGesture)
-    }
+    // MARK: - Handlers
+    @objc private func nameChanged() { viewModel.updateName(nameTextField.text ?? "") }
+    @objc private func addressChanged() { viewModel.updateAddress(addressTextField.text ?? "") }
+    @objc private func contactNameChanged() { viewModel.updateContactName(contactNameTextField.text ?? "") }
+    @objc private func contactPhoneChanged() { viewModel.updateContactPhone(contactPhoneTextField.text ?? "") }
 
-    private func setTextFieldDelegates() {
-        [nameTextField, heightTextField, weightTextField, addressTextField, contactTextField].forEach { $0.delegate = self }
-    }
-
-    @objc private func handleDateChanged() {
+    @objc private func updateAgeLabel() {
+        let age = Calendar.current.dateComponents([.year], from: datePicker.date, to: Date()).year ?? 0
+        ageLabel.updateLabelText("\(age) anos")
         viewModel.updateDateOfBirth(datePicker.date)
-        ageLabel.text = viewModel.personalDataFormState.ageText
-    }
-
-    @objc private func handleNameChanged() {
-        viewModel.updateName(nameTextField.text ?? "")
-    }
-
-    @objc private func handleAddressChanged() {
-        viewModel.updateAddress(addressTextField.text ?? "")
-    }
-
-    @objc private func handleHeightChanged() {
-        viewModel.updateHeight(from: heightTextField.text ?? "")
-    }
-
-    @objc private func handleWeightChanged() {
-        viewModel.updateWeight(from: weightTextField.text ?? "")
-    }
-
-    @objc private func handleGenderChanged() {
-        let index = genderSegmentedControl.selectedSegmentIndex
-        let value = (index == 1) ? "M" : (index == 0) ? "F" : ""
-        viewModel.updateGender(value)
-    }
-
-    @objc private func dismissKeyboard() {
-        endEditing(true)
     }
 
     func fillInformations() {
         viewModel.loadInitialPersonalDataFormState()
-        if let patient = viewModel.userService.fetchCurrentPatient(),
-           let personalData = patient.personalData {
-            contactTextField.text = MedicalRecordFormatter.contactsList(from: personalData.contacts as? Set<Contact>)
-        }
     }
 
-    // MARK: - UITextFieldDelegate
     func textFieldShouldReturn(_ textField: UITextField) -> Bool {
         textField.resignFirstResponder()
         return true

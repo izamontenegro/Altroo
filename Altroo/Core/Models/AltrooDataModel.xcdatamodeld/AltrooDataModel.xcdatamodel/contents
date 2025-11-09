@@ -69,7 +69,7 @@
         <attribute name="observation" optional="YES" attributeType="String"/>
         <relationship name="careRecipient" optional="YES" maxCount="1" deletionRule="Nullify" destinationEntity="CareRecipient" inverseName="healthProblems" inverseEntity="CareRecipient"/>
         <relationship name="diseases" optional="YES" toMany="YES" deletionRule="Nullify" destinationEntity="Disease" inverseName="healthProblems" inverseEntity="Disease"/>
-        <relationship name="surgeries" optional="YES" maxCount="1" deletionRule="Nullify" destinationEntity="Surgery" inverseName="healthProblems" inverseEntity="Surgery"/>
+        <relationship name="surgeries" optional="YES" toMany="YES" deletionRule="Nullify" destinationEntity="Surgery" inverseName="healthProblems" inverseEntity="Surgery"/>
     </entity>
     <entity name="HistoryItem" representedClassName="HistoryItem" syncable="YES" codeGenerationType="class">
         <attribute name="activityType" optional="YES" attributeType="String"/>

@@ -21,14 +21,9 @@ final class MedicalRecordViewModel {
     
     @Published private(set) var sections: [MedicalRecordSectionVM] = []
     @Published private(set) var completionPercent: CGFloat = 0.0
-    
-    // NOVO: itens formatados especificamente para "Cirurgias" (nome + data)
-    // O que é: armazena os itens que a View usará para renderizar com duas linhas.
-    // Como: cada tupla traz o título da seção (sempre "Cirurgias"), o texto principal (nome) e o secundário (data formatada).
-    // Por quê: precisamos aplicar cor/tamanho diferentes para a data sem alterar o contrato de InfoRow.
+
     var surgeryDisplayItems: [(title: String, primary: String, secondary: String)] = []
     
-    // NOVO: formatter para data de cirurgia no padrão dd/MM/yyyy
     private let surgeryDateFormatter: DateFormatter = {
         let dateFormatter = DateFormatter()
         dateFormatter.dateFormat = "dd/MM/yyyy"
@@ -69,7 +64,6 @@ final class MedicalRecordViewModel {
         let healthProblems = person.healthProblems
         let diseasesList = MedicalRecordFormatter.diseasesBulletList(from: healthProblems?.diseases as? Set<Disease>)
         
-        // AJUSTE: ler do relacionamento to-many "surgeries" e montar "Nome\nData"
         let surgeriesSet = healthProblems?.surgeries as? Set<Surgery> ?? []
         let surgeriesBlocks = surgeriesSet
             .sorted { ($0.date ?? .distantPast) < ($1.date ?? .distantPast) }
@@ -148,7 +142,7 @@ final class MedicalRecordViewModel {
         guard let person = currentPatient() else {
             completionPercent = 0
             sections = []
-            surgeryDisplayItems = [] // NOVO: limpa a cache de cirurgias formatadas
+            surgeryDisplayItems = []
             return
         }
         completionPercent = calcCompletion(for: person)
@@ -183,8 +177,7 @@ final class MedicalRecordViewModel {
         let healthProblems = careRecipient.healthProblems
         let diseasesList = MedicalRecordFormatter.diseasesBulletList(from: healthProblems?.diseases as? Set<Disease>)
         
-        // NOVO: popular os itens específicos de "Cirurgias" (nome + data)
-        surgeryDisplayItems = [] // zera antes de reconstruir
+        surgeryDisplayItems = []
         let surgeriesSet = healthProblems?.surgeries as? Set<Surgery> ?? []
         let sortedSurgeries = surgeriesSet
             .sorted { ($0.date ?? .distantPast) < ($1.date ?? .distantPast) }
@@ -192,11 +185,9 @@ final class MedicalRecordViewModel {
         for surgery in sortedSurgeries {
             let name = surgery.name ?? "—"
             let dateString = surgery.date.map { surgeryDateFormatter.string(from: $0) } ?? "—"
-            surgeryDisplayItems.append((title: "Cirurgias", primary: name, secondary: dateString)) // o que faz: empilha para a View renderizar com duas linhas
+            surgeryDisplayItems.append((title: "Cirurgias", primary: name, secondary: dateString))
         }
         
-        // Como faz: se houver cirurgias, retornamos o row "Cirurgias" com value vazio para sinalizar renderização customizada;
-        // se não houver, retornamos "—" como fallback de texto simples.
         let surgeriesRow: InfoRow = surgeryDisplayItems.isEmpty ? ("Cirurgias", "—") : ("Cirurgias", "")
         
         let allergies = healthProblems?.allergies ?? "—"

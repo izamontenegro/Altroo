@@ -74,26 +74,30 @@ final class EditMedicalRecordViewController: GradientNavBarViewController, Medic
         progressBackgroundView.addSubview(progressView)
 
         NSLayoutConstraint.activate([
+            // Conteúdo
             contentContainerView.topAnchor.constraint(equalTo: view.safeAreaLayoutGuide.topAnchor, constant: 15),
             contentContainerView.leadingAnchor.constraint(equalTo: view.leadingAnchor),
             contentContainerView.trailingAnchor.constraint(equalTo: view.trailingAnchor),
+            contentContainerView.bottomAnchor.constraint(equalTo: sectionSelectorView.topAnchor, constant: -12),
 
-            sectionSelectorView.bottomAnchor.constraint(equalTo: progressBackgroundView.topAnchor, constant: -20),
+            // Selector
             sectionSelectorView.leadingAnchor.constraint(equalTo: view.leadingAnchor),
             sectionSelectorView.trailingAnchor.constraint(equalTo: view.trailingAnchor),
             sectionSelectorView.heightAnchor.constraint(equalToConstant: 30),
+            sectionSelectorView.bottomAnchor.constraint(equalTo: progressBackgroundView.topAnchor, constant: -20),
 
-            progressBackgroundView.topAnchor.constraint(equalTo: sectionSelectorView.bottomAnchor, constant: 6),
+            // Barra inferior
             progressBackgroundView.leadingAnchor.constraint(equalTo: view.leadingAnchor),
             progressBackgroundView.trailingAnchor.constraint(equalTo: view.trailingAnchor),
             progressBackgroundView.bottomAnchor.constraint(equalTo: view.bottomAnchor),
+            progressBackgroundView.topAnchor.constraint(equalTo: sectionSelectorView.bottomAnchor, constant: 6),
 
+            // ProgressView dentro do background
             progressView.topAnchor.constraint(equalTo: progressBackgroundView.topAnchor, constant: 10),
             progressView.leadingAnchor.constraint(equalTo: progressBackgroundView.leadingAnchor, constant: 16),
             progressView.trailingAnchor.constraint(equalTo: progressBackgroundView.trailingAnchor, constant: -16),
-            progressView.bottomAnchor.constraint(equalTo: view.safeAreaLayoutGuide.bottomAnchor, constant: -10)
+            progressView.bottomAnchor.constraint(equalTo: progressBackgroundView.safeAreaLayoutGuide.bottomAnchor, constant: -10)
         ])
-
         view.bringSubviewToFront(sectionSelectorView)
         displaySection(editPersonalDataForms)
         viewModel.loadInitialPersonalDataFormState()
