@@ -16,6 +16,12 @@ public struct MedicalRecordSectionVM {
     public let rows: [InfoRow]
 }
 
+public struct ContactDisplayItem {
+    public let name: String
+    public let relation: String?
+    public let phone: String
+}
+
 final class MedicalRecordViewModel {
     var userService: UserServiceProtocol
     
@@ -23,6 +29,7 @@ final class MedicalRecordViewModel {
     @Published private(set) var completionPercent: CGFloat = 0.0
 
     var surgeryDisplayItems: [(title: String, primary: String, secondary: String)] = []
+    var contactDisplayItems: [ContactDisplayItem] = []
     
     private let surgeryDateFormatter: DateFormatter = {
         let dateFormatter = DateFormatter()
@@ -143,6 +150,7 @@ final class MedicalRecordViewModel {
             completionPercent = 0
             sections = []
             surgeryDisplayItems = []
+            contactDisplayItems = []
             return
         }
         completionPercent = calcCompletion(for: person)
@@ -162,14 +170,35 @@ final class MedicalRecordViewModel {
         let dateOfBirth = DateFormatterHelper.birthDateFormatter(from: personalData?.dateOfBirth)
         let weight = MedicalRecordFormatter.formatKg(personalData?.weight)
         let height = MedicalRecordFormatter.formatMeters(personalData?.height)
-        let contacts = MedicalRecordFormatter.contactsList(from: personalData?.contacts as? Set<Contact>)
+
+        contactDisplayItems = []
+        if let contactsSet = personalData?.contacts as? Set<Contact>, !contactsSet.isEmpty {
+            let ordered = contactsSet.sorted { (l, r) in
+                let ln = l.name ?? ""
+                let rn = r.name ?? ""
+                return ln.localizedCaseInsensitiveCompare(rn) == .orderedAscending
+            }
+
+            for (index, c) in ordered.enumerated() {
+                let displayName = c.name ?? "—"
+                let relationText = c.relationship
+                let phoneText = c.phone ?? "—"
+
+                contactDisplayItems.append(
+                    .init(name: displayName, relation: relationText, phone: phoneText)
+                )
+            }
+        }
+
+        let contactsText: String = contactDisplayItems.isEmpty ? "—" : ""
+
         return [
             ("Nome", name),
             ("Data de Nascimento", dateOfBirth),
             ("Peso", weight),
             ("Altura", height),
             ("Endereço", address),
-            ("Contatos", contacts)
+            ("Contatos", contactsText)
         ]
     }
     
@@ -214,7 +243,6 @@ final class MedicalRecordViewModel {
         ]
     }
     
-    
     private func rowsMental(from careRecipient: CareRecipient) -> [InfoRow] {
         let mentalState = careRecipient.mentalState
         let emotional = mentalState?.emotionalState.flatMap { EmotionalStateEnum(rawValue: $0)?.displayText } ?? "—"
@@ -251,7 +279,7 @@ final class MedicalRecordViewModel {
         func checkDate(_ value: Date?) { total += 1; if value != nil { filled += 1 } }
         func checkDouble(_ value: Double?) { total += 1; if let x = value, !x.isNaN { filled += 1 } }
         func checkArray(_ value: Any?) { total += 1; if let a = value as? [Any], !a.isEmpty { filled += 1 } }
-        func checkToManySet<T>(_ value: Set<T>?) { total += 1; if let set = value, !set.isEmpty { filled += 1 } } // NOVO: para relationships to-many
+        func checkToManySet<T>(_ value: Set<T>?) { total += 1; if let set = value, !set.isEmpty { filled += 1 } }
         
         let personalData = careRecipient.personalData
         check(personalData?.name)
@@ -264,7 +292,7 @@ final class MedicalRecordViewModel {
         let healthProblems = careRecipient.healthProblems
         check(healthProblems?.observation)
         check(healthProblems?.allergies)
-        checkToManySet(healthProblems?.surgeries as? Set<Surgery>) // cirurgias é relacionamento
+        checkToManySet(healthProblems?.surgeries as? Set<Surgery>)
         
         let mentalState = careRecipient.mentalState
         check(mentalState?.cognitionState)
