@@ -202,6 +202,9 @@ class ShiftFormViewController: UIViewController {
 
         viewModel.finalizeUser(startDate: startTimePicker.date, endDate: endTimePicker.date)
         viewModel.finalizeCareRecipient()
+        
+        NotificationCenter.default.post(name: .didFinishCloudKitSync, object: nil)
+
         delegate?.shiftFormsDidFinish()
     }
 }

@@ -7,11 +7,21 @@
 
 import CoreData
 import UIKit
+import Combine
 
 class UserServiceSession: UserServiceProtocol {
     
     private let context: NSManagedObjectContext
+    private let cloudKitChangeSubject = PassthroughSubject<Void, Never>()
 
+    var cloudKitDidChangePublisher: AnyPublisher<Void, Never> {
+        cloudKitChangeSubject.eraseToAnyPublisher()
+    }
+    
+    func handleCloudKitChange() {
+        cloudKitChangeSubject.send()
+    }
+    
     init(context: NSManagedObjectContext) {
         self.context = context
     }

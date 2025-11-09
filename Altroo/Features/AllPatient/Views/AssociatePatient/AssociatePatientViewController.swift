@@ -6,6 +6,7 @@
 //
 
 import UIKit
+import Combine
 
 protocol AssociatePatientViewControllerDelegate: AnyObject {
     func goToPatientForms()
@@ -22,6 +23,8 @@ class AssociatePatientViewController: GradientHeader {
     weak var delegate: AssociatePatientViewControllerDelegate?
     private let viewModel: AssociatePatientViewModel
     let context: CareRecipientContext
+    
+    private var cancellables = Set<AnyCancellable>()
 
     private lazy var addNewPatientButton: CareRecipientCard = {
         let btn = CareRecipientCard(
@@ -107,72 +110,39 @@ class AssociatePatientViewController: GradientHeader {
 
         setupLayout()
         updateView()
+        bindViewModel()
         
-//        NotificationCenter.default.addObserver(
-//            self,
-//            selector: #selector(remoteDataChanged),
-//            name: .didFinishCloudKitSync,
-//            object: nil
-//        )
+        NotificationCenter.default.addObserver(
+            self,
+            selector: #selector(remoteDataChanged),
+            name: .didFinishCloudKitSync,
+            object: nil
+        )
     }
 
     //TODO: - Add loading view
-//    @objc private func remoteDataChanged() {
-//        DispatchQueue.main.async {
-//            self.loadingIndicator.stopAnimating()
-//            self.loadingIndicator.removeFromSuperview()
-//
-//            let careRecipients = self.viewModel.fetchAvailableCareRecipients()
-//            self.vStack.arrangedSubviews.forEach { $0.removeFromSuperview() }
-//            
-//            if careRecipients.isEmpty {
-//                let emptyStateContainer = UIView()
-//                emptyStateContainer.translatesAutoresizingMaskIntoConstraints = false
-//                emptyStateContainer.addSubview(self.viewLabel)
-//
-//                NSLayoutConstraint.activate([
-//                    self.viewLabel.centerXAnchor.constraint(equalTo: emptyStateContainer.centerXAnchor),
-//                    self.viewLabel.centerYAnchor.constraint(equalTo: emptyStateContainer.centerYAnchor),
-//                    self.viewLabel.leadingAnchor.constraint(equalTo: emptyStateContainer.leadingAnchor, constant: Layout.mediumSpacing),
-//                    self.viewLabel.trailingAnchor.constraint(equalTo: emptyStateContainer.trailingAnchor, constant: -Layout.mediumSpacing)
-//                ])
-//
-//                self.vStack.addArrangedSubview(emptyStateContainer)
-//                NSLayoutConstraint.activate([
-//                    emptyStateContainer.heightAnchor.constraint(equalTo: self.view.heightAnchor, multiplier: 0.6)
-//                ])
-//            } else {
-//                for careRecipient in careRecipients {
-//                    let card = CareRecipientCard(
-//                        name: careRecipient.personalData?.name ?? "",
-//                        age: careRecipient.personalData?.age ?? 0,
-//                        careRecipient: careRecipient
-//                    )
-//
-//                    let tapGesture = UITapGestureRecognizer(target: self, action: #selector(self.didTapCareRecipientCard(_:)))
-//                    card.addGestureRecognizer(tapGesture)
-//                    card.isUserInteractionEnabled = true
-//
-//                    self.vStack.addArrangedSubview(card)
-//                }
-//            }
-//        }
-//    }
+    @objc private func remoteDataChanged() {
+        DispatchQueue.main.async {
+            self.loadingIndicator.stopAnimating()
+            self.loadingIndicator.removeFromSuperview()
+            self.viewModel.refreshData()
+        }
+    }
 
     private func setupLayout() {
         view.addSubview(scrollView)
         scrollView.addSubview(vStack)
 
         NSLayoutConstraint.activate([
-            scrollView.topAnchor.constraint(equalTo: view.safeAreaLayoutGuide.topAnchor, constant: 20),
+            scrollView.topAnchor.constraint(equalTo: view.safeAreaLayoutGuide.topAnchor),
             scrollView.leadingAnchor.constraint(equalTo: view.leadingAnchor, constant: Layout.mediumSpacing),
             scrollView.trailingAnchor.constraint(equalTo: view.trailingAnchor, constant: -Layout.mediumSpacing),
-            scrollView.bottomAnchor.constraint(equalTo: view.bottomAnchor, constant: -20),
+            scrollView.bottomAnchor.constraint(equalTo: view.bottomAnchor, constant: context == .patientSelection ? -Layout.bigButtonBottomPadding : -20),
 
-            vStack.topAnchor.constraint(equalTo: scrollView.topAnchor),
+            vStack.topAnchor.constraint(equalTo: scrollView.topAnchor, constant: 20),
             vStack.leadingAnchor.constraint(equalTo: scrollView.leadingAnchor),
             vStack.trailingAnchor.constraint(equalTo: scrollView.trailingAnchor),
-            vStack.bottomAnchor.constraint(equalTo: scrollView.bottomAnchor),
+            vStack.bottomAnchor.constraint(equalTo: scrollView.bottomAnchor, constant: context == .patientSelection ? -20 : 0),
             vStack.widthAnchor.constraint(equalTo: scrollView.widthAnchor),
         ])
 
@@ -194,6 +164,7 @@ class AssociatePatientViewController: GradientHeader {
                 let tapGesture = UITapGestureRecognizer(target: self, action: #selector(didTapCareRecipientCard(_:)))
                 card.addGestureRecognizer(tapGesture)
                 card.isUserInteractionEnabled = true
+                card.enablePressEffect(withHaptics: true)
                 
                 vStack.addArrangedSubview(card)
             }
@@ -220,13 +191,23 @@ class AssociatePatientViewController: GradientHeader {
         }
     }
     
+    private func bindViewModel() {
+        viewModel.$careRecipients
+            .receive(on: RunLoop.main)
+            .sink { [weak self] _ in
+                self?.updateView()
+            }
+            .store(in: &cancellables)
+        
+        viewModel.$currentCareRecipient
+            .receive(on: RunLoop.main)
+            .sink { [weak self] _ in
+                self?.updateView()
+            }
+            .store(in: &cancellables)
+    }
+    
     @objc func didTapAddNewPatientButton() { delegate?.goToPatientForms() }
     
     @objc func didTapAddExistingPatientButton() { delegate?.goToTutorialAddSheet() }
 }
-
-//#Preview {
-//    let mockService = UserServiceSession(context: AppDependencies().coreDataService.stack.context)
-//    let viewModel = AssociatePatientViewModel(userService: mockService)
-//    AssociatePatientViewController(viewModel: viewModel)
-//}

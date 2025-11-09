@@ -6,6 +6,7 @@
 //
 
 import Foundation
+import Combine
 
 protocol UserServiceProtocol {
     func fetchUser() -> User?
@@ -20,4 +21,6 @@ protocol UserServiceProtocol {
     func removeCurrentPatient()
     func setShift(_ shifts: [PeriodEnum])
     func getShift() -> [PeriodEnum]
+    
+    var cloudKitDidChangePublisher: AnyPublisher<Void, Never> { get }
 }
