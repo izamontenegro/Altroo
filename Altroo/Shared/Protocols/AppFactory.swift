@@ -12,18 +12,18 @@ protocol AppFactory:
     AssociatePatientFactory,
     MainFlowFactory,
     TodayFactory,
+    SymptomFactory,
     ProfileFactory,
+    EditMedicalRecordFactory,
     EventsFactory,
     MedicationFactory,
     BasicNeedsFactory,
     RoutineActivitiesFactory,
     MeasurementFactory,
-    SymptomFactory,
     GeneralFactory,
     HistoryFactory,
     SettingsFactory,
-    ServiceFactory,
-    EditMedicalRecordFactory
+    ServiceFactory
 {
 }
 
@@ -36,6 +36,7 @@ protocol OnboardingFactory {
 protocol AssociatePatientFactory {
     func makeAssociatePatientViewController(delegate: AssociatePatientViewControllerDelegate) -> UIViewController
     func makeTutorialAddSheet() -> UIViewController
+    func makeLoading() -> UIViewController
     func makePatientFormViewController(delegate: AssociatePatientViewControllerDelegate) -> UIViewController
     func makeComorbiditiesFormViewController(delegate: AssociatePatientViewControllerDelegate) -> UIViewController
     func makeShiftFormViewController(delegate: ShiftFormsViewControllerDelegate) -> UIViewController
@@ -53,7 +54,6 @@ protocol MainFlowFactory {
 // MARK: - TODAY FLOW
 protocol TodayFactory {
     func makeEditSectionsViewController() -> UIViewController
-    
 }
 
 //MARK: - SYMPTOM FLOW
@@ -64,19 +64,18 @@ protocol SymptomFactory {
 }
 
 // MARK: - PROFILE FLOW
-
+protocol ProfileFactory {
+    func makeProfileViewController(delegate: ProfileViewControllerDelegate) -> UIViewController
+    func makeChangeCareRecipientViewController(delegate: ChangeCareRecipientViewControllerDelegate) -> UIViewController
+    //    func makeEditCaregiverViewController() -> UIViewController
+    func makeMedicalRecordViewController(delegate: EditMedicalRecordViewControllerDelegate?) -> UIViewController
+}
 protocol EditMedicalRecordFactory {
     func makeEditPersonalDataViewController(delegate: EditMedicalRecordViewControllerDelegate) -> UIViewController
     func makeEditHealthProblemsViewController(delegate: EditMedicalRecordViewControllerDelegate) -> UIViewController
     func makeEditPhysicalStateViewController(delegate: EditMedicalRecordViewControllerDelegate) -> UIViewController
     func makeEditMentalStateViewController(delegate: EditMedicalRecordViewControllerDelegate) -> UIViewController
     func makeEditPersonalCareViewController(delegate: EditMedicalRecordViewControllerDelegate) -> UIViewController
-}
-
-protocol ProfileFactory {
-    func makeProfileViewController(delegate: ProfileViewControllerDelegate) -> UIViewController
-    func makeChangeCareRecipientViewController(delegate: ChangeCareRecipientViewControllerDelegate) -> UIViewController
-    func makeMedicalRecordViewController(delegate: EditMedicalRecordViewControllerDelegate?) -> UIViewController
 }
 
 // MARK: - EVENTS FLOW
