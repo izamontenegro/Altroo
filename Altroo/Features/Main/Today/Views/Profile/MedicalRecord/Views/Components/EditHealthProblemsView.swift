@@ -4,11 +4,7 @@
 //
 //  Created by Izadora de Oliveira Albuquerque Montenegro on 30/10/25.
 //
-
-// EditHealthProblemsView.swift
-
 import UIKit
-import ObjectiveC
 
 final class EditHealthProblemsView: UIView {
     let viewModel: EditMedicalRecordViewModel
@@ -18,56 +14,56 @@ final class EditHealthProblemsView: UIView {
     private let contentView = UIView()
 
     private lazy var diseaseTextField = StandardTextfield(placeholder: "Doenças separadas por vírgulas")
-    private lazy var alergiesTextField = StandardTextfield(placeholder: "Alergias separadas por vírgulas")
+    private lazy var allergiesTextField = StandardTextfield(placeholder: "Alergias separadas por vírgulas")
     private lazy var surgeryNameTextField = StandardTextfield(placeholder: "Nome da cirurgia")
 
     private let surgeryDatePicker: UIDatePicker = {
-        let p = UIDatePicker()
-        p.datePickerMode = .date
-        p.maximumDate = Date()
-        p.preferredDatePickerStyle = .compact
-        p.translatesAutoresizingMaskIntoConstraints = false
-        p.setContentHuggingPriority(.required, for: .horizontal)
-        p.setContentCompressionResistancePriority(.required, for: .horizontal)
-        p.contentHorizontalAlignment = .leading
-        return p
+        let datePicker = UIDatePicker()
+        datePicker.datePickerMode = .date
+        datePicker.maximumDate = Date()
+        datePicker.preferredDatePickerStyle = .compact
+        datePicker.translatesAutoresizingMaskIntoConstraints = false
+        datePicker.setContentHuggingPriority(.required, for: .horizontal)
+        datePicker.setContentCompressionResistancePriority(.required, for: .horizontal)
+        datePicker.contentHorizontalAlignment = .leading
+        return datePicker
     }()
 
     private lazy var addSurgeryButton: OutlineButton = {
-        let b = OutlineButton(title: "+", color: .blue40, cornerRadius: 8)
-        b.translatesAutoresizingMaskIntoConstraints = false
-        return b
+        let button = OutlineButton(title: "+", color: .blue40, cornerRadius: 8)
+        button.translatesAutoresizingMaskIntoConstraints = false
+        return button
     }()
 
     private lazy var observationView: ObservationView = {
-        let v = ObservationView()
-        v.translatesAutoresizingMaskIntoConstraints = false
-        return v
+        let view = ObservationView()
+        view.translatesAutoresizingMaskIntoConstraints = false
+        return view
     }()
 
     private lazy var surgeriesListStack: UIStackView = {
-        let s = UIStackView()
-        s.axis = .vertical
-        s.alignment = .fill
-        s.spacing = 12
-        s.translatesAutoresizingMaskIntoConstraints = false
-        return s
+        let stack = UIStackView()
+        stack.axis = .vertical
+        stack.alignment = .fill
+        stack.spacing = 12
+        stack.translatesAutoresizingMaskIntoConstraints = false
+        return stack
     }()
 
     private let header: EditSectionHeaderView = {
-        let h = EditSectionHeaderView(
+        let header = EditSectionHeaderView(
             sectionTitle: "Problemas de Saúde",
             sectionDescription: "Preencha os campos a seguir quanto aos dados básicos da pessoa cuidada.",
             sectionIcon: "heart.fill"
         )
-        h.translatesAutoresizingMaskIntoConstraints = false
-        return h
+        header.translatesAutoresizingMaskIntoConstraints = false
+        return header
     }()
 
     private lazy var formStack: UIStackView = {
         let diseasesSection = FormSectionView(title: "Doenças", content: diseaseTextField)
         diseaseTextField.heightAnchor.constraint(greaterThanOrEqualToConstant: 44).isActive = true
-        alergiesTextField.heightAnchor.constraint(greaterThanOrEqualToConstant: 44).isActive = true
+        allergiesTextField.heightAnchor.constraint(greaterThanOrEqualToConstant: 44).isActive = true
         surgeryNameTextField.heightAnchor.constraint(greaterThanOrEqualToConstant: 44).isActive = true
 
         NSLayoutConstraint.activate([
@@ -87,13 +83,13 @@ final class EditHealthProblemsView: UIView {
         surgeriesVerticalStack.distribution = .fill
 
         let surgeriesSection = FormSectionView(title: "Cirurgias", content: surgeriesVerticalStack)
-        let alergiesSection = FormSectionView(title: "Alergias", content: alergiesTextField)
+        let allergiesSection = FormSectionView(title: "Alergias", content: allergiesTextField)
         let observationsSection = FormSectionView(title: "Observações", content: observationView)
 
         let stack = UIStackView(arrangedSubviews: [
             diseasesSection,
             surgeriesSection,
-            alergiesSection,
+            allergiesSection,
             observationsSection
         ])
         stack.axis = .vertical
@@ -104,18 +100,18 @@ final class EditHealthProblemsView: UIView {
     }()
 
     private lazy var contentStack: UIStackView = {
-        let s = UIStackView(arrangedSubviews: [header, formStack])
-        s.axis = .vertical
-        s.alignment = .fill
-        s.spacing = 15
-        s.translatesAutoresizingMaskIntoConstraints = false
-        return s
+        let stack = UIStackView(arrangedSubviews: [header, formStack])
+        stack.axis = .vertical
+        stack.alignment = .fill
+        stack.spacing = 15
+        stack.translatesAutoresizingMaskIntoConstraints = false
+        return stack
     }()
 
     private var endEditingObserver: NSObjectProtocol?
 
     deinit {
-        if let obs = endEditingObserver { NotificationCenter.default.removeObserver(obs) }
+        if let observer = endEditingObserver { NotificationCenter.default.removeObserver(observer) }
     }
 
     init(viewModel: EditMedicalRecordViewModel) {
@@ -171,8 +167,8 @@ final class EditHealthProblemsView: UIView {
         diseaseTextField.addTarget(self, action: #selector(diseasesChanged), for: .editingChanged)
         diseaseTextField.addTarget(self, action: #selector(diseasesEditingEnded), for: .editingDidEnd)
 
-        alergiesTextField.addTarget(self, action: #selector(allergiesChanged), for: .editingChanged)
-        alergiesTextField.addTarget(self, action: #selector(allergiesEditingEnded), for: .editingDidEnd)
+        allergiesTextField.addTarget(self, action: #selector(allergiesChanged), for: .editingChanged)
+        allergiesTextField.addTarget(self, action: #selector(allergiesEditingEnded), for: .editingDidEnd)
 
         surgeryNameTextField.addTarget(self, action: #selector(surgeryNameChanged), for: .editingChanged)
         surgeryDatePicker.addTarget(self, action: #selector(handleDateChanged), for: .valueChanged)
@@ -196,7 +192,7 @@ final class EditHealthProblemsView: UIView {
         viewModel.persistDiseaseFormState()
         diseaseTextField.text = viewModel.diseaseFormState.diseasesText
     }
-    @objc private func allergiesChanged() { viewModel.updateAllergiesText(alergiesTextField.text ?? "") }
+    @objc private func allergiesChanged() { viewModel.updateAllergiesText(allergiesTextField.text ?? "") }
     @objc private func allergiesEditingEnded() { viewModel.persistAllergies() }
     @objc private func surgeryNameChanged() { viewModel.updateSurgeryName(surgeryNameTextField.text ?? "") }
     @objc private func handleDateChanged() { viewModel.updateSurgeryDate(surgeryDatePicker.date) }
@@ -210,7 +206,7 @@ final class EditHealthProblemsView: UIView {
     func fillInformations() {
         viewModel.loadAllInitialStates()
         diseaseTextField.text = viewModel.diseaseFormState.diseasesText
-        alergiesTextField.text = viewModel.healthFormState.allergiesText
+        allergiesTextField.text = viewModel.healthFormState.allergiesText
         observationView.textView.text = viewModel.healthFormState.observationText
         surgeryDatePicker.date = viewModel.healthFormState.surgeryDate
     }
@@ -223,22 +219,23 @@ final class EditHealthProblemsView: UIView {
     }
 
     private func reloadSurgeriesList() {
-        surgeriesListStack.arrangedSubviews.forEach { v in
-            surgeriesListStack.removeArrangedSubview(v); v.removeFromSuperview()
+        surgeriesListStack.arrangedSubviews.forEach { view in
+            surgeriesListStack.removeArrangedSubview(view)
+            view.removeFromSuperview()
         }
 
-        guard let hp = viewModel.currentPatient()?.healthProblems,
-              let set = hp.surgeries as? Set<Surgery> else { return }
+        guard let healthProblems = viewModel.currentPatient()?.healthProblems,
+              let surgeriesSet = healthProblems.surgeries as? Set<Surgery> else { return }
 
-        let surgeries = set.sorted {
-            let da = $0.date ?? .distantPast
-            let db = $1.date ?? .distantPast
-            if da == db { return ($0.name ?? "") < ($1.name ?? "") }
-            return da > db
+        let surgeries = surgeriesSet.sorted {
+            let dateA = $0.date ?? .distantPast
+            let dateB = $1.date ?? .distantPast
+            if dateA == dateB { return ($0.name ?? "") < ($1.name ?? "") }
+            return dateA > dateB
         }
 
-        for s in surgeries {
-            surgeriesListStack.addArrangedSubview(makeSurgeryRow(for: s))
+        for surgery in surgeries {
+            surgeriesListStack.addArrangedSubview(makeSurgeryRow(for: surgery))
         }
     }
 
@@ -274,10 +271,10 @@ final class EditHealthProblemsView: UIView {
     }
 
     private lazy var dateFormatter: DateFormatter = {
-        let df = DateFormatter()
-        df.dateStyle = .short
-        df.locale = Locale(identifier: "pt_BR")
-        return df
+        let formatter = DateFormatter()
+        formatter.dateStyle = .short
+        formatter.locale = Locale(identifier: "pt_BR")
+        return formatter
     }()
 }
 

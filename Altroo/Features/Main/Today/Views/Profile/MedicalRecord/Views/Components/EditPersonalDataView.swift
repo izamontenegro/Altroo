@@ -4,10 +4,6 @@
 //
 //  Created by Izadora de Oliveira Albuquerque Montenegro on 28/10/25.
 //
-//
-//  EditPersonalDataView.swift
-//
-
 import UIKit
 import Combine
 import CoreData
@@ -20,7 +16,6 @@ final class EditPersonalDataView: UIView, UITextFieldDelegate {
     private var subscriptions = Set<AnyCancellable>()
     private let relationshipOptions = ["Cuidador", "Mãe/Pai", "Filha/Filho", "Neta/Neto", "Familiar", "Amigo", "Outro"]
 
-    // MARK: - Subviews
     private let scrollView = UIScrollView.make(direction: .vertical)
     private let contentStack = UIStackView()
 
@@ -29,25 +24,25 @@ final class EditPersonalDataView: UIView, UITextFieldDelegate {
     private let addressTextField = StandardTextfield(placeholder: "Endereço do assistido")
 
     private let heightTextField: StandardTextfield = {
-        let tf = StandardTextfield()
-        tf.placeholder = "0"
-        tf.keyboardType = .numberPad
-        return tf
+        let heightField = StandardTextfield()
+        heightField.placeholder = "0"
+        heightField.keyboardType = .numberPad
+        return heightField
     }()
 
     private let weightTextField: StandardTextfield = {
-        let tf = StandardTextfield()
-        tf.placeholder = "0"
-        tf.keyboardType = .numberPad
-        return tf
+        let weightField = StandardTextfield()
+        weightField.placeholder = "0"
+        weightField.keyboardType = .numberPad
+        return weightField
     }()
 
     private let contactNameTextField = StandardTextfield(placeholder: "Nome do contato")
     private let contactPhoneTextField: StandardTextfield = {
-        let tf = StandardTextfield()
-        tf.placeholder = "Telefone com DDI"
-        tf.keyboardType = .numberPad
-        return tf
+        let contactField = StandardTextfield()
+        contactField.placeholder = "Telefone com DDI"
+        contactField.keyboardType = .numberPad
+        return contactField
     }()
 
     private lazy var relationshipButton: PopupMenuButton = {
@@ -59,11 +54,11 @@ final class EditPersonalDataView: UIView, UITextFieldDelegate {
     }()
 
     private let datePicker: UIDatePicker = {
-        let p = UIDatePicker()
-        p.datePickerMode = .date
-        p.maximumDate = Date()
-        p.preferredDatePickerStyle = .compact
-        return p
+        let datePicker = UIDatePicker()
+        datePicker.datePickerMode = .date
+        datePicker.maximumDate = Date()
+        datePicker.preferredDatePickerStyle = .compact
+        return datePicker
     }()
 
     private let ageLabel = StandardLabel(
@@ -74,7 +69,6 @@ final class EditPersonalDataView: UIView, UITextFieldDelegate {
         labelWeight: .regular
     )
 
-    // MARK: - Sections
     private lazy var header = EditSectionHeaderView(
         sectionTitle: "Dados Pessoais",
         sectionDescription: "Preencha os campos a seguir quanto aos dados básicos da pessoa cuidada.",
@@ -90,54 +84,52 @@ final class EditPersonalDataView: UIView, UITextFieldDelegate {
     private lazy var addressSection = FormSectionView(title: "Endereço", content: addressTextField)
     private lazy var contactSection = FormSectionView(title: "Contato de Emergência", content: contactStack)
 
-    // MARK: - Stacks
     private lazy var heightStack: UIStackView = {
-        let label = StandardLabel(labelText: "cm", labelFont: .sfPro, labelType: .callOut, labelColor: .black10, labelWeight: .regular)
-        let stack = UIStackView(arrangedSubviews: [heightTextField, label])
+        let centimetersLabel = StandardLabel(labelText: "cm", labelFont: .sfPro, labelType: .callOut, labelColor: .black10, labelWeight: .regular)
+        let stack = UIStackView(arrangedSubviews: [heightTextField, centimetersLabel])
         stack.axis = .horizontal
         stack.spacing = 8
         return stack
     }()
 
     private lazy var weightStack: UIStackView = {
-        let label = StandardLabel(labelText: "kg", labelFont: .sfPro, labelType: .callOut, labelColor: .black10, labelWeight: .regular)
-        let stack = UIStackView(arrangedSubviews: [weightTextField, label])
+        let kilogramsLabel = StandardLabel(labelText: "kg", labelFont: .sfPro, labelType: .callOut, labelColor: .black10, labelWeight: .regular)
+        let stack = UIStackView(arrangedSubviews: [weightTextField, kilogramsLabel])
         stack.axis = .horizontal
         stack.spacing = 8
         return stack
     }()
 
     private lazy var physicalInfoStack: UIStackView = {
-        let s = UIStackView(arrangedSubviews: [weightSection, heightSection, genderSection])
-        s.axis = .horizontal
-        s.spacing = Layout.smallSpacing
-        s.distribution = .fillEqually
-        return s
+        let stack = UIStackView(arrangedSubviews: [weightSection, heightSection, genderSection])
+        stack.axis = .horizontal
+        stack.spacing = Layout.smallSpacing
+        stack.distribution = .fillEqually
+        return stack
     }()
 
     private lazy var birthAndAgeStack: UIStackView = {
-        let s = UIStackView(arrangedSubviews: [birthSection, ageSection])
-        s.axis = .horizontal
-        s.spacing = Layout.mediumSpacing
-        s.distribution = .fillEqually
-        return s
+        let stack = UIStackView(arrangedSubviews: [birthSection, ageSection])
+        stack.axis = .horizontal
+        stack.spacing = Layout.mediumSpacing
+        stack.distribution = .fillEqually
+        return stack
     }()
 
     private lazy var contactStack: UIStackView = {
-        let nameSec = FormSectionView(title: "Nome", content: contactNameTextField, isSubsection: true)
-        let phoneSec = FormSectionView(title: "Telefone", content: contactPhoneTextField, isSubsection: true)
-        let relSec = FormSectionView(title: "Relação", content: relationshipButton, isSubsection: true)
-        let hStack = UIStackView(arrangedSubviews: [phoneSec, relSec])
-        hStack.axis = .horizontal
-        hStack.spacing = Layout.smallSpacing
-        hStack.distribution = .fillEqually
-        let vStack = UIStackView(arrangedSubviews: [nameSec, hStack])
-        vStack.axis = .vertical
-        vStack.spacing = Layout.verySmallSpacing
-        return vStack
+        let nameSection = FormSectionView(title: "Nome", content: contactNameTextField, isSubsection: true)
+        let phoneSection = FormSectionView(title: "Telefone", content: contactPhoneTextField, isSubsection: true)
+        let relationshipSection = FormSectionView(title: "Relação", content: relationshipButton, isSubsection: true)
+        let horizontalStack = UIStackView(arrangedSubviews: [phoneSection, relationshipSection])
+        horizontalStack.axis = .horizontal
+        horizontalStack.spacing = Layout.smallSpacing
+        horizontalStack.distribution = .fillEqually
+        let verticalStack = UIStackView(arrangedSubviews: [nameSection, horizontalStack])
+        verticalStack.axis = .vertical
+        verticalStack.spacing = Layout.verySmallSpacing
+        return verticalStack
     }()
 
-    // MARK: - Init
     init(viewModel: EditMedicalRecordViewModel) {
         self.viewModel = viewModel
         super.init(frame: .zero)
@@ -148,8 +140,6 @@ final class EditPersonalDataView: UIView, UITextFieldDelegate {
     }
 
     required init?(coder: NSCoder) { fatalError("init(coder:) has not been implemented") }
-
-    // MARK: - Setup
 
     private func setupUI() {
         backgroundColor = .pureWhite
@@ -194,20 +184,19 @@ final class EditPersonalDataView: UIView, UITextFieldDelegate {
         return UIMenu(options: .singleSelection, children: actions)
     }
 
-    // MARK: - Bindings
     private func bindViewModel() {
         viewModel.$personalDataFormState
             .receive(on: RunLoop.main)
-            .sink { [weak self] s in
+            .sink { [weak self] state in
                 guard let self else { return }
-                if nameTextField.text != s.name { nameTextField.text = s.name }
-                if addressTextField.text != s.address { addressTextField.text = s.address }
-                if let c = s.emergencyContact {
-                    contactNameTextField.text = c.name
-                    contactPhoneTextField.text = c.phone
-                    if let rel = c.relationship {
-                        relationshipButton.setTitle(rel, for: .normal)
-                        relationshipButton.menu = makeRelationshipMenu(selected: rel)
+                if nameTextField.text != state.name { nameTextField.text = state.name }
+                if addressTextField.text != state.address { addressTextField.text = state.address }
+                if let contact = state.emergencyContact {
+                    contactNameTextField.text = contact.name
+                    contactPhoneTextField.text = contact.phone
+                    if let relationship = contact.relationship {
+                        relationshipButton.setTitle(relationship, for: .normal)
+                        relationshipButton.menu = makeRelationshipMenu(selected: relationship)
                     }
                 }
             }
@@ -221,7 +210,6 @@ final class EditPersonalDataView: UIView, UITextFieldDelegate {
         contactPhoneTextField.addTarget(self, action: #selector(contactPhoneChanged), for: .editingChanged)
     }
 
-    // MARK: - Handlers
     @objc private func nameChanged() { viewModel.updateName(nameTextField.text ?? "") }
     @objc private func addressChanged() { viewModel.updateAddress(addressTextField.text ?? "") }
     @objc private func contactNameChanged() { viewModel.updateContactName(contactNameTextField.text ?? "") }
