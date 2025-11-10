@@ -85,8 +85,7 @@ class CareRecipientTests: XCTestCase {
         physicalState.oralHealth = .allTeethPresent
         physicalState.mobility = .noAssistance
         
-        healthProblems.allergies = ["milk", "gluten"]
-
+        healthProblems.allergies = "milk, gluten"
         careRecipient.personalData = personalData
         careRecipient.physicalState = physicalState
         careRecipient.healthProblems = healthProblems
@@ -106,7 +105,7 @@ class CareRecipientTests: XCTestCase {
         XCTAssertEqual(savedRecipient.personalData?.name, "Steve Jobs")
         XCTAssertEqual(savedRecipient.personalData?.age, 75)
         XCTAssertEqual(savedRecipient.physicalState?.oralHealth, .allTeethPresent)
-        XCTAssertEqual(savedRecipient.healthProblems?.allergies, ["milk", "gluten"])
+        XCTAssertEqual(savedRecipient.healthProblems?.allergies, "milk, gluten")
                 
         savedRecipient.physicalState?.mobility = .bedridden
         

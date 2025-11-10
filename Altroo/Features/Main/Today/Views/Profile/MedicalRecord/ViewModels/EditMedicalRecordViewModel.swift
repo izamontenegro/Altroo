@@ -12,12 +12,17 @@ final class EditMedicalRecordViewModel {
     var userService: UserServiceProtocol
     let careRecipientFacade: CareRecipientFacade
     
+    let relationshipOptions = ["Cuidador", "Mãe/Pai", "Filha/Filho", "Neta/Neto", "Familiar", "Amigo", "Outro"]
+    @Published var selectedContactRelationship: String = "Filha/Filho"
+    
     @Published var personalDataFormState = PersonalDataFormState()
+    @Published var fieldErrors: [String: String] = [:]
+    @Published var healthFormState = HealthProblemsFormState()
+    @Published var diseaseFormState = DiseaseFormState()
     @Published var physicalStateFormState = PhysicalStateFormState()
     @Published var mentalStateFormState = MentalStateFormState()
     @Published var personalCareFormState = PersonalCareFormState()
     
-    @Published var fieldErrors: [String: String] = [:]
     let validator = FormValidator()
 
     init(userService: UserServiceProtocol, careRecipientFacade: CareRecipientFacade) {
