@@ -38,6 +38,7 @@ final class AssociatePatientViewModel {
     }
     
     func setCurrentCareRecipient(_ careRecipient: CareRecipient) {
+        currentCareRecipient = careRecipient
         userService.setCurrentPatient(careRecipient)
         refreshData()
     }

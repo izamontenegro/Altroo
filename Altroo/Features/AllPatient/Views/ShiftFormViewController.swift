@@ -115,8 +115,14 @@ class ShiftFormViewController: UIViewController {
 
     private let doneButton = StandardConfirmationButton(title: "Concluir")
     
-    private lazy var formStack: UIStackView = {
-        let stack = UIStackView(arrangedSubviews: [titleSection, nameSection, timeSection, relationshipSection])
+    private lazy var formStack: UIStackView = {        
+        var sections: [UIView] = [titleSection, timeSection, relationshipSection]
+        
+        if viewModel.fetchUser() == nil {
+            sections.insert(nameSection, at: 1)
+        }
+
+        let stack = UIStackView(arrangedSubviews: sections)
         stack.axis = .vertical
         stack.spacing = 24
         stack.translatesAutoresizingMaskIntoConstraints = false
@@ -198,7 +204,11 @@ class ShiftFormViewController: UIViewController {
     
     @objc
     func didTapDoneButton() {
-        guard viewModel.validateUser() else { return }
+        if viewModel.fetchUser() != nil {
+            nameTextField.text = viewModel.fetchUser()?.name
+        } else {
+            guard viewModel.validateUser() else { return }
+        }
 
         viewModel.finalizeUser(startDate: startTimePicker.date, endDate: endTimePicker.date)
         viewModel.finalizeCareRecipient()

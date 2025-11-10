@@ -63,7 +63,14 @@ class ProfileCareRecipient: UIView {
         label.text = name
     }
     
+    func updateInitials(_ newInitials: String) {
+        self.name = newInitials
+    }
+    
     private func setupView() {
+        translatesAutoresizingMaskIntoConstraints = false
+        label.translatesAutoresizingMaskIntoConstraints = false
+        
         backgroundColor = color
         layer.borderColor = strokeColor.cgColor
         

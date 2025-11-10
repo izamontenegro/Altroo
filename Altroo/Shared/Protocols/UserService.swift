@@ -23,4 +23,5 @@ protocol UserServiceProtocol {
     func getShift() -> [PeriodEnum]
     
     var cloudKitDidChangePublisher: AnyPublisher<Void, Never> { get }
+    var currentPatientPublisher: AnyPublisher<CareRecipient?, Never> { get }
 }

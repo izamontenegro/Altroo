@@ -14,16 +14,31 @@ class UserServiceSession: UserServiceProtocol {
     private let context: NSManagedObjectContext
     private let cloudKitChangeSubject = PassthroughSubject<Void, Never>()
 
+    @Published private var currentPatient: CareRecipient?
+    
+    var currentPatientPublisher: AnyPublisher<CareRecipient?, Never> {
+        return $currentPatient.eraseToAnyPublisher()
+    }
+    
     var cloudKitDidChangePublisher: AnyPublisher<Void, Never> {
         cloudKitChangeSubject.eraseToAnyPublisher()
     }
-    
+
     func handleCloudKitChange() {
         cloudKitChangeSubject.send()
     }
     
     init(context: NSManagedObjectContext) {
         self.context = context
+        if let saved = fetchCurrentPatientFromStorage() {
+            self.currentPatient = saved
+        }
+    }
+
+    private func fetchCurrentPatientFromStorage() -> CareRecipient? {
+        guard let user = fetchUser(),
+              let id = user.activeCareRecipient else { return nil }
+        return fetchCareRecipient(id: id)
     }
 
     func fetchUser() -> User? {
@@ -53,11 +68,12 @@ class UserServiceSession: UserServiceProtocol {
     }
     
     func setCurrentPatient(_ patient: CareRecipient) {
-        guard let user = fetchUser() else { return }
-        user.activeCareRecipient = patient.id
-        save()
+        currentPatient = patient
+        if let user = fetchUser(), let id = patient.id {
+            user.activeCareRecipient = id
+            save()
+        }
     }
-
     
     func addPatient(_ patient: CareRecipient) {
         guard let user = fetchUser() else { return }
@@ -105,14 +121,7 @@ class UserServiceSession: UserServiceProtocol {
 
     
     func fetchCurrentPatient() -> CareRecipient? {
-        guard
-            let user = fetchUser(),
-            let id = user.activeCareRecipient
-        else {
-            return nil
-        }
-
-        return fetchCareRecipient(id: id)
+        return currentPatient
     }
 
     func fetchPatients() -> [CareRecipient] {
@@ -135,9 +144,11 @@ class UserServiceSession: UserServiceProtocol {
     }
     
     func removeCurrentPatient() {
-        guard let user = fetchUser(), user.activeCareRecipient != nil else { return }
-        user.activeCareRecipient = nil
-        save()
+        currentPatient = nil
+        if let user = fetchUser() {
+            user.activeCareRecipient = nil
+            save()
+        }
     }
     
     func setShift(_ shifts: [PeriodEnum]) {

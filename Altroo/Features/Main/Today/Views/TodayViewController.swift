@@ -22,6 +22,7 @@ class TodayViewController: UIViewController {
     var feedingRecords: [FeedingRecord] = []
     private var cancellables = Set<AnyCancellable>()
 
+    private var profileToolbar: ProfileToolbarContainer?
     
     required init?(coder: NSCoder) {
         fatalError("init(coder:) has not been implemented")
@@ -58,19 +59,21 @@ class TodayViewController: UIViewController {
         view.backgroundColor = .blue80
         
         guard let careRecipient = viewModel.currentCareRecipient else { return }
-        let profileToolbar = ProfileToolbarContainer(careRecipient: careRecipient)
-        profileToolbar.translatesAutoresizingMaskIntoConstraints = false
-        profileToolbar.delegate = self
+        let toolbar = ProfileToolbarContainer(careRecipient: careRecipient)
+        toolbar.translatesAutoresizingMaskIntoConstraints = false
+        toolbar.delegate = self
+        self.profileToolbar = toolbar
+
         
         view.addSubview(scrollView)
         scrollView.addSubview(vStack)
-        view.addSubview(profileToolbar)
+        view.addSubview(toolbar)
         
         NSLayoutConstraint.activate([
-            profileToolbar.topAnchor.constraint(equalTo: view.topAnchor),
-            profileToolbar.leadingAnchor.constraint(equalTo: view.leadingAnchor),
-            profileToolbar.trailingAnchor.constraint(equalTo: view.trailingAnchor),
-            profileToolbar.heightAnchor.constraint(equalToConstant: 250),
+            toolbar.topAnchor.constraint(equalTo: view.topAnchor),
+            toolbar.leadingAnchor.constraint(equalTo: view.leadingAnchor),
+            toolbar.trailingAnchor.constraint(equalTo: view.trailingAnchor),
+            toolbar.heightAnchor.constraint(equalToConstant: 250),
             
             scrollView.topAnchor.constraint(equalTo: view.topAnchor, constant: 150),
             scrollView.leadingAnchor.constraint(equalTo: view.leadingAnchor),
@@ -156,6 +159,14 @@ class TodayViewController: UIViewController {
     }
     
     private func setupBindings() {
+        viewModel.$currentCareRecipient
+            .receive(on: DispatchQueue.main)
+            .sink { [weak self] newRecipient in
+                guard let self = self else { return }
+                self.updateHeader(with: newRecipient)
+            }
+            .store(in: &cancellables)
+        
         viewModel.$waterQuantity
             .receive(on: DispatchQueue.main)
             .sink { [weak self] newValue in
@@ -173,6 +184,27 @@ class TodayViewController: UIViewController {
                 
             }
             .store(in: &cancellables)
+    }
+    
+    private func updateHeader(with careRecipient: CareRecipient?) {
+        guard let careRecipient = careRecipient else { return }
+
+        if let toolbar = profileToolbar {
+            toolbar.update(with: careRecipient)
+        } else {
+            let toolbar = ProfileToolbarContainer(careRecipient: careRecipient)
+            toolbar.translatesAutoresizingMaskIntoConstraints = false
+            toolbar.delegate = self
+            self.profileToolbar = toolbar
+            view.addSubview(toolbar)
+
+            NSLayoutConstraint.activate([
+                toolbar.topAnchor.constraint(equalTo: view.topAnchor),
+                toolbar.leadingAnchor.constraint(equalTo: view.leadingAnchor),
+                toolbar.trailingAnchor.constraint(equalTo: view.trailingAnchor),
+                toolbar.heightAnchor.constraint(equalToConstant: 250)
+            ])
+        }
     }
     
     private func addSections() {
