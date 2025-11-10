@@ -22,12 +22,12 @@ final class OnboardingCoordinator: Coordinator {
     
     func start() {
         let vc = factory.makeWelcomeOnboardingViewController(delegate: self)
-        navigation.setViewControllers([vc], animated: false)
+        navigation.setViewControllers([vc], animated: true)
         navigation.setNavigationBarHidden(true, animated: false)
     }
 }
 
-extension OnboardingCoordinator: WelcomeOnboardingViewControllerDelegate {
+extension OnboardingCoordinator: OnboardingContainerViewControllerDelegate {
     func goToAllPatient() {
         onFinish?()
     }
