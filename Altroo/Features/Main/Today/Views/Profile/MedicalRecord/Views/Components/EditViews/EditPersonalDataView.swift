@@ -195,6 +195,15 @@ final class EditPersonalDataView: UIView, UITextFieldDelegate {
                 guard let self else { return }
                 if nameTextField.text != state.name { nameTextField.text = state.name }
                 if addressTextField.text != state.address { addressTextField.text = state.address }
+
+                let hText = state.height.map { String($0) } ?? ""
+                if heightTextField.text != hText { heightTextField.text = hText }
+                let wText = state.weight.map { String($0) } ?? ""
+                if weightTextField.text != wText { weightTextField.text = wText }
+
+                if state.gender == "F" { genderSegmentedControl.selectedSegmentIndex = 0 }
+                else if state.gender == "M" { genderSegmentedControl.selectedSegmentIndex = 1 }
+
                 if let contact = state.emergencyContact {
                     contactNameTextField.text = contact.name
                     contactPhoneTextField.text = contact.phone
@@ -212,6 +221,17 @@ final class EditPersonalDataView: UIView, UITextFieldDelegate {
         addressTextField.addTarget(self, action: #selector(addressChanged), for: .editingChanged)
         contactNameTextField.addTarget(self, action: #selector(contactNameChanged), for: .editingChanged)
         contactPhoneTextField.addTarget(self, action: #selector(contactPhoneChanged), for: .editingChanged)
+
+        heightTextField.addTarget(self, action: #selector(heightChanged), for: .editingChanged)
+        weightTextField.addTarget(self, action: #selector(weightChanged), for: .editingChanged)
+        genderSegmentedControl.addTarget(self, action: #selector(genderChanged), for: .valueChanged)
+    }
+
+    @objc private func heightChanged() { viewModel.updateHeight(from: heightTextField.text ?? "") }
+    @objc private func weightChanged() { viewModel.updateWeight(from: weightTextField.text ?? "") }
+    @objc private func genderChanged() {
+        let g = (genderSegmentedControl.selectedSegmentIndex == 0) ? "F" : "M"
+        viewModel.updateGender(g)
     }
 
     @objc private func nameChanged() { viewModel.updateName(nameTextField.text ?? "") }
