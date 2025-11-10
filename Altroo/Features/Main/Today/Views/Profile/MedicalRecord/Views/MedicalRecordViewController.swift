@@ -356,6 +356,11 @@ final class MedicalRecordViewController: GradientNavBarViewController {
         }
     }
     
+    func textFieldShouldReturn(_ textField: UITextField) -> Bool {
+        textField.resignFirstResponder()
+        return true
+    }
+    
     @objc private func didTapCopyPhoneButton(_ sender: UIButton) {
         let valueToCopy = sender.accessibilityValue ?? ""
         UIPasteboard.general.string = valueToCopy

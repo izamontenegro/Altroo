@@ -161,6 +161,10 @@ final class EditHealthProblemsView: UIView {
             contentStack.trailingAnchor.constraint(equalTo: contentView.layoutMarginsGuide.trailingAnchor),
             contentStack.bottomAnchor.constraint(equalTo: contentView.layoutMarginsGuide.bottomAnchor)
         ])
+        
+        let tapGesture = UITapGestureRecognizer(target: self, action: #selector(dismissKeyboard))
+        tapGesture.cancelsTouchesInView = false
+        addGestureRecognizer(tapGesture)
     }
 
     private func bindUI() {
@@ -241,7 +245,7 @@ final class EditHealthProblemsView: UIView {
 
     private func makeSurgeryRow(for surgery: Surgery) -> UIView {
         let name = surgery.name ?? "—"
-        let dateString = dateFormatter.string(from: surgery.date ?? Date())
+        let dateString = DateFormatterHelper.birthDateFormatter(from: surgery.date ?? Date())
         let infoView = MedicalRecordInfoItemView(infotitle: name, primaryText: dateString, secondaryText: "")
 
         let deleteButton = UIButton(type: .system)
@@ -263,19 +267,17 @@ final class EditHealthProblemsView: UIView {
 
         return row
     }
+    
+    @objc private func dismissKeyboard() {
+        endEditing(true)
+    }
+
 
     @objc private func deleteSurgeryTapped(_ sender: UIButton) {
         guard let surgery = objc_getAssociatedObject(sender, &AssociatedKeys.surgeryKey) as? Surgery else { return }
         viewModel.deleteSurgery(surgery)
         reloadSurgeriesList()
     }
-
-    private lazy var dateFormatter: DateFormatter = {
-        let formatter = DateFormatter()
-        formatter.dateStyle = .short
-        formatter.locale = Locale(identifier: "pt_BR")
-        return formatter
-    }()
 }
 
 private enum AssociatedKeys { static var surgeryKey: UInt8 = 0 }

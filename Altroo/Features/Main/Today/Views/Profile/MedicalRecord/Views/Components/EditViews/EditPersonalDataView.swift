@@ -169,6 +169,10 @@ final class EditPersonalDataView: UIView, UITextFieldDelegate {
         ])
 
         datePicker.addTarget(self, action: #selector(updateAgeLabel), for: .valueChanged)
+        
+        let tapGesture = UITapGestureRecognizer(target: self, action: #selector(dismissKeyboard))
+        tapGesture.cancelsTouchesInView = false
+        addGestureRecognizer(tapGesture)
     }
 
     private func makeRelationshipMenu(selected: String) -> UIMenu {
@@ -219,6 +223,10 @@ final class EditPersonalDataView: UIView, UITextFieldDelegate {
         let age = Calendar.current.dateComponents([.year], from: datePicker.date, to: Date()).year ?? 0
         ageLabel.updateLabelText("\(age) anos")
         viewModel.updateDateOfBirth(datePicker.date)
+    }
+    
+    @objc private func dismissKeyboard() {
+        endEditing(true)
     }
 
     func fillInformations() {
