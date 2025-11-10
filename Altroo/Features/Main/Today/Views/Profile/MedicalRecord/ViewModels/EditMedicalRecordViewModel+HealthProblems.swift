@@ -9,6 +9,10 @@ import Foundation
 import Combine
 import CoreData
 
+struct DiseaseFormState: Equatable {
+    var diseasesText: String = ""
+}
+
 struct HealthProblemsFormState: Equatable {
     var allergiesText: String = ""
     var observationText: String = ""

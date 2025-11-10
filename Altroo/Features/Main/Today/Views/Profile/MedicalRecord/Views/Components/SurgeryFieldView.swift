@@ -9,10 +9,8 @@ import UIKit
 
 class SurgeryInputView: UIView {
 
-    // Campo de texto reutilizando sua classe padrão
     private let nameField = StandardTextfield(placeholder: "Nome da cirurgia")
 
-    // Componente de data (UIDatePicker)
     private let datePicker: UIDatePicker = {
         let picker = UIDatePicker()
         picker.preferredDatePickerStyle = .compact
@@ -21,7 +19,6 @@ class SurgeryInputView: UIView {
         return picker
     }()
 
-    // Label “Nome”
     private let nameLabel: UILabel = {
         let label = UILabel()
         label.text = "Nome"
@@ -31,7 +28,6 @@ class SurgeryInputView: UIView {
         return label
     }()
 
-    // Label “Data”
     private let dateLabel: UILabel = {
         let label = UILabel()
         label.text = "Data"
@@ -41,7 +37,6 @@ class SurgeryInputView: UIView {
         return label
     }()
 
-    // Botão "+"
     private let addButton: UIButton = {
         let button = UIButton(type: .system)
         button.setTitle("+", for: .normal)
