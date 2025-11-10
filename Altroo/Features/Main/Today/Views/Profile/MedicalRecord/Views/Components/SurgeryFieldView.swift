@@ -98,6 +98,3 @@ class SurgeryInputView: UIView {
         ])
     }
 }
-#Preview {
-    SurgeryInputView()
-}
