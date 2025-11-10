@@ -139,9 +139,9 @@ final class EditMentalStateView: UIView {
                 guard let self else { return }
 
                 if let emotionalState = currentState.emotionalState {
-                    self.emotionalChipsView.updateSelection(title: emotionalState.displayText)
+                    self.emotionalChipsView.updateSelection(with: emotionalState.displayText)
                 } else {
-                    self.emotionalChipsView.updateSelection(title: nil)
+                    self.emotionalChipsView.updateSelection(with: nil)
                 }
 
                 if let orientationState = currentState.orientationState {

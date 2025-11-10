@@ -4,7 +4,6 @@
 //
 //  Created by Izadora de Oliveira Albuquerque Montenegro on 31/10/25.
 //
-
 import UIKit
 import Combine
 import CoreData
@@ -17,13 +16,8 @@ struct PersonalDataFormState {
     var height: Double? = nil
     var weight: Double? = nil
     var dateOfBirth: Date? = nil
-
-    // Novo: contato de emergência editável
     var emergencyContact: ContactDraft? = nil
-
-    // Mantido caso alguma tela ainda use
     var contactsText: String = ""
-
     var ageText: String {
         guard let dateOfBirth else { return "" }
         let years = Calendar.current.dateComponents([.year], from: dateOfBirth, to: Date()).year ?? 0
@@ -31,30 +25,24 @@ struct PersonalDataFormState {
     }
 }
 
-// MARK: - EditMedicalRecordViewModel – Carregar/Atualizar/Validar/Persistir contato
-
 extension EditMedicalRecordViewModel {
-
-    // Carrega estado inicial com primeiro contato como "de emergência"
     func loadInitialPersonalDataFormState() {
         guard let patient = currentPatient(),
               let personalData = patient.personalData else {
             personalDataFormState = PersonalDataFormState()
             return
         }
-
         let contactsSet = personalData.contacts as? Set<Contact>
-        let first = contactsSet?.first
-        let emergency = first.map { c in
+        let orderedContacts = contactsSet?.sorted { ($0.name ?? "") < ($1.name ?? "") } ?? []
+        let firstContact = orderedContacts.first
+        let emergency = firstContact.map {
             ContactDraft(
-                name: c.name ?? "",
-                relationship: c.relationship,
-                phone: c.phone
+                name: $0.name ?? "",
+                relationship: $0.relationship,
+                phone: $0.phone
             )
         }
-
         let contactsText = MedicalRecordFormatter.contactsList(from: contactsSet)
-
         personalDataFormState = PersonalDataFormState(
             name: personalData.name ?? "",
             address: personalData.address ?? "",
@@ -67,100 +55,91 @@ extension EditMedicalRecordViewModel {
         )
     }
 
-    // Atualizações básicas
     func updateName(_ value: String) {
-        var draft = personalDataFormState
-        draft.name = value
-        personalDataFormState = draft
+        var state = personalDataFormState
+        state.name = value
+        personalDataFormState = state
     }
 
     func updateAddress(_ value: String) {
-        var draft = personalDataFormState
-        draft.address = value
-        personalDataFormState = draft
+        var state = personalDataFormState
+        state.address = value
+        personalDataFormState = state
     }
 
     func updateGender(_ value: String) {
-        var draft = personalDataFormState
-        draft.gender = value
-        personalDataFormState = draft
+        var state = personalDataFormState
+        state.gender = value
+        personalDataFormState = state
     }
 
     func updateHeight(from text: String) {
-        var draft = personalDataFormState
-        draft.height = Double(text.replacingOccurrences(of: ",", with: "."))
-        personalDataFormState = draft
+        var state = personalDataFormState
+        state.height = Double(text.replacingOccurrences(of: ",", with: "."))
+        personalDataFormState = state
     }
 
     func updateWeight(from text: String) {
-        var draft = personalDataFormState
-        draft.weight = Double(text.replacingOccurrences(of: ",", with: "."))
-        personalDataFormState = draft
+        var state = personalDataFormState
+        state.weight = Double(text.replacingOccurrences(of: ",", with: "."))
+        personalDataFormState = state
     }
 
     func updateDateOfBirth(_ date: Date) {
-        var draft = personalDataFormState
-        draft.dateOfBirth = date
-        personalDataFormState = draft
+        var state = personalDataFormState
+        state.dateOfBirth = date
+        personalDataFormState = state
     }
 
-    // Atualizações do contato de emergência
     func updateContactName(_ value: String) {
-        var draft = personalDataFormState
-        if draft.emergencyContact == nil { draft.emergencyContact = ContactDraft(name: "") }
-        draft.emergencyContact?.name = value
-        personalDataFormState = draft
+        var state = personalDataFormState
+        if state.emergencyContact == nil { state.emergencyContact = ContactDraft(name: "") }
+        state.emergencyContact?.name = value
+        personalDataFormState = state
     }
 
     func updateContactPhone(_ value: String) {
-        var draft = personalDataFormState
-        if draft.emergencyContact == nil { draft.emergencyContact = ContactDraft(name: "") }
-        draft.emergencyContact?.phone = value
-        personalDataFormState = draft
+        var state = personalDataFormState
+        if state.emergencyContact == nil { state.emergencyContact = ContactDraft(name: "") }
+        state.emergencyContact?.phone = value
+        personalDataFormState = state
     }
 
     func updateContactRelationship(_ value: String) {
-        var draft = personalDataFormState
-        if draft.emergencyContact == nil { draft.emergencyContact = ContactDraft(name: "") }
-        draft.emergencyContact?.relationship = value
-        personalDataFormState = draft
+        var state = personalDataFormState
+        if state.emergencyContact == nil { state.emergencyContact = ContactDraft(name: "") }
+        state.emergencyContact?.relationship = value
+        personalDataFormState = state
     }
 
-    // Validação incluindo contato
     func validatePersonalData() -> Bool {
         var newErrors: [String: String] = [:]
-
         _ = validator.isEmpty(personalDataFormState.name, error: &newErrors["name"])
-
         if let weight = personalDataFormState.weight, !weight.isZero {
             _ = validator.invalidValue(value: Int(weight), minValue: 0, maxValue: 999, error: &newErrors["weight"])
         }
-
         if let height = personalDataFormState.height, !height.isZero {
             _ = validator.invalidValue(value: Int(height), minValue: 9, maxValue: 999, error: &newErrors["height"])
         }
-
         if let dateOfBirth = personalDataFormState.dateOfBirth {
             _ = validator.checkAge(13, date: dateOfBirth, error: &newErrors["age"])
         }
-
-        if let c = personalDataFormState.emergencyContact {
-            let anyFilled = !(c.name.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty)
-                          || !((c.phone ?? "").trimmingCharacters(in: .whitespacesAndNewlines).isEmpty)
-                          || !((c.relationship ?? "").trimmingCharacters(in: .whitespacesAndNewlines).isEmpty)
+        if let contact = personalDataFormState.emergencyContact {
+            let anyFilled = !contact.name.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty
+                         || !((contact.phone ?? "").trimmingCharacters(in: .whitespacesAndNewlines).isEmpty)
+                         || !((contact.relationship ?? "").trimmingCharacters(in: .whitespacesAndNewlines).isEmpty)
             if anyFilled {
-                if c.name.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty {
+                if contact.name.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty {
                     newErrors["contact_name"] = "Informe o nome do contato."
                 }
-                if (c.phone ?? "").trimmingCharacters(in: .whitespacesAndNewlines).isEmpty {
+                if (contact.phone ?? "").trimmingCharacters(in: .whitespacesAndNewlines).isEmpty {
                     newErrors["contact_phone"] = "Informe o telefone."
                 }
-                if (c.relationship ?? "").trimmingCharacters(in: .whitespacesAndNewlines).isEmpty {
+                if (contact.relationship ?? "").trimmingCharacters(in: .whitespacesAndNewlines).isEmpty {
                     newErrors["contact_relationship"] = "Selecione a relação."
                 }
             }
         }
-
         fieldErrors = newErrors
         return newErrors.isEmpty
     }
@@ -172,7 +151,6 @@ extension EditMedicalRecordViewModel {
         careRecipientFacade.addName(name: personalDataFormState.name, in: personalData)
         careRecipientFacade.addAddress(address: personalDataFormState.address, in: personalData)
         careRecipientFacade.addGender(gender: personalDataFormState.gender, in: personalData)
-
         if let birth = personalDataFormState.dateOfBirth {
             careRecipientFacade.addDateOfBirth(birthDate: birth, in: personalData)
         }
@@ -183,15 +161,41 @@ extension EditMedicalRecordViewModel {
             careRecipientFacade.addWeight(weight: weight, in: personalData)
         }
 
-        // Persistir contato (simples: adiciona se houver nome)
-        if let c = personalDataFormState.emergencyContact,
-           !c.name.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty {
-            careRecipientFacade.addContact(
-                name: c.name,
-                relationship: c.relationship,
-                phone: c.phone,
-                in: personalData
-            )
+        let existingContacts = (personalData.contacts as? Set<Contact>) ?? []
+        let orderedExisting = existingContacts.sorted { ($0.name ?? "") < ($1.name ?? "") }
+        let currentSingle = orderedExisting.first
+
+        if let draft = personalDataFormState.emergencyContact,
+           !(draft.name.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty
+             && (draft.phone ?? "").trimmingCharacters(in: .whitespacesAndNewlines).isEmpty
+             && (draft.relationship ?? "").trimmingCharacters(in: .whitespacesAndNewlines).isEmpty) {
+
+            if let contact = currentSingle {
+                contact.name = draft.name
+                contact.phone = draft.phone
+                contact.relationship = draft.relationship
+            } else {
+                careRecipientFacade.addContact(
+                    name: draft.name,
+                    relationship: draft.relationship,
+                    phone: draft.phone,
+                    in: personalData
+                )
+            }
+
+            if orderedExisting.count > 1 {
+                for extra in orderedExisting.dropFirst() {
+                    if let context = extra.managedObjectContext {
+                        context.delete(extra)
+                    }
+                }
+            }
+        } else {
+            for contact in existingContacts {
+                if let context = contact.managedObjectContext {
+                    context.delete(contact)
+                }
+            }
         }
     }
 }

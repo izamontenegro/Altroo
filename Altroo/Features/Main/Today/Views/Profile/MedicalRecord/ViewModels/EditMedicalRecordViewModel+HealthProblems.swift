@@ -5,14 +5,10 @@
 //  Created by Izadora de Oliveira Albuquerque Montenegro on 31/10/25.
 //
 
-// EditMedicalRecordViewModel+HealthProblems.swift
-// EditMedicalRecordViewModel+HealthProblems.swift
-
 import Foundation
 import Combine
 import CoreData
 
-// Se já existir em outro arquivo, pode remover esta struct daqui.
 struct HealthProblemsFormState: Equatable {
     var allergiesText: String = ""
     var observationText: String = ""
@@ -22,8 +18,6 @@ struct HealthProblemsFormState: Equatable {
 
 extension EditMedicalRecordViewModel {
 
-  
-    // MARK: - Boot
     func loadAllInitialStates() {
         loadInitialHealthProblemsFormState()
         loadInitialDiseaseFormState()
@@ -40,7 +34,6 @@ extension EditMedicalRecordViewModel {
         healthFormState.surgeryDate = Date()
     }
 
-    // Você já tinha este método; mantenha o seu se preferir.
     func loadInitialDiseaseFormState() {
         guard let patient = currentPatient(),
               let healthProblems = patient.healthProblems,
@@ -58,7 +51,6 @@ extension EditMedicalRecordViewModel {
         diseaseFormState = DiseaseFormState(diseasesText: names.joined(separator: ", "))
     }
 
-    // MARK: - Updates de estado
     func updateDiseasesText(_ value: String) {
         var draft = diseaseFormState
         draft.diseasesText = value
@@ -89,7 +81,6 @@ extension EditMedicalRecordViewModel {
         healthFormState = draft
     }
 
-    // MARK: - Doenças (normalização e persistência)
     func normalizedDiseasesText(from rawText: String) -> String {
         let tokens = rawText
             .split(separator: ",")
@@ -117,16 +108,43 @@ extension EditMedicalRecordViewModel {
             .filter { !$0.isEmpty }
     }
 
+    private func normalizeDiseaseKey(_ name: String?) -> String {
+        (name ?? "")
+            .trimmingCharacters(in: .whitespacesAndNewlines)
+            .folding(options: .diacriticInsensitive, locale: .current)
+            .lowercased()
+    }
+
     func persistDiseaseFormState() {
         guard let patient = currentPatient(),
               let healthProblems = patient.healthProblems else { return }
 
-        let normalized = normalizedDiseasesText(from: diseaseFormState.diseasesText)
-        diseaseFormState.diseasesText = normalized
+        let normalizedText = normalizedDiseasesText(from: diseaseFormState.diseasesText)
+        diseaseFormState.diseasesText = normalizedText
 
-        let names = parsedDiseases(from: normalized)
-        for name in names {
-            careRecipientFacade.addDisease(name: name, in: healthProblems)
+        let targetNames = parsedDiseases(from: normalizedText)
+        let targetKeys = Set(targetNames.map { normalizeDiseaseKey($0) })
+
+        let existingSet = (healthProblems.diseases as? Set<Disease>) ?? []
+        var existingByKey: [String: Disease] = [:]
+        for disease in existingSet {
+            existingByKey[normalizeDiseaseKey(disease.name)] = disease
+        }
+
+        for disease in existingSet {
+            let key = normalizeDiseaseKey(disease.name)
+            if !targetKeys.contains(key) {
+                careRecipientFacade.deleteDisease(disease: disease, from: healthProblems)
+            }
+        }
+
+        for name in targetNames {
+            let key = normalizeDiseaseKey(name)
+            if let existing = existingByKey[key] {
+                if existing.name != name { existing.name = name }
+            } else {
+                careRecipientFacade.addDisease(name: name, in: healthProblems)
+            }
         }
     }
 
@@ -136,7 +154,6 @@ extension EditMedicalRecordViewModel {
         careRecipientFacade.deleteDisease(disease: disease, from: healthProblems)
     }
 
-    // MARK: - Alergias e Observações
     func persistAllergies() {
         guard let patient = currentPatient(),
               let healthProblems = patient.healthProblems else { return }
@@ -149,7 +166,6 @@ extension EditMedicalRecordViewModel {
         careRecipientFacade.addObservation(observation: healthFormState.observationText, in: healthProblems)
     }
 
-    // MARK: - Cirurgias
     func addSurgeryFromState() {
         guard let patient = currentPatient(),
               let healthProblems = patient.healthProblems else { return }
