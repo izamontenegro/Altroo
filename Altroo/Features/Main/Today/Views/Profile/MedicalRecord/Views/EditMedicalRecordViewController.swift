@@ -12,8 +12,10 @@ final class EditMedicalRecordViewController: GradientNavBarViewController, Medic
     let viewModel: EditMedicalRecordViewModel
     weak var delegate: EditMedicalRecordViewControllerDelegate?
     
+    private var keyboardHandler: KeyboardHandler?
+    
     private lazy var editPersonalDataForms = EditPersonalDataView(viewModel: viewModel)
-//    private lazy var editHealthProblemsForms = EditHealthProblemsView(viewModel: viewModel)
+    private lazy var editHealthProblemsForms = EditHealthProblemsView(viewModel: viewModel)
     private lazy var editPhysicalStateForms = EditPhysicalStateView(viewModel: viewModel)
     private lazy var editMentalStateForms = EditMentalStateView(viewModel: viewModel)
     private lazy var editPersonalCareForms = EditPersonalCareView(viewModel: viewModel)
@@ -44,7 +46,7 @@ final class EditMedicalRecordViewController: GradientNavBarViewController, Medic
 
     private lazy var sectionSelectorView: MedicalRecordSectionSelectorView = {
         let selector = MedicalRecordSectionSelectorView(
-            symbolNames: ["person.fill", "figure.arms.open", "brain.head.profile.fill", "hand.raised.fill"]
+            symbolNames: ["person.fill", "heart.fill", "figure.arms.open", "brain.head.profile.fill", "hand.raised.fill"]
         )
         selector.delegate = self
         selector.translatesAutoresizingMaskIntoConstraints = false
@@ -58,6 +60,8 @@ final class EditMedicalRecordViewController: GradientNavBarViewController, Medic
     required init?(coder: NSCoder) { fatalError("init(coder:) has not been implemented") }
 
     override func viewDidLoad() {
+        keyboardHandler = KeyboardHandler(viewController: self)
+        
         let salvarButton = UIButton(type: .system)
         salvarButton.setTitle("Salvar", for: .normal)
         salvarButton.titleLabel?.font = .systemFont(ofSize: 17)
@@ -77,23 +81,23 @@ final class EditMedicalRecordViewController: GradientNavBarViewController, Medic
             contentContainerView.topAnchor.constraint(equalTo: view.safeAreaLayoutGuide.topAnchor, constant: 15),
             contentContainerView.leadingAnchor.constraint(equalTo: view.leadingAnchor),
             contentContainerView.trailingAnchor.constraint(equalTo: view.trailingAnchor),
+            contentContainerView.bottomAnchor.constraint(equalTo: sectionSelectorView.topAnchor, constant: -12),
 
-            sectionSelectorView.bottomAnchor.constraint(equalTo: progressBackgroundView.topAnchor, constant: -20),
             sectionSelectorView.leadingAnchor.constraint(equalTo: view.leadingAnchor),
             sectionSelectorView.trailingAnchor.constraint(equalTo: view.trailingAnchor),
             sectionSelectorView.heightAnchor.constraint(equalToConstant: 30),
+            sectionSelectorView.bottomAnchor.constraint(equalTo: progressBackgroundView.topAnchor, constant: -20),
 
-            progressBackgroundView.topAnchor.constraint(equalTo: sectionSelectorView.bottomAnchor, constant: 6),
             progressBackgroundView.leadingAnchor.constraint(equalTo: view.leadingAnchor),
             progressBackgroundView.trailingAnchor.constraint(equalTo: view.trailingAnchor),
             progressBackgroundView.bottomAnchor.constraint(equalTo: view.bottomAnchor),
+            progressBackgroundView.topAnchor.constraint(equalTo: sectionSelectorView.bottomAnchor, constant: 6),
 
             progressView.topAnchor.constraint(equalTo: progressBackgroundView.topAnchor, constant: 10),
             progressView.leadingAnchor.constraint(equalTo: progressBackgroundView.leadingAnchor, constant: 16),
             progressView.trailingAnchor.constraint(equalTo: progressBackgroundView.trailingAnchor, constant: -16),
-            progressView.bottomAnchor.constraint(equalTo: view.safeAreaLayoutGuide.bottomAnchor, constant: -10)
+            progressView.bottomAnchor.constraint(equalTo: progressBackgroundView.safeAreaLayoutGuide.bottomAnchor, constant: -10)
         ])
-
         view.bringSubviewToFront(sectionSelectorView)
         displaySection(editPersonalDataForms)
         viewModel.loadInitialPersonalDataFormState()
@@ -111,15 +115,15 @@ final class EditMedicalRecordViewController: GradientNavBarViewController, Medic
         case 0:
             displaySection(editPersonalDataForms)
             viewModel.loadInitialPersonalDataFormState()
-//        case 1:
-//            displaySection(editHealthProblemsForms)
         case 1:
+            displaySection(editHealthProblemsForms)
+        case 2:
             displaySection(editPhysicalStateForms)
             viewModel.loadInitialPhysicalStateFormState()
-        case 2:
+        case 3:
             displaySection(editMentalStateForms)
             viewModel.loadInitialMentalStateFormState()
-        case 3:
+        case 4:
             displaySection(editPersonalCareForms)
             viewModel.loadInitialPersonalCareFormState()
         default:

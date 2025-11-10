@@ -7,13 +7,16 @@
 
 import UIKit
 
-class CapsuleIconView: UIView {
+class CapsuleIconView: InnerShadowView {
     
     var iconName: String!
     var text: String!
     var mainColor: UIColor = UIColor(resource: .teal20)
     var accentColor: UIColor = UIColor(.white)
     var iconSize: CGFloat = 18
+    
+    var onTap: (() -> Void)?
+    var isTapEnabled: Bool = true
     
     var labelIconSpacing: CGFloat = 6
     
@@ -30,8 +33,9 @@ class CapsuleIconView: UIView {
     private var leadingConstraint: NSLayoutConstraint?
     private var trailingConstraint: NSLayoutConstraint?
     
-    override init(frame: CGRect) {
+    init(frame: CGRect) {
         super.init(frame: frame)
+        setupTapGesture()
     }
     
     convenience init(
@@ -53,14 +57,12 @@ class CapsuleIconView: UIView {
         }
         
         makeCapsule()
-        setupInnerShadow()
     }
     
     required init?(coder: NSCoder) { super.init(coder: coder) }
     
     override func layoutSubviews() {
         super.layoutSubviews()
-        innerShadowView?.frame = bounds
         self.layer.cornerRadius = self.bounds.height / 2
     }
     
@@ -125,16 +127,15 @@ class CapsuleIconView: UIView {
         layoutIfNeeded()
     }
     
-    private func setupInnerShadow() {
-        let shadow = InnerShadowView(
-            frame: bounds,
-            color: UIColor.blue40,
-            opacity: 0.15
-        )
-        shadow.isUserInteractionEnabled = false
-        shadow.layer.cornerRadius = layer.cornerRadius
-        addSubview(shadow)
-        innerShadowView = shadow
+    private func setupTapGesture() {
+        let tapGesture = UITapGestureRecognizer(target: self, action: #selector(handleTap))
+        addGestureRecognizer(tapGesture)
+        isUserInteractionEnabled = true
+    }
+    
+    @objc private func handleTap() {
+        guard isTapEnabled else { return }
+        onTap?()
     }
 }
 

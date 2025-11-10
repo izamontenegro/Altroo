@@ -20,15 +20,6 @@ class PlusButton: UIButton {
         super.init(coder: coder)
         setupButton()
     }
-    
-    override var isHighlighted: Bool {
-        didSet {
-            UIView.animate(withDuration: 0.1) {
-                self.circle.alpha = self.isHighlighted ? 0.75 : 1.0
-                self.transform = self.isHighlighted ? .init(scaleX: 0.98, y: 0.98) : .identity
-            }
-        }
-    }
 
     private func setupButton() {
         circle.fillColor = UIColor(resource: .teal20)

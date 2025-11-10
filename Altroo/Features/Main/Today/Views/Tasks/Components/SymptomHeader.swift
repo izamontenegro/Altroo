@@ -25,9 +25,10 @@ class IntercurrenceHeader: UIView {
         )
         return label
     }()
-    
+
     private lazy var plusButton: PlusButton = {
         let button = PlusButton()
+        button.enablePressEffect()
         button.addTarget(self, action: #selector(didTapPlusButton), for: .touchUpInside)
         return button
     }()

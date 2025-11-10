@@ -19,29 +19,31 @@ final class WrappingCapsulesView: UIView {
         var contentInsets: UIEdgeInsets = .init(top: 6, left: 12, bottom: 6, right: 12)
         var symbolPointSize: CGFloat = 13
         var font: UIFont = .systemFont(ofSize: 15, weight: .regular)
-        var chipHeight: CGFloat = 26
+        var capsuleHeight: CGFloat = 26
     }
 
-    private let titles: [String]
-    private let didSelect: (String?) -> Void
+    private let capsuleTitles: [String]
+    private let selectionHandler: (String?) -> Void
     private let style: Style
-    private var buttons: [UIButton] = []
+    private var capsuleButtons: [UIButton] = []
     private(set) var selectedTitle: String?
 
-    init(titles: [String], style: Style = Style(), didSelect: @escaping (String?) -> Void) {
-        self.titles = titles
+    init(titles: [String], style: Style = Style(), didSelect selectionHandler: @escaping (String?) -> Void) {
+        self.capsuleTitles = titles
         self.style = style
-        self.didSelect = didSelect
+        self.selectionHandler = selectionHandler
         super.init(frame: .zero)
         translatesAutoresizingMaskIntoConstraints = false
-        buildButtons()
+        buildCapsuleButtons()
     }
 
-    required init?(coder: NSCoder) { fatalError("init(coder:) has not been implemented") }
+    required init?(coder: NSCoder) {
+        fatalError("init(coder:) has not been implemented")
+    }
 
-    func updateSelection(title: String?) {
+    func updateSelection(with title: String?) {
         selectedTitle = title
-        for button in buttons {
+        for button in capsuleButtons {
             let isSelected = (button.currentTitle == title)
             applyAppearance(for: button, isSelected: isSelected)
         }
@@ -51,96 +53,98 @@ final class WrappingCapsulesView: UIView {
 
     override func layoutSubviews() {
         super.layoutSubviews()
-        guard !buttons.isEmpty else { return }
+        guard !capsuleButtons.isEmpty else { return }
 
-        let maxWidth = bounds.width
+        let maximumWidth = bounds.width
         var currentX: CGFloat = 0
         var currentY: CGFloat = 0
-        var lineHeight: CGFloat = 0
+        var currentLineHeight: CGFloat = 0
 
-        for button in buttons {
-            let targetSize = CGSize(width: CGFloat.greatestFiniteMagnitude, height: style.chipHeight)
-            var size = button.systemLayoutSizeFitting(
+        for button in capsuleButtons {
+            let targetSize = CGSize(width: CGFloat.greatestFiniteMagnitude, height: style.capsuleHeight)
+            var buttonSize = button.systemLayoutSizeFitting(
                 targetSize,
                 withHorizontalFittingPriority: .fittingSizeLevel,
                 verticalFittingPriority: .required
             )
-            size.height = style.chipHeight
+            buttonSize.height = style.capsuleHeight
 
-            if currentX > 0, currentX + size.width > maxWidth {
+            if currentX > 0, currentX + buttonSize.width > maximumWidth {
                 currentX = 0
-                currentY += lineHeight + style.verticalSpacing
-                lineHeight = 0
+                currentY += currentLineHeight + style.verticalSpacing
+                currentLineHeight = 0
             }
 
-            button.frame = CGRect(origin: CGPoint(x: currentX, y: currentY), size: size)
-            currentX += size.width + style.horizontalSpacing
-            lineHeight = max(lineHeight, size.height)
+            button.frame = CGRect(origin: CGPoint(x: currentX, y: currentY), size: buttonSize)
+            currentX += buttonSize.width + style.horizontalSpacing
+            currentLineHeight = max(currentLineHeight, buttonSize.height)
 
-            button.layer.cornerRadius = size.height / 2
+            button.layer.cornerRadius = buttonSize.height / 2
         }
     }
 
     override var intrinsicContentSize: CGSize {
-        guard !buttons.isEmpty else { return .zero }
-        let maxWidth = bounds.width > 0 ? bounds.width : UIScreen.main.bounds.width - 32
+        guard !capsuleButtons.isEmpty else { return .zero }
+        let maximumWidth = bounds.width > 0 ? bounds.width : UIScreen.main.bounds.width - 32
         var currentX: CGFloat = 0
         var totalHeight: CGFloat = 0
-        var lineHeight: CGFloat = 0
-        var isFirstInLine = true
+        var currentLineHeight: CGFloat = 0
+        var isFirstButtonInLine = true
 
-        for (idx, button) in buttons.enumerated() {
-            let targetSize = CGSize(width: CGFloat.greatestFiniteMagnitude, height: style.chipHeight)
-            var size = button.systemLayoutSizeFitting(
+        for (index, button) in capsuleButtons.enumerated() {
+            let targetSize = CGSize(width: CGFloat.greatestFiniteMagnitude, height: style.capsuleHeight)
+            var buttonSize = button.systemLayoutSizeFitting(
                 targetSize,
                 withHorizontalFittingPriority: .fittingSizeLevel,
                 verticalFittingPriority: .required
             )
-            size.height = style.chipHeight
+            buttonSize.height = style.capsuleHeight
 
-            let neededWidth = isFirstInLine ? size.width : currentX + size.width
-            if !isFirstInLine, neededWidth > maxWidth {
-                totalHeight += lineHeight + style.verticalSpacing
+            let requiredWidth = isFirstButtonInLine ? buttonSize.width : currentX + buttonSize.width
+            if !isFirstButtonInLine, requiredWidth > maximumWidth {
+                totalHeight += currentLineHeight + style.verticalSpacing
                 currentX = 0
-                lineHeight = 0
-                isFirstInLine = true
+                currentLineHeight = 0
+                isFirstButtonInLine = true
             }
 
-            if isFirstInLine {
-                currentX = size.width
-                isFirstInLine = false
+            if isFirstButtonInLine {
+                currentX = buttonSize.width
+                isFirstButtonInLine = false
             } else {
-                currentX += style.horizontalSpacing + size.width
+                currentX += style.horizontalSpacing + buttonSize.width
             }
-            lineHeight = max(lineHeight, size.height)
+            currentLineHeight = max(currentLineHeight, buttonSize.height)
 
-            if idx == buttons.count - 1 { totalHeight += lineHeight }
+            if index == capsuleButtons.count - 1 {
+                totalHeight += currentLineHeight
+            }
         }
         return CGSize(width: UIView.noIntrinsicMetric, height: totalHeight)
     }
 
-    private func buildButtons() {
-        for title in titles {
-            let b = UIButton(type: .system)
-            b.setTitle(title, for: .normal)
-            b.titleLabel?.font = style.font
-            b.contentEdgeInsets = style.contentInsets
-            b.heightAnchor.constraint(equalToConstant: style.chipHeight).isActive = true
-            b.layer.masksToBounds = true
-            b.layer.cornerCurve = .continuous
+    private func buildCapsuleButtons() {
+        for title in capsuleTitles {
+            let button = UIButton(type: .system)
+            button.setTitle(title, for: .normal)
+            button.titleLabel?.font = style.font
+            button.contentEdgeInsets = style.contentInsets
+            button.heightAnchor.constraint(equalToConstant: style.capsuleHeight).isActive = true
+            button.layer.masksToBounds = true
+            button.layer.cornerCurve = .continuous
 
-            applyAppearance(for: b, isSelected: false)
+            applyAppearance(for: button, isSelected: false)
 
-            b.addAction(UIAction { [weak self, weak b] _ in
-                guard let self, let b, let text = b.currentTitle else { return }
-                let willSelect = (self.selectedTitle != text)
-                let newSelection: String? = willSelect ? text : nil
-                self.updateSelection(title: newSelection)
-                self.didSelect(newSelection)
+            button.addAction(UIAction { [weak self, weak button] _ in
+                guard let self = self, let button = button, let text = button.currentTitle else { return }
+                let shouldSelect = (self.selectedTitle != text)
+                let newSelection: String? = shouldSelect ? text : nil
+                self.updateSelection(with: newSelection)
+                self.selectionHandler(newSelection)
             }, for: .touchUpInside)
 
-            addSubview(b)
-            buttons.append(b)
+            addSubview(button)
+            capsuleButtons.append(button)
         }
         setNeedsLayout()
         invalidateIntrinsicContentSize()
@@ -151,9 +155,9 @@ final class WrappingCapsulesView: UIView {
         button.setTitleColor(isSelected ? style.selectedTitleColor : style.normalTitleColor, for: .normal)
 
         if isSelected {
-            let cfg = UIImage.SymbolConfiguration(pointSize: style.symbolPointSize, weight: .semibold)
-            let img = UIImage(systemName: "checkmark", withConfiguration: cfg)
-            button.setImage(img, for: .normal)
+            let configuration = UIImage.SymbolConfiguration(pointSize: style.symbolPointSize, weight: .semibold)
+            let image = UIImage(systemName: "checkmark", withConfiguration: configuration)
+            button.setImage(image, for: .normal)
             button.tintColor = style.selectedTitleColor
             button.semanticContentAttribute = .forceLeftToRight
         } else {

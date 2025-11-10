@@ -24,8 +24,8 @@ final class DefaultAppFactory: AppFactory {
 
 // MARK: - OnboardingFactory
 extension DefaultAppFactory {
-    func makeWelcomeOnboardingViewController(delegate: WelcomeOnboardingViewControllerDelegate) -> UIViewController {
-        let vc = WelcomeOnboardingViewController()
+    func makeWelcomeOnboardingViewController(delegate: OnboardingContainerViewControllerDelegate) -> UIViewController {
+        let vc = OnboardingContainerViewController()
         vc.delegateOnboarding = delegate
         return vc
     }

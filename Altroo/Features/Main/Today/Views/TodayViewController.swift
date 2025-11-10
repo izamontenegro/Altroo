@@ -121,7 +121,7 @@ class TodayViewController: UIViewController {
             container.heightAnchor.constraint(equalToConstant: 80).isActive = true
             
             let emptyLabel = StandardLabel(
-                labelText: "Nenhuma tarefa registrada",
+                labelText: "Nenhuma tarefa registrada.",
                 labelFont: .sfPro,
                 labelType: .callOut,
                 labelColor: .black30
