@@ -1,8 +1,8 @@
 //
-//  DiseaseService.swift
+//  DiseaseServiceProtocol.swift
 //  Altroo
 //
-//  Created by Layza Maria Rodrigues Carneiro on 02/10/25.
+//  Created by Izadora de Oliveira Albuquerque Montenegro on 10/11/25.
 //
 
 import Foundation
