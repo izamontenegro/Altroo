@@ -12,6 +12,8 @@ final class EditMedicalRecordViewController: GradientNavBarViewController, Medic
     let viewModel: EditMedicalRecordViewModel
     weak var delegate: EditMedicalRecordViewControllerDelegate?
     
+    private var keyboardHandler: KeyboardHandler?
+    
     private lazy var editPersonalDataForms = EditPersonalDataView(viewModel: viewModel)
     private lazy var editHealthProblemsForms = EditHealthProblemsView(viewModel: viewModel)
     private lazy var editPhysicalStateForms = EditPhysicalStateView(viewModel: viewModel)
@@ -58,6 +60,8 @@ final class EditMedicalRecordViewController: GradientNavBarViewController, Medic
     required init?(coder: NSCoder) { fatalError("init(coder:) has not been implemented") }
 
     override func viewDidLoad() {
+        keyboardHandler = KeyboardHandler(viewController: self)
+        
         let salvarButton = UIButton(type: .system)
         salvarButton.setTitle("Salvar", for: .normal)
         salvarButton.titleLabel?.font = .systemFont(ofSize: 17)
