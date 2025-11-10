@@ -73,16 +73,24 @@ extension EditMedicalRecordViewModel {
         personalDataFormState = state
     }
 
-    func updateHeight(from text: String) {
-        var state = personalDataFormState
-        state.height = Double(text.replacingOccurrences(of: ",", with: "."))
-        personalDataFormState = state
+    private func parseDecimal(_ text: String) -> Double? {
+        let f = NumberFormatter()
+        f.locale = .current
+        f.numberStyle = .decimal
+        f.usesGroupingSeparator = false
+        return f.number(from: text)?.doubleValue
     }
 
     func updateWeight(from text: String) {
-        var state = personalDataFormState
-        state.weight = Double(text.replacingOccurrences(of: ",", with: "."))
-        personalDataFormState = state
+        var s = personalDataFormState
+        s.weight = parseDecimal(text)
+        personalDataFormState = s
+    }
+
+    func updateHeight(from text: String) {
+        var s = personalDataFormState
+        s.height = parseDecimal(text)
+        personalDataFormState = s
     }
 
     func updateDateOfBirth(_ date: Date) {
@@ -210,3 +218,4 @@ extension EditMedicalRecordViewModel {
         }
     }
 }
+
