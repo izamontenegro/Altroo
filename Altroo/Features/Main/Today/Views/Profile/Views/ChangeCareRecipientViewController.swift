@@ -116,7 +116,7 @@ final class ChangeCareRecipientViewController: UIViewController {
 
         let addButton = UIButton(type: .system)
         addButton.translatesAutoresizingMaskIntoConstraints = false
-        addButton.setTitle("Adicionar", for: .normal)
+        addButton.setTitle("add".localized, for: .normal)
         addButton.titleLabel?.font = UIFont.systemFont(ofSize: 20, weight: .semibold)
         addButton.setTitleColor(.white, for: .normal)
         addButton.backgroundColor = UIColor.systemTeal

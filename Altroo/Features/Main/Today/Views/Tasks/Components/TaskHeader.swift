@@ -18,7 +18,7 @@ class TaskHeader: UIView {
     
     private let titleLabel: StandardLabel = {
         let label = StandardLabel(
-            labelText: "Tarefas",
+            labelText: "today_section_tasks".localized,
             labelFont: .sfPro,
             labelType: .title2,
             labelColor: .black10,
@@ -29,7 +29,7 @@ class TaskHeader: UIView {
     
     private lazy var periodTag: CapsuleIconView = {
         let currentPeriod = PeriodEnum.current
-        let capsule = CapsuleIconView(iconName: currentPeriod.iconName, text: "Ver Tudo")
+        let capsule = CapsuleIconView(iconName: currentPeriod.iconName, text: "see_all".localized)
         
         capsule.isUserInteractionEnabled = true
         let tapGesture = UITapGestureRecognizer(target: self, action: #selector(didTapPeriodTag))

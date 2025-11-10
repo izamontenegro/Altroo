@@ -100,7 +100,7 @@ final class EditPersonalDataView: UIView, UITextFieldDelegate {
         return label
     }()
 
-    private lazy var nameSection = FormSectionView(title: "Nome", content: nameTextField, isObligatory: true)
+    private lazy var nameSection = FormSectionView(title: "name".localized, content: nameTextField, isObligatory: true)
     private lazy var birthDateSection = FormSectionView(title: "Data de Nascimento", content: datePicker)
     private lazy var ageSection = FormSectionView(title: "Idade", content: ageLabel)
     private lazy var heightSection = FormSectionView(title: "Altura", content: heightInputStack)

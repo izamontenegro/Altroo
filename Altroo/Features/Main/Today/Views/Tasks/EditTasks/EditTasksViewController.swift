@@ -27,7 +27,7 @@ class EditTaskViewController: TaskFormViewController {
         setupContinuousButton()
         setupRepeatingDays()
         setupTimes()
-        configure(title: "Editar Tarefa", subtitle: "Registre uma atividade a ser feita e sua duração ou repetições durante a semana.", confirmButtonText: "Salvar", showDelete: true)
+        configure(title: "edit_task".localized, subtitle: "task_subtitle".localized, confirmButtonText: "save".localized, showDelete: true)
         bindViewModel()
         
         confirmButton.addTarget(self, action: #selector(saveChanges), for: .touchUpInside)

@@ -20,7 +20,7 @@ class EditSectionViewController: GradientNavBarViewController {
     }
 
     // MARK: - Subviews
-    private let header = StandardHeaderView(title: "Editar Seção", subtitle: "Reordene ou oculte seção para personalizar a visualização.")
+    private let header = StandardHeaderView(title: "edit_section_title".localized, subtitle: "edit_section_subtitle".localized)
     
     private lazy var stackView: UIStackView = {
         let stack = UIStackView(arrangedSubviews: [])
@@ -56,9 +56,9 @@ class EditSectionViewController: GradientNavBarViewController {
         for config in configs {
             switch config.type {
             case .basicNeeds:
-                let items = config.subitems?.map(\.title) ?? ["Alimentação", "Hidratação", "Fezes", "Urina"]
+                let items = config.subitems?.map(\.title) ?? ["today_subitem_feeding".localized, "today_subitem_hydration".localized, "today_subitem_stool".localized, "today_subitem_urine".localized]
                 let sectionView = makeSection(
-                    title: "Necessidades Básicas",
+                    title: "today_section_basic_needs".localized,
                     checked: config.isVisible,
                     items: items,
                     subitemStates: config.subitems
@@ -66,11 +66,11 @@ class EditSectionViewController: GradientNavBarViewController {
                 stackView.addArrangedSubview(sectionView)
 
             case .tasks:
-                let sectionView = makeSection(title: "Tarefas", checked: config.isVisible, items: nil)
+                let sectionView = makeSection(title: "today_section_tasks".localized, checked: config.isVisible, items: nil)
                 stackView.addArrangedSubview(sectionView)
 
             case .intercurrences:
-                let sectionView = makeSection(title: "Intercorrências", checked: config.isVisible, items: nil)
+                let sectionView = makeSection(title: "today_section_intercurrences".localized, checked: config.isVisible, items: nil)
                 stackView.addArrangedSubview(sectionView)
             }
         }
@@ -262,7 +262,7 @@ class EditSectionViewController: GradientNavBarViewController {
             guard
                 let headerStack = sectionView.subviews.first(where: { $0.tag == 1000 }) as? UIStackView,
                 let label = headerStack.arrangedSubviews.compactMap({ $0 as? UILabel }).first,
-                let type = TodaySectionType(rawValue: label.text ?? "")
+                let type = TodaySectionType(rawValue: label.text?.localized ?? "")
             else { continue }
             
             let checkmark = headerStack.arrangedSubviews.compactMap({ $0 as? UIImageView }).first(where: { $0.tag == 999 })

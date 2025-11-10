@@ -126,7 +126,7 @@ class PatientFormsViewController: UIViewController {
     private lazy var addressSection = FormSectionView(title: "Endereço", content: addressTextField)
     
     private lazy var contactSection = FormSectionView(title: "Contato de Emergência", content: contactStack)
-    private lazy var contactNameSection = FormSectionView(title: "Nome", content: contactNameTextField, isSubsection: true)
+    private lazy var contactNameSection = FormSectionView(title: "name".localized, content: contactNameTextField, isSubsection: true)
     private lazy var contactPhoneSection = FormSectionView(title: "Telefone", content: contactPhoneTextField, isSubsection: true)
     private lazy var contactRelationshipSection = FormSectionView(title: "Relação", content: relationshipButton, isSubsection: true)
     

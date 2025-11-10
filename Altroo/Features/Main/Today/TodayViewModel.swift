@@ -156,7 +156,15 @@ class TodayViewModel {
             in: careRecipient
         )
     
-        historyService.addHistoryItem(title: "Bebeu \(careRecipientFacade.getWaterMeasure(careRecipient))ml de água", author: author, date: Date(), type: .hydration, to: careRecipient)
+        let waterAmount = careRecipientFacade.getWaterMeasure(careRecipient)
+
+        historyService.addHistoryItem(
+            title: "hydration_history_message".localizedFormat(waterAmount),
+            author: author,
+            date: Date(),
+            type: .hydration,
+            to: careRecipient
+        )
         
         self.fetchWaterQuantity()
     }

@@ -51,7 +51,7 @@ class GradientNavBarViewController: UIViewController {
         if showBackButton {
             let back = UIButton(type: .system)
             back.setImage(UIImage(systemName: "chevron.left"), for: .normal)
-            back.setTitle("Voltar", for: .normal)
+            back.setTitle("back".localized, for: .normal)
             back.titleLabel?.font = .systemFont(ofSize: 17)
             back.addTarget(self, action: #selector(handleBack), for: .touchUpInside)
             navigationItem.leftBarButtonItem = UIBarButtonItem(customView: back)
@@ -61,7 +61,7 @@ class GradientNavBarViewController: UIViewController {
         
         if isRightButtonCancel {
             let cancel = UIButton(type: .system)
-            cancel.setTitle("Cancelar", for: .normal)
+            cancel.setTitle("cancel".localized, for: .normal)
             cancel.titleLabel?.font = .systemFont(ofSize: 17)
             cancel.addTarget(self, action: #selector(handleCancel), for: .touchUpInside)
             navigationItem.rightBarButtonItem = UIBarButtonItem(customView: cancel)

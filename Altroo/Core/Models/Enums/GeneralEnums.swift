@@ -40,10 +40,10 @@ enum PeriodEnum: String, CaseIterable {
     
     var name: String {
         switch self {
-        case .morning: "Manhã"
-        case .afternoon: "Tarde"
-        case .night: "Noite"
-        case .overnight: "Madrugada"
+        case .morning: "morning".localized
+        case .afternoon: "afternoon".localized
+        case .night: "night".localized
+        case .overnight: "overnight".localized
         }
     }
     
@@ -112,17 +112,17 @@ enum HistoryActivityType: String {
     var displayText: String {
         switch self {
         case .urine:
-            return "Urina"
+            return "today_subitem_urine".localized
         case .stool:
-            return "Fezes"
+            return "today_subitem_stool".localized
         case .task:
-            return "Tarefa"
+            return "taskform_title".localized
         case .symptom:
             return "Intercorrência"
         case .hydration:
-            return "Hidratação"
+            return "today_subitem_hydration".localized
         case .meal:
-            return "Alimentação"
+            return "today_subitem_feeding".localized
         }
     }
 }

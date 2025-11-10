@@ -270,7 +270,7 @@ final class CareRecipientProfileViewController: GradientNavBarViewController {
             self.delegate?.careRecipientProfileWantsChangeAssociate(self)
         }
         
-        let cancelAction = UIAlertAction(title: "Cancelar", style: .cancel, handler: nil)
+        let cancelAction = UIAlertAction(title: "cancel".localized, style: .cancel, handler: nil)
         
         alertController.addAction(cancelAction)
         alertController.addAction(confirmAction)

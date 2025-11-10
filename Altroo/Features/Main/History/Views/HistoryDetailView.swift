@@ -35,20 +35,20 @@ struct HistoryDetailSheet: View {
                         .foregroundStyle(.primary)
                    
                     InfoRowPill(left: "Concluída", right: dateText, rightEmphasis: true)
-                    InfoRowPill(left: "Horário", right: timeText, rightEmphasis: true)
+                    InfoRowPill(left: "time".localized, right: timeText, rightEmphasis: true)
                     InfoRowPill(left: "Concluída por", right: authorText, rightEmphasis: true)
                 }
                 .padding(.horizontal, 16)
                 .padding(.bottom, 24)
             }
-            .navigationTitle(item.activityType ?? "Histórico")
+            .navigationTitle(item.activityType ?? "history".localized)
             .navigationBarTitleDisplayMode(.inline)
             .toolbar {
                 ToolbarItem(placement: .topBarLeading) {
-                    Button("Fechar") { dismiss() }
+                    Button("close".localized) { dismiss() }
                 }
                 ToolbarItem(placement: .topBarTrailing) {
-                    Button("Excluir", role: .destructive) {
+                    Button("delete".localized, role: .destructive) {
                         viewModel.deleteHistory(item)
                         dismiss()
                     }

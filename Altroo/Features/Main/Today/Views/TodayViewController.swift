@@ -121,7 +121,7 @@ class TodayViewController: UIViewController {
             container.heightAnchor.constraint(equalToConstant: 80).isActive = true
             
             let emptyLabel = StandardLabel(
-                labelText: "Nenhuma tarefa registrada",
+                labelText: "today_empty_tasks".localized,
                 labelFont: .sfPro,
                 labelType: .callOut,
                 labelColor: .black30
@@ -180,10 +180,10 @@ class TodayViewController: UIViewController {
         
         if configs.isEmpty || configs.first(where: { $0.type == .basicNeeds })?.subitems == nil {
             let defaultSubitems = [
-                SubitemConfig(title: "Alimentação", isVisible: true),
-                SubitemConfig(title: "Hidratação", isVisible: true),
-                SubitemConfig(title: "Fezes", isVisible: true),
-                SubitemConfig(title: "Urina", isVisible: true)
+                SubitemConfig(title: "today_subitem_feeding".localized, isVisible: true),
+                SubitemConfig(title: "today_subitem_hydration".localized, isVisible: true),
+                SubitemConfig(title: "today_subitem_stool".localized, isVisible: true),
+                SubitemConfig(title: "today_subitem_urine".localized, isVisible: true)
             ]
             let basicNeedsConfig = TodaySectionConfig(
                 type: .basicNeeds,
@@ -218,18 +218,18 @@ class TodayViewController: UIViewController {
             switch config.type {
             case .basicNeeds:
                 let visibleItems = config.subitems?.filter(\.isVisible).map(\.title) ?? []
-                let title = StandardLabel(labelText: "Necessidades Básicas", labelFont: .sfPro, labelType: .title2, labelColor: .black10, labelWeight: .semibold)
+                let title = StandardLabel(labelText: "today_section_basic_needs".localized, labelFont: .sfPro, labelType: .title2, labelColor: .black10, labelWeight: .semibold)
                 
                 let sectionStack = UIStackView()
                 sectionStack.axis = .vertical
                 sectionStack.spacing = 16
                 
-                if visibleItems.contains("Alimentação") {
+                if visibleItems.contains("today_subitem_feeding".localized) {
                     let feedingListView = FeedingRecordList()
                     feedingListView.update(with: feedingRecords)
                     
                     let feedingCard = RecordCard(
-                        title: "Alimentação",
+                        title: "today_subitem_feeding".localized,
                         iconName: "takeoutbag.and.cup.and.straw.fill",
                         contentView: feedingListView
                     )
@@ -241,7 +241,7 @@ class TodayViewController: UIViewController {
                     sectionStack.addArrangedSubview(feedingCard)
                 }
                 
-                if visibleItems.contains("Hidratação") {
+                if visibleItems.contains("today_subitem_hydration".localized) {
                     let iconName: String
                     if #available(iOS 17.0, *) {
                         iconName = "waterbottle.fill"
@@ -255,7 +255,7 @@ class TodayViewController: UIViewController {
                     }
 
                     let hydrationCard = RecordCard(
-                        title: "Hidratação",
+                        title: "today_subitem_hydration".localized,
                         iconName: iconName,
                         showPlusButton: false,
                         contentView: waterRecord,
@@ -270,14 +270,14 @@ class TodayViewController: UIViewController {
                     sectionStack.addArrangedSubview(hydrationCard)
                 }
                 
-                if visibleItems.contains("Fezes") || visibleItems.contains("Urina") {
+                if visibleItems.contains("today_subitem_stool".localized) || visibleItems.contains("today_subitem_urine".localized) {
                     let bottomRow = UIStackView()
                     bottomRow.axis = .horizontal
                     bottomRow.spacing = 16
                     bottomRow.distribution = .fillEqually
                     
-                    if visibleItems.contains("Fezes") {
-                        let stoolCard = RecordCard(title: "Fezes", iconName: "toilet.fill", contentView: QuantityRecordContent(quantity: viewModel.todayStoolQuantity))
+                    if visibleItems.contains("today_subitem_stool".localized) {
+                        let stoolCard = RecordCard(title: "today_subitem_stool".localized, iconName: "toilet.fill", contentView: QuantityRecordContent(quantity: viewModel.todayStoolQuantity))
                         stoolCard.onAddButtonTap = { [weak self] in
                             self?.delegate?.goTo(.recordStool)
                         }
@@ -285,7 +285,7 @@ class TodayViewController: UIViewController {
                         bottomRow.addArrangedSubview(stoolCard)
                     }
                     
-                    if visibleItems.contains("Urina") {
+                    if visibleItems.contains("today_subitem_urine".localized) {
                         let iconName: String
                         if #available(iOS 17.0, *) {
                             iconName = "drop.halffull"
@@ -293,7 +293,7 @@ class TodayViewController: UIViewController {
                             iconName = "drop.fill"
                         }
                         
-                        let urineCard = RecordCard(title: "Urina", iconName: iconName, contentView: QuantityRecordContent(quantity: viewModel.todayUrineQuantity))
+                        let urineCard = RecordCard(title: "today_subitem_urine".localized, iconName: iconName, contentView: QuantityRecordContent(quantity: viewModel.todayUrineQuantity))
                         urineCard.onAddButtonTap = { [weak self] in
                             self?.delegate?.goTo(.recordUrine)
                         }

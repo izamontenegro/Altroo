@@ -58,7 +58,7 @@ class FeedingRecordList: UIView {
         feedingRecords = records
         if feedingRecords.isEmpty {
             let label = StandardLabel(
-                labelText: "Nenhum registro hoje.",
+                labelText: "today_empty_feeding".localized,
                 labelFont: .sfPro,
                 labelType: .callOut,
                 labelColor: .black30

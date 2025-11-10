@@ -29,7 +29,7 @@ class ShiftFormViewController: UIViewController {
     
     private let titleSection = FormTitleSection(title: "Sobre você", description: "Preencha os campos a seguir quanto a seus dados pessoais e em relação ao assistido.", totalSteps: 3, currentStep: 3)
     
-    private lazy var nameSection = FormSectionView(title: "Nome", content: nameTextField, isObligatory: true)
+    private lazy var nameSection = FormSectionView(title: "name".localized, content: nameTextField, isObligatory: true)
     private lazy var nameTextField = StandardTextfield(placeholder: "Nome do cuidador")
 
     //Time

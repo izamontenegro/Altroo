@@ -59,7 +59,7 @@ final class EditMedicalRecordViewController: GradientNavBarViewController, Medic
 
     override func viewDidLoad() {
         let salvarButton = UIButton(type: .system)
-        salvarButton.setTitle("Salvar", for: .normal)
+        salvarButton.setTitle("save".localized, for: .normal)
         salvarButton.titleLabel?.font = .systemFont(ofSize: 17)
         salvarButton.addTarget(self, action: #selector(handleSaveTapped), for: .touchUpInside)
         rightButton = salvarButton

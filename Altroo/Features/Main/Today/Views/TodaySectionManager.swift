@@ -8,9 +8,20 @@
 import Foundation
 
 enum TodaySectionType: String, Codable, CaseIterable {
-    case basicNeeds = "Necessidades Básicas"
-    case tasks = "Tarefas"
-    case intercurrences = "Intercorrências"
+    case basicNeeds
+    case tasks
+    case intercurrences
+    
+    var localizedTitle: String {
+        switch self {
+        case .basicNeeds:
+            return "today_section_basic_needs".localized
+        case .tasks:
+            return "today_section_tasks".localized
+        case .intercurrences:
+            return "today_section_intercurrences".localized
+        }
+    }
 }
 
 struct TodaySectionConfig: Codable {

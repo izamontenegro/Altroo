@@ -221,7 +221,7 @@ final class StoolRecordViewController: GradientNavBarViewController {
     }
     private func makeStoolNotesSection() -> UIView {
         let title = StandardLabel(
-            labelText: "Observação",
+            labelText: "observation".localized,
             labelFont: .sfPro, labelType: .callOut, labelColor: .black10, labelWeight: .semibold
         )
 
@@ -237,7 +237,7 @@ final class StoolRecordViewController: GradientNavBarViewController {
     }
     
     private func configureAddButton() -> UIView {
-        let button = StandardConfirmationButton(title: "Adicionar")
+        let button = StandardConfirmationButton(title: "add".localized)
         button.addTarget(self, action: #selector(createStoolRecord), for: .touchUpInside)
         button.translatesAutoresizingMaskIntoConstraints = false
         return button

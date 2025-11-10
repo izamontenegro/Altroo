@@ -25,7 +25,7 @@ class AddSymptomViewController: SymptomFormViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
         
-        configure(title: "Adicionar Intercorrência", subtitle: "", confirmButtonText: "Adicionar")
+        configure(title: "add_intercurrence".localized, subtitle: "", confirmButtonText: "add".localized)
         bindViewModel()
         setupActions()
     }

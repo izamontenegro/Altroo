@@ -1,0 +1,80 @@
+/* 
+  Localizable.strings
+  Altroo
+
+  Created by Layza Maria Rodrigues Carneiro on 09/11/25.
+  
+*/
+
+// MARK: - TODAY
+
+// empty
+"today_empty_tasks" = "Nenhuma tarefa registrada.";
+"today_empty_feeding" = "Nenhum registro hoje.";
+"today_empty_intercurrences" = "Nenhuma intercorrência reportada hoje.";
+
+// sections
+"today_section_basic_needs" = "Necessidades Básicas";
+"today_section_tasks" = "Tarefas";
+"today_section_intercurrences" = "Intercorrências";
+
+"today_subitem_feeding" = "Alimentação";
+"today_subitem_stool" = "Fezes";
+"today_subitem_urine" = "Urina";
+"times" = "vez(es)";
+"profile_toolbar_title" = "Cuidando de:";
+
+// hidration
+"today_subitem_hydration" = "Hidratação";
+"hydration_history_message" = "Bebeu %dml de água";
+
+//edit section
+"edit_section_title" = "Editar Seção";
+"edit_section_subtitle" = "Reordene ou oculte seção para personalizar a visualização.";
+
+
+
+// MARK: - Tasks
+"add_task" = "Registrar Tarefa";
+"task_subtitle" = "Registre uma atividade a ser feita e sua duração ou repetições durante a semana.";
+"edit_task" = "Editar Tarefa";
+
+//forms
+"taskform_title" = "Tarefa";
+"taskform_subtitle" = "Confira os tarefas cadastradas no sistema ou adicione uma nova tarefa para visualizá-la aqui.";
+"taskform_repeat" = "Repetir";
+"taskform_start" = "Início";
+"taskform_end" = "Término";
+"taskform_duration" = "Duração";
+"taskform_new_time" = "Novo Horário";
+"morning" = "Morning";
+"afternoon" = "Tarde";
+"night" = "Noite";
+"overnight" = "Madrugada";
+
+
+
+// MARK: - Intercurrences
+"add_intercurrence" = "Adicionar Intercorrência";
+"name_intercurrence" = "Nome da intercorrência";
+"add_observations" = "Adicionar Observações";
+
+
+// MARK: - Generals
+"delete" = "Deletar";
+"edit" = "Editar";
+"name" = "Nome";
+"time" = "Horário";
+"save" = "Salvar";
+"date" = "Data";
+"back" = "Voltar";
+"cancel" = "Cancelar";
+"see_all" = "Ver Tudo";
+"today" = "Hoje";
+"report" = "Relatório";
+"history" = "Histórico";
+"config" = "Ajustes";
+"close" = "Fechar";
+"add" = "Adicionar";
+"observations" = "Observações";
+"observation" = "Observação";

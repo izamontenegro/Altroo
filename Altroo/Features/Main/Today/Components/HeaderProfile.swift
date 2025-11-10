@@ -53,7 +53,7 @@ class HeaderProfile: UIView {
 
     func makeContentStack() -> UIStackView {
         let name = StandardLabel(labelText: profileName, labelFont: .comfortaa, labelType: .title2, labelColor: .pureWhite, labelWeight: .bold)
-        let label = StandardLabel(labelText: "Cuidando de:", labelFont: .comfortaa, labelType: .subHeadline, labelColor: .pureWhite, labelWeight: .regular)
+        let label = StandardLabel(labelText: "profile_toolbar_title".localized, labelFont: .comfortaa, labelType: .subHeadline, labelColor: .pureWhite, labelWeight: .regular)
         
         let stack = UIStackView()
         stack.axis = .vertical
