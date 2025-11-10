@@ -34,7 +34,7 @@ class AssociatePatientViewController: GradientHeader {
         let tapGesture = UITapGestureRecognizer(target: self, action: #selector(didTapAddNewPatientButton))
         btn.addGestureRecognizer(tapGesture)
         btn.isUserInteractionEnabled = true
-        btn.enablePressEffect(withHaptics: true)
+        btn.enablePressEffect()
         
         return btn
     }()
@@ -164,7 +164,7 @@ class AssociatePatientViewController: GradientHeader {
                 let tapGesture = UITapGestureRecognizer(target: self, action: #selector(didTapCareRecipientCard(_:)))
                 card.addGestureRecognizer(tapGesture)
                 card.isUserInteractionEnabled = true
-                card.enablePressEffect(withHaptics: true)
+                card.enablePressEffect()
                 
                 vStack.addArrangedSubview(card)
             }
