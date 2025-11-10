@@ -29,7 +29,7 @@ struct DailyReportAppView: View {
             .padding(Layout.standardSpacing)
             .background(.blue70)
             .clipShape(
-                RoundedRectangle(cornerRadius: 20)
+                UnevenRoundedRectangle(bottomLeadingRadius: 20, bottomTrailingRadius: 20)
             )
             .onChange(of: viewModel.startDate) { _ in viewModel.feedArrays() }
             .onChange(of: viewModel.startTime) { _ in viewModel.feedArrays() }
@@ -117,7 +117,7 @@ struct DailyReportAppView: View {
             }
             .padding(.horizontal)
         }
-//        .background(.blue80)
+        .background(.blue80)
     }
 }
 

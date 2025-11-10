@@ -22,7 +22,6 @@ struct ReportTimeSection: View {
             UIDatePickerWrapper(date: $date, type: type)
                 .frame(height: 35)
                 .frame(width: type == .time ? 80 : 150)
-                .preferredColorScheme(.dark)
         }
     }
 }

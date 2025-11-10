@@ -11,6 +11,8 @@ import SwiftUI
 class AnalysisViewController: GradientHeader {
     let viewModel: DailyReportViewModel
     
+    private var hostingController: UIHostingController<AnyView>?
+    
     private lazy var reportPicker: StandardSegmentedControl = {
         let sc = StandardSegmentedControl(
             items: ["Diário", "Mensal"],
@@ -23,6 +25,15 @@ class AnalysisViewController: GradientHeader {
         )
         sc.setContentHuggingPriority(.defaultLow, for: .horizontal)
         sc.setContentCompressionResistancePriority(.defaultLow, for: .horizontal)
+        
+        let action1 = UIAction(title: "Diário", handler: { _ in
+            self.setSwiftUIView(DailyReportAppView(viewModel: self.viewModel))
+        })
+        let action2 = UIAction(title: "Mensal", handler: {  _ in
+            self.setSwiftUIView(IntervalReportAppView())
+        })
+        sc.setAction(action1, forSegmentAt: 0)
+        sc.setAction(action2, forSegmentAt: 1)
         return sc
     }()
     
@@ -38,26 +49,36 @@ class AnalysisViewController: GradientHeader {
     override func viewDidLoad() {
         setNavbarItems(title: "Relatório", subtitle: "Preencha o período desejado e acompanhe de forma centralizada os registros feitos no aplicativo.", view: reportPicker)
         super.viewDidLoad()
-        view.backgroundColor = .blue80
+        view.backgroundColor = .blue70
 
-        let swiftUIView = DailyReportAppView(viewModel: viewModel)
-        let hosting = UIHostingController(rootView: swiftUIView)
-        
-        addChild(hosting)
-        view.addSubview(hosting.view)
-        
-        hosting.view.translatesAutoresizingMaskIntoConstraints = false
-        NSLayoutConstraint.activate([
-            hosting.view.topAnchor.constraint(equalTo: gradientView.bottomAnchor),
-            hosting.view.leadingAnchor.constraint(equalTo: view.leadingAnchor),
-            hosting.view.trailingAnchor.constraint(equalTo: view.trailingAnchor),
-            hosting.view.bottomAnchor.constraint(equalTo: view.bottomAnchor),
-        ])
-        
-        hosting.didMove(toParent: self)
-        
-
-    }
+        setSwiftUIView(DailyReportAppView(viewModel: viewModel))
+        }
+    
+    private func setSwiftUIView<V: View>(_ swiftUIView: V) {
+           let anyView = AnyView(swiftUIView)
+           
+           if let hosting = hostingController {
+               // Atualiza apenas o conteúdo da view já existente
+               hosting.rootView = anyView
+           } else {
+               // Cria o hosting controller na primeira vez
+               let hosting = UIHostingController(rootView: anyView)
+               hostingController = hosting
+               
+               addChild(hosting)
+               view.addSubview(hosting.view)
+               
+               hosting.view.translatesAutoresizingMaskIntoConstraints = false
+               NSLayoutConstraint.activate([
+                   hosting.view.topAnchor.constraint(equalTo: gradientView.bottomAnchor),
+                   hosting.view.leadingAnchor.constraint(equalTo: view.leadingAnchor),
+                   hosting.view.trailingAnchor.constraint(equalTo: view.trailingAnchor),
+                   hosting.view.bottomAnchor.constraint(equalTo: view.bottomAnchor),
+               ])
+               
+               hosting.didMove(toParent: self)
+           }
+       }
     
     override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
