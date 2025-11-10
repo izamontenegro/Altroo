@@ -9,7 +9,6 @@ import UIKit
 import Combine
 
 final class MedicalRecordProgressView: UIView {
-
     private let titleLabel: StandardLabel = {
         let label = StandardLabel(
             labelText: "Conclusão da ficha",
@@ -22,21 +21,17 @@ final class MedicalRecordProgressView: UIView {
         return label
     }()
 
-    private let trackView: UIView = {
-        let view = UIView()
-        view.backgroundColor = .pureWhite
-        view.layer.cornerRadius = 8
-        view.translatesAutoresizingMaskIntoConstraints = false
-        return view
-    }()
-
-    private let fillView: UIView = {
-        let view = UIView()
-        view.backgroundColor = .pureWhite
-        view.layer.cornerRadius = 8
-        view.clipsToBounds = true
-        view.translatesAutoresizingMaskIntoConstraints = false
-        return view
+    private let progressBar: MedicalRecordProgressBarView = {
+        let bar = MedicalRecordProgressBarView(
+            height: 15,
+            cornerRadius: 8,
+            trackColor: .pureWhite,
+            startColor: .blue50,
+            endColor: .blue10,
+            progress: 0
+        )
+        bar.translatesAutoresizingMaskIntoConstraints = false
+        return bar
     }()
 
     private let percentLabel: StandardLabel = {
@@ -51,8 +46,6 @@ final class MedicalRecordProgressView: UIView {
         return label
     }()
 
-    private var fillWidthConstraint: NSLayoutConstraint?
-    private let gradientLayer = CAGradientLayer()
     private(set) var percent: CGFloat = 0
 
     override init(frame: CGRect) {
@@ -73,7 +66,7 @@ final class MedicalRecordProgressView: UIView {
         headerRow.alignment = .center
         headerRow.translatesAutoresizingMaskIntoConstraints = false
 
-        let progressRow = UIStackView(arrangedSubviews: [trackView, percentLabel])
+        let progressRow = UIStackView(arrangedSubviews: [progressBar, percentLabel])
         progressRow.axis = .horizontal
         progressRow.alignment = .center
         progressRow.spacing = 10
@@ -85,7 +78,6 @@ final class MedicalRecordProgressView: UIView {
         containerStack.translatesAutoresizingMaskIntoConstraints = false
 
         addSubview(containerStack)
-        trackView.addSubview(fillView)
 
         NSLayoutConstraint.activate([
             containerStack.topAnchor.constraint(equalTo: topAnchor),
@@ -93,51 +85,21 @@ final class MedicalRecordProgressView: UIView {
             containerStack.trailingAnchor.constraint(equalTo: trailingAnchor),
             containerStack.bottomAnchor.constraint(equalTo: bottomAnchor),
 
-            trackView.heightAnchor.constraint(equalToConstant: 15),
-            trackView.widthAnchor.constraint(greaterThanOrEqualToConstant: 110),
-
-            fillView.leadingAnchor.constraint(equalTo: trackView.leadingAnchor),
-            fillView.centerYAnchor.constraint(equalTo: trackView.centerYAnchor),
-            fillView.heightAnchor.constraint(equalTo: trackView.heightAnchor)
+            progressBar.widthAnchor.constraint(greaterThanOrEqualToConstant: 110)
         ])
-
-        let width = fillView.widthAnchor.constraint(equalTo: trackView.widthAnchor, multiplier: 0)
-        width.isActive = true
-        fillWidthConstraint = width
-    }
-
-    override func layoutSubviews() {
-        super.layoutSubviews()
-        if gradientLayer.superlayer == nil {
-            gradientLayer.colors = [UIColor.blue50.cgColor, UIColor.blue10.cgColor]
-            gradientLayer.startPoint = CGPoint(x: 0.0, y: 0.5)
-            gradientLayer.endPoint   = CGPoint(x: 1.0, y: 0.5)
-            fillView.layer.insertSublayer(gradientLayer, at: 0)
-        }
-        gradientLayer.frame = fillView.bounds
-        gradientLayer.cornerRadius = fillView.layer.cornerRadius
     }
     
     func setProgress(percent: CGFloat, animated: Bool) {
         let clamped = max(0, min(1, percent))
         self.percent = clamped
         percentLabel.text = "\(Int(round(clamped * 100)))%"
-
-        fillWidthConstraint?.isActive = false
-        let newWidth = fillView.widthAnchor.constraint(equalTo: trackView.widthAnchor, multiplier: clamped)
-        newWidth.isActive = true
-        fillWidthConstraint = newWidth
-
+        progressBar.progress = clamped
         if animated {
             UIViewPropertyAnimator(duration: 0.25, curve: .easeInOut) {
                 self.layoutIfNeeded()
-                self.gradientLayer.frame = self.fillView.bounds
-                self.gradientLayer.cornerRadius = self.fillView.layer.cornerRadius
             }.startAnimation()
         } else {
-            self.layoutIfNeeded()
-            self.gradientLayer.frame = self.fillView.bounds
-            self.gradientLayer.cornerRadius = self.fillView.layer.cornerRadius
+            layoutIfNeeded()
         }
     }
 
@@ -163,11 +125,6 @@ final class MedicalRecordProgressView: UIView {
         let healthProblems = careRecipient.healthProblems
         check(healthProblems?.observation)
         checkArray(healthProblems?.allergies)
-        // REMOVIDO DA PORCENTAGEM DE CONCLUSÃO:
-        // O que faz: exclui o campo "cirurgia" do cálculo de conclusão.
-        // Como faz: não chama nenhuma função de "check" para cirurgia.
-        // Por quê: por regra de produto você solicitou que cirurgias não influenciem a porcentagem.
-        // checkArray(healthProblems?.surgery)
 
         let mentalState = careRecipient.mentalState
         check(mentalState?.cognitionState)

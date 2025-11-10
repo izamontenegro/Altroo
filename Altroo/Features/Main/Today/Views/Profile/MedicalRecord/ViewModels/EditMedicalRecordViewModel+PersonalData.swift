@@ -144,7 +144,6 @@ extension EditMedicalRecordViewModel {
             _ = validator.checkAge(13, date: dateOfBirth, error: &newErrors["age"])
         }
 
-        // Se começou a preencher contato, exige os 3 campos
         if let c = personalDataFormState.emergencyContact {
             let anyFilled = !(c.name.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty)
                           || !((c.phone ?? "").trimmingCharacters(in: .whitespacesAndNewlines).isEmpty)
@@ -166,7 +165,6 @@ extension EditMedicalRecordViewModel {
         return newErrors.isEmpty
     }
 
-    // Persistência incluindo contato
     func persistPersonalDataFormState() {
         guard let patient = currentPatient(),
               let personalData = patient.personalData else { return }

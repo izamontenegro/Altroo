@@ -39,12 +39,12 @@ final class MedicalRecordInfoItemView: UIView {
     
     private func setupLayout() {
         let titleLabel = StandardLabel(
-            labelText: infotitle,
-            labelFont: .sfPro,
-            labelType: .body,
-            labelColor: .blue20,
-            labelWeight: .regular
-        )
+                labelText: infotitle,
+                labelFont: .sfPro,
+                labelType: .body,
+                labelColor: .blue20,
+                labelWeight: .regular
+            )
         
         let primaryLabel = StandardLabel(
             labelText: infoDescription,

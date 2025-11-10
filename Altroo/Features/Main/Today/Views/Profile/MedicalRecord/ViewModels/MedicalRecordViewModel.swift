@@ -292,7 +292,6 @@ final class MedicalRecordViewModel {
         let healthProblems = careRecipient.healthProblems
         check(healthProblems?.observation)
         check(healthProblems?.allergies)
-        checkToManySet(healthProblems?.surgeries as? Set<Surgery>)
         
         let mentalState = careRecipient.mentalState
         check(mentalState?.cognitionState)
