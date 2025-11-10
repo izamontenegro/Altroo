@@ -29,28 +29,25 @@ struct DailyReportItem: View {
     }
     
     var body: some View {
-        VStack (spacing: Layout.smallSpacing) {
+        VStack(alignment: .leading, spacing: 2) {
+            
+            //title
             HStack {
-                StandardLabelRepresentable(
-                    labelFont: .sfPro,
-                    labelType: .callOut,
-                    labelWeight: .regular,
-                    text: title,
-                    color: UIColor.black10
-                )
+                Text(title)
+                    .font(.callout)
                 
                 Spacer()
                 
                 Text("\(DateFormatterHelper.hourFormatter(date: time)) • \(author)")
-                    .fontDesign(.rounded)
                     .font(.system(size: 13))
                     .foregroundStyle(.blue20)
             }
+            .padding(.bottom, Layout.verySmallSpacing)
             
+            //content
             if let stoolColoration {
                 HStack {
                     Text("Coloração:")
-                        .fontDesign(.rounded)
                         .font(.system(size: 13))
                         .foregroundStyle(.black20)
                     
@@ -58,14 +55,9 @@ struct DailyReportItem: View {
                         .frame(width: 14)
                         .foregroundStyle(Color(stoolColoration.color))
                     
-                    
-                    StandardLabelRepresentable(
-                        labelFont: .sfPro,
-                        labelType: .footnote,
-                        labelWeight: .regular,
-                        text: "(\(stoolColoration.displayText))",
-                        color: UIColor.black20
-                    )
+                    Text("(\(stoolColoration.displayText))")
+                        .font(.footnote)
+                        .foregroundStyle(.black20)
                 }
             }
             
@@ -80,37 +72,25 @@ struct DailyReportItem: View {
                         .frame(width: 14)
                         .foregroundStyle(Color(urineColoration.color))
                     
-                    
-                    StandardLabelRepresentable(
-                        labelFont: .sfPro,
-                        labelType: .footnote,
-                        labelWeight: .regular,
-                        text: "(\(urineColoration.displayText))",
-                        color: UIColor.black20
-                    )
+                    Text("(\(urineColoration.displayText))")
+                        .font(.footnote)
+                        .foregroundStyle(.black20)
                 }
             }
             
             if let reception {
-                StandardLabelRepresentable(
-                    labelFont: .sfPro,
-                    labelType: .footnote,
-                    labelWeight: .regular,
-                    text: "Aceitação: \(reception)",
-                    color: UIColor.black20
-                )
+                Text("Aceitação: \(reception)")
+                    .font(.footnote)
+                    .foregroundStyle(.black20)
             }
             
             if let observation {
-                StandardLabelRepresentable(
-                    labelFont: .sfPro,
-                    labelType: .footnote,
-                    labelWeight: .regular,
-                    text: "Observação: \(observation)",
-                    color: UIColor.black20
-                )
+                Text("Observação: \(observation.isEmpty ? "--" : observation)")
+                    .font(.footnote)
+                    .foregroundStyle(.black20)
             }
         }
+        .fontDesign(.rounded)
     }
 }
 

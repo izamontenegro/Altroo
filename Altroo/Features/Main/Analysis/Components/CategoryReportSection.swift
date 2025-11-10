@@ -1,69 +1,46 @@
 //
-//  CategoryReportCard.swift
+//  CategoryReportSection.swift
 //  Altroo
 //
-//  Created by Raissa Parente on 04/11/25.
+//  Created by Raissa Parente on 07/11/25.
 //
 
 import SwiftUI
 
-struct CategoryReportCard: View {
+struct CategoryReportSection: View {
     let categoryName: String
     let categoryIconName: String
     let reports: [ReportItem]
     
-    @State var isOpen: Bool = true
-    
     var body: some View {
-        VStack(spacing: 0) {
+        VStack(alignment:.leading, spacing: 0) {
             //HEADER
             HStack {
                 Image(systemName: categoryIconName)
-                    .foregroundStyle(.white)
+                    .foregroundStyle(.blue20)
                 
-                StandardLabelRepresentable(
-                    labelFont: .sfPro,
-                    labelType: .body,
-                    labelWeight: .semibold,
-                    text: categoryName,
-                    color: UIColor.white
-                )
-                
-                Button {
-                    withAnimation(.spring(response: 0.35, dampingFraction: 0.8)) {
-                        isOpen.toggle()
-                    }
-                } label: {
-                    Image(systemName: isOpen ? "chevron.up" : "chevron.down")
-                        .foregroundStyle(.white)
-                }
+                Text(categoryName)
+                    .font(.title3)
+                    .foregroundStyle(.blue20)
             }
-            .padding(8)
-            .background(.blue30)
+            Divider()
+                .overlay(.blue20)
             
+            //CONTENT
             VStack {
-                //CONTENT
-                if isOpen {
-                    VStack {
-                        ForEach(Array(reports.enumerated()), id: \.element.id) { index, report in
-                            configureItem(report)
-                            
-                            if index < reports.count - 1 {
-                                    Divider()
-                            }
+                VStack {
+                    ForEach(Array(reports.enumerated()), id: \.element.id) { index, report in
+                        configureItem(report)
+                        
+                        if index < reports.count - 1 {
+                                Divider()
                         }
                     }
-                    .padding(10)
+                    .padding(.horizontal, 10)
                 }
+                .padding(.top, 10)
             }
-            .background(.pureWhite)
-
         }
-        .clipShape(
-            RoundedRectangle(cornerRadius: 10)
-        )
-        .animation(.spring(response: 0.35, dampingFraction: 0.8), value: isOpen)
-
     }
     
     @ViewBuilder
@@ -86,9 +63,3 @@ struct CategoryReportCard: View {
         }
     }
 }
-
-
-//
-//#Preview {
-//    CategoryReportCard(categoryName: "Fezes", reports: [])
-//}

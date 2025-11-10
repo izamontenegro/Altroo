@@ -16,6 +16,13 @@ final class DateFormatterHelper {
         df.dateFormat = "d 'de' MMMM"
         return df
     }()
+    
+    private static let longDayYearDF: DateFormatter = {
+        let df = DateFormatter()
+        df.locale = brLocale
+        df.dateFormat = "d 'de' MMMM 'de' YYYY"
+        return df
+    }()
 
     private static let timeHMDF: DateFormatter = {
         let df = DateFormatter()
@@ -26,6 +33,10 @@ final class DateFormatterHelper {
 
     static func longDayString(from date: Date) -> String {
         longDayDF.string(from: date).capitalized
+    }
+    
+    static func longDayYearString(from date: Date) -> String {
+        longDayYearDF.string(from: date).capitalized
     }
 
     static func timeHMString(from date: Date) -> String {

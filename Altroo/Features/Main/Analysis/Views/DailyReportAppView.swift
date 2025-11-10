@@ -13,18 +13,18 @@ struct DailyReportAppView: View {
     @State private var pdfURL: URL?
     
     var body: some View {
-        VStack (spacing: 16) {
+        VStack(alignment: .leading, spacing: 16) {
             //SUBHEADER
             HStack(alignment: .bottom) {
-                TimeSection(text: "Data", dataSource: $viewModel.startDate, type: .date)
+                ReportTimeSection(text: "Data", date: $viewModel.startDate, type: .date)
                 Spacer()
-                TimeSection(text: "Hora Inicial", dataSource: $viewModel.startTime, type: .time)
+                ReportTimeSection(text: "Hora Inicial", date: $viewModel.startTime, type: .time)
                 Image(systemName: "arrow.right")
                     .resizable()
                     .scaledToFit()
                     .frame(width: 14)
                     .padding(.bottom, 10)
-                TimeSection(text: "Hora Final", dataSource: $viewModel.endTime, type: .time)
+                ReportTimeSection(text: "Hora Final", date: $viewModel.endTime, type: .time)
             }
             .padding(Layout.standardSpacing)
             .background(.blue70)
@@ -38,22 +38,22 @@ struct DailyReportAppView: View {
             ScrollView {
                 //TITLE
                 HStack {
-                    StandardLabelRepresentable(
-                        labelFont: .sfPro,
-                        labelType: .title2,
-                        labelWeight: .semibold,
-                        text: "Relatório Diário",
-                        color: UIColor.black10
-                    )
+                    Text("Relatório Diário")
+                        .font(.title2)
+                        .foregroundStyle(.black10)
+                        .fontDesign(.rounded)
+                        .fontWeight(.semibold)
                     .padding(.top, 8)
+                    
+                    Spacer()
                     
                     VStack {
                         if let pdfURL {
                             ShareLink(item: pdfURL) {
-                                Label("Share PDF", systemImage: "square.and.arrow.up")
+                                Label("Compartilhar PDF", systemImage: "square.and.arrow.up")
                             }
                         } else {
-                            Button("Generate Report PDF") {
+                            Button("Gerar PDF") {
                                 Task { @MainActor in
                                     let pdfCreator = PDFCreator()
                                     pdfURL = pdfCreator.createPDF(
@@ -67,30 +67,30 @@ struct DailyReportAppView: View {
                 
                 //COUNT
                 HStack {
-                    VStack {
-                        SectionTitle("Contagem")
+                    VStack(alignment: .leading, spacing: 2) {
+                        ReportSectionTitle(text: "Contagem")
                         
-                        VStack {
+                        VStack(alignment: .leading) {
                             Text("\(viewModel.combinedRecords.count)")
                                 .font(.largeTitle)
                             Text("Registros")
                                 .font(.callout)
                                 .fixedSize(horizontal: true, vertical: false)
                         }
-                        .padding(Layout.standardSpacing)
-                        .frame(maxWidth: .infinity, minHeight: 100, alignment: .top)
+//                        .padding(Layout.verySmallSpacing)
+                        .frame(minWidth: 120, minHeight: 100, alignment: .top)
                         .fontDesign(.rounded)
                         .foregroundStyle(.black10)
                         .background(.pureWhite)
                         .clipShape(RoundedRectangle(cornerRadius: 10))
                     }
                     
-                    VStack {
-                        SectionTitle("Registros por cuidador")
+                    VStack(alignment: .leading, spacing: 2) {
+                        ReportSectionTitle(text: "Registros por cuidador")
                         
                         VStack {
                             ForEach(viewModel.reportsByAuthor.keys.sorted(), id: \.self) { author in
-                                CaretakerCount(for: author, count: viewModel.reportsByAuthor[author] ?? 0)
+                                ReportCaretakerCount(name: author, count: viewModel.reportsByAuthor[author] ?? 0)
                             }
                             .frame(maxWidth: .infinity)
                         }
@@ -108,55 +108,16 @@ struct DailyReportAppView: View {
 //                SectionTitle("Registros por Hora")
                 
                 //CATEGORIES
-                SectionTitle("Histórico de Registros")
-                ForEach(viewModel.nonEmptyCategories, id: \.name) { category in
-                    CategoryReportCard(categoryName: category.name, categoryIconName: category.icon, reports: category.reports)
+                VStack(alignment: .leading, spacing: 12) {
+                    ReportSectionTitle(text: "Histórico de Registros")
+                    ForEach(viewModel.nonEmptyCategories, id: \.name) { category in
+                        CategoryReportCard(categoryName: category.name, categoryIconName: category.icon, reports: category.reports)
+                    }
                 }
             }
             .padding(.horizontal)
         }
-        .background(.blue80)
-    }
-    
-    @ViewBuilder
-    func TimeSection(text: String, dataSource: Binding<Date>, type: UIDatePicker.Mode) -> some View {
-        VStack(alignment: .leading, spacing: 2) {
-            Text(text)
-                .font(.callout)
-                .fontDesign(.rounded)
-                .foregroundStyle(.black10)
-            UIDatePickerWrapper(date: dataSource, type: type)
-                .frame(height: 35)
-                .frame(width: type == .time ? 80 : 150)
-        }
-    }
-    
-    @ViewBuilder
-    func SectionTitle(_ text: String) -> some View {
-        StandardLabelRepresentable(
-            labelFont: .sfPro,
-            labelType: .title3,
-            labelWeight: .medium,
-            text: text,
-            color: UIColor.blue20
-        )
-    }
-    
-    
-    @ViewBuilder
-    func CaretakerCount(for name: String, count: Int) -> some View {
-        VStack(spacing: 0) {
-            HStack {
-                Text(name)
-                    .font(.callout)
-                Spacer()
-                
-                Text("\(count) registros")
-                    .font(.footnote)
-                    .foregroundStyle(.black30)
-            }
-            Divider()
-        }
+//        .background(.blue80)
     }
 }
 
