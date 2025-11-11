@@ -71,7 +71,7 @@ final class AddPatientViewModel: ObservableObject {
     }
     
     func finalizeCareRecipient() {        
-        newPatient = careRecipientFacade.buildCareRecipient { personalData, personalCare, healthProblems, mental, physical, routine, basicNeeds, event, symptom in
+        newPatient = careRecipientFacade.buildCareRecipient { personalData, personalCare, healthProblems, mental, physical, routine, basicNeeds, event in
             
             // Personal Data
             self.careRecipientFacade.addName(name: self.name, in: personalData)
