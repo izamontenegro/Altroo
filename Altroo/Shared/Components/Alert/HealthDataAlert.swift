@@ -12,7 +12,7 @@ struct HealthDataAlertView: View {
     let cardGradient = LinearGradient(colors: [.blue30, .blue70],
                                       startPoint: .bottom,
                                       endPoint: .top)
-    let lockGradient = LinearGradient(colors: [.blue70, .pureWhite],
+    let lockGradient = LinearGradient(colors: [.blue80, .pureWhite],
                                       startPoint: .bottom,
                                       endPoint: .top)
     
@@ -56,7 +56,7 @@ struct HealthDataAlertView: View {
             
             Text("As informações de saúde do assistido são armazenadas em nuvem pessoal vinculada à conta privada do seu dispositivo, garantindo privacidade e proteção.")
                 .foregroundStyle(.black10)
-                .font(Font.custom("Comfortaa", size: 16))
+                .font(.system(size: 17, weight: .regular, design: .rounded))
                 .multilineTextAlignment(.center)
                 .padding()
             
