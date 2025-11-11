@@ -11,8 +11,10 @@ class BedriddenButton: UIButton {
     
     var bedriddenState: BedriddenState
     
-    private var isSelectedState = false
+    var isSelectedState = false
     private var innerShadowView: InnerShadowView?
+    
+    
     
     private lazy var circleIcon = PulseIcon(iconName: bedriddenState.iconName, color: .blue30, iconColor: .pureWhite, shadowColor: .clear)
     
@@ -50,23 +52,23 @@ class BedriddenButton: UIButton {
         }
     }
     // MARK: - click to change color
-    @objc func toggleState() {
-        isSelectedState.toggle()
-        
-        UIView.animate(withDuration: 0.4, delay: 0, options: [.curveEaseInOut]) {
-            
-            self.backgroundColor = self.isSelectedState ? UIColor(resource: .blue40)
-            : UIColor(resource: .white70)
-            
-            let tint = self.isSelectedState ? UIColor(resource: .pureWhite)
-            : UIColor(resource: .blue30)
+    
+    func setSelectedState(_ selected: Bool) {
+        isSelectedState = selected
+        UIView.animate(withDuration: 0.3) {
+            self.backgroundColor = selected ? UIColor(resource: .blue40) : UIColor(resource: .white70)
+            let tint = selected ? UIColor(resource: .pureWhite) : UIColor(resource: .blue30)
             self.label.textColor = tint
             self.checkIconView.tintColor = tint
-            
-            self.circleIcon.color = self.isSelectedState ? UIColor(resource: .pureWhite) : .blue30
-            self.circleIcon.iconColor = self.isSelectedState ? .blue40 : .white70
+            self.circleIcon.color = selected ? UIColor(resource: .pureWhite) : .blue30
+            self.circleIcon.iconColor = selected ? .blue40 : .white70
         }
     }
+    
+    @objc func toggleState() {
+        setSelectedState(!isSelectedState)
+    }
+    
     // MARK: - Setup
     private func setupBackground() {
         backgroundColor = UIColor(resource: .white70)
@@ -95,7 +97,6 @@ class BedriddenButton: UIButton {
     }
     // MARK: - UI Construction
     private func makeContent() -> UIStackView {
-        // "x" or "check" icon
         checkIconView = UIImageView(image: UIImage(systemName: bedriddenState.iconCheck))
         checkIconView.tintColor = UIColor(resource: .blue30)
         checkIconView.contentMode = .scaleAspectFit
