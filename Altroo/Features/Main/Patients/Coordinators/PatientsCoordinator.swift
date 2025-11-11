@@ -81,12 +81,19 @@ final class PatientsCoordinator: Coordinator {
                         tabBar.model.currentTab = .today
                     },
                     completion: { _ in
+                        DispatchQueue.main.asyncAfter(deadline: .now() + 0.1) {
+                            if let todayNav = tabBar.viewControllers?[2] as? UINavigationController,
+                               let todayVC = todayNav.viewControllers.first(where: { $0 is TodayViewController }) as? TodayViewController {
+                                todayVC.didTapProfileView()
+                            }
+                        }
                         self.onFinish?()
                     }
                 )
             } else {
                 onFinish?()
             }
+
         }
     }
 }
