@@ -74,6 +74,7 @@ class ProfileToolbarContainer: UIView {
         headerProfile.enablePressEffect()
         
         capsuleButton.enablePressEffect()
+
         capsuleButton.onTap = { [weak self] in
             DispatchQueue.main.asyncAfter(deadline: .now() + 0.1) {
                 self?.didTapEditCapsuleView()

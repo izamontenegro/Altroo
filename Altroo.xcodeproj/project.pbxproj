@@ -265,7 +265,7 @@
 				CODE_SIGN_ENTITLEMENTS = Altroo/AltrooDebug.entitlements;
 				CODE_SIGN_STYLE = Automatic;
 				CURRENT_PROJECT_VERSION = 1;
-				DEVELOPMENT_TEAM = ZFH4AF7HSL;
+				DEVELOPMENT_TEAM = 2BF575N85D;
 				GENERATE_INFOPLIST_FILE = YES;
 				INFOPLIST_FILE = Altroo/Resources/Info.plist;
 				INFOPLIST_KEY_CFBundleDisplayName = Altroo;
@@ -277,13 +277,13 @@
 				INFOPLIST_KEY_UISupportedInterfaceOrientations = UIInterfaceOrientationPortrait;
 				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPad = "UIInterfaceOrientationPortrait UIInterfaceOrientationPortraitUpsideDown";
 				INFOPLIST_KEY_UIUserInterfaceStyle = Light;
-				IPHONEOS_DEPLOYMENT_TARGET = 16.1;
+				IPHONEOS_DEPLOYMENT_TARGET = 17.0;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
 					"@executable_path/Frameworks",
 				);
 				MARKETING_VERSION = 1.1.0;
-				PRODUCT_BUNDLE_IDENTIFIER = com.LayzaCarneiro.Altroo;
+				PRODUCT_BUNDLE_IDENTIFIER = com.LayzaCarneiro.Altrkkooiko;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SWIFT_EMIT_LOC_STRINGS = YES;
 				SWIFT_VERSION = 5.0;
@@ -299,7 +299,7 @@
 				CODE_SIGN_ENTITLEMENTS = Altroo/Altroo.entitlements;
 				CODE_SIGN_STYLE = Automatic;
 				CURRENT_PROJECT_VERSION = 1;
-				DEVELOPMENT_TEAM = ZFH4AF7HSL;
+				DEVELOPMENT_TEAM = 2BF575N85D;
 				GENERATE_INFOPLIST_FILE = YES;
 				INFOPLIST_FILE = Altroo/Resources/Info.plist;
 				INFOPLIST_KEY_CFBundleDisplayName = Altroo;
@@ -311,7 +311,7 @@
 				INFOPLIST_KEY_UISupportedInterfaceOrientations = UIInterfaceOrientationPortrait;
 				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPad = "UIInterfaceOrientationPortrait UIInterfaceOrientationPortraitUpsideDown";
 				INFOPLIST_KEY_UIUserInterfaceStyle = Light;
-				IPHONEOS_DEPLOYMENT_TARGET = 16.1;
+				IPHONEOS_DEPLOYMENT_TARGET = 17.0;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
 					"@executable_path/Frameworks",
