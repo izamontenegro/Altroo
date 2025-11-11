@@ -50,18 +50,22 @@ class AnalysisViewController: GradientHeader {
         setNavbarItems(title: "Relatório", subtitle: "Preencha o período desejado e acompanhe de forma centralizada os registros feitos no aplicativo.", view: reportPicker)
         super.viewDidLoad()
         view.backgroundColor = .blue70
-
+        
         setSwiftUIView(DailyReportAppView(viewModel: viewModel))
-        }
+    }
+    
+    override func viewWillAppear(_ animated: Bool) {
+        super.viewWillAppear(animated)
+        showTabBar(true)
+        viewModel.feedArrays()
+    }
     
     private func setSwiftUIView<V: View>(_ swiftUIView: V) {
            let anyView = AnyView(swiftUIView)
            
            if let hosting = hostingController {
-               // Atualiza apenas o conteúdo da view já existente
                hosting.rootView = anyView
            } else {
-               // Cria o hosting controller na primeira vez
                let hosting = UIHostingController(rootView: anyView)
                hostingController = hosting
                
@@ -80,8 +84,5 @@ class AnalysisViewController: GradientHeader {
            }
        }
     
-    override func viewWillAppear(_ animated: Bool) {
-        super.viewWillAppear(animated)
-        showTabBar(true)
-    }
+
 }

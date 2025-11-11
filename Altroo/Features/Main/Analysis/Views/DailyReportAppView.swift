@@ -36,88 +36,162 @@ struct DailyReportAppView: View {
             .onChange(of: viewModel.endTime) { _ in viewModel.feedArrays() }
             
             ScrollView {
-                //TITLE
-                HStack {
-                    Text("Relatório Diário")
-                        .font(.title2)
-                        .foregroundStyle(.black10)
-                        .fontDesign(.rounded)
-                        .fontWeight(.semibold)
-                    .padding(.top, 8)
-                    
-                    Spacer()
-                    
-                    VStack {
+                VStack(alignment: .leading) {
+                    //TITLE
+                    HStack {
+                        Text("Relatório Diário")
+                            .font(.title2)
+                            .foregroundStyle(.black10)
+                            .fontDesign(.rounded)
+                            .fontWeight(.semibold)
+                            .padding(.top, 8)
+                        
+                        Spacer()
+                        
                         if let pdfURL {
                             ShareLink(item: pdfURL) {
-                                Label("Compartilhar PDF", systemImage: "square.and.arrow.up")
+                                CircleCapsule(text: "Exportar", icon: "square.and.arrow.up")
                             }
                         } else {
-                            Button("Gerar PDF") {
-                                Task { @MainActor in
-                                    let pdfCreator = PDFCreator()
-                                    pdfURL = pdfCreator.createPDF(
-                                        from: DailyReportPDFView(viewModel: viewModel)
-                                    )
-                                }
-                            }
+                            CircleCapsule(text: "Exportar", icon: "square.and.arrow.up")
                         }
-                    }
-                }
-                
-                //COUNT
-                HStack {
-                    VStack(alignment: .leading, spacing: 2) {
-                        ReportSectionTitle(text: "Contagem")
-                        
-                        VStack(alignment: .leading) {
-                            Text("\(viewModel.combinedRecords.count)")
-                                .font(.largeTitle)
-                            Text("Registros")
-                                .font(.callout)
-                                .fixedSize(horizontal: true, vertical: false)
-                        }
-//                        .padding(Layout.verySmallSpacing)
-                        .frame(minWidth: 120, minHeight: 100, alignment: .top)
-                        .fontDesign(.rounded)
-                        .foregroundStyle(.black10)
-                        .background(.pureWhite)
-                        .clipShape(RoundedRectangle(cornerRadius: 10))
+
                     }
                     
-                    VStack(alignment: .leading, spacing: 2) {
-                        ReportSectionTitle(text: "Registros por cuidador")
-                        
-                        VStack {
-                            ForEach(viewModel.reportsByAuthor.keys.sorted(), id: \.self) { author in
-                                ReportCaretakerCount(name: author, count: viewModel.reportsByAuthor[author] ?? 0)
+                    //COUNT
+                    HStack {
+                        VStack(alignment: .leading, spacing: 2) {
+                            ReportSectionTitle(text: "Contagem")
+                            
+                            VStack(alignment: .leading) {
+                                Text("\(viewModel.combinedRecords.count)")
+                                    .font(.largeTitle)
+                                Text("Registros")
+                                    .font(.callout)
+                                    .fixedSize(horizontal: true, vertical: false)
                             }
-                            .frame(maxWidth: .infinity)
+                            //                        .padding(Layout.verySmallSpacing)
+                            .frame(minWidth: 120, minHeight: 100, alignment: .top)
+                            .fontDesign(.rounded)
+                            .foregroundStyle(.black10)
+                            .background(.pureWhite)
+                            .clipShape(RoundedRectangle(cornerRadius: 10))
                         }
-                        .padding(Layout.standardSpacing)
-                        .frame(maxWidth: .infinity, minHeight: 100, alignment: .top)
-                        .fontDesign(.rounded)
-                        .foregroundStyle(.black10)
-                        .background(.pureWhite)
-                        .clipShape(RoundedRectangle(cornerRadius: 10))
+                        
+                        VStack(alignment: .leading, spacing: 2) {
+                            ReportSectionTitle(text: "Registros por cuidador")
+                            
+                            VStack {
+                                if viewModel.reportsByAuthor.isEmpty {
+                                    Text("Não há registros")
+                                } else {
+                                    ForEach(viewModel.reportsByAuthor.keys.sorted(), id: \.self) { author in
+                                        ReportCaretakerCount(name: author, count: viewModel.reportsByAuthor[author] ?? 0)
+                                    }
+                                    .frame(maxWidth: .infinity)
+                                }
+                            }
+                            .padding(Layout.standardSpacing)
+                            .frame(maxWidth: .infinity, minHeight: 100, alignment: .top)
+                            .fontDesign(.rounded)
+                            .foregroundStyle(.black10)
+                            .background(.pureWhite)
+                            .clipShape(RoundedRectangle(cornerRadius: 10))
+                        }
+                        .layoutPriority(1)
                     }
-                    .layoutPriority(1)
-                }
-                
-                //CHART
-//                SectionTitle("Registros por Hora")
-                
-                //CATEGORIES
-                VStack(alignment: .leading, spacing: 12) {
-                    ReportSectionTitle(text: "Histórico de Registros")
-                    ForEach(viewModel.nonEmptyCategories, id: \.name) { category in
-                        CategoryReportCard(categoryName: category.name, categoryIconName: category.icon, reports: category.reports)
+                    
+                    //CHART
+                    //                SectionTitle("Registros por Hora")
+                    
+                    //CATEGORIES
+                    VStack(alignment: .leading, spacing: 12) {
+                        ReportSectionTitle(text: "Histórico de Registros")
+                        
+                        if viewModel.nonEmptyCategories.isEmpty {
+                            Text("Não há registros para esse periodo")
+                        } else {
+                            ForEach(viewModel.nonEmptyCategories, id: \.name) { category in
+                                CategoryReportCard(categoryName: category.name, categoryIconName: category.icon, reports: category.reports)
+                            }
+                        }
                     }
                 }
             }
             .padding(.horizontal)
         }
         .background(.blue80)
+        .onAppear {
+            loadPDF()
+        }
+        .onChange(of: viewModel.timeRange) { _ in
+            loadPDF()
+        }
+    }
+    
+    func loadPDF() {
+        Task { @MainActor in
+            let pdfCreator = PDFCreator()
+            pdfURL = pdfCreator.createPDF(
+                from: DailyReportPDFView(viewModel: viewModel)
+            )
+        }
+    }
+    
+    @ViewBuilder
+    func CircleCapsule(text: String, icon: String) -> some View {
+        HStack {
+            Text(text)
+                .fontDesign(.rounded)
+                .font(.system(size: 15))
+                .foregroundStyle(.pureWhite)
+                .padding(.vertical, 8)
+                .padding(.horizontal, 10)
+            
+            Circle()
+                .foregroundStyle(.pureWhite)
+                .overlay {
+                    Image(systemName: icon)
+                        .resizable()
+                        .scaledToFit()
+                        .frame(height: 20)
+                        .foregroundStyle(.blue30)
+                }
+                .frame(height: 30)
+                .padding(.trailing, 2)
+                .padding(.vertical, 2)
+        }
+        .background {
+            Capsule()
+                .frame(height: 34)
+                .foregroundStyle(.blue30)
+
+        }
+
+//        
+//        Capsule()
+//            .foregroundStyle(.blue30)
+//            .overlay {
+//                HStack {
+//                    Text(text)
+//                        .fontDesign(.rounded)
+//                        .font(.system(size: 15))
+//                        .foregroundStyle(.pureWhite)
+//                        .padding(4)
+//
+////                    Spacer()
+//                    
+//                    Circle()
+//                        .foregroundStyle(.pureWhite)
+//                        .overlay {
+//                            Image(systemName: icon)
+//                                .foregroundStyle(.blue30)
+//                        }
+//                        .padding(.vertical, 4)
+//                        .padding(.trailing, 1)
+//
+//                }
+//            }
     }
 }
 

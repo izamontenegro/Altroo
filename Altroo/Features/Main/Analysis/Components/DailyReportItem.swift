@@ -38,7 +38,7 @@ struct DailyReportItem: View {
                 
                 Spacer()
                 
-                Text("\(DateFormatterHelper.hourFormatter(date: time)) • \(author)")
+                Text("\(DateFormatterHelper.hourFormatter(date: time)) • \(author.abbreviatedName)")
                     .font(.system(size: 13))
                     .foregroundStyle(.blue20)
             }

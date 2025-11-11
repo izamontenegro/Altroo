@@ -13,7 +13,6 @@ struct CategoryInfo {
     let reports: [ReportItem]
 }
 
-
 class DailyReportViewModel: ObservableObject {
     //MARK: - DEPENDENCIES
     let userService: UserServiceProtocol

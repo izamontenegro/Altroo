@@ -15,7 +15,7 @@
         var body: some View {
             VStack(alignment: .leading, spacing: 0) {
                 HStack {
-                    Text(name)
+                    Text(name.abbreviatedName)
                         .font(.callout)
                     Spacer()
                     Text("\(count) registros")
