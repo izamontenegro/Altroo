@@ -27,7 +27,6 @@ final class AddPatientViewModel: ObservableObject {
     
     @Published var userName: String = ""
     @Published var userNameError: String?
-    let relationshipOptions = ["Cuidador", "Mãe/Pai", "Filha/Filho", "Neta/Neto", "Familiar", "Amigo", "Outro"]
     @Published var selectedUserRelationship: String = "Cuidador"
     @Published var selectedContactRelationship: String = "Filha/Filho"
 
