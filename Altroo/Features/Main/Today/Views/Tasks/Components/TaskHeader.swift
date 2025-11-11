@@ -29,7 +29,7 @@ class TaskHeader: UIView {
     
     private lazy var periodTag: CapsuleIconView = {
         let capsule = CapsuleIconView(iconName: "pencil.and.list.clipboard", text: "Ver Tudo")
-        capsule.enablePressEffect(withHaptics: true)
+        capsule.enablePressEffect()
         capsule.onTap = { [weak self] in
             DispatchQueue.main.asyncAfter(deadline: .now() + 0.1) {
                 self?.didTapPeriodTag()

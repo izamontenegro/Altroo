@@ -11,28 +11,31 @@ class GradientHeader: UIViewController {
     var subtitle: String?
     var insideView: UIView?
     
+    private var didSetInsets = false
+    
     private var gradientView: UIView!
     private var stack: UIStackView!
     
     override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
+        navigationController?.setNavigationBarHidden(true, animated: false)
         setupGradientHeader()
     }
-    
+
+    override func viewWillDisappear(_ animated: Bool) {
+        super.viewWillDisappear(animated)
+        navigationController?.setNavigationBarHidden(false, animated: false)
+    }
+
     override func viewDidLayoutSubviews() {
         super.viewDidLayoutSubviews()
-        view.layoutIfNeeded()
-
-        guard let gradientView else { return }
+        guard let gradientView, !didSetInsets else { return }
 
         let headerHeight = gradientView.frame.height
         let safeTop = view.safeAreaInsets.top
-        let currentInsetTop = additionalSafeAreaInsets.top
-        
         let newInset = max(0, headerHeight - safeTop)
-        if newInset != currentInsetTop {
-            additionalSafeAreaInsets.top = newInset
-        }
+        additionalSafeAreaInsets.top = newInset
+        didSetInsets = true
     }
 
     private func setupGradientHeader() {

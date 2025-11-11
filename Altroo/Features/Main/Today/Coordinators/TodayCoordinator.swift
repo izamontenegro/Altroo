@@ -137,13 +137,6 @@ final class TodayCoordinator: Coordinator {
 }
 
 extension TodayCoordinator: TodayViewControllerDelegate {
-    func goToCareRecipientProfileView() {
-        goTo(.careRecipientProfile)
-    }
-    
-    func goToEditSectionView() {
-        goTo(.editSection)
-    }
     
     func goTo(_ destination: TodayDestination) {
         guard let vc = makeViewController(for: destination) else { return }

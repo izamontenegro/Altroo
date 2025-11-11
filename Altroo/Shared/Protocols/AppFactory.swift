@@ -34,7 +34,7 @@ protocol OnboardingFactory {
 
 // MARK: - ALL PATIENT FLOW
 protocol AssociatePatientFactory {
-    func makeAssociatePatientViewController(delegate: AssociatePatientViewControllerDelegate) -> UIViewController
+    func makeAssociatePatientViewController(delegate: AssociatePatientViewControllerDelegate, context: CareRecipientContext) -> UIViewController
     func makeTutorialAddSheet() -> UIViewController
     func makeLoading() -> UIViewController
     func makePatientFormViewController(delegate: AssociatePatientViewControllerDelegate) -> UIViewController
@@ -44,7 +44,6 @@ protocol AssociatePatientFactory {
 
 // MARK: - MAIN FLOW
 protocol MainFlowFactory {
-    func makePatientsViewController() -> UIViewController
     func makeAnalysisViewController() -> UIViewController
     func makeTodayViewController(delegate: TodayViewControllerDelegate) -> UIViewController
     func makeHistoryViewController(delegate: HistoryViewControllerDelegate) -> UIViewController

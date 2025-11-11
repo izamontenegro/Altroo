@@ -22,6 +22,7 @@ class TodayViewController: UIViewController {
     var feedingRecords: [FeedingRecord] = []
     private var cancellables = Set<AnyCancellable>()
 
+    private var profileToolbar: ProfileToolbarContainer?
     
     required init?(coder: NSCoder) {
         fatalError("init(coder:) has not been implemented")
@@ -58,19 +59,21 @@ class TodayViewController: UIViewController {
         view.backgroundColor = .blue80
         
         guard let careRecipient = viewModel.currentCareRecipient else { return }
-        let profileToolbar = ProfileToolbarContainer(careRecipient: careRecipient)
-        profileToolbar.translatesAutoresizingMaskIntoConstraints = false
-        profileToolbar.delegate = self
+        let toolbar = ProfileToolbarContainer(careRecipient: careRecipient)
+        toolbar.translatesAutoresizingMaskIntoConstraints = false
+        toolbar.delegate = self
+        self.profileToolbar = toolbar
+
         
         view.addSubview(scrollView)
         scrollView.addSubview(vStack)
-        view.addSubview(profileToolbar)
+        view.addSubview(toolbar)
         
         NSLayoutConstraint.activate([
-            profileToolbar.topAnchor.constraint(equalTo: view.topAnchor),
-            profileToolbar.leadingAnchor.constraint(equalTo: view.leadingAnchor),
-            profileToolbar.trailingAnchor.constraint(equalTo: view.trailingAnchor),
-            profileToolbar.heightAnchor.constraint(equalToConstant: 250),
+            toolbar.topAnchor.constraint(equalTo: view.topAnchor),
+            toolbar.leadingAnchor.constraint(equalTo: view.leadingAnchor),
+            toolbar.trailingAnchor.constraint(equalTo: view.trailingAnchor),
+            toolbar.heightAnchor.constraint(equalToConstant: 250),
             
             scrollView.topAnchor.constraint(equalTo: view.topAnchor, constant: 150),
             scrollView.leadingAnchor.constraint(equalTo: view.leadingAnchor),
@@ -156,6 +159,14 @@ class TodayViewController: UIViewController {
     }
     
     private func setupBindings() {
+        viewModel.$currentCareRecipient
+            .receive(on: DispatchQueue.main)
+            .sink { [weak self] newRecipient in
+                guard let self = self else { return }
+                self.updateHeader(with: newRecipient)
+            }
+            .store(in: &cancellables)
+        
         viewModel.$waterQuantity
             .receive(on: DispatchQueue.main)
             .sink { [weak self] newValue in
@@ -173,6 +184,27 @@ class TodayViewController: UIViewController {
                 
             }
             .store(in: &cancellables)
+    }
+    
+    private func updateHeader(with careRecipient: CareRecipient?) {
+        guard let careRecipient = careRecipient else { return }
+
+        if let toolbar = profileToolbar {
+            toolbar.update(with: careRecipient)
+        } else {
+            let toolbar = ProfileToolbarContainer(careRecipient: careRecipient)
+            toolbar.translatesAutoresizingMaskIntoConstraints = false
+            toolbar.delegate = self
+            self.profileToolbar = toolbar
+            view.addSubview(toolbar)
+
+            NSLayoutConstraint.activate([
+                toolbar.topAnchor.constraint(equalTo: view.topAnchor),
+                toolbar.leadingAnchor.constraint(equalTo: view.leadingAnchor),
+                toolbar.trailingAnchor.constraint(equalTo: view.trailingAnchor),
+                toolbar.heightAnchor.constraint(equalToConstant: 250)
+            ])
+        }
     }
     
     private func addSections() {
@@ -217,94 +249,20 @@ class TodayViewController: UIViewController {
             
             switch config.type {
             case .basicNeeds:
-                let visibleItems = config.subitems?.filter(\.isVisible).map(\.title) ?? []
-                let title = StandardLabel(labelText: "Necessidades Básicas", labelFont: .sfPro, labelType: .title2, labelColor: .black10, labelWeight: .semibold)
+                let section = BasicNeedsSectionBuilder(
+                    viewModel: viewModel,
+                    delegate: delegate,
+                    feedingRecords: feedingRecords
+                ).build(from: config)
                 
-                let sectionStack = UIStackView()
-                sectionStack.axis = .vertical
-                sectionStack.spacing = 16
-                
-                if visibleItems.contains("Alimentação") {
-                    let feedingListView = FeedingRecordList()
-                    feedingListView.update(with: feedingRecords)
-                    
-                    let feedingCard = RecordCard(
-                        title: "Alimentação",
-                        iconName: "takeoutbag.and.cup.and.straw.fill",
-                        contentView: feedingListView
-                    )
-                    
-                    feedingCard.onAddButtonTap = { [weak self] in
-                        self?.delegate?.goTo(.recordFeeding)
-                    }
-                    
-                    sectionStack.addArrangedSubview(feedingCard)
-                }
-                
-                if visibleItems.contains("Hidratação") {
-                    let iconName: String
-                    if #available(iOS 17.0, *) {
-                        iconName = "waterbottle.fill"
-                    } else {
-                        iconName = "drop.fill"
-                    }
-                    
-                    let waterRecord = WaterRecord(currentQuantity: "\(viewModel.waterQuantity)", goalQuantity: "2L")
-                    waterRecord.onEditTap = { [weak self] in
-                        self?.delegate?.goTo(.recordHydration)
-                    }
-
-                    let hydrationCard = RecordCard(
-                        title: "Hidratação",
-                        iconName: iconName,
-                        showPlusButton: false,
-                        contentView: waterRecord,
-                        waterText: "\(Int(viewModel.waterMeasure))ml"
-                    )
-                    
-                    hydrationCard.onAddButtonTap = { [weak self] in
-                        self?.viewModel.saveHydrationRecord()
-                    }
-
-                    
-                    sectionStack.addArrangedSubview(hydrationCard)
-                }
-                
-                if visibleItems.contains("Fezes") || visibleItems.contains("Urina") {
-                    let bottomRow = UIStackView()
-                    bottomRow.axis = .horizontal
-                    bottomRow.spacing = 16
-                    bottomRow.distribution = .fillEqually
-                    
-                    if visibleItems.contains("Fezes") {
-                        let stoolCard = RecordCard(title: "Fezes", iconName: "toilet.fill", contentView: QuantityRecordContent(quantity: viewModel.todayStoolQuantity))
-                        stoolCard.onAddButtonTap = { [weak self] in
-                            self?.delegate?.goTo(.recordStool)
-                        }
-                        
-                        bottomRow.addArrangedSubview(stoolCard)
-                    }
-                    
-                    if visibleItems.contains("Urina") {
-                        let iconName: String
-                        if #available(iOS 17.0, *) {
-                            iconName = "drop.halffull"
-                        } else {
-                            iconName = "drop.fill"
-                        }
-                        
-                        let urineCard = RecordCard(title: "Urina", iconName: iconName, contentView: QuantityRecordContent(quantity: viewModel.todayUrineQuantity))
-                        urineCard.onAddButtonTap = { [weak self] in
-                            self?.delegate?.goTo(.recordUrine)
-                        }
-                        
-                        bottomRow.addArrangedSubview(urineCard)
-                    }
-                    sectionStack.addArrangedSubview(bottomRow)
-                }
-                
-                vStack.addArrangedSubview(title)
-                vStack.addArrangedSubview(sectionStack)
+                vStack.addArrangedSubview(StandardLabel(
+                    labelText: "Necessidades Básicas",
+                    labelFont: .sfPro,
+                    labelType: .title2,
+                    labelColor: .black10,
+                    labelWeight: .semibold
+                ))
+                vStack.addArrangedSubview(section)
                 
             case .tasks:
                 let taskHeader = TaskHeader()
@@ -319,79 +277,5 @@ class TodayViewController: UIViewController {
                 vStack.addArrangedSubview(symptomsCard)
             }
         }
-    }
-    
-    // MARK: - BUTTON ACTIONS
-    @objc private func didTapRecordHeartRate() {
-        delegate?.goTo(.recordHeartRate)
-    }
-    @objc private func didTapRecordGlycemia() {
-        delegate?.goTo(.recordGlycemia)
-    }
-    @objc private func didTapRecordBloodPressure() {
-        delegate?.goTo(.recordBloodPressure)
-    }
-    @objc private func didTapRecordTemperature() {
-        delegate?.goTo(.recordTemperature)
-    }
-    @objc private func didTapRecordSaturation() {
-        delegate?.goTo(.recordSaturation)
-    }
-    @objc private func didTapSeeAllMedication() {
-        delegate?.goTo(.seeAllMedication)
-    }
-    @objc private func didTapAddNewMedication() {
-        delegate?.goTo(.addNewMedication)
-    }
-    @objc private func didTapCheckMedicationDone() {
-        delegate?.goTo(.checkMedicationDone)
-    }
-    @objc private func didTapSeeAllEvents() {
-        delegate?.goTo(.seeAllEvents)
-    }
-    @objc private func didTapAddNewEvent() {
-        delegate?.goTo(.addNewEvent)
-    }
-}
-
-extension TodayViewController: SymptomsCardDelegate {
-    func tappedSymptom(_ symptom: Symptom, on card: SymptomsCard) {
-        delegate?.goToSymptomDetail(with: symptom)
-    }
-}
-
-extension TodayViewController: TaskCardDelegate {
-    func taskCardDidSelect(_ task: TaskInstance) {
-        onTaskSelected?(task)
-    }
-    
-    func taskCardDidMarkAsDone(_ task: TaskInstance) {
-        viewModel.markAsDone(task)
-    }
-}
-
-extension TodayViewController: TaskHeaderDelegate {
-    func didTapAddTask() {
-        delegate?.goTo(.addNewTask)
-    }
-    
-    func didTapSeeTask() {
-        delegate?.goTo(.seeAllTasks)
-    }
-}
-
-extension TodayViewController: IntercurrenceHeaderDelegate {
-    func didTapAddIntercurrence() {
-        delegate?.goTo(.addSymptom)
-    }
-}
-
-extension TodayViewController: ProfileToolbarDelegate {
-    func didTapProfileView() {
-        delegate?.goTo(.careRecipientProfile)
-    }
-    
-    func didTapEditCapsuleView() {
-        delegate?.goTo(.editSection)
     }
 }

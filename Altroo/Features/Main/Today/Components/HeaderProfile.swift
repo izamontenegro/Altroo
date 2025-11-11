@@ -9,32 +9,94 @@ import UIKit
 
 class HeaderProfile: UIView {
     
-    private let rawName: String
+    private var rawName: String {
+        didSet {
+            refreshUI()
+        }
+    }
     private var profileName: String { return formatName(rawName) }
     var careRecipient: CareRecipient?
     
-    private lazy var profileView: ProfileCareRecipient = {
-        let names = profileName.split(separator: " ")
-        let firstInitial = names.first?.prefix(1) ?? ""
-        let secondInitial = names.dropFirst().first?.prefix(1) ?? ""
-        let initials = "\(firstInitial)\(secondInitial)"
-        
-        let view = ProfileCareRecipient(name: String(initials), strokeColor: .pureWhite)
-        view.translatesAutoresizingMaskIntoConstraints = false
-        return view
+    // Subviews armazenadas como propriedades para poder atualizá-las depois
+    private let profileView = ProfileCareRecipient(name: "", strokeColor: .pureWhite)
+    private let nameLabel = StandardLabel(
+        labelText: "",
+        labelFont: .comfortaa,
+        labelType: .title2,
+        labelColor: .pureWhite,
+        labelWeight: .bold
+    )
+    private let subtitleLabel = StandardLabel(
+        labelText: "Cuidando de:",
+        labelFont: .comfortaa,
+        labelType: .subHeadline,
+        labelColor: .pureWhite,
+        labelWeight: .regular
+    )
+    
+    private lazy var contentStack: UIStackView = {
+        let stack = UIStackView(arrangedSubviews: [subtitleLabel, nameLabel])
+        stack.axis = .vertical
+        stack.spacing = 3
+        return stack
     }()
     
+    private lazy var finalLayout: UIStackView = {
+        let stack = UIStackView(arrangedSubviews: [profileView, contentStack])
+        stack.axis = .horizontal
+        stack.spacing = 12
+        stack.alignment = .center
+        stack.translatesAutoresizingMaskIntoConstraints = false
+        return stack
+    }()
+    
+    // MARK: - Init
     init(name: String, careRecipient: CareRecipient? = nil) {
         self.rawName = name
         self.careRecipient = careRecipient
         super.init(frame: .zero)
         setupLayout()
+        refreshUI() // inicializa visualmente
     }
     
     required init?(coder: NSCoder) {
         fatalError("init(coder:) has not been implemented")
     }
     
+    // MARK: - Layout
+    private func setupLayout() {
+        addSubview(finalLayout)
+        
+        profileView.translatesAutoresizingMaskIntoConstraints = false
+        NSLayoutConstraint.activate([
+            profileView.widthAnchor.constraint(equalToConstant: 70),
+            profileView.heightAnchor.constraint(equalToConstant: 70),
+            
+            finalLayout.topAnchor.constraint(equalTo: self.topAnchor, constant: 12),
+            finalLayout.leadingAnchor.constraint(equalTo: self.leadingAnchor, constant: 10),
+            finalLayout.trailingAnchor.constraint(equalTo: self.trailingAnchor, constant: -10),
+            finalLayout.bottomAnchor.constraint(equalTo: self.bottomAnchor, constant: -12)
+        ])
+    }
+    
+    // MARK: - Atualização de conteúdo
+    func update(name: String) {
+        rawName = name // dispara o didSet → refreshUI()
+    }
+    
+    private func refreshUI() {
+        let formatted = profileName
+        nameLabel.text = formatted
+        
+        // Atualiza as iniciais do círculo
+        let parts = formatted.split(separator: " ")
+        let firstInitial = parts.first?.prefix(1) ?? ""
+        let secondInitial = parts.dropFirst().first?.prefix(1) ?? ""
+        let initials = "\(firstInitial)\(secondInitial)"
+        profileView.updateInitials(String(initials))
+    }
+    
+    // MARK: - Helpers
     private func formatName(_ name: String) -> String {
         let components = name.split(separator: " ")
         guard !components.isEmpty else { return name }
@@ -50,54 +112,4 @@ class HeaderProfile: UIView {
         
         return "\(first) \(abbreviatedSecond)"
     }
-
-    func makeContentStack() -> UIStackView {
-        let name = StandardLabel(labelText: profileName, labelFont: .comfortaa, labelType: .title2, labelColor: .pureWhite, labelWeight: .bold)
-        let label = StandardLabel(labelText: "Cuidando de:", labelFont: .comfortaa, labelType: .subHeadline, labelColor: .pureWhite, labelWeight: .regular)
-        
-        let stack = UIStackView()
-        stack.axis = .vertical
-        stack.spacing = 3
-        stack.addArrangedSubview(label)
-        stack.addArrangedSubview(name)
-        
-        return stack
-    }
-    
-    func makeCombinedLayout() -> UIStackView {
-        let contentStack = makeContentStack()
-
-        let horizontalStack = UIStackView()
-        horizontalStack.axis = .horizontal
-        horizontalStack.spacing = 12
-        horizontalStack.alignment = .center
-        horizontalStack.distribution = .fill
-        horizontalStack.translatesAutoresizingMaskIntoConstraints = false
-        
-        horizontalStack.addArrangedSubview(profileView)
-        horizontalStack.addArrangedSubview(contentStack)
-        
-        return horizontalStack
-    }
-
-    private func setupLayout() {
-        let finalLayout = makeCombinedLayout()
-        addSubview(finalLayout)
-        
-        NSLayoutConstraint.activate([
-            profileView.widthAnchor.constraint(equalToConstant: 70),
-            profileView.heightAnchor.constraint(equalToConstant: 70)
-        ])
-
-        NSLayoutConstraint.activate([
-            finalLayout.topAnchor.constraint(equalTo: self.topAnchor, constant: 12),
-            finalLayout.leadingAnchor.constraint(equalTo: self.leadingAnchor, constant: 10),
-            finalLayout.trailingAnchor.constraint(equalTo: self.trailingAnchor, constant: -10),
-            finalLayout.bottomAnchor.constraint(equalTo: self.bottomAnchor, constant: -12)
-        ])
-    }
 }
-
-//#Preview {
-//    HeaderProfile(name: "Karlisson Oliveira")
-//}
