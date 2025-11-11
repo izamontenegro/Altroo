@@ -29,7 +29,7 @@ final class EditPersonalDataView: UIView, UITextFieldDelegate {
     private let scrollView = UIScrollView.make(direction: .vertical)
     private let contentStackView = UIStackView()
 
-    private let genderSegmentedControl = StandardSegmentedControl(items: ["Feminino", "Masculino"])
+    private let genderSegmentedControl = StandardSegmentedControl(items: ["F", "M"])
     private let nameTextField = StandardTextfield(placeholder: "Nome do assistido")
     private let addressTextField = StandardTextfield(placeholder: "Endereço do assistido")
 
