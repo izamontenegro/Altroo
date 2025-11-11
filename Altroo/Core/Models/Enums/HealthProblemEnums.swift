@@ -12,3 +12,24 @@ enum BedriddenStatus: String {
     case bedriddenMovable
     case bedriddenImmobile
 }
+
+enum BedriddenState {
+    case movement, noMovement
+    
+    var iconName: String {
+        switch self {
+        case .movement:
+            return "bed.double.fill"
+        case .noMovement:
+            return "bed.double.fill"
+        }
+    }
+    var iconCheck: String {
+        switch self {
+        case .movement:
+            return "checkmark.circle.fill"
+        case .noMovement:
+            return "xmark.circle.fill"
+        }
+    }
+}

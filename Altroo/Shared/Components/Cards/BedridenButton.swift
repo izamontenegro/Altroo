@@ -72,7 +72,7 @@ class BedriddenButton: UIButton {
         backgroundColor = UIColor(resource: .white70)
         layer.cornerRadius = 8
         clipsToBounds = true
-                
+        
         let content = makeContent()
         addSubview(content)
         
@@ -119,28 +119,6 @@ class BedriddenButton: UIButton {
         
         return stack
     }
-    
-    //TODO: Take this to the viewmodel
-    enum BedriddenState {
-        case movement, noMovement
-        
-        var iconName: String {
-            switch self {
-            case .movement:
-                return "bed.double.fill"
-            case .noMovement:
-                return "bed.double.fill"
-            }
-        }
-        var iconCheck: String {
-            switch self {
-            case .movement:
-                return "checkmark.circle.fill"
-            case .noMovement:
-                return "xmark.circle.fill"
-            }
-        }
-    }
 }
 
 import SwiftUI
@@ -154,11 +132,3 @@ private struct BedriddenButtonPreview: UIViewRepresentable {
     
     func updateUIView(_ uiView: BedriddenButton, context: Context) { }
 }
-
-//#Preview {
-//    let card = BedriddenButton(bedriddenState: .noMovement)
-//    
-//    return BedriddenButtonPreview(card: card)
-//        .frame(width: 177, height: 211)
-//        .padding()
-//}
