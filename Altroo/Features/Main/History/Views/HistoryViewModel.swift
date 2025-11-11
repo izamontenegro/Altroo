@@ -19,16 +19,16 @@ struct HistoryDaySection: Identifiable, Equatable {
 }
 
 final class HistoryViewModel: ObservableObject {
-
+    
     let userService: UserServiceProtocol
     let coreDataService: CoreDataService
     let historyService: HistoryServiceProtocol
-
+    
     @Published var sections: [HistoryDaySection] = []
     @Published private(set) var isLoading: Bool = false
     @Published private(set) var errorMessage: String?
     @Published var selectedItem: HistoryItem?
-
+    
     init(userService: UserServiceProtocol,
          coreDataService: CoreDataService,
          historyService: HistoryServiceProtocol) {
@@ -36,14 +36,12 @@ final class HistoryViewModel: ObservableObject {
         self.coreDataService = coreDataService
         self.historyService = historyService
     }
-
+    
     // MARK: - Accessors
-
     func currentCareRecipient() -> CareRecipient? {
         userService.fetchCurrentPatient()
     }
-
-
+    
     func reloadHistory(limit: Int? = nil) {
         guard let recipient = currentCareRecipient() else {
             sections = []
@@ -58,13 +56,13 @@ final class HistoryViewModel: ObservableObject {
         }
         isLoading = false
     }
-
+    
     func deleteHistory(_ item: HistoryItem) {
         guard let recipient = currentCareRecipient() else { return }
         historyService.deleteHistoryItem(item, from: recipient)
         reloadHistory()
     }
-
+    
     static func buildSections(from items: [HistoryItem]) -> [HistoryDaySection] {
         let cal = Calendar.current
         let grouped = Dictionary(grouping: items) { item -> Date in
@@ -72,7 +70,7 @@ final class HistoryViewModel: ObservableObject {
             let comps = cal.dateComponents([.year, .month, .day], from: base)
             return cal.date(from: comps) ?? base
         }
-
+        
         return grouped
             .map { (day, bucket) in
                 HistoryDaySection(

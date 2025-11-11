@@ -9,11 +9,11 @@ import UIKit
 import SwiftUI
 
 enum Tab: String, CaseIterable {
-    case /*patients, */report, today, history, settings
+    case patients, report, today, history, settings
     
     var tabIcon: String {
         switch self {
-//        case .patients: "person.fill"
+        case .patients: "person.fill"
         case .report: "chart.bar.xaxis.ascending.badge.clock"
         case .today: "heart.text.square.fill"
         case .history: "folder.fill"
@@ -23,7 +23,7 @@ enum Tab: String, CaseIterable {
     
     var tabName: String {
         switch self {
-//        case .patients: "Assistidos"
+        case .patients: "Assistidos"
         case .report: "Relatório"
         case .today: "Hoje"
         case .history: "Histórico"
@@ -107,11 +107,11 @@ struct CustomTabBar: View {
     
     func getIndex() -> Int {
         switch model.currentTab {
-//        case .patients: return 0
-        case .report: return 0
-        case .today: return 1
-        case .history: return 2
-        case .settings: return 3
+        case .patients: return 0
+        case .report: return 1
+        case .today: return 2
+        case .history: return 3
+        case .settings: return 4
         }
     }
 }

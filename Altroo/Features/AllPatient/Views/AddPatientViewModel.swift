@@ -161,4 +161,8 @@ extension AddPatientViewModel {
         guard validator.isEmpty(userName, error: &userNameError) else { return false }
         return true
     }
+    
+    func fetchUser() -> User?{
+        return userService.fetchUser()
+    }
 }

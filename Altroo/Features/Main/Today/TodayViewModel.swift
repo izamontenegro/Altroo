@@ -17,8 +17,8 @@ class TodayViewModel {
     let historyService: HistoryService
     var taskService: RoutineActivitiesFacade
     
-    var currentCareRecipient: CareRecipient?
-    
+    @Published var currentCareRecipient: CareRecipient?
+        
     @Published var todaySymptoms: [Symptom] = []
     @Published var periodTasks: [TaskInstance] = []
     
@@ -26,6 +26,8 @@ class TodayViewModel {
     @Published var todayUrineQuantity: Int = 0
     @Published var waterQuantity: Double = 0.0
     @Published var waterMeasure: Double = 0.0
+    
+    private var cancellables = Set<AnyCancellable>()
         
     init(careRecipientFacade: CareRecipientFacade, basicNeedsFacade: BasicNeedsFacade, userService: UserServiceProtocol, taskService: RoutineActivitiesFacade, coreDataService: CoreDataService, historyService: HistoryService) {
         self.careRecipientFacade = careRecipientFacade
@@ -36,11 +38,27 @@ class TodayViewModel {
         self.historyService = historyService
         
         fetchCareRecipient()
+        setupBindings()
+    }
+    
+    private func setupBindings() {
+        userService.currentPatientPublisher
+            .receive(on: DispatchQueue.main)
+            .sink { [weak self] newPatient in
+                guard let self = self else { return }
+                self.currentCareRecipient = newPatient
+                self.reloadDataForCurrentPatient()
+            }
+            .store(in: &cancellables)
+    }
+
+    private func reloadDataForCurrentPatient() {
         fetchAllTodaySymptoms()
         fetchAllPeriodTasks()
         fetchUrineQuantity()
         fetchStoolQuantity()
         fetchWaterMeasure()
+        fetchWaterQuantity()
     }
     
     private func fetchCareRecipient() {

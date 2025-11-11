@@ -17,7 +17,7 @@ class ProfileToolbarContainer: UIView {
     weak var delegate: ProfileToolbarDelegate?
 
     private lazy var headerProfile = HeaderProfile(name: careRecipient.personalData?.name ?? "Assistido")
-    private let careRecipient: CareRecipient
+    private var careRecipient: CareRecipient
     private let gradientView = GradientArcView()
     private let capsuleButton = CapsuleWithCircleView(
         text: "Editar Seções",
@@ -71,10 +71,20 @@ class ProfileToolbarContainer: UIView {
         let tapProfileGesture = UITapGestureRecognizer(target: self, action: #selector(didTapProfileView))
         headerProfile.isUserInteractionEnabled = true
         headerProfile.addGestureRecognizer(tapProfileGesture)
+        headerProfile.enablePressEffect()
         
-        let tapEditGesture = UITapGestureRecognizer(target: self, action: #selector(didTapEditCapsuleView))
-        capsuleButton.isUserInteractionEnabled = true
-        capsuleButton.addGestureRecognizer(tapEditGesture)
+        capsuleButton.enablePressEffect()
+
+        capsuleButton.onTap = { [weak self] in
+            DispatchQueue.main.asyncAfter(deadline: .now() + 0.1) {
+                self?.didTapEditCapsuleView()
+            }
+        }
+    }
+    
+    func update(with newCareRecipient: CareRecipient) {
+        self.careRecipient = newCareRecipient
+        headerProfile.update(name: newCareRecipient.personalData?.name ?? "Assistido")
     }
     
     @objc private func didTapProfileView() {

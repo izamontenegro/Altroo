@@ -11,45 +11,67 @@ final class AssociatePatientCoordinator: Coordinator {
     var childCoordinators: [Coordinator] = []
     var navigation: UINavigationController
     private let factory: AssociatePatientFactory
-
+    
     var onFinish: (() -> Void)?
-
+    
     init(navigation: UINavigationController, factory: AssociatePatientFactory) {
         self.navigation = navigation
         self.factory = factory
     }
-
+    
     func start() {
-        let vc = factory.makeAssociatePatientViewController(delegate: self)
+        let vc = factory.makeAssociatePatientViewController(delegate: self, context: .associatePatient)
         navigation.pushViewController(vc, animated: true)
     }
-
-    enum Destination { case patientForms, tutorialAdd, mainFlow }
-
+    
+    enum Destination { case patientForms, tutorialAdd, loading, mainFlow }
+    
     private func show(_ destination: Destination) {
         switch destination {
         case .patientForms:
+            // Go to the patient creation form.
             let child = PatientFormsCoordinator(factory: factory)
-                    add(child: child)
-
-                    child.onFinish = { [weak self, weak child] in
-                        if let child = child { self?.remove(child: child) }
-                        self?.navigation.dismiss(animated: true)
-                        self?.onFinish?()
-                    }
-
-                    child.start()
-
-                    presentSheet(
-                        child.navigation,
-                        from: navigation,
-                        detents: [.large()],
-                        grabber: true
-                    )
+            add(child: child)
+            
+            child.onFinish = { [weak self, weak child] in
+                if let child = child { self?.remove(child: child) }
+                self?.navigation.dismiss(animated: true)
+                self?.goToLoading()
+            }
+            
+            child.start()
+            
+            presentSheet(
+                child.navigation,
+                from: navigation,
+                detents: [.large()],
+                grabber: true
+            )
+            
         case .tutorialAdd:
+            // Go to the tutorial on adding a patient.
             let vc = factory.makeTutorialAddSheet()
             presentSheet(vc, from: navigation)
+            
+        case .loading:
+            // Go to the loading screen.
+            let vc = factory.makeLoading()
+            navigation.pushViewController(vc, animated: true)
+            
+            DispatchQueue.main.asyncAfter(deadline: .now() + 5.5) {
+                // Animation for the transition from the loading screen to the today screen
+                UIView.animate(withDuration: 0.4, delay: 0, options: [.curveEaseInOut], animations: {
+                    self.navigation.view.alpha = 0.0
+                }) { _ in
+                    self.onFinish?()
+                    UIView.animate(withDuration: 0.4) {
+                        self.navigation.view.alpha = 1.0
+                    }
+                }
+            }
+            
         case .mainFlow:
+            // Go to the Today screen (main navigation flow).
             onFinish?()
         }
     }
@@ -61,10 +83,5 @@ extension AssociatePatientCoordinator: AssociatePatientViewControllerDelegate {
     func goToComorbiditiesForms() {  }
     func goToShiftForms() {  }
     func goToTutorialAddSheet() { show(.tutorialAdd) }
-}
-
-extension AssociatePatientCoordinator: ShiftFormsViewControllerDelegate {
-    func shiftFormsDidFinish() {
-        onFinish?()
-    }
+    func goToLoading() { show(.loading) }
 }

@@ -55,13 +55,15 @@ final class CareRecipientProfileViewModel {
         func checkDate(_ v: Date?) { total += 1; if v != nil { filled += 1 } }
         func checkDouble(_ v: Double?) { total += 1; if let x = v, !x.isNaN { filled += 1 } }
         func checkArray(_ v: Any?) { total += 1; if let a = v as? [Any], !a.isEmpty { filled += 1 } }
+        func checkToManySet<T>(_ v: Set<T>?) { total += 1; if let set = v, !set.isEmpty { filled += 1 } }
 
         let personalData = recipient.personalData
         checkString(personalData?.name); checkString(personalData?.address); checkString(personalData?.gender)
         checkDate(personalData?.dateOfBirth); checkDouble(personalData?.height); checkDouble(personalData?.weight)
 
         let healthProblems = recipient.healthProblems
-        checkString(healthProblems?.observation); checkArray(healthProblems?.allergies); checkArray(healthProblems?.surgery)
+        checkString(healthProblems?.observation)
+        checkString(healthProblems?.allergies)
 
         let mentalState = recipient.mentalState
         checkString(mentalState?.cognitionState); checkString(mentalState?.emotionalState); checkString(mentalState?.memoryState); checkString(mentalState?.orientationState)
@@ -83,4 +85,3 @@ final class CareRecipientProfileViewModel {
         coreDataService.updateParticipantPermission(for: object, participant: participant, to: newPermission, completion: completion)
     }
 }
-

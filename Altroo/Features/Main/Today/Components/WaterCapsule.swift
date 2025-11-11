@@ -11,10 +11,14 @@ class WaterCapsule: InnerShadowView {
     
     var text: String
     
+    var onTap: (() -> Void)?
+    var isTapEnabled: Bool = true
+    
     init(frame: CGRect) {
         self.text = ""
         super.init(frame: frame, color: .teal50.withAlphaComponent(0.85))
         self.translatesAutoresizingMaskIntoConstraints = false
+        setupTapGesture()
     }
     
     convenience init(text: String) {
@@ -105,6 +109,17 @@ class WaterCapsule: InnerShadowView {
         ])
         
         stackView.addArrangedSubview(container)
+    }
+    
+    private func setupTapGesture() {
+        let tapGesture = UITapGestureRecognizer(target: self, action: #selector(handleTap))
+        addGestureRecognizer(tapGesture)
+        isUserInteractionEnabled = true
+    }
+    
+    @objc private func handleTap() {
+        guard isTapEnabled else { return }
+        onTap?()
     }
 }
 

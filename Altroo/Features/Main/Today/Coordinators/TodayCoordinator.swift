@@ -28,10 +28,12 @@ final class TodayCoordinator: Coordinator {
     
     private func makeViewController(for destination: TodayDestination) -> UIViewController? {
         switch destination {
+            
         case .recordFeeding:
         let vc = factory.makeMealRecordViewController() as! MealRecordViewController
         vc.delegate = self
         return vc
+            
         case .recordHydration:
             let vc = factory.makeHydrationRecordSheet()
             if let hydrationVC = vc as? HydrationRecordViewController {
@@ -45,29 +47,34 @@ final class TodayCoordinator: Coordinator {
                     }
                 }
             }
-
             return vc
+            
         case .recordUrine:
             let vc = factory.makeUrineRecordViewController() as! UrineRecordViewController
             vc.delegate = self
             return vc
+            
         case .recordStool:
             let vc = factory.makeStoolRecordViewController() as! StoolRecordViewController
             vc.delegate = self
             return vc
+            
         case .recordHeartRate: return factory.makeRecordHeartRateSheet()
         case .recordGlycemia: return factory.makerRecordGlycemiaSheet()
         case .recordBloodPressure: return factory.makeRecordBloodPressureSheet()
         case .recordTemperature: return factory.makeRecordTemperatureSheet()
         case .recordSaturation: return factory.makeRecordSaturationSheet()
+            
         case .seeAllTasks:
             return factory.makeAllTasksViewController { [weak self] task in
                 self?.openTaskDetail(for: task)
             }
+            
         case .addNewTask:
             let vc = factory.makeAddTaskViewController() as! AddTaskViewController
             vc.coordinator = self
             return vc
+            
         case .seeAllMedication: return factory.makeAllMedicationViewController()
         case .addNewMedication: return factory.makeAddMedicationViewController()
         case .seeAllEvents: return factory.makeAllEventsViewController()
@@ -77,6 +84,7 @@ final class TodayCoordinator: Coordinator {
             let vc = factory.makeAddSymptomViewController() as! AddSymptomViewController
             vc.coordinator = self
             return vc
+            
         case .careRecipientProfile:
             let profileCoord = ProfileCoordinator(navigation: navigation, factory: factory, associateFactory: factory)
             add(child: profileCoord); profileCoord.start()
@@ -89,8 +97,10 @@ final class TodayCoordinator: Coordinator {
             presentSheet(nav, from: navigation)
             medicationDetailCoord.start()
             return nil
+            
         case .taskDetail:
             return nil
+            
         case .symptomDetail:
             return nil
         }
@@ -127,13 +137,6 @@ final class TodayCoordinator: Coordinator {
 }
 
 extension TodayCoordinator: TodayViewControllerDelegate {
-    func goToCareRecipientProfileView() {
-        goTo(.careRecipientProfile)
-    }
-    
-    func goToEditSectionView() {
-        goTo(.editSection)
-    }
     
     func goTo(_ destination: TodayDestination) {
         guard let vc = makeViewController(for: destination) else { return }
@@ -198,24 +201,18 @@ extension TodayCoordinator: AddTaskNavigationDelegate {
 
 extension TodayCoordinator: UrineRecordNavigationDelegate {
     func didFinishAddingUrineRecord() {
-        if let todayVC = navigation.viewControllers.first {
-            navigation.setViewControllers([todayVC], animated: true)
-        }
+        navigation.popToRootViewController(animated: true)
     }
 }
 
 extension TodayCoordinator: StoolRecordNavigationDelegate {
     func didFinishAddingStoolRecord() {
-        if let todayVC = navigation.viewControllers.first {
-            navigation.setViewControllers([todayVC], animated: true)
-        }
+        navigation.popToRootViewController(animated: true)
     }
 }
 
 extension TodayCoordinator: MealRecordNavigationDelegate {
     func didFinishAddingMealRecord() {
-        if let todayVC = navigation.viewControllers.first {
-            navigation.setViewControllers([todayVC], animated: true)
-        }
+        navigation.popToRootViewController(animated: true)
     }
 }
