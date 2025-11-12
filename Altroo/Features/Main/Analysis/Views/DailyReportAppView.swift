@@ -132,9 +132,7 @@ struct DailyReportAppView: View {
     func loadPDF() {
         Task { @MainActor in
             let pdfCreator = PDFCreator()
-            pdfURL = pdfCreator.createPDF(
-                from: DailyReportPDFView(viewModel: viewModel)
-            )
+            pdfURL = pdfCreator.createDailyReportPDF(from: viewModel)
         }
     }
     

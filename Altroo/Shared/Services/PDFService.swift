@@ -1,56 +1,82 @@
 import SwiftUI
 import PDFKit
+import SwiftUI
+import PDFKit
 
 @MainActor
 struct PDFCreator {
- func createPDF<V: View>(
-        from view: V,
+    func createDailyReportPDF(
+        from viewModel: DailyReportViewModel,
         pageSize: CGSize = CGSize(width: 595, height: 842)
     ) -> URL? {
-        //measure SwiftUI view height off-screen
-        let hosting = UIHostingController(rootView: view)
-        let targetSize = hosting.sizeThatFits(
-            in: CGSize(width: pageSize.width, height: .infinity)
-        )
-        hosting.view.bounds = CGRect(origin: .zero, size: targetSize)
-        
-        //renderer for SwiftUI content
-        let renderer = ImageRenderer(
-            content: view
-                .frame(width: pageSize.width, height: targetSize.height)
-        )
         
         let url = FileManager.default.temporaryDirectory.appendingPathComponent("report.pdf")
         UIGraphicsBeginPDFContextToFile(url.path, CGRect(origin: .zero, size: pageSize), nil)
+        UIGraphicsBeginPDFPage()
         
-        let totalHeight = targetSize.height
-        let pageHeight = pageSize.height
+        guard let context = UIGraphicsGetCurrentContext() else { return nil }
         
-        var currentY: CGFloat = 0
+        let margin: CGFloat = 24
+        let usableHeight = pageSize.height - margin * 2
+        var currentY: CGFloat = margin
         
-        while currentY < totalHeight {
-            UIGraphicsBeginPDFPage()
-            guard let context = UIGraphicsGetCurrentContext() else { break }
+        func render<V: View>(_ view: V, maxWidth: CGFloat) {
+            //measure view height
+            let hosting = UIHostingController(rootView: view)
+            let targetSize = hosting.sizeThatFits(in: CGSize(width: maxWidth, height: .infinity))
             
-            //flip context once to match SwiftUI coordinate system
+            //new page if it doesnt fit
+            if currentY + targetSize.height > usableHeight + margin {
+                UIGraphicsBeginPDFPage()
+                currentY = margin
+            }
+            
+            //renders content
+            let renderer = ImageRenderer(content: view.frame(width: maxWidth, height: targetSize.height))
+            
             context.saveGState()
-            context.translateBy(x: 0, y: pageSize.height)
+            context.translateBy(x: margin, y: currentY + targetSize.height)
             context.scaleBy(x: 1, y: -1)
-            
-            //draw the portion that starts *from the top* of the document
-            let pageOriginY = totalHeight - currentY - pageHeight
-            context.translateBy(x: 0, y: -max(pageOriginY, 0))
             
             renderer.render { _, renderContext in
                 renderContext(context)
             }
             
             context.restoreGState()
-            
-            currentY += pageHeight
+            currentY += targetSize.height + 16
+        }
+        
+        let contentWidth = pageSize.width - margin * 2
+        
+        // HEADER
+        render(
+            ExportableReportHeader(
+                title: "Relatório Diário",
+                registerStartDate: viewModel.startDate,
+                registerStartTime: viewModel.startTime,
+                registerEndTime: viewModel.endTime,
+                exportDate: .now
+            ),
+            maxWidth: contentWidth
+        )
+        
+        // COUNT
+        render(ReportCountView(viewModel: viewModel), maxWidth: contentWidth)
+        
+        // CATEGORIES
+        for category in viewModel.nonEmptyCategories {
+            render(
+                CategoryReportSection(
+                    categoryName: category.name,
+                    categoryIconName: category.icon,
+                    reports: category.reports
+                ),
+                maxWidth: contentWidth
+            )
         }
         
         UIGraphicsEndPDFContext()
         return url
     }
 }
+
