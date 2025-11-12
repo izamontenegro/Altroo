@@ -13,6 +13,8 @@ final class HydrationRecordViewController: GradientNavBarViewController {
     
     private var amountButtons: [UIButton] = []
     private var customValueField: UITextField!
+    private var hydrationTargetValueField: UITextField!
+
     private var confirmationButton: StandardConfirmationButton!
     
     var onDismiss: (() -> Void)?
@@ -47,10 +49,11 @@ final class HydrationRecordViewController: GradientNavBarViewController {
         let header = StandardHeaderView(title: "Registrar Hidratação", subtitle: "Registre a quantidade ingerida de líquidos")
         let amountSection = makeAmountSection()
         let customSection = makeCustomValueSection()
+        let targetSection = makeHydrationTargetValueSection()
         
         confirmationButton = configureConfirmationButton()
         
-        let contentStack = UIStackView(arrangedSubviews: [header, amountSection, customSection])
+        let contentStack = UIStackView(arrangedSubviews: [header, amountSection, customSection, targetSection])
         contentStack.axis = .vertical
         contentStack.spacing = 24
         contentStack.translatesAutoresizingMaskIntoConstraints = false
@@ -126,6 +129,27 @@ final class HydrationRecordViewController: GradientNavBarViewController {
     private func makeCustomValueSection() -> UIView {
         let title = StandardLabel(
             labelText: "Valor Personalizado",
+            labelFont: .sfPro,
+            labelType: .callOut,
+            labelColor: .black10,
+            labelWeight: .semibold
+        )
+
+        let textField = StandardTextfield()
+        textField.placeholder = "ml"
+        textField.keyboardType = .numberPad
+        textField.addTarget(self, action: #selector(customValueChanged(_:)), for: .editingChanged)
+        self.customValueField = textField
+
+        let stack = UIStackView(arrangedSubviews: [title, textField])
+        stack.axis = .vertical
+        stack.spacing = 8
+        return stack
+    }
+    
+    private func makeHydrationTargetValueSection() -> UIView {
+        let title = StandardLabel(
+            labelText: "Meta",
             labelFont: .sfPro,
             labelType: .callOut,
             labelColor: .black10,
