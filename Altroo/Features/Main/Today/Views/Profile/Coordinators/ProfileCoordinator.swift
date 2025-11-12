@@ -75,16 +75,6 @@ extension ProfileCoordinator: ProfileViewControllerDelegate {
         
         sharingCoordinator.presentSharingSheet()
     }
-    
-    func openChangeCareRecipientSheet() {
-        let vc = factory.makeChangeCareRecipientViewController(delegate: self)
-        vc.modalPresentationStyle = .pageSheet
-        if let sheet = vc.sheetPresentationController {
-            sheet.detents = [.medium()]
-            sheet.prefersGrabberVisible = true
-        }
-        navigation.present(vc, animated: true)
-    }
 }
 
 extension ProfileCoordinator {

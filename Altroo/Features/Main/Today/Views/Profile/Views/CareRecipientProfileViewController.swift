@@ -9,7 +9,6 @@ import UIKit
 import CloudKit
 
 protocol ProfileViewControllerDelegate: AnyObject {
-    func openChangeCareRecipientSheet()
     func openShareCareRecipientSheet(_ careRecipient: CareRecipient)
     func goToMedicalRecordViewController()
     func careRecipientProfileWantsChangeAssociate(_ controller: UIViewController)
@@ -152,20 +151,13 @@ final class CareRecipientProfileViewController: GradientNavBarViewController {
     }
     
     private func setupBottomButtons(below lastView: UIView) {
-        let swapButton = makeFilledButton(
-            icon: UIImage(systemName: "arrow.2.squarepath"),
-            title: "Trocar Perfil de Assistido",
-            action: #selector(didTapChangeCareRecipientButton)
-        )
-        swapButton.enablePressAnimation()
-        
         let endButton = makeOutlineButton(
             title: "Encerrar Cuidado",
             action: #selector(didTapEndCareButton)
         )
         endButton.enablePressAnimation()
         
-        let buttonsStack = UIStackView(arrangedSubviews: [swapButton, endButton])
+        let buttonsStack = UIStackView(arrangedSubviews: [endButton])
         buttonsStack.axis = .vertical
         buttonsStack.spacing = 12
         buttonsStack.translatesAutoresizingMaskIntoConstraints = false
@@ -220,7 +212,7 @@ final class CareRecipientProfileViewController: GradientNavBarViewController {
         let button = UIButton(type: .system)
         button.backgroundColor = .clear
         button.layer.cornerRadius = 23
-        button.layer.borderWidth = 2
+        button.layer.borderWidth = 3
         button.layer.borderColor = UIColor.teal10.cgColor
         button.heightAnchor.constraint(equalToConstant: 46).isActive = true
         button.addTarget(self, action: action, for: .touchUpInside)
@@ -253,7 +245,6 @@ final class CareRecipientProfileViewController: GradientNavBarViewController {
         delegate?.goToMedicalRecordViewController()
     }
     
-    @objc private func didTapChangeCareRecipientButton() { delegate?.openChangeCareRecipientSheet() }
     @objc private func didTapShareCareRecipientButton() {
         guard let careRecipient = viewModel.currentCareRecipient() else { return }
         delegate?.openShareCareRecipientSheet(careRecipient)
@@ -267,7 +258,7 @@ final class CareRecipientProfileViewController: GradientNavBarViewController {
         )
         
         let confirmAction = UIAlertAction(title: "Encerrar", style: .destructive) { [weak self] _ in
-            guard let self = self else { return } 
+            guard let self = self else { return }
             self.viewModel.finishCare()
             self.delegate?.careRecipientProfileWantsChangeAssociate(self)
         }
@@ -279,9 +270,4 @@ final class CareRecipientProfileViewController: GradientNavBarViewController {
         
         present(alertController, animated: true, completion: nil)
     }
-    //    @objc private func didTapEditCaregiverButton() { delegate?.openEditCaregiversSheet() }
 }
-
-//#Preview {
-//    UINavigationController(rootViewController: CareRecipientProfileViewController()
-//}
