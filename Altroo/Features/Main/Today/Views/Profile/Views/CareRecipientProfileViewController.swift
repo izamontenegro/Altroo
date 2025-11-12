@@ -80,6 +80,7 @@ final class CareRecipientProfileViewController: GradientNavBarViewController {
         header.isUserInteractionEnabled = true
         let tap = UITapGestureRecognizer(target: self, action: #selector(didTapHeader))
         header.addGestureRecognizer(tap)
+        header.enableHighlightEffect()
         
         setupCaregiversSection(below: header)
     }
@@ -94,7 +95,12 @@ final class CareRecipientProfileViewController: GradientNavBarViewController {
         )
         
         let inviteButton = CapsuleIconView(iconName: "paperplane", text: "Convidar cuidador")
-        addTap(to: inviteButton, action: #selector(didTapShareCareRecipientButton))
+        inviteButton.enablePressEffect()
+        inviteButton.onTap = { [weak self] in
+            DispatchQueue.main.asyncAfter(deadline: .now() + 0.1) {
+                self?.didTapShareCareRecipientButton()
+            }
+        }
         
         let topStack = UIStackView(arrangedSubviews: [titleLabel, inviteButton])
         topStack.axis = .horizontal
@@ -152,20 +158,13 @@ final class CareRecipientProfileViewController: GradientNavBarViewController {
     }
     
     private func setupBottomButtons(below lastView: UIView) {
-        let swapButton = makeFilledButton(
-            icon: UIImage(systemName: "arrow.2.squarepath"),
-            title: "Trocar Perfil de Assistido",
-            action: #selector(didTapChangeCareRecipientButton)
-        )
-        swapButton.enablePressAnimation()
-        
         let endButton = makeOutlineButton(
             title: "Encerrar Cuidado",
             action: #selector(didTapEndCareButton)
         )
         endButton.enablePressAnimation()
-        
-        let buttonsStack = UIStackView(arrangedSubviews: [swapButton, endButton])
+
+        let buttonsStack = UIStackView(arrangedSubviews: [endButton])
         buttonsStack.axis = .vertical
         buttonsStack.spacing = 12
         buttonsStack.translatesAutoresizingMaskIntoConstraints = false

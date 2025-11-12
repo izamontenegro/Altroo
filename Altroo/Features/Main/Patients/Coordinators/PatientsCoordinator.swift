@@ -71,29 +71,9 @@ final class PatientsCoordinator: Coordinator {
             }
             
         case .mainFlow:
-            if let tabBar = navigation.tabBarController as? AppTabBarController {
-                UIView.transition(
-                    with: tabBar.view,
-                    duration: 0.35,
-                    options: [.transitionCrossDissolve, .curveEaseInOut],
-                    animations: {
-                        tabBar.selectedIndex = 2
-                        tabBar.model.currentTab = .today
-                    },
-                    completion: { _ in
-                        DispatchQueue.main.asyncAfter(deadline: .now() + 0.1) {
-                            if let todayNav = tabBar.viewControllers?[2] as? UINavigationController,
-                               let todayVC = todayNav.viewControllers.first(where: { $0 is TodayViewController }) as? TodayViewController {
-                                todayVC.didTapProfileView()
-                            }
-                        }
-                        self.onFinish?()
-                    }
-                )
-            } else {
-                onFinish?()
-            }
-
+            let profileCoord = ProfileCoordinator(navigation: navigation, factory: factory, associateFactory: factory)
+            add(child: profileCoord);
+            profileCoord.start()
         }
     }
 }
@@ -107,10 +87,10 @@ extension PatientsCoordinator: AssociatePatientViewControllerDelegate {
     func goToLoading() { show(.loading) }
 }
 
-
 extension PatientsCoordinator: ShiftFormsViewControllerDelegate {
     func shiftFormsDidFinish() {
         onFinish?()
     }
 }
+
 
