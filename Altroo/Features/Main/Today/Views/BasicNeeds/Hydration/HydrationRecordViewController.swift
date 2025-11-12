@@ -203,6 +203,12 @@ final class HydrationRecordViewController: GradientNavBarViewController {
         viewModel.saveHydrationMeasure()
         dismiss(animated: true)
     }
+    
+    @objc private func saveHydrationTarget() {
+        viewModel.saveHydrationTarget()
+        dismiss(animated: true)
+    }
+
 
     private func updateConfirmationButtonState(enabled: Bool) {
         confirmationButton.isUserInteractionEnabled = enabled
