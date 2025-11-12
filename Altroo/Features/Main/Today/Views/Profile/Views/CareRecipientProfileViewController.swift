@@ -252,7 +252,7 @@ final class CareRecipientProfileViewController: GradientNavBarViewController {
     
     @objc private func didTapEndCareButton() {
         let alertController = UIAlertController(
-            title: "Tem certeza?",
+            title: "Deseja encerrar o acompanhamento de \(viewModel.getCurrentCareRecipientName())?",
             message: "Essa ação é irreversível.",
             preferredStyle: .alert
         )
