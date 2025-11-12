@@ -8,7 +8,7 @@
 import UIKit
 import SwiftUI
 
-class AnalysisViewController: GradientHeader {
+class ReportViewController: GradientHeader {
     let viewModel: DailyReportViewModel
     
     private var hostingController: UIHostingController<AnyView>?

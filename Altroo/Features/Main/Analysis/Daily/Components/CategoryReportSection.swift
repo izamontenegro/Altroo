@@ -48,17 +48,17 @@ struct CategoryReportSection: View {
         if let time = item.base.reportTime, let author = item.base.reportAuthor {
             switch item {
             case .stool(let stoolRecord):
-                DailyReportItem(title: item.base.reportTitle, stoolColoration: stoolRecord.colorType, observation: item.base.reportNotes, time: time, author: author)
+                ReportItemRow(title: item.base.reportTitle, stoolColoration: stoolRecord.colorType, observation: item.base.reportNotes, time: time, author: author)
             case .urine(let urineRecord):
-                DailyReportItem(title: item.base.reportTitle, urineColoration: urineRecord.colorType, observation: item.base.reportNotes, time: time, author: author)
+                ReportItemRow(title: item.base.reportTitle, urineColoration: urineRecord.colorType, observation: item.base.reportNotes, time: time, author: author)
             case .feeding(let feedingRecord):
-                DailyReportItem(title: item.base.reportTitle, reception: feedingRecord.amountEaten, observation: item.base.reportNotes, time: time, author: author)
+                ReportItemRow(title: item.base.reportTitle, reception: feedingRecord.amountEaten, observation: item.base.reportNotes, time: time, author: author)
             case .hydration(let hydrationRecord):
-                DailyReportItem(title: item.base.reportTitle, observation: nil, time: time, author: author)
+                ReportItemRow(title: item.base.reportTitle, observation: nil, time: time, author: author)
             case .task(let taskInstance):
-                DailyReportItem(title: item.base.reportTitle, observation: item.base.reportNotes, time: time, author: author)
+                ReportItemRow(title: item.base.reportTitle, observation: item.base.reportNotes, time: time, author: author)
             case .symptom(let symptom):
-                DailyReportItem(title: item.base.reportTitle, observation: item.base.reportNotes, time: .now, author: author)
+                ReportItemRow(title: item.base.reportTitle, observation: item.base.reportNotes, time: time, author: author)
             }
         }
     }

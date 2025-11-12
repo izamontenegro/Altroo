@@ -1,5 +1,5 @@
 //
-//  DailyReportItem.swift
+//  ReportItemRow.swift
 //  Altroo
 //
 //  Created by Raissa Parente on 04/11/25.
@@ -7,7 +7,7 @@
 
 import SwiftUI
 
-struct DailyReportItem: View {
+struct ReportItemRow: View {
     let title: String
     
     let stoolColoration: StoolColorsEnum?
