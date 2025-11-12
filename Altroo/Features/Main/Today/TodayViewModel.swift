@@ -186,6 +186,8 @@ class TodayViewModel {
 
     func getWaterTarget() -> Double {
         guard let careRecipient = currentCareRecipient else { return 0 }
+        print(careRecipientFacade.getWaterTarget(careRecipient))
+
         return careRecipientFacade.getWaterTarget(careRecipient)
     }
     

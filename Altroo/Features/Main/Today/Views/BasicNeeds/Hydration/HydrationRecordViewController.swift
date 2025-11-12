@@ -34,6 +34,9 @@ final class HydrationRecordViewController: GradientNavBarViewController {
         setupLayout()
         bindViewModel()
         setupTapToDismiss()
+
+        viewModel.loadTargetValue()
+        hydrationTargetValueField.text = viewModel.targetValue > 0 ? String(Int(viewModel.targetValue)) : nil
     }
     
     override func viewDidDisappear(_ animated: Bool) {
@@ -159,8 +162,8 @@ final class HydrationRecordViewController: GradientNavBarViewController {
         let textField = StandardTextfield()
         textField.placeholder = "ml"
         textField.keyboardType = .numberPad
-        textField.addTarget(self, action: #selector(customValueChanged(_:)), for: .editingChanged)
-        self.customValueField = textField
+        textField.addTarget(self, action: #selector(targetValueChanged(_:)), for: .editingChanged)
+        self.hydrationTargetValueField = textField
 
         let stack = UIStackView(arrangedSubviews: [title, textField])
         stack.axis = .vertical
@@ -170,7 +173,7 @@ final class HydrationRecordViewController: GradientNavBarViewController {
 
     private func configureConfirmationButton() -> StandardConfirmationButton {
         let button = StandardConfirmationButton(title: "Salvar")
-        button.addTarget(self, action: #selector(saveHydrationMeasure), for: .touchUpInside)
+        button.addTarget(self, action: #selector(save), for: .touchUpInside)
         button.translatesAutoresizingMaskIntoConstraints = false
         return button
     }
@@ -198,7 +201,16 @@ final class HydrationRecordViewController: GradientNavBarViewController {
     @objc private func customValueChanged(_ sender: UITextField) {
         viewModel.customValue = Double(sender.text ?? "") ?? 0
     }
-
+    
+    @objc private func save() {
+        saveHydrationTarget()
+        saveHydrationMeasure()
+    }
+    
+    @objc private func targetValueChanged(_ sender: UITextField) {
+        viewModel.targetValue = Double(sender.text ?? "") ?? 0
+    }
+    
     @objc private func saveHydrationMeasure() {
         viewModel.saveHydrationMeasure()
         dismiss(animated: true)
@@ -229,10 +241,11 @@ final class HydrationRecordViewController: GradientNavBarViewController {
 
     // MARK: - Combine Binding
     private func bindViewModel() {
-        Publishers.CombineLatest(viewModel.$selectedAmount, viewModel.$customValue)
-            .sink { [weak self] amount, value in
-                let valid = (amount != nil && (amount != .custom || value > 0))
-                self?.updateConfirmationButtonState(enabled: valid)
+        Publishers.CombineLatest3(viewModel.$selectedAmount, viewModel.$customValue, viewModel.$targetValue)
+            .sink { [weak self] amount, custom, target in
+                let measureValid = (amount != nil && (amount != .custom || custom > 0))
+                let targetValid = target > 0
+                self?.updateConfirmationButtonState(enabled: measureValid || targetValid)
             }
             .store(in: &cancellables)
     }
