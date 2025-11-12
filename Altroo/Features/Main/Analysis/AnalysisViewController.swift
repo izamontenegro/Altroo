@@ -15,7 +15,7 @@ class AnalysisViewController: GradientHeader {
     
     private lazy var reportPicker: StandardSegmentedControl = {
         let sc = StandardSegmentedControl(
-            items: ["Diário", "Mensal"],
+            items: ["Diário", "Periódico"],
             height: 35,
             backgroundColor: UIColor(resource: .white80),
             selectedColor: UIColor(resource: .blue30),
@@ -29,7 +29,7 @@ class AnalysisViewController: GradientHeader {
         let action1 = UIAction(title: "Diário", handler: { _ in
             self.setSwiftUIView(DailyReportAppView(viewModel: self.viewModel))
         })
-        let action2 = UIAction(title: "Mensal", handler: {  _ in
+        let action2 = UIAction(title: "Periódico", handler: {  _ in
             self.setSwiftUIView(IntervalReportAppView())
         })
         sc.setAction(action1, forSegmentAt: 0)
@@ -47,7 +47,7 @@ class AnalysisViewController: GradientHeader {
     }
     
     override func viewDidLoad() {
-        setNavbarItems(title: "Relatório", subtitle: "Preencha o período desejado e acompanhe de forma centralizada os registros feitos no aplicativo.", view: reportPicker)
+        setNavbarItems(title: "Relatório", subtitle: "Selecione o período e veja um resumo dos seus registros, podendo exportar em PDF para compartilhar.", view: reportPicker)
         super.viewDidLoad()
         view.backgroundColor = .blue70
         
@@ -83,6 +83,4 @@ class AnalysisViewController: GradientHeader {
                hosting.didMove(toParent: self)
            }
        }
-    
-
 }

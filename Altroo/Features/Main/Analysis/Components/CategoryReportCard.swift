@@ -49,7 +49,7 @@ struct CategoryReportCard: View {
                             configureItem(report)
                             
                             if index < reports.count - 1 {
-                                    Divider()
+                                Divider()
                             }
                         }
                     }
@@ -57,13 +57,13 @@ struct CategoryReportCard: View {
                 }
             }
             .background(.pureWhite)
-
+            
         }
         .clipShape(
             RoundedRectangle(cornerRadius: 10)
         )
         .animation(.spring(response: 0.35, dampingFraction: 0.8), value: isOpen)
-
+        
     }
     
     @ViewBuilder

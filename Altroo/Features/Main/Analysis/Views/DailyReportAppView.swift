@@ -9,11 +9,10 @@ import SwiftUI
 
 struct DailyReportAppView: View {
     @ObservedObject var viewModel: DailyReportViewModel
-    
     @State private var pdfURL: URL?
     
     var body: some View {
-        VStack(alignment: .leading, spacing: 16) {
+        ScrollView {
             //SUBHEADER
             HStack(alignment: .bottom) {
                 ReportTimeSection(text: "Data", date: $viewModel.startDate, type: .date)
@@ -35,7 +34,7 @@ struct DailyReportAppView: View {
             .onChange(of: viewModel.startTime) { _ in viewModel.feedArrays() }
             .onChange(of: viewModel.endTime) { _ in viewModel.feedArrays() }
             
-            ScrollView {
+            VStack(alignment: .leading, spacing: 16) {
                 VStack(alignment: .leading) {
                     //TITLE
                     HStack {
@@ -55,7 +54,7 @@ struct DailyReportAppView: View {
                         } else {
                             CircleCapsule(text: "Exportar", icon: "square.and.arrow.up")
                         }
-
+                        
                     }
                     
                     //COUNT
@@ -66,12 +65,15 @@ struct DailyReportAppView: View {
                             VStack(alignment: .leading) {
                                 Text("\(viewModel.combinedRecords.count)")
                                     .font(.largeTitle)
+                                    .padding(.horizontal, 12)
+                                    .padding(.top, 10)
+
                                 Text("Registros")
                                     .font(.callout)
                                     .fixedSize(horizontal: true, vertical: false)
+                                    .padding(.horizontal, 12)
                             }
-                            //                        .padding(Layout.verySmallSpacing)
-                            .frame(minWidth: 120, minHeight: 100, alignment: .top)
+                            .frame(minWidth: 120, minHeight: 100, alignment: .topLeading)
                             .fontDesign(.rounded)
                             .foregroundStyle(.black10)
                             .background(.pureWhite)
@@ -163,33 +165,7 @@ struct DailyReportAppView: View {
             Capsule()
                 .frame(height: 34)
                 .foregroundStyle(.blue30)
-
         }
-
-//        
-//        Capsule()
-//            .foregroundStyle(.blue30)
-//            .overlay {
-//                HStack {
-//                    Text(text)
-//                        .fontDesign(.rounded)
-//                        .font(.system(size: 15))
-//                        .foregroundStyle(.pureWhite)
-//                        .padding(4)
-//
-////                    Spacer()
-//                    
-//                    Circle()
-//                        .foregroundStyle(.pureWhite)
-//                        .overlay {
-//                            Image(systemName: icon)
-//                                .foregroundStyle(.blue30)
-//                        }
-//                        .padding(.vertical, 4)
-//                        .padding(.trailing, 1)
-//
-//                }
-//            }
     }
 }
 

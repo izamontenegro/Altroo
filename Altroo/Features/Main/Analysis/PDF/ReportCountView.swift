@@ -19,19 +19,19 @@ struct ReportCountView: View {
                 VStack(alignment: .leading) {
                     Text("\(viewModel.combinedRecords.count)")
                         .font(.largeTitle)
+                        .padding(.horizontal, 12)
+                        .padding(.top, 10)
+                    
                     Text("Registros")
                         .font(.callout)
                         .fixedSize(horizontal: true, vertical: false)
+                        .padding(.horizontal, 12)
                 }
-                .padding(Layout.standardSpacing)
-                .frame(minWidth: 150, minHeight: 100, alignment: .top)
+//                .padding(Layout.standardSpacing)
+                .frame(minWidth: 150, minHeight: 100, alignment: .topLeading)
                 .fontDesign(.rounded)
                 .foregroundStyle(.black10)
-                .background(.pureWhite)
-                .clipShape(RoundedRectangle(cornerRadius: 10))
-                .border(.red)
             }
-            .border(.green)
             
             VStack(alignment: .leading) {
                 ReportSectionTitle(text: "Registros por cuidador")
@@ -46,8 +46,6 @@ struct ReportCountView: View {
                 .frame(maxWidth: .infinity, minHeight: 100, alignment: .top)
                 .fontDesign(.rounded)
                 .foregroundStyle(.black10)
-                .background(.pureWhite)
-                .clipShape(RoundedRectangle(cornerRadius: 10))
             }
             .layoutPriority(1)
         }
