@@ -130,7 +130,6 @@ class RoutineTaskService: RoutineTaskServiceProtocol {
 
     func deleteInstanceRoutineTask(_ instance: TaskInstance) {
         guard let context = instance.managedObjectContext else { return }
-            
         context.delete(instance)
     }
 }

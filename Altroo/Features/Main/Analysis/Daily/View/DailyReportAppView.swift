@@ -151,11 +151,11 @@ struct DailyReportAppView: View {
 
                         ForEach(
                             viewModel.nonEmptyCategories,
-                            id: \.name
+                            id: \.type.displayText
                         ) { category in
                             CategoryReportCard(
-                                categoryName: category.name,
-                                categoryIconName: category.icon,
+                                categoryName: category.type.displayText,
+                                categoryIconName: category.type.iconName,
                                 reports: category.reports
                             )
                         }

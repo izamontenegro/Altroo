@@ -8,8 +8,7 @@
 import Foundation
 
 struct CategoryInfo {
-    let name: String
-    let icon: String
+    let type: ReportItemType
     let reports: [ReportItem]
 }
 
@@ -29,15 +28,16 @@ class DailyReportViewModel: ObservableObject {
     @Published var symptomRecords: [ReportItem] = []
     
     var nonEmptyCategories: [CategoryInfo] {
-           [
-               CategoryInfo(name: "Urina", icon: "drop.halffull", reports: urineRecords),
-               CategoryInfo(name: "Alimentação", icon: "takeoutbag.and.cup.and.straw.fill", reports: feedingRecords),
-               CategoryInfo(name: "Hidratação", icon: "waterbottle.fill", reports: hydrationRecords),
-               CategoryInfo(name: "Intercorrência", icon: "exclamationmark.triangle.fill", reports: symptomRecords),
-               CategoryInfo(name: "Tarefas", icon: "newspaper", reports: tasksRecords)
-           ]
-           .filter { !$0.reports.isEmpty }
-       }
+        [
+            CategoryInfo(type: .stool, reports: stoolRecords),
+            CategoryInfo(type: .urine, reports: urineRecords),
+            CategoryInfo(type: .feeding, reports: feedingRecords),
+            CategoryInfo(type: .hydration, reports: hydrationRecords),
+            CategoryInfo(type: .symptom, reports: symptomRecords),
+            CategoryInfo(type: .task, reports: tasksRecords)
+        ]
+            .filter { !$0.reports.isEmpty }
+    }
     
     //MARK: - FILTERS
     @Published var startDate: Date = Date()
@@ -52,7 +52,7 @@ class DailyReportViewModel: ObservableObject {
         guard let fullStart = combine(date: startDate, withTimeFrom: startTime) else {
             return Date.now...Date.now
         }
-
+        
         // periodical report
         if let endDate,
            let fullEnd = combine(date: endDate, withTimeFrom: endTime) {
@@ -64,9 +64,9 @@ class DailyReportViewModel: ObservableObject {
             }
             return fullStart...fallbackEnd
         }
-                
+        
     }
-
+    
     init(basicNeedsFacade: BasicNeedsFacade, userService: UserServiceProtocol, careRecipientFacade: CareRecipientFacade, routineActivitiesFacade: RoutineActivitiesFacade) {
         self.basicNeedsFacade = basicNeedsFacade
         self.userService = userService
@@ -82,7 +82,7 @@ class DailyReportViewModel: ObservableObject {
     
     func feedArrays() {
         guard let currentCareRecipient else { return }
-                
+        
         hydrationRecords = basicNeedsFacade.fetchHydrations(for: currentCareRecipient)
             .filter { timeRange.contains($0.reportTime ?? .now)}
             .map { .hydration($0) }
@@ -90,11 +90,11 @@ class DailyReportViewModel: ObservableObject {
         feedingRecords = basicNeedsFacade.fetchFeedings(for: currentCareRecipient)
             .filter { timeRange.contains($0.reportTime ?? .now)}
             .map { .feeding($0) }
-
+        
         stoolRecords = basicNeedsFacade.fetchStools(for: currentCareRecipient)
             .filter { timeRange.contains($0.reportTime ?? .now)}
             .map { .stool($0) }
-
+        
         urineRecords = basicNeedsFacade.fetchUrines(for: currentCareRecipient)
             .filter { timeRange.contains($0.reportTime ?? .now)}
             .map { .urine($0) }
@@ -103,7 +103,7 @@ class DailyReportViewModel: ObservableObject {
             .filter { $0.isDone }
             .filter { timeRange.contains($0.reportTime ?? .now)}
             .map { .task($0) }
-
+        
         symptomRecords = careRecipientFacade.fetchAllSymptoms(from: currentCareRecipient)
             .filter { timeRange.contains($0.reportTime ?? .now)}
             .map { .symptom($0) }

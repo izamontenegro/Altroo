@@ -19,8 +19,8 @@ struct DailyReportPDFView: View {
             
             //CATEGORIES
             VStack(alignment: .leading, spacing: 12) {
-                ForEach(viewModel.nonEmptyCategories, id: \.name) { category in
-                    CategoryReportSection(categoryName: category.name, categoryIconName: category.icon, reports: category.reports)
+                ForEach(viewModel.nonEmptyCategories, id: \.type.displayText) { category in
+                    CategoryReportSection(categoryName: category.type.displayText, categoryIconName: category.type.iconName, reports: category.reports)
                 }
             }
         }

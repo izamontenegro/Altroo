@@ -21,7 +21,7 @@ struct HistoryRowView: View {
                         labelFont: .sfPro,
                         labelType: .callOut,
                         labelWeight: .semibold,
-                        text: item.base.reportTitle,
+                        text: item.type.displayText,
                         color: UIColor.teal10
                     )
                     

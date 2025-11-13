@@ -121,4 +121,15 @@ enum ReportItemType: CaseIterable {
         case .symptom: "Intercorrências"
         }
     }
+    
+    var iconName: String {
+        switch self {
+        case .stool: "toilet.fill"
+        case .urine: "drop.halffull"
+        case .feeding: "takeoutbag.and.cup.and.straw.fill"
+        case .hydration: "waterbottle.fill"
+        case .task: "mail.stack.fill"
+        case .symptom: "exclamationmark.triangle.fill"
+        }
+    }
 }
