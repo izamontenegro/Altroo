@@ -9,7 +9,7 @@ import SwiftUI
 import UIKit
 
 struct HistoryRowView: View {
-    let item: HistoryItem
+    let item: ReportItem
     let isLast: Bool
     let onTap: () -> Void
     
@@ -21,13 +21,13 @@ struct HistoryRowView: View {
                         labelFont: .sfPro,
                         labelType: .callOut,
                         labelWeight: .semibold,
-                        text: item.title ?? "Sem título",
+                        text: item.base.reportTitle,
                         color: UIColor.teal10
                     )
                     
                     Spacer()
                     
-                    if let date = item.date {
+                    if let date = item.base.reportTime {
                         StandardLabelRepresentable(
                             labelFont: .sfPro,
                             labelType: .callOut,
@@ -43,7 +43,7 @@ struct HistoryRowView: View {
                     labelFont: .sfPro,
                     labelType: .callOut,
                     labelWeight: .regular,
-                    text: item.author ?? "—",
+                    text: item.base.reportAuthor ?? "—",
                     color: UIColor.black10
                 )
             }

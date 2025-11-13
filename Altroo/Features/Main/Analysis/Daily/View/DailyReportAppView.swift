@@ -15,20 +15,35 @@ struct DailyReportAppView: View {
         ScrollView {
             //SUBHEADER
             HStack(alignment: .bottom) {
-                ReportTimeSection(text: "Data", date: $viewModel.startDate, type: .date)
+                ReportTimeSection(
+                    text: "Data",
+                    date: $viewModel.startDate,
+                    type: .date
+                )
                 Spacer()
-                ReportTimeSection(text: "Hora Inicial", date: $viewModel.startTime, type: .time)
+                ReportTimeSection(
+                    text: "Hora Inicial",
+                    date: $viewModel.startTime,
+                    type: .time
+                )
                 Image(systemName: "arrow.right")
                     .resizable()
                     .scaledToFit()
                     .frame(width: 14)
                     .padding(.bottom, 10)
-                ReportTimeSection(text: "Hora Final", date: $viewModel.endTime, type: .time)
+                ReportTimeSection(
+                    text: "Hora Final",
+                    date: $viewModel.endTime,
+                    type: .time
+                )
             }
             .padding(Layout.standardSpacing)
             .background(.blue70)
             .clipShape(
-                UnevenRoundedRectangle(bottomLeadingRadius: 20, bottomTrailingRadius: 20)
+                UnevenRoundedRectangle(
+                    bottomLeadingRadius: 20,
+                    bottomTrailingRadius: 20
+                )
             )
             .onChange(of: viewModel.startDate) { _ in viewModel.feedArrays() }
             .onChange(of: viewModel.startTime) { _ in viewModel.feedArrays() }
@@ -49,10 +64,16 @@ struct DailyReportAppView: View {
                         
                         if let pdfURL {
                             ShareLink(item: pdfURL) {
-                                CircleCapsule(text: "Exportar", icon: "square.and.arrow.up")
+                                CircleCapsule(
+                                    text: "Exportar",
+                                    icon: "square.and.arrow.up"
+                                )
                             }
                         } else {
-                            CircleCapsule(text: "Exportar", icon: "square.and.arrow.up")
+                            CircleCapsule(
+                                text: "Exportar",
+                                icon: "square.and.arrow.up"
+                            )
                         }
                         
                     }
@@ -70,10 +91,17 @@ struct DailyReportAppView: View {
 
                                 Text("Registros")
                                     .font(.callout)
-                                    .fixedSize(horizontal: true, vertical: false)
+                                    .fixedSize(
+                                        horizontal: true,
+                                        vertical: false
+                                    )
                                     .padding(.horizontal, 12)
                             }
-                            .frame(minWidth: 120, minHeight: 100, alignment: .topLeading)
+                            .frame(
+                                minWidth: 120,
+                                minHeight: 100,
+                                alignment: .topLeading
+                            )
                             .fontDesign(.rounded)
                             .foregroundStyle(.black10)
                             .background(.pureWhite)
@@ -87,14 +115,25 @@ struct DailyReportAppView: View {
                                 if viewModel.reportsByAuthor.isEmpty {
                                     Text("Não há registros")
                                 } else {
-                                    ForEach(viewModel.reportsByAuthor.keys.sorted(), id: \.self) { author in
-                                        ReportCaretakerCount(name: author, count: viewModel.reportsByAuthor[author] ?? 0)
+                                    ForEach(
+                                        viewModel.reportsByAuthor.keys.sorted(),
+                                        id: \.self
+                                    ) { author in
+                                        ReportCaretakerCount(
+                                            name: author,
+                                            count: viewModel
+                                                .reportsByAuthor[author] ?? 0
+                                        )
                                     }
                                     .frame(maxWidth: .infinity)
                                 }
                             }
                             .padding(Layout.standardSpacing)
-                            .frame(maxWidth: .infinity, minHeight: 100, alignment: .top)
+                            .frame(
+                                maxWidth: .infinity,
+                                minHeight: 100,
+                                alignment: .top
+                            )
                             .fontDesign(.rounded)
                             .foregroundStyle(.black10)
                             .background(.pureWhite)
@@ -109,13 +148,16 @@ struct DailyReportAppView: View {
                     //CATEGORIES
                     VStack(alignment: .leading, spacing: 12) {
                         ReportSectionTitle(text: "Histórico de Registros")
-                        
-                        if viewModel.nonEmptyCategories.isEmpty {
-                            Text("Não há registros para esse periodo")
-                        } else {
-                            ForEach(viewModel.nonEmptyCategories, id: \.name) { category in
-                                CategoryReportCard(categoryName: category.name, categoryIconName: category.icon, reports: category.reports)
-                            }
+
+                        ForEach(
+                            viewModel.nonEmptyCategories,
+                            id: \.name
+                        ) { category in
+                            CategoryReportCard(
+                                categoryName: category.name,
+                                categoryIconName: category.icon,
+                                reports: category.reports
+                            )
                         }
                     }
                 }

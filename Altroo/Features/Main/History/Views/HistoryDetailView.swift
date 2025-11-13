@@ -10,16 +10,16 @@ import SwiftUI
 struct HistoryDetailSheet: View {
     @Environment(\.dismiss) var dismiss
     var viewModel: HistoryViewModel
-    let item: HistoryItem
+    let item: ReportItem
     
-    var titleText: String { item.title ?? "Sem título" }
-    var authorText: String { item.author ?? "—" }
+    var titleText: String { item.base.reportTitle}
+    var authorText: String { item.base.reportAuthor ?? "—" }
     var dateText: String {
-        if let d = item.date { return DateFormatterHelper.longDayString(from: d) }
+        if let d = item.base.reportTime { return DateFormatterHelper.longDayString(from: d) }
         return "—"
     }
     var timeText: String {
-        if let d = item.date { return DateFormatterHelper.timeHMString(from: d) }
+        if let d = item.base.reportTime { return DateFormatterHelper.timeHMString(from: d) }
         return "—"
     }
     
@@ -41,7 +41,7 @@ struct HistoryDetailSheet: View {
                 .padding(.horizontal, 16)
                 .padding(.bottom, 24)
             }
-            .navigationTitle(item.activityType ?? "Histórico")
+            .navigationTitle(item.type.displayText ?? "Histórico")
             .navigationBarTitleDisplayMode(.inline)
             .toolbar {
                 ToolbarItem(placement: .topBarLeading) {
@@ -49,7 +49,8 @@ struct HistoryDetailSheet: View {
                 }
                 ToolbarItem(placement: .topBarTrailing) {
                     Button("Excluir", role: .destructive) {
-                        viewModel.deleteHistory(item)
+                        //TODO
+//                        viewModel.deleteHistory(item)
                         dismiss()
                     }
                 }
