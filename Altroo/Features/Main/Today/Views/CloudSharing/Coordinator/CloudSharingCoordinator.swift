@@ -21,13 +21,16 @@ final class CloudSharingCoordinator: NSObject, UICloudSharingControllerDelegate 
         super.init()
     }
     
-    func presentSharingSheet() {
+    func presentSharingSheet() async {
         if !coreDataService.isShared(object: careRecipient) {
-            Task {
-                await createShareAndPresent(careRecipient)
+            do {
+                try await createShareAndPresent(careRecipient)
+            } catch {
+                print("Share failed:", error)
+                return
             }
         }
-        
+                
         if let share = self.coreDataService.getShare(self.careRecipient) {
             let sharingController = UICloudSharingController(
                 share: share,
@@ -53,7 +56,29 @@ final class CloudSharingCoordinator: NSObject, UICloudSharingControllerDelegate 
             
         } catch {
             print("Share failed / timed out:", error)
+            
+            if let ckError = error as? CKError {
+                DispatchQueue.main.async {
+                    self.presentAlert(
+                        title: "Erro do iCloud",
+                        message: ckError.localizedDescription
+                    )
+                }
+            } else {
+                DispatchQueue.main.async {
+                    self.presentAlert(
+                        title: "Erro ao Compartilhar",
+                        message: "Armazenamento Cheio."
+                    )
+                }
+            }
         }
+    }
+    
+    private func presentAlert(title: String, message: String) {
+        let alert = UIAlertController(title: title, message: message, preferredStyle: .alert)
+        alert.addAction(UIAlertAction(title: "OK", style: .default))
+        presentingViewController.present(alert, animated: true)
     }
     
     private func configureAndPresent(_ controller: UICloudSharingController) {
@@ -70,8 +95,23 @@ final class CloudSharingCoordinator: NSObject, UICloudSharingControllerDelegate 
     }
     
     func cloudSharingController(_ csc: UICloudSharingController, failedToSaveShareWithError error: Error) {
-        print("Failed to save share: \(error.localizedDescription)")
         // Handle failure to save the share
+        print("Failed to save share: \(error.localizedDescription)")
+        if let ckError = error as? CKError {
+            DispatchQueue.main.async {
+                self.presentAlert(
+                    title: "Erro do iCloud",
+                    message: ckError.localizedDescription
+                )
+            }
+        } else {
+            DispatchQueue.main.async {
+                self.presentAlert(
+                    title: "Erro ao Compartilhar",
+                    message: "Armazenamento Cheio."
+                )
+            }
+        }
     }
     
     func cloudSharingControllerDidSaveShare(_ csc: UICloudSharingController) {
@@ -80,6 +120,11 @@ final class CloudSharingCoordinator: NSObject, UICloudSharingControllerDelegate 
     }
     
     func cloudSharingControllerDidStopSharing(_ csc: UICloudSharingController) {
+        guard coreDataService.isShared(object: careRecipient) else {
+            print("Object not shared.")
+            return
+        }
+        
         if !coreDataService.isOwner(object: careRecipient) {
             coreDataService.delete(careRecipient)
         }

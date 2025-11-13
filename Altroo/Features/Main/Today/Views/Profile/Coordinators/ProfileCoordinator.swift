@@ -73,7 +73,9 @@ extension ProfileCoordinator: ProfileViewControllerDelegate {
         
         self.cloudSharingCoordinator = sharingCoordinator
         
-        sharingCoordinator.presentSharingSheet()
+        Task {
+            await sharingCoordinator.presentSharingSheet()
+        }
     }
     
     func openChangeCareRecipientSheet() {
