@@ -41,7 +41,6 @@ class GradientHeader: UIViewController {
         gradientLayer.cornerRadius = 24
         gradientView.layer.insertSublayer(gradientLayer, at: 0)
 
-        // MARK: - Textos e conteúdo
         let titleLabel = StandardLabel(
             labelText: navTitle ?? "",
             labelFont: .sfPro,
@@ -81,7 +80,6 @@ class GradientHeader: UIViewController {
         bottomConstraint.isActive = true
 
 
-        // MARK: - Atualiza gradiente no layout
         gradientView.layoutIfNeeded()
         gradientLayer.frame = gradientView.bounds
     }
