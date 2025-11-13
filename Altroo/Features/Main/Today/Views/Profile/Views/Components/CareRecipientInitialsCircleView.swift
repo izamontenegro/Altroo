@@ -33,8 +33,6 @@ class CareRecipientInitialsCircleView: UIView {
         avatar.layer.borderColor = UIColor.pureWhite.cgColor
         avatar.layer.borderWidth = 4
 
-        let initials = initialsFromName(careRecipientName)
-
         let initialsLabel = StandardLabel(
             labelText: careRecipientName.getInitials(),
             labelFont: .sfPro,
@@ -56,12 +54,4 @@ class CareRecipientInitialsCircleView: UIView {
         return avatar
     }
 
-}
-
-private extension CareRecipientInitialsCircleView {
-    func initialsFromName(_ name: String) -> String {
-        let comps = name.split(separator: " ")
-        let initials = comps.prefix(2).compactMap { $0.first?.uppercased() }.joined()
-        return initials.isEmpty ? "?" : initials
-    }
 }

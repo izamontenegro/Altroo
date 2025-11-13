@@ -72,14 +72,12 @@ class AllTasksViewModel {
     }
     
     func markAsDone(_ instance: TaskInstance) {
-        guard
-            let careRecipient = userService.fetchCurrentPatient()
-        else { return }
-        
-        taskService.toggleInstanceIsDone(instance)
+        guard let careRecipient = userService.fetchCurrentPatient() else { return }
         
         let author = coreDataService.currentPerformerName(for: careRecipient)
         
+        taskService.toggleInstanceIsDone(instance, author: author, time: .now)
+
         historyService.addHistoryItem(title: "Realizou \(instance.template?.name ?? "tarefa")", author: author, date: Date(), type: .task, to: careRecipient)
     }
 }

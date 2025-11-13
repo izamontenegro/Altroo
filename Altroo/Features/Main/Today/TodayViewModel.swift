@@ -94,7 +94,9 @@ class TodayViewModel {
     }
     
     func markAsDone(_ instance: TaskInstance) {
-        taskService.toggleInstanceIsDone(instance)
+        guard let careRecipient = userService.fetchCurrentPatient() else { return }
+        let author = coreDataService.currentPerformerName(for: careRecipient)
+        taskService.toggleInstanceIsDone(instance, author: author, time: .now)
     }
     
     func fetchUrineQuantity() {

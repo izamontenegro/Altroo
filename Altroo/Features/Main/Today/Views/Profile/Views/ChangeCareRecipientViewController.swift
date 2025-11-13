@@ -244,12 +244,6 @@ final class ChangeCareRecipientViewController: UIViewController {
 
         return circle
     }
-
-    func initialsFromName(_ name: String) -> String {
-        let comps = name.split(separator: " ")
-        let initials = comps.prefix(2).compactMap { $0.first?.uppercased() }.joined()
-        return initials.isEmpty ? "?" : initials
-    }
     
     // MARK: - Actions
     @objc private func closeTapped() {
@@ -274,7 +268,3 @@ final class ChangeCareRecipientViewController: UIViewController {
         dismiss(animated: true)
     }
 }
-
-//#Preview {
-//    ChangeCareRecipientViewController()
-//}

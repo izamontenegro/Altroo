@@ -77,7 +77,7 @@ final class CareRecipientFacadeSymptomTests: XCTestCase {
         let date = Date()
         
         // When
-        facade.addSymptom(name: "Headache", symptomDescription: "Mild pain", date: date, in: careRecipient)
+        facade.addSymptom(name: "Headache", symptomDescription: "Mild pain", date: date, author: "User", in: careRecipient)
         
         // Then
         let symptoms = careRecipient.symptoms as? Set<Symptom> ?? []
@@ -93,8 +93,8 @@ final class CareRecipientFacadeSymptomTests: XCTestCase {
         let date = Date()
         
         // When
-        facade.addSymptom(name: "Headache", symptomDescription: "Mild pain", date: date, in: careRecipient)
-        facade.addSymptom(name: "Cough", symptomDescription: "Dry cough", date: date, in: careRecipient)
+        facade.addSymptom(name: "Headache", symptomDescription: "Mild pain", date: date, author: "User", in: careRecipient)
+        facade.addSymptom(name: "Cough", symptomDescription: "Dry cough", date: date, author: "User", in: careRecipient)
         
         // Then
         let symptoms = careRecipient.symptoms as? Set<Symptom> ?? []
@@ -108,7 +108,7 @@ final class CareRecipientFacadeSymptomTests: XCTestCase {
     func testDeleteSymptomFromCareRecipient() {
         // Given
         let date = Date()
-        facade.addSymptom(name: "Headache", symptomDescription: "Mild pain", date: date, in: careRecipient)
+        facade.addSymptom(name: "Headache", symptomDescription: "Mild pain", date: date, author: "User", in: careRecipient)
         
         guard let symptom = (careRecipient.symptoms as? Set<Symptom>)?.first else {
             XCTFail("Symptom was not created properly")
@@ -126,7 +126,7 @@ final class CareRecipientFacadeSymptomTests: XCTestCase {
     func testEditSymptom() {
         // Given
         let date = Date()
-        let symptom = facade.addSymptom(name: "Headache", symptomDescription: "Mild pain", date: date, in: careRecipient)
+        let symptom = facade.addSymptom(name: "Headache", symptomDescription: "Mild pain", date: date, author: "User", in: careRecipient)
         
         // When
         let name = "Cough"
@@ -161,8 +161,8 @@ final class CareRecipientFacadeSymptomTests: XCTestCase {
     
     func testAddDuplicateSymptoms() {
         let date = Date()
-        let s1 = facade.addSymptom(name: "Cough", symptomDescription: "Dry cough", date: date, in: careRecipient)
-        let s2 = facade.addSymptom(name: "Cough", symptomDescription: "Dry cough", date: date, in: careRecipient)
+        let s1 = facade.addSymptom(name: "Cough", symptomDescription: "Dry cough", date: date, author: "User", in: careRecipient)
+        let s2 = facade.addSymptom(name: "Cough", symptomDescription: "Dry cough", date: date, author: "User", in: careRecipient)
         
         let allSymptoms = facade.fetchAllSymptoms(from: careRecipient)
         XCTAssertEqual(allSymptoms.count, 2)
@@ -183,7 +183,7 @@ final class CareRecipientFacadeSymptomTests: XCTestCase {
     func testFetchSymptomsForEmptyDate() {
         //today’s symptoms
         let today = Date()
-        _ = facade.addSymptom(name: "Headache", symptomDescription: "Mild pain", date: today, in: careRecipient)
+        _ = facade.addSymptom(name: "Headache", symptomDescription: "Mild pain", date: today, author: "User", in: careRecipient)
         
         // fetch yesterday
         let yesterday = Calendar.current.date(byAdding: .day, value: -1, to: today)!

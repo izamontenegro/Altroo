@@ -83,7 +83,7 @@ class HeaderProfile: UIView {
     }
     
     private func refreshUI() {
-        nameLabel.text = rawName.shortenedName()
+        nameLabel.text = rawName.abbreviatedName
         profileView.updateInitials(rawName.getInitials())
     }
 }

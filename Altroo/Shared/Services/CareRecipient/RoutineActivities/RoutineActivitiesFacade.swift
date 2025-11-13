@@ -48,8 +48,8 @@ class RoutineActivitiesFacade: RoutineActivitiesFacadeProtocol {
         return routineTaskService.fetchInstanceRoutineTasks(for: careRecipient)
     }
     
-    func toggleInstanceIsDone(_ instance: TaskInstance) {
-        routineTaskService.toggleInstanceIsDone(instance)
+    func toggleInstanceIsDone(_ instance: TaskInstance, author: String, time: Date) {
+        routineTaskService.toggleInstanceIsDone(instance, author: author, onTime: time)
         
         persistenceService.save()
     }

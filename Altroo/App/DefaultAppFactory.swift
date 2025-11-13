@@ -73,8 +73,9 @@ extension DefaultAppFactory {
 // MARK: - MainFlowFactory
 extension DefaultAppFactory {
     
-    func makeAnalysisViewController() -> UIViewController {
-        let vc = AnalysisViewController()
+    func makeReportViewController() -> UIViewController {
+        let vm = DailyReportViewModel(basicNeedsFacade: dependencies.basicNeedsFacade, userService: dependencies.userService, careRecipientFacade: dependencies.careRecipientFacade, routineActivitiesFacade: dependencies.routineActivitiesFacade)
+        let vc = ReportViewController(viewModel: vm)
         return vc
     }
     

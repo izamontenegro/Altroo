@@ -65,9 +65,8 @@ class CaregiverProfileCardView: UIView {
         avatar.layer.borderColor = UIColor.pureWhite.cgColor
         avatar.layer.borderWidth = 2
 
-        let initials = initialsFromName(name)
         let initialsLabel = StandardLabel(
-            labelText: initials,
+            labelText: name.getInitials(),
             labelFont: .sfPro,
             labelType: .subHeadline,
             labelColor: .pureWhite,
@@ -155,13 +154,7 @@ private extension CaregiverProfileCardView {
     func didTapAccess() {
         print("tapped")
     }
-
-    func initialsFromName(_ name: String) -> String {
-        let comps = name.split(separator: " ")
-        let initials = comps.prefix(2).compactMap { $0.first?.uppercased() }.joined()
-        return initials.isEmpty ? "?" : initials
-    }
-
+    
     func permissionLabel(_ participantPermission: CKShare.ParticipantPermission) -> String {
         switch participantPermission {
         case .readOnly:  return "Pode visualizar"
