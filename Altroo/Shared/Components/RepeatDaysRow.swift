@@ -18,7 +18,8 @@ final class RepeatDaysRow: UIStackView {
         translatesAutoresizingMaskIntoConstraints = false
         
         for day in Locale.Weekday.allCases {
-            let button = PrimaryStyleButton(title: day.rawValue.prefix(1).uppercased())
+            let symbol = day.localizedSymbol(style: .veryShort)
+            let button = PrimaryStyleButton(title: symbol.uppercased())
             button.backgroundColor = selectedDays.contains(day) ? .teal20 : .black40
             button.associatedData = day
             button.addTarget(self, action: #selector(didTapDay(_:)), for: .touchUpInside)
