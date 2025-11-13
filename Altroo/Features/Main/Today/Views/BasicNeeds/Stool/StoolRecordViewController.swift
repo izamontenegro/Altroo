@@ -18,10 +18,6 @@ final class StoolRecordViewController: GradientNavBarViewController {
     private let viewModel: StoolRecordViewModel
     private var cancellables = Set<AnyCancellable>()
     
-    private let stoolColors: [UIColor] = [
-        .stoolBrown, .stoolYellow, .stoolBlack, .stoolRed, .stoolGreen
-    ]
-    
     private var colorButtons: [UIButton] = []
     private var stoolTypesButtons: [UIButton] = []
     private var observationField: UITextField?
@@ -93,10 +89,10 @@ final class StoolRecordViewController: GradientNavBarViewController {
         row.alignment = .center
         row.distribution = .fillEqually
         
-        for color in stoolColors {
+        for color in StoolColorsEnum.allCases {
             let button = UIButton(type: .system)
             button.translatesAutoresizingMaskIntoConstraints = false
-            button.backgroundColor = color
+            button.backgroundColor = color.color
             button.layer.borderWidth = 2
             button.layer.borderColor = UIColor.white70.cgColor
             button.addTarget(self, action: #selector(colorTapped(_:)), for: .touchUpInside)
@@ -247,7 +243,7 @@ final class StoolRecordViewController: GradientNavBarViewController {
     
     @objc private func colorTapped(_ sender: UIButton) {
         guard let index = colorButtons.firstIndex(of: sender) else { return }
-        let selectedColor = stoolColors[index]
+        let selectedColor = StoolColorsEnum.allCases[index]
         viewModel.selectedStoolColor = selectedColor
 
         colorButtons.forEach { button in
@@ -289,7 +285,7 @@ final class StoolRecordViewController: GradientNavBarViewController {
     }
     
     @objc private func observationChanged(_ sender: UITextField) {
-        viewModel.notes = sender.text ?? ""
+        viewModel.notes = sender.text ?? "--"
     }
     
     @objc private func createStoolRecord() {
@@ -316,7 +312,7 @@ final class StoolRecordViewController: GradientNavBarViewController {
             .sink { [weak self] color in
                 guard let self else { return }
                 for button in self.colorButtons {
-                    button.layer.borderColor = (button.backgroundColor == color) ? UIColor.blue50.cgColor : UIColor.white70.cgColor
+                    button.layer.borderColor = (button.backgroundColor == color?.color) ? UIColor.blue50.cgColor : UIColor.white70.cgColor
                 }
             }
             .store(in: &cancellables)

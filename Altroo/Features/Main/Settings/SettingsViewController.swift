@@ -14,12 +14,12 @@ protocol SettingsViewControllerDelegate: AnyObject {
     func goToDevelopers()
 }
 
-class SettingsViewController: GradientNavBarViewController {
+class SettingsViewController: GradientHeader {
     
     weak var delegate: SettingsViewControllerDelegate?
     
     override func viewDidLoad() {
-        showBackButton = false
+        setNavbarItems(title: "Ajustes", subtitle: "Personalize sua experiência, mantenha seus dados protegidos e conheça o time que dá vida ao app.")
         super.viewDidLoad()
         view.backgroundColor = .blue80
         
@@ -38,27 +38,6 @@ class SettingsViewController: GradientNavBarViewController {
     
     
     // MARK: - Subviews
-    private let titleLabel: StandardLabel = {
-        let label = StandardLabel(
-            labelText: "Ajustes",
-            labelFont: .sfPro,
-            labelType: .title2,
-            labelColor: .black10,
-            labelWeight: .semibold
-        )
-        return label
-    }()
-    private let subtitleLabel: StandardLabel = {
-        let label = StandardLabel(
-            labelText: "Gerencie suas preferências e configurações aqui.",
-            labelFont: .sfPro,
-            labelType: .headline,
-            labelColor: .black30,
-            labelWeight: .regular
-        )
-        label.numberOfLines = 0
-        return label
-    }()
     
     private let myprofilebutton: ArrowWideRectangleButton = {
         let emergencybutton = ArrowWideRectangleButton(title: "Meu Perfil")
@@ -83,11 +62,7 @@ class SettingsViewController: GradientNavBarViewController {
     
     // MARK: - Layout
     private func setupLayout() {
-        view.addSubview(titleLabel)
-        view.addSubview(subtitleLabel)
-        
-        titleLabel.translatesAutoresizingMaskIntoConstraints = false
-        subtitleLabel.translatesAutoresizingMaskIntoConstraints = false
+
         
         let stackView = UIStackView(arrangedSubviews: [myprofilebutton, privacybutton, policybutton, ratingbutton, devsbutton])
         stackView.axis = .vertical
@@ -96,15 +71,7 @@ class SettingsViewController: GradientNavBarViewController {
         view.addSubview(stackView)
         
         NSLayoutConstraint.activate([
-            titleLabel.topAnchor.constraint(equalTo: view.safeAreaLayoutGuide.topAnchor, constant: 12),
-            titleLabel.leadingAnchor.constraint(equalTo: view.leadingAnchor, constant: 16),
-            titleLabel.trailingAnchor.constraint(equalTo: view.trailingAnchor, constant: -16),
-            
-            subtitleLabel.topAnchor.constraint(equalTo: titleLabel.bottomAnchor, constant: 8),
-            subtitleLabel.leadingAnchor.constraint(equalTo: titleLabel.leadingAnchor),
-            subtitleLabel.trailingAnchor.constraint(equalTo: view.safeAreaLayoutGuide.trailingAnchor, constant: -16),
-            
-            stackView.topAnchor.constraint(equalTo: subtitleLabel.bottomAnchor, constant: 24),
+            stackView.topAnchor.constraint(equalTo: gradientView.bottomAnchor, constant: 24),
             stackView.leadingAnchor.constraint(equalTo: view.leadingAnchor, constant: 16),
             stackView.trailingAnchor.constraint(equalTo: view.trailingAnchor, constant: -16),
             stackView.bottomAnchor.constraint(lessThanOrEqualTo: view.bottomAnchor, constant: -24)

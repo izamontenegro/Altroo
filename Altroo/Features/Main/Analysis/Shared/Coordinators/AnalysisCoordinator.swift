@@ -18,7 +18,7 @@ final class AnalysisCoordinator: Coordinator {
     }
     
     func start() {
-        let vc = factory.makeAnalysisViewController()
+        let vc = factory.makeReportViewController()
         navigation.setViewControllers([vc], animated: false)
     }
 }

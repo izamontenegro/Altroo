@@ -6,22 +6,25 @@
 //
 
 import Foundation
+import CoreData
 
 protocol StoolServiceProtocol {
-    func addStoolRecord(period: PeriodEnum, date: Date, format: String, notes: String, color: String, author: String, in careRecipient: CareRecipient)
+    func addStoolRecord(period: PeriodEnum, date: Date, format: StoolTypesEnum?, notes: String, color: StoolColorsEnum?, author: String, in careRecipient: CareRecipient)
     
     func deleteStoolRecord(stoolRecord: StoolRecord, from careRecipient: CareRecipient)
+    
+    func fetchStools(for careRecipient: CareRecipient) -> [StoolRecord]
 }
 
 class StoolService: StoolServiceProtocol {
-    func addStoolRecord(period: PeriodEnum, date: Date, format: String, notes: String, color: String, author: String, in careRecipient: CareRecipient) {
+    func addStoolRecord(period: PeriodEnum, date: Date, format: StoolTypesEnum?, notes: String, color: StoolColorsEnum?, author: String, in careRecipient: CareRecipient) {
         
         guard let context = careRecipient.managedObjectContext else { return }
         let newStoolRecord = StoolRecord(context: context)
         
-        newStoolRecord.color = color
+        newStoolRecord.colorType = color
         newStoolRecord.date = date
-        newStoolRecord.format = format
+        newStoolRecord.formatType = format
         newStoolRecord.notes = notes
         newStoolRecord.period = period.rawValue
         newStoolRecord.author = author
@@ -38,5 +41,19 @@ class StoolService: StoolServiceProtocol {
             mutableStool.remove(stoolRecord)
         }
     }
+    
+    func fetchStools(for careRecipient: CareRecipient) -> [StoolRecord] {
+        guard let context = careRecipient.managedObjectContext else { return [] }
+            let request: NSFetchRequest<StoolRecord> = StoolRecord.fetchRequest()
+            request.predicate = NSPredicate(format: "basicNeeds.careRecipient == %@", careRecipient)
+            request.sortDescriptors = [NSSortDescriptor(key: "date", ascending: false)]
+
+            do {
+                return try context.fetch(request)
+            } catch {
+                print("Error fetching stool records: \(error.localizedDescription)")
+                return []
+            }
+        }
     
 }

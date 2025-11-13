@@ -17,7 +17,6 @@ class StandardSegmentedControl: UISegmentedControl {
     private var cornerRadius: CGFloat
     
     init(items: [String],
-         width: CGFloat,
          height: CGFloat,
          backgroundColor: UIColor,
          selectedColor: UIColor,
@@ -34,7 +33,7 @@ class StandardSegmentedControl: UISegmentedControl {
         
         super.init(items: items)
         
-        setupStyle(width: width, height: height)
+        setupStyle(height: height)
     }
     
     required init?(coder: NSCoder) {
@@ -44,7 +43,6 @@ class StandardSegmentedControl: UISegmentedControl {
     convenience init(items: [String]) {
         self.init(
             items: items,
-            width: 113,
             height: 35,
             backgroundColor: .white70,
             selectedColor: .blue30,
@@ -54,7 +52,7 @@ class StandardSegmentedControl: UISegmentedControl {
         )
     }
     
-    private func setupStyle(width: CGFloat, height: CGFloat) {
+    private func setupStyle(height: CGFloat) {
         selectedSegmentIndex = 0
         
         backgroundColor = backgroundColorNormal
@@ -76,7 +74,6 @@ class StandardSegmentedControl: UISegmentedControl {
         
         translatesAutoresizingMaskIntoConstraints = false
         NSLayoutConstraint.activate([
-            widthAnchor.constraint(equalToConstant: width),
             heightAnchor.constraint(equalToConstant: height)
         ])
     }
@@ -94,7 +91,6 @@ private struct SegmentedControlPreviewWrapper: UIViewRepresentable {
     func makeUIView(context: Context) -> StandardSegmentedControl {
         StandardSegmentedControl(
             items: ["Diário", "Mensal"],
-            width: 241,
             height: 35,
             backgroundColor: UIColor(resource: .white80),
             selectedColor: UIColor(resource: .blue30),

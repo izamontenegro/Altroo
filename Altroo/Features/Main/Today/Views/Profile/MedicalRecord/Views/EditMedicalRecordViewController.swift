@@ -104,6 +104,8 @@ final class EditMedicalRecordViewController: GradientNavBarViewController, Medic
 
         let currentPatient = viewModel.userService.fetchCurrentPatient()
         progressView.setCareRecipient(currentPatient, animated: false)
+        
+        keyboardHandler = KeyboardHandler(viewController: self)
     }
 
     func medicalRecordSectionSelectorView(_ selectorView: MedicalRecordSectionSelectorView, didSelectIndex index: Int) {
