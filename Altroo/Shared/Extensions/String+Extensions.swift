@@ -11,11 +11,11 @@ import Foundation
 
 extension String {
     
-    func shortenedName(maxLength: Int = 20) -> String {
+    func shortenedName(maxLength: Int = 16) -> String {
         let trimmed = self.trimmingCharacters(in: .whitespacesAndNewlines)
         if trimmed.isEmpty { return self }
         
-        var parts = trimmed
+        let parts = trimmed
             .components(separatedBy: .whitespacesAndNewlines)
             .filter { !$0.isEmpty }
             .map { $0.toTitleCase() }
@@ -82,7 +82,6 @@ private extension String {
 
 // MARK: - GET INITIALS
 extension String {
-    
     func getInitials() -> String {
         let particles: Set<String> = ["de", "da", "das", "do", "dos"]
         
@@ -91,12 +90,11 @@ extension String {
             .components(separatedBy: .whitespacesAndNewlines)
             .filter { !$0.isEmpty && !particles.contains($0) }
         
-        guard !parts.isEmpty else { return "" }
+        guard let first = parts.first, let last = parts.last else {
+            return ""
+        }
         
-        let firstTwo = parts.prefix(2)
-        
-        let initials = firstTwo.compactMap { $0.first?.uppercased() }
-        
-        return initials.joined()
+        let initials = "\(first.first!.uppercased())\(last.first!.uppercased())"
+        return initials
     }
 }

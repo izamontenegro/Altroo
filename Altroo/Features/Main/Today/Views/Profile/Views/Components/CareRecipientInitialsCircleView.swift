@@ -36,7 +36,7 @@ class CareRecipientInitialsCircleView: UIView {
         let initials = initialsFromName(careRecipientName)
 
         let initialsLabel = StandardLabel(
-            labelText: initials,
+            labelText: careRecipientName.getInitials(),
             labelFont: .sfPro,
             labelType: .title1,
             labelColor: .pureWhite,
