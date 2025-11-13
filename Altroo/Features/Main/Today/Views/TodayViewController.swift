@@ -73,7 +73,6 @@ class TodayViewController: UIViewController {
             toolbar.topAnchor.constraint(equalTo: view.topAnchor),
             toolbar.leadingAnchor.constraint(equalTo: view.leadingAnchor),
             toolbar.trailingAnchor.constraint(equalTo: view.trailingAnchor),
-            toolbar.heightAnchor.constraint(equalToConstant: 250),
             
             scrollView.topAnchor.constraint(equalTo: view.topAnchor, constant: 150),
             scrollView.leadingAnchor.constraint(equalTo: view.leadingAnchor),
