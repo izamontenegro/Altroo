@@ -92,7 +92,7 @@ class HeaderProfile: UIView {
         let parts = formatted.split(separator: " ")
         let firstInitial = parts.first?.prefix(1) ?? ""
         let secondInitial = parts.dropFirst().first?.prefix(1) ?? ""
-        let initials = "\(firstInitial)\(secondInitial)"
+        let initials = profileName.getInitials()
         profileView.updateInitials(String(initials))
     }
     
