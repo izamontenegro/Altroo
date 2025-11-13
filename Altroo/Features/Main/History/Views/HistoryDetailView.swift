@@ -12,10 +12,10 @@ struct HistoryDetailSheet: View {
     var viewModel: HistoryViewModel
     let item: ReportItem
     
-    var titleText: String { item.base.reportTitle}
+    var titleText: String { item.type.displayText}
     var authorText: String { item.base.reportAuthor ?? "—" }
     var dateText: String {
-        if let d = item.base.reportTime { return DateFormatterHelper.longDayString(from: d) }
+        if let d = item.base.reportTime { return DateFormatterHelper.historyDateNumber(from: d) }
         return "—"
     }
     var timeText: String {
@@ -34,14 +34,21 @@ struct HistoryDetailSheet: View {
                         .padding(.top, 12)
                         .foregroundStyle(.primary)
                    
-                    InfoRowPill(left: "Concluída", right: dateText, rightEmphasis: true)
-                    InfoRowPill(left: "Horário", right: timeText, rightEmphasis: true)
                     InfoRowPill(left: "Concluída por", right: authorText, rightEmphasis: true)
+                    HStack {
+                        InfoRowPill(left: "Horário", right: timeText, rightEmphasis: true)
+                        InfoRowPill(left: "Data", right: dateText, rightEmphasis: true)
+                    }
+                    
+                    Divider()
+                    
+                    //TODO: INFO ESPECIFIC TO A CERTAIN CATEGORY
+
                 }
                 .padding(.horizontal, 16)
                 .padding(.bottom, 24)
             }
-            .navigationTitle(item.type.displayText ?? "Histórico")
+            .navigationTitle(item.type.displayText)
             .navigationBarTitleDisplayMode(.inline)
             .toolbar {
                 ToolbarItem(placement: .topBarLeading) {
@@ -50,7 +57,7 @@ struct HistoryDetailSheet: View {
                 ToolbarItem(placement: .topBarTrailing) {
                     Button("Excluir", role: .destructive) {
                         //TODO
-//                        viewModel.deleteHistory(item)
+                        viewModel.deleteHistory(item)
                         dismiss()
                     }
                 }

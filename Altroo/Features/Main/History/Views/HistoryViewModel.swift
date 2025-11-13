@@ -38,12 +38,8 @@ final class HistoryViewModel: ObservableObject {
         self.userService = userService
         self.careRecipientFacade = careRecipientFacade
         self.routineActivitiesFacade = routineActivitiesFacade
-        
-        fetchRecords()
     }
-    
-
-    
+        
     // MARK: - Accessors
     func currentCareRecipient() -> CareRecipient? {
         userService.fetchCurrentPatient()
@@ -71,14 +67,8 @@ final class HistoryViewModel: ObservableObject {
         let symptomRecords: [ReportItem] = careRecipientFacade.fetchAllSymptoms(from: currentCareRecipient)
             .map { .symptom($0) }
         
-        allRecords += hydrationRecords
-        allRecords += feedingRecords
-        allRecords += stoolRecords
-        allRecords += urineRecords
-        allRecords += tasksRecords
-        allRecords += symptomRecords
+        allRecords = hydrationRecords + feedingRecords + stoolRecords + urineRecords + tasksRecords + symptomRecords
     }
-
     
     func reloadHistory(limit: Int? = nil) {
         guard let recipient = currentCareRecipient() else {
@@ -88,7 +78,7 @@ final class HistoryViewModel: ObservableObject {
         isLoading = true
         errorMessage = nil
         
-//        let items = historyService.fetchHistoryItems(for: recipient, limit: limit)
+        fetchRecords()
         
         sections = Self.buildSections(from: allRecords)
         if sections.indices.count > 1 {
@@ -97,10 +87,8 @@ final class HistoryViewModel: ObservableObject {
         isLoading = false
     }
     
-    func deleteHistory(_ item: HistoryItem) {
-        guard let recipient = currentCareRecipient() else { return }
-        //TODO
-//        historyService.deleteHistoryItem(item, from: recipient)
+    func deleteHistory(_ item: ReportItem) {
+        deleteItem(item)
         reloadHistory()
     }
     
@@ -121,5 +109,24 @@ final class HistoryViewModel: ObservableObject {
                 )
             }
             .sorted(by: { $0.day > $1.day })
+    }
+    
+    func deleteItem(_ item: ReportItem) {
+        guard let recipient = currentCareRecipient() else { return }
+
+        switch item {
+        case .stool(let stoolRecord):
+            basicNeedsFacade.deleteStool(stoolRecord: stoolRecord, from: recipient)
+        case .urine(let urineRecord):
+            basicNeedsFacade.deleteUrine(urineRecord: urineRecord, from: recipient)
+        case .feeding(let feedingRecord):
+            basicNeedsFacade.deleteFeeding(feedingRecord: feedingRecord, from: recipient)
+        case .hydration(let hydrationRecord):
+            basicNeedsFacade.deleteHydration(hydrationRecord: hydrationRecord, from: recipient)
+        case .task(let taskInstance):
+            routineActivitiesFacade.deleteInstanceRoutineTask(taskInstance)
+        case .symptom(let symptom):
+            careRecipientFacade.deleteSymptom(symptomRecord: symptom, from: recipient)
+        }
     }
 }
