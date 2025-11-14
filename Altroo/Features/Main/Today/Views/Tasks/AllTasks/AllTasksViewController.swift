@@ -266,22 +266,4 @@ extension AllTasksViewController: TaskCardDelegate {
 //    MeuViewControllerPreview()
 //}
 
-extension UISegmentedControl {
-    func applyWhiteBackgroundColor() {
-        // for remove bottom shadow of selected element
-        self.selectedSegmentTintColor = selectedSegmentTintColor?.withAlphaComponent(0.99)
-        if #available(iOS 13.0, *) {
-            //just to be sure it is full loaded
-            DispatchQueue.main.asyncAfter(deadline: .now() + 0.1) { [weak self] in
-                guard let self = self else {
-                    return
-                }
-                for i in 0 ..< (self.numberOfSegments)  {
-                    let backgroundSegmentView = self.subviews[i]
-                    //it is not enogh changing the background color. It has some kind of shadow layer
-                    backgroundSegmentView.isHidden = true
-                }
-            }
-        }
-    }
-}
+
