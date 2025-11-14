@@ -193,23 +193,43 @@ enum MealAmountEatenEnum: String, CaseIterable {
 
 enum MealCategoryEnum: String, CaseIterable {
     case breakfast
+    case morningSnack
     case lunch
-    case snack
+    case afternoonSnack
     case dinner
     case supper
-    
-    var displayText: String {
+        
+    var displayName: String {
         switch self {
         case .breakfast:
-            return "Café da Manhã"
+            return "Café da manhã"
+        case .morningSnack:
+            return "Lanche da manhã"
         case .lunch:
             return "Almoço"
-        case .snack:
-            return "Lanche"
+        case .afternoonSnack:
+            return "Lanche da tarde"
         case .dinner:
             return "Janta"
         case .supper:
             return "Ceia"
+        }
+    }
+    
+    var displayImageName: String {
+        switch self {
+        case .breakfast:
+            return "MealIllustration_Breakfeast"
+        case .morningSnack:
+            return "MealIllustration_MorningSnack"
+        case .lunch:
+            return "MealIllustration_Lunch"
+        case .afternoonSnack:
+            return "MealIllustration_AfternoonSnack"
+        case .dinner:
+            return "MealIllustration_Dinner"
+        case .supper:
+            return "MealIllustration_Supper"
         }
     }
 }
