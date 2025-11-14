@@ -19,9 +19,9 @@ final class TagView: UIView {
         labelWeight: .regular
     )
     
-    private let defaultLabelColor: UIColor = .teal10
-    private let defaultBackgroundColor: UIColor = .teal80
-    private let defaultIconTintColor: UIColor = .teal10
+     var defaultLabelColor: UIColor = .teal10
+     var defaultBackgroundColor: UIColor = .teal80
+     var defaultIconTintColor: UIColor = .teal10
     
     private let selectedLabelColor: UIColor = .black10
     private let selectedBackgroundColor: UIColor = .black40.withAlphaComponent(0.5)

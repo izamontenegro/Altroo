@@ -8,7 +8,7 @@
 import UIKit
 
 class GradientNavBarViewController: UIViewController {
-    var rightButton: UIButton?
+    var rightButton: UIView?
     var isRightButtonCancel = false
     var showBackButton: Bool = true
     var text: String?

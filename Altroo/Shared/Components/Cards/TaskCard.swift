@@ -56,12 +56,17 @@ class TaskCard: InnerShadowView {
     }
 
     func setupUI() {
-        backgroundColor = .white
+        backgroundColor = .pureWhite
         layer.cornerRadius = 10
         
         loadData()
         
         timeTag = TagView(text: "\(task.time!.formatted(date: .omitted, time: .shortened))", iconName: "alarm.fill")
+        if task.isLateDay || task.isLatePeriod {
+            timeTag?.defaultBackgroundColor = .red80
+            timeTag?.defaultLabelColor = .red20
+            timeTag?.defaultIconTintColor = .red20
+        }
         guard let timeTag else { return }
         
         addSubview(titleLabel)

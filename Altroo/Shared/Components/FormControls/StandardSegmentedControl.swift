@@ -10,10 +10,10 @@ import UIKit
 class StandardSegmentedControl: UISegmentedControl {
     private var itemsList: [String]
     
-     var selectedColor: UIColor
-     var backgroundColorNormal: UIColor
-     var selectedFontColor: UIColor
-     var unselectedFontColor: UIColor
+    var selectedColor: UIColor
+    var backgroundColorNormal: UIColor
+    var selectedFontColor: UIColor
+    var unselectedFontColor: UIColor
     private var cornerRadius: CGFloat
     
     init(items: [String],
@@ -44,7 +44,7 @@ class StandardSegmentedControl: UISegmentedControl {
         self.init(
             items: items,
             height: 35,
-            backgroundColor: .white70,
+            backgroundColor: .pureWhite,
             selectedColor: .blue30,
             selectedFontColor: .pureWhite,
             unselectedFontColor: .black30,
@@ -55,7 +55,8 @@ class StandardSegmentedControl: UISegmentedControl {
     private func setupStyle(height: CGFloat) {
         selectedSegmentIndex = 0
         
-        backgroundColor = backgroundColorNormal
+        backgroundColor = .pureWhite
+        isOpaque = false
         selectedSegmentTintColor = selectedColor
         
         let normalTextAttributes: [NSAttributedString.Key: Any] = [
