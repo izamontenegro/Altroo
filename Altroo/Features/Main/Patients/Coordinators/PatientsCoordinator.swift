@@ -15,6 +15,7 @@ final class PatientsCoordinator: Coordinator {
     var onFinish: (() -> Void)?
     
     private weak var tabBar: AppTabBarController?
+    weak var parentCoordinator: MainCoordinator?
 
     init(navigation: UINavigationController, factory: AppFactory) {
         self.factory = factory
@@ -71,8 +72,9 @@ final class PatientsCoordinator: Coordinator {
             }
             
         case .mainFlow:
-            let profileCoord = ProfileCoordinator(navigation: navigation, factory: factory, associateFactory: factory)
-            add(child: profileCoord);
+            guard let main = parentCoordinator else { return }
+            let profileCoord = main.makeProfileCoordinator(using: navigation)
+            add(child: profileCoord)
             profileCoord.start()
         }
     }

@@ -12,7 +12,7 @@ protocol ProfileViewControllerDelegate: AnyObject {
     func openChangeCareRecipientSheet()
     func openShareCareRecipientSheet(_ careRecipient: CareRecipient)
     func goToMedicalRecordViewController()
-    func careRecipientProfileWantsChangeAssociate(_ controller: UIViewController)
+    func goToAllPatient() async
 }
 
 final class CareRecipientProfileViewController: GradientNavBarViewController {
@@ -268,7 +268,10 @@ final class CareRecipientProfileViewController: GradientNavBarViewController {
         let confirmAction = UIAlertAction(title: "Encerrar", style: .destructive) { [weak self] _ in
             guard let self = self else { return } 
             self.viewModel.finishCare()
-            self.delegate?.careRecipientProfileWantsChangeAssociate(self)
+            
+            Task {
+                await self.delegate?.goToAllPatient()
+            }
         }
         
         let cancelAction = UIAlertAction(title: "Cancelar", style: .cancel, handler: nil)

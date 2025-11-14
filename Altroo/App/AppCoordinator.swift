@@ -11,6 +11,7 @@ import CoreData
 final class AppCoordinator: Coordinator {
     
     var childCoordinators: [Coordinator] = []
+    weak var parentCoordinator: AppCoordinator?
     var navigation: UINavigationController
     private let factory: AppFactory
     
@@ -78,6 +79,7 @@ final class AppCoordinator: Coordinator {
     private func showMainFlow() {
         let mainCoordinator = MainCoordinator(navigation: navigation,
                                               factory: factory)
+        mainCoordinator.parentCoordinator = self
         mainCoordinator.onLogout = { [weak self, weak mainCoordinator] in
             guard let self, let mainCoordinator else { return }
             self.remove(child: mainCoordinator)
@@ -99,5 +101,29 @@ final class AppCoordinator: Coordinator {
         }
         add(child: associatePatientCoordinator)
         associatePatientCoordinator.start()
+    }
+    
+    @MainActor
+    func restartToAllPatients() {
+        childCoordinators.removeAll()
+        userService.removeCurrentPatient()
+
+        UIView.transition(with: navigation.view,
+                          duration: 0.3,
+                          options: [.transitionCrossDissolve],
+                          animations: {
+            self.navigation.view.alpha = 0
+        }) { _ in
+
+            self.navigation.viewControllers = []
+            self.showAllPatientsFlow()
+
+            UIView.transition(with: self.navigation.view,
+                              duration: 0.3,
+                              options: [.transitionCrossDissolve],
+                              animations: {
+                self.navigation.view.alpha = 1
+            })
+        }
     }
 }
