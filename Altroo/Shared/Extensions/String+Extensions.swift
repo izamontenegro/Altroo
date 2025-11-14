@@ -12,7 +12,6 @@ import Foundation
 extension String {
     var abbreviatedName: String {
         guard self.count > 16 else {
-            print(self.count)
             return self
         }
         

@@ -206,6 +206,7 @@ class ShiftFormViewController: UIViewController {
     func didTapDoneButton() {
         if viewModel.fetchUser() != nil {
             nameTextField.text = viewModel.fetchUser()?.name
+            print(viewModel.fetchUser()?.name)
         } else {
             guard viewModel.validateUser() else { return }
         }

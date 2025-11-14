@@ -49,6 +49,7 @@ class UserServiceSession: UserServiceProtocol {
     
     func createUser(name: String, category: String) -> User {
         let user = User(context: context)
+        user.id = UUID()
         user.name = name
         user.category = category
         try? context.save()
@@ -58,6 +59,7 @@ class UserServiceSession: UserServiceProtocol {
     func setName(_ name: String) {
         guard let user = fetchUser() else { return }
         user.name = name
+        print("\(user.name) nome no setname")
         save()
     }
     

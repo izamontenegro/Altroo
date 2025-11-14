@@ -30,7 +30,7 @@ final class AppCoordinator: Coordinator {
     @MainActor
     func start() async {
         if userService.fetchUser() == nil {
-            _ = userService.createUser(name: "\(UUID())", category: "Cuidador")
+            _ = userService.createUser(name: "NOME", category: "Cuidador")
         }
         
         if receivedPatientViaShare {
