@@ -74,7 +74,10 @@ extension DefaultAppFactory {
 extension DefaultAppFactory {
     
     func makeReportViewController() -> UIViewController {
-        let vm = DailyReportViewModel(basicNeedsFacade: dependencies.basicNeedsFacade, userService: dependencies.userService, careRecipientFacade: dependencies.careRecipientFacade, routineActivitiesFacade: dependencies.routineActivitiesFacade)
+        let vm = DailyReportViewModel(basicNeedsFacade: dependencies.basicNeedsFacade,
+                                      userService: dependencies.userService,
+                                      careRecipientFacade: dependencies.careRecipientFacade,
+                                      routineActivitiesFacade: dependencies.routineActivitiesFacade)
         let vc = ReportViewController(viewModel: vm)
         return vc
     }
@@ -92,9 +95,10 @@ extension DefaultAppFactory {
     }
     
     func makeHistoryViewController(delegate: HistoryViewControllerDelegate) -> UIViewController {
-        let vm = HistoryViewModel(userService: dependencies.userService,
-                                  coreDataService: dependencies.coreDataService,
-                                  historyService: dependencies.historyService)
+        let vm = HistoryViewModel(basicNeedsFacade: dependencies.basicNeedsFacade,
+                                  userService: dependencies.userService,
+                                  careRecipientFacade: dependencies.careRecipientFacade,
+                                  routineActivitiesFacade: dependencies.routineActivitiesFacade)
         let vc = HistoryViewController(viewModel: vm, delegate: delegate)
         return vc
     }

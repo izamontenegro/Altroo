@@ -55,7 +55,7 @@ extension Symptom: Reportable {
     var reportNotes: String? { self.symptomDescription }
 }
 
-enum ReportItem: Identifiable {
+enum ReportItem: Identifiable, Equatable {
     case stool(StoolRecord)
     case urine(UrineRecord)
     case feeding(FeedingRecord)
@@ -90,6 +90,17 @@ enum ReportItem: Identifiable {
         case .symptom(let record): return record
         }
     }
+    
+    var type: ReportItemType {
+        switch self {
+        case .stool(let stoolRecord): .stool
+        case .urine(let urineRecord): .urine
+        case .feeding(let feedingRecord): .feeding
+        case .hydration(let hydrationRecord): .hydration
+        case .task(let taskInstance): .task
+        case .symptom(let symptom): .symptom
+        }
+    }
 }
 
 enum ReportItemType: CaseIterable {
@@ -100,5 +111,25 @@ enum ReportItemType: CaseIterable {
     case task
     case symptom
     
-
+    var displayText: String {
+        switch self {
+        case .stool: "Fezes"
+        case .urine: "Urina"
+        case .feeding: "Alimentação"
+        case .hydration: "Hidratação"
+        case .task: "Tarefas"
+        case .symptom: "Intercorrências"
+        }
+    }
+    
+    var iconName: String {
+        switch self {
+        case .stool: "toilet.fill"
+        case .urine: "drop.halffull"
+        case .feeding: "takeoutbag.and.cup.and.straw.fill"
+        case .hydration: "waterbottle.fill"
+        case .task: "mail.stack.fill"
+        case .symptom: "exclamationmark.triangle.fill"
+        }
+    }
 }

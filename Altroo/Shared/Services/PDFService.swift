@@ -65,8 +65,8 @@ struct PDFCreator {
         for category in viewModel.nonEmptyCategories {
             render(
                 CategoryReportSection(
-                    categoryName: category.name,
-                    categoryIconName: category.icon,
+                    categoryName: category.type.displayText,
+                    categoryIconName: category.type.iconName,
                     reports: category.reports
                 ),
                 maxWidth: contentWidth
