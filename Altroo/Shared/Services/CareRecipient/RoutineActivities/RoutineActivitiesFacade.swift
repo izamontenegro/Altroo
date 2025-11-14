@@ -95,7 +95,7 @@ class RoutineActivitiesFacade: RoutineActivitiesFacadeProtocol {
         if let end = task.endDate, end < day { return false }
         
         //check day of the week
-        let todayWeek = Locale.Weekday.from(calendarWeekday: calendar.component(.weekday, from: day))
+        let todayWeek = Locale.Weekday.fromDay(calendarWeekday: calendar.component(.weekday, from: day))
         guard let todayWeek, task.weekdays.contains(todayWeek) else { return false }
         
         return true

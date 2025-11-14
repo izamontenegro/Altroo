@@ -18,7 +18,7 @@ extension Locale.Weekday {
         case full        // "Monday", etc.
     }
     
-    static func from(calendarWeekday: Int) -> Locale.Weekday? {
+    static func fromDay(calendarWeekday: Int) -> Locale.Weekday? {
         switch calendarWeekday {
         case 1: return .sunday
         case 2: return .monday
