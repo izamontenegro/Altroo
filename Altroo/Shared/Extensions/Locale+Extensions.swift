@@ -8,7 +8,7 @@
 import Foundation
 
 extension Locale.Weekday {
-    public static var allCases: [Locale.Weekday] = [
+    public static var allWeekDays: [Locale.Weekday] = [
             .monday, .tuesday, .wednesday, .thursday, .friday, .saturday, .sunday
         ]
     
