@@ -135,12 +135,13 @@ final class CareRecipientProfileViewController: GradientNavBarViewController {
             cardsStack.addArrangedSubview(none)
         } else {
             for item in uniqueCaregivers {
-                print("Nome: \(item.name) | Categoria: \(item.category) | Permissão: \(item.permission.rawValue)")
-                
+                guard let careRecipient = viewModel.userService.fetchCurrentPatient() else { continue }
                 let card = CaregiverProfileCardView(
+                    coreDataService: viewModel.coreDataService,
                     name: item.name,
                     category: item.category,
-                    permission: item.permission
+                    permission: item.permission,
+                    isOwner: viewModel.coreDataService.isOwner(object: careRecipient)
                 )
                 card.translatesAutoresizingMaskIntoConstraints = false
                 card.heightAnchor.constraint(equalToConstant: 54).isActive = true

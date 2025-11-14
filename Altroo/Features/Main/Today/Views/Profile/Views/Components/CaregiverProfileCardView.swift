@@ -9,14 +9,19 @@ import UIKit
 import CloudKit
 
 class CaregiverProfileCardView: UIView {
+    let coreDataService: CoreDataService
+
     let name: String
     let category: String
     let permission: CKShare.Participant.Permission
+    let isOwner: Bool
 
-    init(name: String, category: String, permission: CKShare.Participant.Permission) {
+    init(coreDataService: CoreDataService, name: String, category: String, permission: CKShare.Participant.Permission, isOwner: Bool) {
+        self.coreDataService = coreDataService
         self.name = name
         self.category = category
         self.permission = permission
+        self.isOwner = isOwner
         super.init(frame: .zero)
         buildLayout()
     }
@@ -126,8 +131,8 @@ class CaregiverProfileCardView: UIView {
         chevron.translatesAutoresizingMaskIntoConstraints = false
         chevron.tintColor = .blue10
         chevron.preferredSymbolConfiguration = .init(pointSize: 14, weight: .semibold)
-        chevron.layer.opacity = 0.0
-
+        chevron.isHidden = !isOwner
+        
         let stack = UIStackView(arrangedSubviews: [titleLabel, chevron])
         stack.axis = .horizontal
         stack.spacing = 4
@@ -142,9 +147,15 @@ class CaregiverProfileCardView: UIView {
             stack.trailingAnchor.constraint(lessThanOrEqualTo: button.trailingAnchor)
         ])
 
-        button.addAction(UIAction { [weak self] _ in
-            self?.didTapAccess()
-        }, for: .touchUpInside)
+        if isOwner {
+            button.menu = makeOwnerMenu()
+            button.showsMenuAsPrimaryAction = true
+            button.enableHighlightEffect()
+        } else {
+            button.addAction(UIAction { [weak self] _ in
+                self?.didTapAccess()
+            }, for: .touchUpInside)
+        }
 
         return button
     }
@@ -152,6 +163,7 @@ class CaregiverProfileCardView: UIView {
 
 // MARK: - Helpers
 private extension CaregiverProfileCardView {
+    
     func didTapAccess() {
         print("tapped")
     }
@@ -164,10 +176,44 @@ private extension CaregiverProfileCardView {
 
     func permissionLabel(_ participantPermission: CKShare.ParticipantPermission) -> String {
         switch participantPermission {
-        case .readOnly:  return "Pode visualizar"
-        case .readWrite: return "Pode editar"
-        case .none:      return "Sem acesso"
-        default:         return "Pode visualizar"
+        case .readOnly:  return "Pode Visualizar"
+        case .readWrite: return "Pode Editar"
+        case .none:      return "Sem Acesso"
+        default:         return "Pode Visualizar"
         }
     }
+    
+    private func makeOwnerMenu() -> UIMenu {
+        let current = permission
+
+        let edit = UIAction(
+            title: "Pode Editar",
+            image: UIImage(systemName: current == .readWrite ? "checkmark" : "")
+        ) { _ in
+            print("Set permission: readWrite")
+//            coreDataService.updateParticipantPermission(for: <#T##NSManagedObject#>, participant: <#T##CKShare.Participant#>, to: <#T##CKShare.ParticipantPermission#>, completion: <#T##(Result<Void, any Error>) -> Void#>)
+        }
+
+        let viewOnly = UIAction(
+            title: "Pode Visualizar",
+            image: UIImage(systemName: current == .readOnly ? "checkmark" : "")
+        ) { _ in
+            print("Set permission: readOnly")
+        }
+
+        let remove = UIAction(
+            title: "Remover Cuidador",
+            image: UIImage(systemName: "xmark"),
+            attributes: .destructive
+        ) { _ in
+            print("Remove caregiver")
+        }
+
+        return UIMenu(
+            title: "",
+            options: [.displayInline],
+            children: [edit, viewOnly, remove]
+        )
+    }
+
 }
