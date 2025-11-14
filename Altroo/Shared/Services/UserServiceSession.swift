@@ -59,7 +59,6 @@ class UserServiceSession: UserServiceProtocol {
     func setName(_ name: String) {
         guard let user = fetchUser() else { return }
         user.name = name
-        print("\(user.name) nome no setname")
         save()
     }
     
@@ -113,7 +112,7 @@ class UserServiceSession: UserServiceProtocol {
 
         let coordinator = context.persistentStoreCoordinator
 
-        if let result = try? context.fetch(request).first, result != nil {
+        if let result = try? context.fetch(request).first {
             return result
         }
 
@@ -136,7 +135,7 @@ class UserServiceSession: UserServiceProtocol {
 
         var patients: [CareRecipient] = []
 
-        for (index, id) in ids.enumerated() {
+        for (_, id) in ids.enumerated() {
             if let patient = fetchCareRecipient(id: id) {
                 patients.append(patient)
             }

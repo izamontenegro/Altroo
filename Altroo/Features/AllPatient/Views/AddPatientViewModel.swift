@@ -26,7 +26,7 @@ final class AddPatientViewModel: ObservableObject {
     @Published var bedriddenStatus: BedriddenStatus = .notBedridden
     
     // TODO: REALLY UPDATE THE USERNAME HERE
-    @Published var userName: String = "izaiza"
+    @Published var userName: String = ""
     @Published var userNameError: String?
     @Published var selectedUserRelationship: String = "Cuidador"
     @Published var selectedContactRelationship: String = "Filha/Filho"
@@ -111,7 +111,6 @@ final class AddPatientViewModel: ObservableObject {
     
     func finalizeUser(startDate: Date, endDate: Date) {
         userService.setName(userName)
-        print("nome na viewmodel: \(userName)")
         userService.setCategory(selectedUserRelationship)
         
         if isAllDay {

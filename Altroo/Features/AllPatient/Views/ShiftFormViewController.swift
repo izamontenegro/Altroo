@@ -118,7 +118,7 @@ class ShiftFormViewController: UIViewController {
     private lazy var formStack: UIStackView = {        
         var sections: [UIView] = [titleSection, timeSection, relationshipSection]
         
-        if viewModel.fetchUser() == nil {
+        if viewModel.fetchUser()?.name == "" {
             sections.insert(nameSection, at: 1)
         }
 
@@ -206,7 +206,6 @@ class ShiftFormViewController: UIViewController {
     func didTapDoneButton() {
         if viewModel.fetchUser() != nil {
             nameTextField.text = viewModel.fetchUser()?.name
-            print(viewModel.fetchUser()?.name)
         } else {
             guard viewModel.validateUser() else { return }
         }
