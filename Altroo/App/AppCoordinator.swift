@@ -29,16 +29,14 @@ final class AppCoordinator: Coordinator {
     
     @MainActor
     func start() async {
-        if userService.fetchUser() == nil {
-            _ = userService.createUser(name: "\(UUID())", category: "Cuidador")
-        }
-        
         if receivedPatientViaShare {
             await waitForSharedPatientSync(timeout: 15)
         }
 
-        
         if UserDefaults.standard.isFirstLaunch {
+            if userService.fetchUser() == nil {
+                _ = userService.createUser(name: "", category: "Cuidador")
+            }
             showOnboardingFlow()
         } else if userService.fetchCurrentPatient() == nil {
             showAllPatientsFlow()

@@ -50,7 +50,7 @@ class AddTaskViewModel {
     
     func checkRepeatingDays() {
         if repeatingDays.isEmpty {
-            repeatingDays = Locale.Weekday.allCases
+            repeatingDays = Locale.Weekday.allWeekDays
         }
     }
     

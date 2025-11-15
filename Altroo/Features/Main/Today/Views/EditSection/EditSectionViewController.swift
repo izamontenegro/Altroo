@@ -32,14 +32,28 @@ class EditSectionViewController: GradientNavBarViewController {
 
     // MARK: - Layout
     private func setupLayout() {
-        view.addSubview(stackView)
+        let mainStack = setupMainLayout()
+        mainStack.translatesAutoresizingMaskIntoConstraints = false
+        
+        view.addSubview(mainStack)
         
         NSLayoutConstraint.activate([
-            stackView.topAnchor.constraint(equalTo: view.safeAreaLayoutGuide.topAnchor, constant: 12),
-            stackView.leadingAnchor.constraint(equalTo: view.leadingAnchor, constant: Layout.mediumSpacing),
-            stackView.trailingAnchor.constraint(equalTo: view.trailingAnchor, constant: -Layout.mediumSpacing),
-            stackView.bottomAnchor.constraint(lessThanOrEqualTo: view.bottomAnchor, constant: -Layout.mediumSpacing)
+            mainStack.topAnchor.constraint(equalTo: view.safeAreaLayoutGuide.topAnchor, constant: 12),
+            mainStack.leadingAnchor.constraint(equalTo: view.leadingAnchor, constant: Layout.mediumSpacing),
+            mainStack.trailingAnchor.constraint(equalTo: view.trailingAnchor, constant: -Layout.mediumSpacing),
+            mainStack.bottomAnchor.constraint(lessThanOrEqualTo: view.bottomAnchor, constant: -Layout.mediumSpacing)
         ])
+    }
+    
+    private func setupMainLayout() -> UIView {
+        let mainStack = UIStackView()
+        mainStack.axis = .vertical
+        mainStack.spacing = 16
+        
+        mainStack.addArrangedSubview(header)
+        mainStack.addArrangedSubview(stackView)
+
+        return mainStack
     }
     
     // MARK: - Items
@@ -50,8 +64,6 @@ class EditSectionViewController: GradientNavBarViewController {
             stackView.removeArrangedSubview($0)
             $0.removeFromSuperview()
         }
-        
-        stackView.addArrangedSubview(header)
 
         for config in configs {
             switch config.type {

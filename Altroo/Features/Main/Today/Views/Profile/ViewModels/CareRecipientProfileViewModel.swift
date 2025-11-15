@@ -84,4 +84,9 @@ final class CareRecipientProfileViewModel {
                           completion: @escaping (Result<Void, Error>) -> Void) {
         coreDataService.updateParticipantPermission(for: object, participant: participant, to: newPermission, completion: completion)
     }
+    
+    func getCurrentCareRecipientName() -> String {
+        let name = userService.fetchCurrentPatient()?.personalData?.name ?? ""
+        return name
+    }
 }

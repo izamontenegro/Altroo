@@ -90,7 +90,7 @@ class TaskDetailViewController: UIViewController {
         stackView.distribution = .equalCentering
         stackView.translatesAutoresizingMaskIntoConstraints = false
                 
-        for day in Locale.Weekday.allCases {
+        for day in Locale.Weekday.allWeekDays {
             //TODO: CHANGE FROM BUTTONS TO TAG
             let tag = PrimaryStyleButton(title: day.rawValue.first!.uppercased())
             if taskTemplate.daysOfTheWeek!.contains(day.rawValue) {

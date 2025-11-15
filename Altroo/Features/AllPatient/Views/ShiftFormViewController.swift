@@ -98,9 +98,9 @@ class ShiftFormViewController: UIViewController {
         button.changesSelectionAsPrimaryAction = true
         button.backgroundColor = .blue40
         
-        let actions: [UIAction] = viewModel.relationshipOptions.map { option in
-            let isSelected = (option == viewModel.selectedUserRelationship)
-            return UIAction(title: option, state: isSelected ? .on : .off) { [weak self] action in
+        let actions: [UIAction] = RelationshipOptionsEnum.allCases.map { option in
+            let isSelected = (option.displayText == viewModel.selectedUserRelationship)
+            return UIAction(title: option.displayText, state: isSelected ? .on : .off) { [weak self] action in
                 guard let self else { return }
                 self.viewModel.selectedUserRelationship = action.title
                 
@@ -118,7 +118,7 @@ class ShiftFormViewController: UIViewController {
     private lazy var formStack: UIStackView = {        
         var sections: [UIView] = [titleSection, timeSection, relationshipSection]
         
-        if viewModel.fetchUser() == nil {
+        if viewModel.fetchUser()?.name == "" {
             sections.insert(nameSection, at: 1)
         }
 

@@ -76,7 +76,7 @@ private extension ProfileHeader {
     func setupInfoStack() -> UIStackView {
         let data = careRecipient.personalData
 
-        let nameText = data?.name ?? "Nome não informado"
+        let nameText = data?.name?.abbreviatedName ?? "Nome não informado"
         let birthText = DateFormatterHelper.birthDateFormatter(from: data?.dateOfBirth)
         let weightText = formattedWeight(from: data?.weight)
         let heightText = formattedHeight(from: data?.height)
