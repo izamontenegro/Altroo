@@ -13,6 +13,8 @@ final class HydrationRecordViewController: GradientNavBarViewController {
     
     private var amountButtons: [UIButton] = []
     private var customValueField: UITextField!
+    private var hydrationTargetValueField: UITextField!
+
     private var confirmationButton: StandardConfirmationButton!
     
     var onDismiss: (() -> Void)?
@@ -32,6 +34,9 @@ final class HydrationRecordViewController: GradientNavBarViewController {
         setupLayout()
         bindViewModel()
         setupTapToDismiss()
+
+        viewModel.loadTargetValue()
+        hydrationTargetValueField.text = viewModel.targetValue > 0 ? String(Int(viewModel.targetValue)) : nil
     }
     
     override func viewDidDisappear(_ animated: Bool) {
@@ -47,10 +52,11 @@ final class HydrationRecordViewController: GradientNavBarViewController {
         let header = StandardHeaderView(title: "Registrar Hidratação", subtitle: "Registre a quantidade ingerida de líquidos")
         let amountSection = makeAmountSection()
         let customSection = makeCustomValueSection()
+        let targetSection = makeHydrationTargetValueSection()
         
         confirmationButton = configureConfirmationButton()
         
-        let contentStack = UIStackView(arrangedSubviews: [header, amountSection, customSection])
+        let contentStack = UIStackView(arrangedSubviews: [header, amountSection, customSection, targetSection])
         contentStack.axis = .vertical
         contentStack.spacing = 24
         contentStack.translatesAutoresizingMaskIntoConstraints = false
@@ -143,10 +149,31 @@ final class HydrationRecordViewController: GradientNavBarViewController {
         stack.spacing = 8
         return stack
     }
+    
+    private func makeHydrationTargetValueSection() -> UIView {
+        let title = StandardLabel(
+            labelText: "Meta",
+            labelFont: .sfPro,
+            labelType: .callOut,
+            labelColor: .black10,
+            labelWeight: .semibold
+        )
+
+        let textField = StandardTextfield()
+        textField.placeholder = "ml"
+        textField.keyboardType = .numberPad
+        textField.addTarget(self, action: #selector(targetValueChanged(_:)), for: .editingChanged)
+        self.hydrationTargetValueField = textField
+
+        let stack = UIStackView(arrangedSubviews: [title, textField])
+        stack.axis = .vertical
+        stack.spacing = 8
+        return stack
+    }
 
     private func configureConfirmationButton() -> StandardConfirmationButton {
         let button = StandardConfirmationButton(title: "Salvar")
-        button.addTarget(self, action: #selector(saveHydrationMeasure), for: .touchUpInside)
+        button.addTarget(self, action: #selector(save), for: .touchUpInside)
         button.translatesAutoresizingMaskIntoConstraints = false
         return button
     }
@@ -174,11 +201,26 @@ final class HydrationRecordViewController: GradientNavBarViewController {
     @objc private func customValueChanged(_ sender: UITextField) {
         viewModel.customValue = Double(sender.text ?? "") ?? 0
     }
-
+    
+    @objc private func save() {
+        saveHydrationTarget()
+        saveHydrationMeasure()
+    }
+    
+    @objc private func targetValueChanged(_ sender: UITextField) {
+        viewModel.targetValue = Double(sender.text ?? "") ?? 0
+    }
+    
     @objc private func saveHydrationMeasure() {
         viewModel.saveHydrationMeasure()
         dismiss(animated: true)
     }
+    
+    @objc private func saveHydrationTarget() {
+        viewModel.saveHydrationTarget()
+        dismiss(animated: true)
+    }
+
 
     private func updateConfirmationButtonState(enabled: Bool) {
         confirmationButton.isUserInteractionEnabled = enabled
@@ -199,10 +241,11 @@ final class HydrationRecordViewController: GradientNavBarViewController {
 
     // MARK: - Combine Binding
     private func bindViewModel() {
-        Publishers.CombineLatest(viewModel.$selectedAmount, viewModel.$customValue)
-            .sink { [weak self] amount, value in
-                let valid = (amount != nil && (amount != .custom || value > 0))
-                self?.updateConfirmationButtonState(enabled: valid)
+        Publishers.CombineLatest3(viewModel.$selectedAmount, viewModel.$customValue, viewModel.$targetValue)
+            .sink { [weak self] amount, custom, target in
+                let measureValid = (amount != nil && (amount != .custom || custom > 0))
+                let targetValid = target > 0
+                self?.updateConfirmationButtonState(enabled: measureValid || targetValid)
             }
             .store(in: &cancellables)
     }

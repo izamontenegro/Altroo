@@ -25,7 +25,6 @@ struct SubitemConfig: Codable {
     var isVisible: Bool
 }
 
-
 class TodaySectionManager {
     static let shared = TodaySectionManager()
     private let key = "todaySectionConfig"

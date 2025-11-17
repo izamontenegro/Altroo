@@ -78,7 +78,7 @@ class TodayViewModel {
         
         let currentPeriod = PeriodEnum.current
         let today = Date()
-        let todayWeekday = Locale.Weekday.from(calendarWeekday: Calendar.current.component(.weekday, from: today))
+        let todayWeekday = Locale.Weekday.fromDay(calendarWeekday: Calendar.current.component(.weekday, from: today))
         
         periodTasks = allTasks.filter { task in
             guard let start = task.template?.startDate else { return false }

@@ -74,7 +74,10 @@ extension DefaultAppFactory {
 extension DefaultAppFactory {
     
     func makeReportViewController() -> UIViewController {
-        let vm = DailyReportViewModel(basicNeedsFacade: dependencies.basicNeedsFacade, userService: dependencies.userService, careRecipientFacade: dependencies.careRecipientFacade, routineActivitiesFacade: dependencies.routineActivitiesFacade)
+        let vm = DailyReportViewModel(basicNeedsFacade: dependencies.basicNeedsFacade,
+                                      userService: dependencies.userService,
+                                      careRecipientFacade: dependencies.careRecipientFacade,
+                                      routineActivitiesFacade: dependencies.routineActivitiesFacade)
         let vc = ReportViewController(viewModel: vm)
         return vc
     }
@@ -92,9 +95,10 @@ extension DefaultAppFactory {
     }
     
     func makeHistoryViewController(delegate: HistoryViewControllerDelegate) -> UIViewController {
-        let vm = HistoryViewModel(userService: dependencies.userService,
-                                  coreDataService: dependencies.coreDataService,
-                                  historyService: dependencies.historyService)
+        let vm = HistoryViewModel(basicNeedsFacade: dependencies.basicNeedsFacade,
+                                  userService: dependencies.userService,
+                                  careRecipientFacade: dependencies.careRecipientFacade,
+                                  routineActivitiesFacade: dependencies.routineActivitiesFacade)
         let vc = HistoryViewController(viewModel: vm, delegate: delegate)
         return vc
     }
@@ -151,14 +155,6 @@ extension DefaultAppFactory {
         return vc
     }
     
-    func makeChangeCareRecipientViewController(delegate: ChangeCareRecipientViewControllerDelegate) -> UIViewController {
-        let vm = ChangeCareRecipientViewModel(userService: dependencies.userService,
-                                              coreDataService: dependencies.coreDataService)
-        let vc = ChangeCareRecipientViewController(viewModel: vm)
-        (vc as? ChangeCareRecipientViewController)?.delegate = delegate
-        return vc
-    }
-    
     func makeMedicalRecordViewController(delegate: EditMedicalRecordViewControllerDelegate?) -> UIViewController {
         let vm = MedicalRecordViewModel(userService: dependencies.userService)
         let vc = MedicalRecordViewController(viewModel: vm)
@@ -166,7 +162,6 @@ extension DefaultAppFactory {
         return vc
     }
     
-    // edit medical record flow
     func makeEditPersonalDataViewController(delegate: any EditMedicalRecordViewControllerDelegate) -> UIViewController {
         let vm = EditMedicalRecordViewModel(userService: dependencies.userService, careRecipientFacade: dependencies.careRecipientFacade)
         let vc = EditMedicalRecordViewController(viewModel: vm)

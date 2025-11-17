@@ -25,9 +25,9 @@ final class AddPatientViewModel: ObservableObject {
     @Published var diseases: [DiseaseDraft] = []
     @Published var bedriddenStatus: BedriddenStatus = .notBedridden
     
+    // TODO: REALLY UPDATE THE USERNAME HERE
     @Published var userName: String = ""
     @Published var userNameError: String?
-    let relationshipOptions = ["Cuidador", "Mãe/Pai", "Filha/Filho", "Neta/Neto", "Familiar", "Amigo", "Outro"]
     @Published var selectedUserRelationship: String = "Cuidador"
     @Published var selectedContactRelationship: String = "Filha/Filho"
 

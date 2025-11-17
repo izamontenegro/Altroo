@@ -15,8 +15,7 @@ final class EditPersonalDataView: UIView, UITextFieldDelegate {
     weak var delegate: EditMedicalRecordViewControllerDelegate?
 
     private var subscriptions = Set<AnyCancellable>()
-    private let relationshipOptions = ["Cuidador", "Mãe/Pai", "Filha/Filho", "Neta/Neto", "Familiar", "Amigo", "Outro"]
-
+    
     private lazy var numberFormatter: NumberFormatter = {
         let formatter = NumberFormatter()
         formatter.locale = .current
@@ -30,7 +29,7 @@ final class EditPersonalDataView: UIView, UITextFieldDelegate {
     private let scrollView = UIScrollView.make(direction: .vertical)
     private let contentStackView = UIStackView()
 
-    private let genderSegmentedControl = StandardSegmentedControl(items: ["Feminino", "Masculino"])
+    private let genderSegmentedControl = StandardSegmentedControl(items: ["F", "M"])
     private let nameTextField = StandardTextfield(placeholder: "Nome do assistido")
     private let addressTextField = StandardTextfield(placeholder: "Endereço do assistido")
 
@@ -57,10 +56,10 @@ final class EditPersonalDataView: UIView, UITextFieldDelegate {
     }()
 
     private lazy var relationshipButton: PopupMenuButton = {
-        let button = PopupMenuButton(title: relationshipOptions.first ?? "Cuidador")
+        let button = PopupMenuButton(title: RelationshipOptionsEnum.caregiver.displayText)
         button.showsMenuAsPrimaryAction = true
         button.backgroundColor = .blue40
-        button.menu = createRelationshipMenu(selected: relationshipOptions.first ?? "Cuidador")
+        button.menu = createRelationshipMenu(selected: RelationshipOptionsEnum.caregiver.displayText)
         return button
     }()
 
@@ -318,9 +317,9 @@ final class EditPersonalDataView: UIView, UITextFieldDelegate {
     }
 
     private func createRelationshipMenu(selected: String) -> UIMenu {
-        let actions: [UIAction] = relationshipOptions.map { option in
-            let isSelected = (option == selected)
-            return UIAction(title: option, state: isSelected ? .on : .off) { [weak self] action in
+        let actions: [UIAction] = RelationshipOptionsEnum.allCases.map { option in
+            let isSelected = (option.displayText == selected)
+            return UIAction(title: option.displayText, state: isSelected ? .on : .off) { [weak self] action in
                 guard let self = self else { return }
                 self.relationshipButton.setTitle(action.title, for: .normal)
                 self.relationshipButton.menu = self.createRelationshipMenu(selected: action.title)

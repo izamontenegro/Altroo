@@ -7,7 +7,6 @@
 
 import Foundation
 
-// MARK: EventEnums -
 enum CategoryEventEnum: String {
     case appointment
     case exam
@@ -58,6 +57,30 @@ enum HistoryActivityType: String {
             return "Hidratação"
         case .meal:
             return "Alimentação"
+        }
+    }
+}
+
+enum RelationshipOptionsEnum: String, CaseIterable {
+    case caregiver = "Caregiver"
+    case parent = "Parent"
+    case child = "Child"
+    case grandchild = "Grandchild"
+    case greatGrandchild = "GreatGrandchild"
+    case family = "Family"
+    case friend = "Friend"
+    case other = "Other"
+    
+    var displayText: String {
+        switch self {
+        case .caregiver: return "Cuidador"
+        case .parent: return "Mãe/Pai"
+        case .child: return "Filha/Filho"
+        case .grandchild: return "Neta/Neto"
+        case .greatGrandchild: return "Bisneta/Bisneto"
+        case .family: return "Familiar"
+        case .friend: return "Amigo"
+        case .other: return "Outro"
         }
     }
 }

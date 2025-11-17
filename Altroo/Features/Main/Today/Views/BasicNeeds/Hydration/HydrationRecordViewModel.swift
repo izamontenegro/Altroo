@@ -16,6 +16,8 @@ final class HydrationRecordViewModel {
 
     @Published var selectedAmount: HydrationAmountEnum? = nil
     @Published var customValue: Double = 0
+    @Published var targetValue: Double = 0
+
 
     init(careRecipientFacade: CareRecipientFacade, userService: UserServiceSession, coreDataService: CoreDataService, historyService: HistoryService) {
         self.careRecipientFacade = careRecipientFacade
@@ -25,13 +27,29 @@ final class HydrationRecordViewModel {
     }
     
     func saveHydrationMeasure() {
-          guard
-              let careRecipient = userService.fetchCurrentPatient(),
-              let amount = selectedAmount
-          else { return }
-
-          let totalWater = amount == .custom ? customValue : amount.milliliters
-          
-          careRecipientFacade.setWaterMeasure(totalWater, careRecipient)
-      }
+        guard
+            let careRecipient = userService.fetchCurrentPatient(),
+            let amount = selectedAmount
+        else { return }
+        
+        let totalWater = amount == .custom ? customValue : amount.milliliters
+        
+        careRecipientFacade.setWaterMeasure(totalWater, careRecipient)
+    }
+    
+    func saveHydrationTarget() {
+        guard
+            let careRecipient = userService.fetchCurrentPatient()
+        else { return }
+       
+        careRecipientFacade.setWaterTarget(targetValue, careRecipient)
+    }
+    
+    func loadTargetValue() {
+        guard
+            let careRecipient = userService.fetchCurrentPatient()
+        else { return }
+        
+        targetValue = careRecipient.waterTarget
+    }
 }

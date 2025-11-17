@@ -10,7 +10,7 @@ import UIKit
 
 struct HistorySectionView: View {
     @Binding var section: HistoryDaySection
-    let onOpen: (HistoryItem) -> Void
+    let onOpen: (ReportItem) -> Void
     
     var body: some View {
         VStack(spacing: 0) {
