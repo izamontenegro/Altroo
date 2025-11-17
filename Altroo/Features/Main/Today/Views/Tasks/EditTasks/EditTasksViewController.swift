@@ -151,23 +151,23 @@ class EditTaskViewController: TaskFormViewController {
     }
     
     func addTimeAction(date: Date = .now, isInitial: Bool = false) {
-        let newPicker = UIDatePicker.make(mode: .time)
-        newPicker.date = date
-        newPicker.tag = hourPickers.count
-        newPicker.addTarget(self, action: #selector(timeChanged(_:)), for: .valueChanged)
-        
-        if let _ = hourStack.arrangedSubviews.last as? PrimaryStyleButton {
-            hourStack.insertArrangedSubview(newPicker, at: hourStack.arrangedSubviews.count - 1)
-        } else {
-            hourStack.addArrangedSubview(newPicker)
-        }
-        hourPickers.append(newPicker)
-        
-        
-        if !isInitial {
-            let index = viewModel.times.count
-            viewModel.addTime(from: newPicker.date)
-        }
+//        let newPicker = UIDatePicker.make(mode: .time)
+//        newPicker.date = date
+//        newPicker.tag = hourPickers.count
+//        newPicker.addTarget(self, action: #selector(timeChanged(_:)), for: .valueChanged)
+//        
+//        if let _ = hourStack.arrangedSubviews.last as? PrimaryStyleButton {
+//            hourStack.insertArrangedSubview(newPicker, at: hourStack.arrangedSubviews.count - 1)
+//        } else {
+//            hourStack.addArrangedSubview(newPicker)
+//        }
+//        hourPickers.append(newPicker)
+//        
+//        
+//        if !isInitial {
+//            let index = viewModel.times.count
+//            viewModel.addTime(from: newPicker.date)
+//        }
 
     }
     

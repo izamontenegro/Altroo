@@ -17,14 +17,23 @@ class TaskFormViewController: GradientNavBarViewController {
     let deleteButton = OutlineButton(title: "Deletar", color: .red20)
     private var confirmBottomConstraint: NSLayoutConstraint?
 
-    let nameTexfield = StandardTextfield(placeholder: "Nome")
+    let nameTexfield = StandardTextfield(placeholder: "Nome da tarefa")
     let noteTexfield = ObservationView()
-
-    var hourPickers: [UIDatePicker] = []
-    let addTimeButton = PrimaryStyleButton(title: "Novo Horário")
-    let startDatePicker: UIDatePicker = UIDatePicker.make(mode: .date)
-    let endDatePicker: UIDatePicker = UIDatePicker.make(mode: .date)
     
+    //TIME
+//    var hourPickers: [UIDatePicker] = [] //take out
+    lazy var deleteTimeButton: MinusButton = {
+        let btn = MinusButton()
+        btn.widthAnchor.constraint(equalToConstant: 18).isActive = true
+        btn.addTarget(self, action: #selector(didDeleteLastTime), for: .touchUpInside)
+        return btn
+    }()
+    
+    let addTimeButton = PrimaryStyleButton(title: "Novo Horário")
+    var addTimeViews: [UIView] = []
+    lazy var timePickersFlowView = FlowLayoutView(views: addTimeViews, maxWidth: view.bounds.width - 32)
+    
+    //take out
     let hourStack: UIStackView = {
         let stackView = UIStackView()
         stackView.axis = .vertical
@@ -34,7 +43,11 @@ class TaskFormViewController: GradientNavBarViewController {
         stackView.translatesAutoresizingMaskIntoConstraints = false
         return stackView
     }()
-
+    
+    //DATE
+    let startDatePicker: UIDatePicker = UIDatePicker.make(mode: .date)
+    let endDatePicker: UIDatePicker = UIDatePicker.make(mode: .date)
+    
     let dateStack: UIStackView = {
         let stackView = UIStackView()
         stackView.axis = .horizontal
@@ -47,12 +60,12 @@ class TaskFormViewController: GradientNavBarViewController {
     
     //sections
     lazy var nameSection = FormSectionView(title: "Nome", content: nameTexfield)
-    private lazy var hourSection = FormSectionView(title: "Horário", content: hourStack)
-    private lazy var repeatSection = FormSectionView(title: "Repetir", content: weekdayRow)
+    private lazy var hourSection = FormSectionView(title: "Horário", content: timePickersFlowView)
+    private lazy var repeatSection = FormSectionView(title: "Essa tarefa irá se repetir?", content: weekdayRow)
     lazy var startSection = FormSectionView(title: "Início", content: startDatePicker)
     var endDateSection: UIView!
     var continuousButton: PopupMenuButton!
-    private lazy var noteSection = FormSectionView(title: "Observações", content: noteTexfield)
+    private lazy var noteSection = FormSectionView(title: "Observação", content: noteTexfield)
 
     private lazy var contentStack: UIStackView = {
         let stackView = UIStackView(arrangedSubviews: [
@@ -73,6 +86,7 @@ class TaskFormViewController: GradientNavBarViewController {
         
         return stackView
     }()
+    
 
     var weekdayRow: RepeatDaysRow = RepeatDaysRow()
     
@@ -132,7 +146,9 @@ class TaskFormViewController: GradientNavBarViewController {
     }
 
     func setupContent() {
-            hourStack.addArrangedSubview(addTimeButton)
+        //time
+//            hourStack.addArrangedSubview(addTimeButton)
+//        addTimeViews.append(addTimeButton)
 
             //duration
             startDatePicker.addTarget(self, action: #selector(startDateChanged(_:)), for: .valueChanged)
@@ -173,6 +189,10 @@ class TaskFormViewController: GradientNavBarViewController {
     @objc private func dismissKeyboard() {
         view.endEditing(true)
     }
+   
+    @objc func didDeleteLastTime() {}
+
+    
 }
 
 extension TaskFormViewController: UITextFieldDelegate {

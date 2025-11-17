@@ -116,24 +116,50 @@ class AddTaskViewController: TaskFormViewController {
     }
     
     func setupTimes() {
-        addTimeAction()
+        
+        //view after loading
+        if viewModel.times.isEmpty {
+            addTimeAction()
+            addTimeViews.append(addTimeButton)
+        //there is only 1 picker
+        } else if viewModel.times.count == 1 {
+            addTimeViews.removeLast() //take add button out
+            addTimeAction()
+            //add delete button
+            
+        //more than 1 picker
+        } else {
+            let penultimateElementIndex = addTimeViews.count - 2
+            addTimeAction(addAtIndex: penultimateElementIndex)
+        }
         addTimeButton.addTarget(self, action: #selector(addTimeButtonTapped(_:)), for: .touchUpInside)
+        
+        timePickersFlowView.reload(with: addTimeViews)
+        //todo: refresh flowlayout
     }
     
-    func addTimeAction(date: Date = .now) {
-        let newPicker = UIDatePicker.make(mode: .time)
-        newPicker.date = date
-        newPicker.tag = hourPickers.count
-        newPicker.addTarget(self, action: #selector(timeChanged(_:)), for: .valueChanged)
+    func addTimeAction(addAtIndex: Int? = nil) {
         
-        if let _ = hourStack.arrangedSubviews.last as? PrimaryStyleButton {
-            hourStack.insertArrangedSubview(newPicker, at: hourStack.arrangedSubviews.count - 1)
-        } else {
-            hourStack.addArrangedSubview(newPicker)
+        //make new datepicker
+        let newPicker = UIDatePicker.make(mode: .time)
+        newPicker.date = .now
+        newPicker.addTarget(self, action: #selector(timeChanged(_:)), for: .valueChanged)
+
+        //delete last button
+        if let last = addTimeViews.last, last is MinusButton {
+            addTimeViews.removeLast()
         }
         
-        hourPickers.append(newPicker)
-        viewModel.addTime(from: date)
+        //adds to view
+        addTimeViews.append(newPicker)
+        if !viewModel.times.isEmpty {
+            addTimeViews.append(deleteTimeButton)
+        }
+
+        // adds actual date to task model
+        viewModel.addTime(from: .now)
+        
+        //todo: refresh flowlayout
     }
     
     
