@@ -126,6 +126,7 @@ class AddTaskViewController: TaskFormViewController {
         //make new datepicker
         let newPicker = UIDatePicker.make(mode: .time)
         newPicker.date = .now
+        newPicker.tag = viewModel.times.count
         newPicker.addTarget(self, action: #selector(timeChanged(_:)), for: .valueChanged)
         
         

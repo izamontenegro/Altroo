@@ -43,7 +43,7 @@ enum PeriodEnum: String, CaseIterable {
         switch self {
         case .morning: 12
         case .afternoon: 18
-        case .night: 0
+        case .night: 24
         case .overnight: 6
         }
     }
@@ -92,6 +92,21 @@ enum PeriodEnum: String, CaseIterable {
 
         let ordered: [PeriodEnum] = [.morning, .afternoon, .night, .overnight]
         return Array(Set(periods)).sorted { ordered.firstIndex(of: $0)! < ordered.firstIndex(of: $1)! }
+    }
+    
+    static func period(for date: Date) -> PeriodEnum? {
+        let hour = Calendar.current.component(.hour, from: date)
+
+        let ranges: [(PeriodEnum, Range<Int>)] = [
+            (.morning, self.morning.startTime..<self.morning.endTime),
+            (.afternoon, self.afternoon.startTime..<self.afternoon.endTime),
+            (.night, self.night.startTime..<self.night.endTime),
+            (.overnight, self.overnight.startTime..<self.overnight.endTime)
+        ]
+
+        return ranges.first { (_, range) in
+            range.contains(hour)
+        }?.0
     }
     
     static var current: PeriodEnum {

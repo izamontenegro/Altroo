@@ -17,6 +17,7 @@ class AllTasksViewModel {
     
 
     @Published var tasks: [TaskInstance] = []
+    @Published var lateTasks: [TaskInstance] = []
   
     init(taskService: RoutineActivitiesFacade, userService: UserServiceProtocol, coreDataService: CoreDataService, historyService: HistoryService) {
         self.taskService = taskService
@@ -25,19 +26,21 @@ class AllTasksViewModel {
         self.historyService = historyService
 
         fetchCareRecipient()
-        loadTasks()
+        loadTodayTasks()
+        loadLateTasks()
     }
     
     func fetchCareRecipient() {
         currentCareRecipient = userService.fetchCurrentPatient()
     }
     
-    func loadTasks() {
+    //MARK: -TODAY TASKS
+    func loadTodayTasks() {
         guard let careRecipient = currentCareRecipient else { return }
 
         taskService.generateInstancesForToday(for: careRecipient)
         let allTasks = taskService.fetchAllInstanceRoutineTasks(from: careRecipient)
-        tasks = filterTasksByDay(allTasks)
+        tasks = filterTodayTasks(allTasks)
     }
     
     func filterTasksByPeriod(_ period: PeriodEnum) -> [TaskInstance] {
@@ -46,31 +49,39 @@ class AllTasksViewModel {
             .sorted(by: {$0.time! < $1.time!})
     }
     
-    func filterTasksByDay(_ tasks: [TaskInstance]) -> [TaskInstance] {
-        let today = Calendar.current.startOfDay(for: Date())
-        let todayDayOfTheWeek = Locale.Weekday.fromDay(calendarWeekday: Calendar.current.component(.weekday, from: today))
-        
-        //filter by task interval
-        let intervalTasks = tasks.filter { task in
-            guard let start = task.template?.startDate else { return false }
-            
-            let end = task.template?.endDate //will be nil if continuous
-
-            let isAfterStart = start <= today
-            let isBeforeEnd = end == nil || end! >= today
-
-            return isAfterStart && isBeforeEnd
+    func filterTodayTasks(_ tasks: [TaskInstance]) -> [TaskInstance] {
+        return tasks.filter { task in
+             Calendar.current.isDateInToday(task.time ?? .now)
         }
-        
-        //filter by weekday
-        let weekdayTasks = intervalTasks.filter { task in
-            
-            guard let todayWeek = todayDayOfTheWeek else { return false }
-            return task.template?.weekdays.contains(todayWeek) ?? false
-        }
-        return weekdayTasks
     }
     
+    //MARK: -LATE TASKS
+    func loadLateTasks()  {
+        guard let careRecipient = currentCareRecipient else { return }
+        let allTasks = taskService.fetchAllInstanceRoutineTasks(from: careRecipient)
+
+        lateTasks = allTasks.filter( { $0.isLateDay })
+    }
+    
+    var daysOfLateTasks: [Date] {
+        let days = lateTasks
+               .compactMap { $0.time }
+               .map { Calendar.current.startOfDay(for: $0) }
+           return Array(Set(days))
+    }
+    
+    func filterLateTasksByDay(_ day: Date) -> [TaskInstance] {
+        return lateTasks
+            .filter({ Calendar.current.isDate($0.time!, inSameDayAs: day) })
+            .sorted(by: {$0.time! < $1.time!})
+    }
+    
+    //MARK: -FUTURE TASKS
+    func loadFutureTasks() {
+        
+    }
+    
+    //MARK: -UTILS
     func markAsDone(_ instance: TaskInstance) {
         guard let careRecipient = userService.fetchCurrentPatient() else { return }
         

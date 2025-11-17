@@ -1,0 +1,175 @@
+//
+//  AllTasksViewController.swift
+//  Altroo
+//
+//  Created by Raissa Parente on 02/10/25.
+//
+
+import UIKit
+import Combine
+
+class AllTasksViewController: GradientNavBarViewController {
+    let viewModel: AllTasksViewModel
+    var onTaskSelected: ((TaskInstance) -> Void)?
+    
+    let titleLabel = StandardLabel(labelText: "Tarefas", labelFont: .sfPro, labelType: .title2, labelColor: .black, labelWeight: .semibold)
+    
+    let descriptionLabel = StandardLabel(labelText: "Confira os tarefas cadastradas no sistema ou adicione uma nova tarefa para visualizá-la aqui.", labelFont: .sfPro, labelType: .body, labelColor: .black, labelWeight: .regular)
+    
+    let scrollView: UIScrollView = {
+        let scrollView = UIScrollView()
+        scrollView.translatesAutoresizingMaskIntoConstraints = false
+        scrollView.showsVerticalScrollIndicator = false
+        return scrollView
+    }()
+    
+    private let addTaskButton: CapsuleWithCircleView = {
+        let label = CapsuleWithCircleView(
+            text: "Nova Tarefa",
+            textColor: .teal20,
+            nameIcon: "plus",
+            nameIconColor: .pureWhite,
+            circleIconColor: .teal20
+        )
+        return label
+    }()
+    
+    private lazy var segmentedControl: StandardSegmentedControl = {
+        let sc = StandardSegmentedControl(
+            items: ["Em atraso", "Hoje", "A seguir"],
+            height: 35,
+            backgroundColor: UIColor(resource: .pureWhite),
+            selectedColor: UIColor(resource: .blue30),
+            selectedFontColor: UIColor(resource: .pureWhite),
+            unselectedFontColor: UIColor(resource: .blue10),
+            cornerRadius: 8
+        )
+        sc.selectedSegmentIndex = 1
+        sc.applyWhiteBackgroundColor()
+        sc.setContentHuggingPriority(.defaultLow, for: .horizontal)
+        sc.setContentCompressionResistancePriority(.defaultLow, for: .horizontal)
+        
+        sc.addTarget(self, action: #selector(segmentChanged), for: .valueChanged)
+
+        return sc
+    }()
+    
+    private var currentContentView: UIView?
+
+    private lazy var todayView = TodayTasksView(viewModel: viewModel)
+    private lazy var lateView = LateTasksView(viewModel: viewModel)
+//    private lazy var upcomingView = UpcomingTasksView(viewModel: viewModel)
+
+    
+    init(viewModel: AllTasksViewModel, onTaskSelected: ((TaskInstance) -> Void)? = nil) {
+        self.viewModel = viewModel
+        self.onTaskSelected = onTaskSelected
+        super.init(nibName: nil, bundle: nil)
+        hidesBottomBarWhenPushed = true
+    }
+    
+    required init?(coder: NSCoder) { fatalError() }
+    
+    override func viewDidLoad() {
+        super.viewDidLoad()
+        
+        view.backgroundColor = .blue80
+        
+        setupAddButton()
+        makeContent()
+        showContent(todayView)
+    }
+    
+    func makeTitle() {
+        descriptionLabel.numberOfLines = 0
+        scrollView.addSubview(titleLabel)
+        scrollView.addSubview(segmentedControl)
+        scrollView.addSubview(descriptionLabel)
+        scrollView.addSubview(segmentedControl)
+        
+        NSLayoutConstraint.activate([
+            titleLabel.topAnchor.constraint(equalTo: scrollView.contentLayoutGuide.topAnchor, constant: 16),
+            titleLabel.leadingAnchor.constraint(equalTo: scrollView.contentLayoutGuide.leadingAnchor),
+            titleLabel.trailingAnchor.constraint(equalTo: scrollView.contentLayoutGuide.trailingAnchor),
+                        
+            descriptionLabel.topAnchor.constraint(equalTo: titleLabel.bottomAnchor),
+            descriptionLabel.leadingAnchor.constraint(equalTo: scrollView.contentLayoutGuide.leadingAnchor),
+            descriptionLabel.trailingAnchor.constraint(equalTo: scrollView.contentLayoutGuide.trailingAnchor),
+            
+            segmentedControl.topAnchor.constraint(equalTo: descriptionLabel.bottomAnchor, constant: 12),
+            segmentedControl.leadingAnchor.constraint(equalTo: scrollView.contentLayoutGuide.leadingAnchor),
+            segmentedControl.trailingAnchor.constraint(equalTo: scrollView.contentLayoutGuide.trailingAnchor),
+        ])
+    }
+    
+    func showContent(_ view: UIView) {
+        currentContentView?.removeFromSuperview()
+        currentContentView = view
+
+        scrollView.addSubview(view)
+
+        NSLayoutConstraint.activate([
+            view.topAnchor.constraint(equalTo: segmentedControl.bottomAnchor, constant: 16),
+            view.leadingAnchor.constraint(equalTo: scrollView.leadingAnchor),
+            view.trailingAnchor.constraint(equalTo: scrollView.trailingAnchor),
+            view.bottomAnchor.constraint(equalTo: scrollView.bottomAnchor),
+            view.widthAnchor.constraint(equalTo: scrollView.widthAnchor),
+        ])
+    }
+    
+    func makeContent() {
+        view.addSubview(scrollView)
+        makeTitle()
+        
+        NSLayoutConstraint.activate([
+            scrollView.topAnchor.constraint(equalTo: view.layoutMarginsGuide.topAnchor),
+            scrollView.bottomAnchor.constraint(equalTo: view.layoutMarginsGuide.bottomAnchor),
+            scrollView.leadingAnchor.constraint(equalTo: view.layoutMarginsGuide.leadingAnchor),
+            scrollView.trailingAnchor.constraint(equalTo: view.layoutMarginsGuide.trailingAnchor),
+            
+        ])
+    }
+    
+    private func setupAddButton() {
+        self.rightButton = addTaskButton
+        setupAddButtonTap()
+    }
+    
+    private func setupAddButtonTap() {
+        addTaskButton.enablePressEffect()
+
+        addTaskButton.onTap = { [weak self] in
+            DispatchQueue.main.asyncAfter(deadline: .now() + 0.1) {
+                self?.didTapAddButton()
+            }
+        }
+    }
+    
+    @objc func didTapAddButton() {
+        
+    }
+    
+    @objc private func segmentChanged(_ sender: UISegmentedControl) {
+        switch sender.selectedSegmentIndex {
+        case 0:
+            showContent(lateView)
+        case 1:
+            showContent(todayView)
+        case 2:
+            //TODO: CHANGE FOR UPCOMING
+            showContent(todayView)
+        default: break
+        }
+    }
+
+}
+
+extension AllTasksViewController: TaskCardDelegate {
+    func taskCardDidSelect(_ task: TaskInstance) {
+        onTaskSelected?(task)
+    }
+    
+    func taskCardDidMarkAsDone(_ task: TaskInstance) {
+        viewModel.markAsDone(task)
+    }
+}

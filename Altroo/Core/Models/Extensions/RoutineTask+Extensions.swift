@@ -48,19 +48,8 @@ extension TaskInstance {
         return dueDate > today
     }
     
-    //TODO REFACTOR
     var period: PeriodEnum {
-        let hour = Calendar.current.component(.hour, from: time!)
-        
-        switch hour {
-        case 5..<12:
-            return .morning
-        case 12..<17:
-            return .afternoon
-        case 17..<21:
-            return .night
-        default:
-            return .overnight
-        }
+        PeriodEnum.period(for: time ?? .now) ?? .morning
     }
+ 
 }
