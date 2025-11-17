@@ -180,17 +180,6 @@ extension CoreDataService {
     func matches(_ participant: CKShare.Participant,
                  with item: ParticipantsAccess,
                  in object: NSManagedObject) -> Bool {
-        if item.name == "Você" {
-            do {
-                let shares = try stack.persistentContainer.fetchShares(matching: [object.objectID])
-                if let share = shares[object.objectID] {
-                    return participant == share.currentUserParticipant
-                }
-            } catch {
-                print("Erro ao buscar share: \(error)")
-            }
-        }
-        
         let ckName = participant.userIdentity.nameComponents?
             .formatted(.name(style: .long))
             .trimmingCharacters(in: .whitespacesAndNewlines)
@@ -210,7 +199,6 @@ extension CoreDataService {
         completion: @escaping (Result<Void, Error>) -> Void
     ) {
         do {
-            // 1. Sempre refetch para garantir versão atual (evita etag error)
             let shares = try stack.persistentContainer.fetchShares(matching: [object.objectID])
             guard let share = shares[object.objectID] else {
                 return completion(.failure(NSError(
@@ -219,7 +207,6 @@ extension CoreDataService {
                 )))
             }
             
-            // 2. Confere se o usuário é o dono
             guard share.currentUserParticipant == share.owner else {
                 return completion(.failure(NSError(
                     domain: "Share", code: 403,
@@ -227,7 +214,6 @@ extension CoreDataService {
                 )))
             }
             
-            // 3. Não pode remover o owner
             if participant == share.owner {
                 return completion(.failure(NSError(
                     domain: "Share", code: 403,
@@ -235,14 +221,11 @@ extension CoreDataService {
                 )))
             }
             
-            // 4. Remover o participante
             share.removeParticipant(participant)
             
-            // 5. salvar com política: ifServerRecordUnchanged → garante etag válido
             let op = CKModifyRecordsOperation(recordsToSave: [share], recordIDsToDelete: nil)
             op.savePolicy = .ifServerRecordUnchanged
             
-            // 👉 retry automático se receber ServerRecordChanged
             op.modifyRecordsCompletionBlock = { saved, _, error in
                 if let ckError = error as? CKError,
                    ckError.code == .serverRecordChanged {
@@ -269,13 +252,12 @@ extension CoreDataService {
     }
     
     
-    /// 🔁 Recarrega o share atualizado e tenta novamente
     private func refetchAndRetryRemove(
         _ participant: CKShare.Participant,
         from object: NSManagedObject,
         completion: @escaping (Result<Void, Error>) -> Void
     ) {
-        DispatchQueue.main.asyncAfter(deadline: .now() + 0.4) {  // pequena espera opcional
+        DispatchQueue.main.asyncAfter(deadline: .now() + 0.4) {
             self.removeParticipant(participant, from: object, completion: completion)
         }
     }

@@ -37,20 +37,8 @@ final class CareRecipientProfileViewModel {
     func caregiversForCurrentRecipient() -> [ParticipantsAccess] {
         guard let recipient = currentCareRecipient() else { return [] }
         let participants = coreDataService.participantsWithCategory(for: recipient)
-
-        if participants.isEmpty {
-            return [
-                ParticipantsAccess(
-                    name: "Você",
-                    category: userService.fetchUser()?.category ?? "—",
-                    permission: .readWrite
-                )
-            ]
-        }
-
         return participants
     }
-
     
     func currentShare() -> CKShare? {
         guard let recipient = currentCareRecipient() else { return nil }

@@ -85,8 +85,11 @@ final class CareRecipientProfileViewController: GradientNavBarViewController {
     }
     
     private func setupCaregiversSection(below header: UIView) {
+        let caregivers = viewModel.caregiversForCurrentRecipient()
+        let uniqueCaregivers = caregivers.unique { $0.name }
+        
         let titleLabel = StandardLabel(
-            labelText: "Cuidadores",
+            labelText: "Permissões",
             labelFont: .sfPro,
             labelType: .title2,
             labelColor: .black10,
@@ -101,6 +104,10 @@ final class CareRecipientProfileViewController: GradientNavBarViewController {
             }
         }
         
+        guard let careRecipient = viewModel.userService.fetchCurrentPatient() else { return }
+        let isOwner = viewModel.coreDataService.isOwner(object: careRecipient)
+        inviteButton.isHidden = !(uniqueCaregivers.isEmpty || isOwner)
+        
         let topStack = UIStackView(arrangedSubviews: [titleLabel, inviteButton])
         topStack.axis = .horizontal
         topStack.distribution = .equalSpacing
@@ -114,27 +121,30 @@ final class CareRecipientProfileViewController: GradientNavBarViewController {
             topStack.trailingAnchor.constraint(equalTo: view.trailingAnchor, constant: -16)
         ])
         
-        let caregivers = viewModel.caregiversForCurrentRecipient()
-        let uniqueCaregivers = caregivers.unique { $0.name }
-        
         let cardsStack = UIStackView()
         cardsStack.axis = .vertical
         cardsStack.spacing = 8
         cardsStack.translatesAutoresizingMaskIntoConstraints = false
         view.addSubview(cardsStack)
         
-        if uniqueCaregivers.isEmpty {
-            let none = StandardLabel(
-                labelText: "Nenhum cuidador ainda. Toque em “Convidar cuidador”.",
-                labelFont: .sfPro,
-                labelType: .footnote,
-                labelColor: .black20,
-                labelWeight: .regular
+        if uniqueCaregivers.count <= 1 {
+            let card = CaregiverProfileCardView(
+                coreDataService: viewModel.coreDataService,
+                name: "Você",
+                category: viewModel.userService.fetchUser()?.category ?? "Cuidador",
+                permission: .readWrite,
+                isOwner: true
             )
-            cardsStack.addArrangedSubview(none)
-        } else {
+
+            card.translatesAutoresizingMaskIntoConstraints = false
+            card.heightAnchor.constraint(equalToConstant: 54).isActive = true
+            cardsStack.addArrangedSubview(card)
+        }
+            
+        if !uniqueCaregivers.isEmpty {
             for item in uniqueCaregivers {
                 guard let careRecipient = viewModel.userService.fetchCurrentPatient() else { continue }
+                
                 let participants = viewModel.coreDataService.fetchParticipants(for: careRecipient) ?? []
                 guard let participant = participants.first(where: {
                     viewModel.coreDataService.matches($0, with: item, in: careRecipient)
@@ -145,7 +155,7 @@ final class CareRecipientProfileViewController: GradientNavBarViewController {
                     coreDataService: viewModel.coreDataService,
                     participant: participant,
                     parentObject: careRecipient,
-                    name: item.name,
+                    name: item.name.abbreviatedName,
                     category: item.category,
                     permission: participant.permission,
                     isOwner: viewModel.coreDataService.isOwner(object: careRecipient)
@@ -168,7 +178,7 @@ final class CareRecipientProfileViewController: GradientNavBarViewController {
     
     private func setupBottomButtons(below lastView: UIView) {
         let endButton = makeOutlineButton(
-            title: "Encerrar Cuidado",
+            title: "Encerrar Acompanhamento",
             action: #selector(didTapEndCareButton)
         )
         endButton.enablePressAnimation()
@@ -269,7 +279,7 @@ final class CareRecipientProfileViewController: GradientNavBarViewController {
     @objc private func didTapEndCareButton() {
         let alertController = UIAlertController(
             title: "Deseja encerrar o acompanhamento de \(viewModel.getCurrentCareRecipientName())?",
-            message: "Essa ação é irreversível.",
+            message: "Você precisará ser convidado novamente para ter acesso aos dados do paciente.",
             preferredStyle: .alert
         )
         

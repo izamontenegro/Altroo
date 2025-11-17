@@ -14,18 +14,18 @@ class CaregiverProfileCardView: UIView {
 
     let name: String
     let category: String
-    let permission: CKShare.Participant.Permission
+    let permission: CKShare.ParticipantPermission
     let isOwner: Bool
     
-    let participant: CKShare.Participant
-    let parentObject: NSManagedObject
+    let participant: CKShare.Participant?
+    let parentObject: NSManagedObject?
 
     init(coreDataService: CoreDataService,
-         participant: CKShare.Participant,
-         parentObject: NSManagedObject,
+         participant: CKShare.Participant? = nil,
+         parentObject: NSManagedObject? = nil,
          name: String,
          category: String,
-         permission: CKShare.Participant.Permission,
+         permission: CKShare.ParticipantPermission,
          isOwner: Bool) {
 
         self.coreDataService = coreDataService
@@ -35,10 +35,10 @@ class CaregiverProfileCardView: UIView {
         self.category = category
         self.permission = permission
         self.isOwner = isOwner
+        
         super.init(frame: .zero)
         buildLayout()
     }
-
 
     @available(*, unavailable)
     required init?(coder: NSCoder) {
@@ -109,9 +109,9 @@ class CaregiverProfileCardView: UIView {
             labelColor: .black10,
             labelWeight: .medium
         )
-       
+        
         let subtitleLabel = StandardLabel(
-            labelText: participant.role == .owner ? "Criador" : "Cuidador",
+            labelText: category,
             labelFont: .sfPro,
             labelType: .footnote,
             labelColor: .black20,
@@ -132,7 +132,7 @@ class CaregiverProfileCardView: UIView {
         button.backgroundColor = .clear
 
         let titleLabel = StandardLabel(
-            labelText: permissionLabel(permission),
+            labelText: (participant?.role == .owner || name == "Você") ? "Criador" : permissionLabel(permission),
             labelFont: .sfPro,
             labelType: .subHeadline,
             labelColor: .blue10,
@@ -144,7 +144,7 @@ class CaregiverProfileCardView: UIView {
         chevron.translatesAutoresizingMaskIntoConstraints = false
         chevron.tintColor = .blue10
         chevron.preferredSymbolConfiguration = .init(pointSize: 14, weight: .semibold)
-        chevron.isHidden = (!isOwner) || (participant.role == .owner)
+        chevron.isHidden = (!isOwner) || (participant?.role == .owner) || (name == "Você")
         
         let stack = UIStackView(arrangedSubviews: [titleLabel, chevron])
         stack.axis = .horizontal
@@ -155,12 +155,12 @@ class CaregiverProfileCardView: UIView {
         button.addSubview(stack)
         NSLayoutConstraint.activate([
             stack.centerXAnchor.constraint(equalTo: button.centerXAnchor),
-            stack.centerYAnchor.constraint(equalTo: button.centerYAnchor),
+            stack.centerYAnchor.constraint(equalTo: button.topAnchor, constant: 8),
             stack.leadingAnchor.constraint(greaterThanOrEqualTo: button.leadingAnchor),
             stack.trailingAnchor.constraint(lessThanOrEqualTo: button.trailingAnchor)
         ])
 
-        if isOwner && participant.role != .owner {
+        if let participant, isOwner, participant.role != .owner {
             button.menu = makeOwnerMenu()
             button.showsMenuAsPrimaryAction = true
             button.enableHighlightEffect()
@@ -189,6 +189,8 @@ private extension CaregiverProfileCardView {
     }
     
     func setPermission(_ newPermission: CKShare.ParticipantPermission) {
+        guard let participant, let parentObject else { return }
+
         coreDataService.updateParticipantPermission(
             for: parentObject,
             participant: participant,
@@ -206,6 +208,8 @@ private extension CaregiverProfileCardView {
     }
 
     func removeCaregiver() {
+        guard let participant, let parentObject else { return }
+
         coreDataService.removeParticipant(
             participant,
             from: parentObject
