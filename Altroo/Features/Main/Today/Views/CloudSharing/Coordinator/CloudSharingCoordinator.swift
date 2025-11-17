@@ -68,7 +68,7 @@ final class CloudSharingCoordinator: NSObject, UICloudSharingControllerDelegate 
                 DispatchQueue.main.async {
                     self.presentAlert(
                         title: "Erro ao Compartilhar",
-                        message: "Armazenamento Cheio."
+                        message: "Armazenamento do iCloud Cheio."
                     )
                 }
             }
@@ -108,7 +108,7 @@ final class CloudSharingCoordinator: NSObject, UICloudSharingControllerDelegate 
             DispatchQueue.main.async {
                 self.presentAlert(
                     title: "Erro ao Compartilhar",
-                    message: "Armazenamento Cheio."
+                    message: "Armazenamento do iCloud Cheio."
                 )
             }
         }

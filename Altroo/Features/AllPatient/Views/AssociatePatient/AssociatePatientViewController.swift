@@ -119,6 +119,12 @@ class AssociatePatientViewController: GradientHeader {
             object: nil
         )
     }
+    
+    override func viewWillAppear(_ animated: Bool) {
+        super.viewWillAppear(animated)
+        navigationController?.setNavigationBarHidden(true, animated: false)
+        showTabBar(true)
+    }
 
     //TODO: - Add loading view
     @objc private func remoteDataChanged() {
