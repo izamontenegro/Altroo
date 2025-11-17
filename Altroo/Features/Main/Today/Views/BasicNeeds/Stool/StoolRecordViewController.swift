@@ -7,6 +7,7 @@
 
 import UIKit
 import Combine
+import SwiftUI
 
 protocol StoolRecordNavigationDelegate: AnyObject {
     func didFinishAddingStoolRecord()
@@ -19,9 +20,11 @@ final class StoolRecordViewController: GradientNavBarViewController {
     private var cancellables = Set<AnyCancellable>()
     
     private var colorButtons: [UIButton] = []
-    private var stoolTypesButtons: [UIButton] = []
+    private var stoolTypesButtons: [UIView] = []
     private var observationField: UITextField?
         
+    var selectedStoolType: StoolTypesEnum?
+    
     init(viewModel: StoolRecordViewModel) {
         self.viewModel = viewModel
         super.init(nibName: nil, bundle: nil)
@@ -116,62 +119,30 @@ final class StoolRecordViewController: GradientNavBarViewController {
         section.spacing = 16
         return section
     }
-    
-    // TROCAR ESSE BOTAO AQUI
-    private func makeStoolTypeButton(type: StoolTypesEnum, index: Int) -> UIButton {
-        let button = UIButton(type: .system)
-        button.tag = index
-        button.translatesAutoresizingMaskIntoConstraints = false
-        button.backgroundColor = .blue80
-        button.layer.cornerRadius = 12
-        button.layer.masksToBounds = true
-        button.layer.borderWidth = 0
-        button.layer.borderColor = UIColor.blue40.cgColor
 
-        let contentStack = UIStackView()
-        contentStack.axis = .vertical
-        contentStack.alignment = .center
-        contentStack.spacing = 8
-        contentStack.translatesAutoresizingMaskIntoConstraints = false
+    private func makeStoolTypeCard(type: StoolTypesEnum, index: Int) -> UIView {
+        let card = BasicNeedsCardHostingView(
+            imageName: type.displayImage,
+            subtitle: "Tipo",
+            title: type.displayText,
+            action: { [weak self] in
+                guard let self else { return }
 
-        let imageView = UIImageView(image: UIImage(named: type.displayImage))
-        imageView.contentMode = .scaleAspectFit
-        imageView.setContentHuggingPriority(.required, for: .vertical)
+                self.viewModel.selectedStoolType = type
 
-        let titleLabel = StandardLabel(
-            labelText: type.displayText,
-            labelFont: .sfPro,
-            labelType: .footnote,
-            labelColor: .blue20,
-            labelWeight: .medium
+            }
         )
-        titleLabel.textAlignment = .center
-        titleLabel.numberOfLines = 2
 
-        contentStack.addArrangedSubview(imageView)
-        contentStack.addArrangedSubview(titleLabel)
-
-        button.addSubview(contentStack)
+        card.translatesAutoresizingMaskIntoConstraints = false
+        
         NSLayoutConstraint.activate([
-            button.widthAnchor.constraint(equalToConstant: 120),
-            button.heightAnchor.constraint(equalToConstant: 120),
-
-            contentStack.leadingAnchor.constraint(equalTo: button.leadingAnchor, constant: 12),
-            contentStack.trailingAnchor.constraint(equalTo: button.trailingAnchor, constant: -12),
-            contentStack.topAnchor.constraint(equalTo: button.topAnchor, constant: 12),
-            contentStack.bottomAnchor.constraint(equalTo: button.bottomAnchor, constant: -12),
-
-            imageView.heightAnchor.constraint(greaterThanOrEqualToConstant: 56)
+            card.widthAnchor.constraint(equalToConstant: 120),
+            card.heightAnchor.constraint(equalToConstant: 160)
         ])
 
-       
-        contentStack.isUserInteractionEnabled = false
-        imageView.isUserInteractionEnabled = false
-        titleLabel.isUserInteractionEnabled = false
-
-        button.addTarget(self, action: #selector(typeTapped(_:)), for: .touchUpInside)
-        return button
+        return card
     }
+
     
     private func makeStoolTypesSection() -> UIView {
         let title = StandardLabel(
@@ -203,16 +174,17 @@ final class StoolRecordViewController: GradientNavBarViewController {
         ])
 
         for (index, type) in StoolTypesEnum.allCases.enumerated() {
-            let button = makeStoolTypeButton(type: type, index: index)
-            stoolTypesButtons.append(button)
-            row.addArrangedSubview(button)
+            let card = makeStoolTypeCard(type: type, index: index)
+            row.addArrangedSubview(card)
+            stoolTypesButtons.append(card)
+
         }
 
         let section = UIStackView(arrangedSubviews: [title, scrollView])
         section.axis = .vertical
         section.spacing = 12
 
-        scrollView.heightAnchor.constraint(equalToConstant: 120).isActive = true
+        scrollView.heightAnchor.constraint(equalToConstant: 170).isActive = true
 
         return section
     }
@@ -273,16 +245,8 @@ final class StoolRecordViewController: GradientNavBarViewController {
 
     @objc private func typeTapped(_ sender: UIButton) {
         let type = StoolTypesEnum.allCases[sender.tag]
+        selectedStoolType = type
         viewModel.selectedStoolType = type
-
-        for (i, button) in stoolTypesButtons.enumerated() {
-            if i == sender.tag {
-                button.layer.borderWidth = 2
-                button.layer.borderColor = UIColor.blue40.cgColor
-            } else {
-                button.layer.borderWidth = 0
-            }
-        }
     }
     
     @objc private func observationChanged(_ sender: UITextField) {
@@ -321,16 +285,49 @@ final class StoolRecordViewController: GradientNavBarViewController {
         viewModel.$selectedStoolType
             .sink { [weak self] selected in
                 guard let self else { return }
-                for (index, button) in self.stoolTypesButtons.enumerated() {
-                    if StoolTypesEnum.allCases.indices.contains(index),
-                       StoolTypesEnum.allCases[index] == selected {
-                        button.layer.borderWidth = 2
-                        button.layer.borderColor = UIColor.blue40.cgColor
-                    } else {
-                        button.layer.borderWidth = 0
-                    }
-                }
             }
             .store(in: &cancellables)
+    }
+}
+
+
+import SwiftUI
+
+final class BasicNeedsCardHostingView: UIView {
+    private let hostingController: UIHostingController<BasicNeedsTemplateCard>
+
+    init(imageName: String, subtitle: String, title: String, action: @escaping () -> Void) {
+
+        let swiftUIView = BasicNeedsTemplateCard(
+            imageName: imageName,
+            subtitle: subtitle,
+            title: title,
+            action: action
+        )
+
+
+        hostingController = UIHostingController(rootView: swiftUIView)
+
+        super.init(frame: .zero)
+
+        setup()
+    }
+
+    required init?(coder: NSCoder) {
+        fatalError("init(coder:) has not been implemented")
+    }
+
+    private func setup() {
+        hostingController.view.translatesAutoresizingMaskIntoConstraints = false
+        hostingController.view.backgroundColor = .clear
+
+        addSubview(hostingController.view)
+
+        NSLayoutConstraint.activate([
+            hostingController.view.leadingAnchor.constraint(equalTo: leadingAnchor),
+            hostingController.view.trailingAnchor.constraint(equalTo: trailingAnchor),
+            hostingController.view.topAnchor.constraint(equalTo: topAnchor),
+            hostingController.view.bottomAnchor.constraint(equalTo: bottomAnchor)
+        ])
     }
 }

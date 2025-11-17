@@ -15,7 +15,7 @@ struct BasicNeedsTemplateCard: View {
     let action: (() -> Void)
     
     @State var isSelected: Bool = false
-
+    
     var body: some View {
         Button(action: {
             action()
@@ -54,10 +54,3 @@ struct BasicNeedsTemplateCard: View {
         )
     }
 }
-
-#Preview {
-    BasicNeedsTemplateCard(imageName: "MealIllustration_Lunch", subtitle: "Subtitle", title: "Title", action: {
-        print("button tapped")
-    })
-}
-
