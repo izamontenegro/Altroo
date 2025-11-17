@@ -47,30 +47,11 @@ class AllTasksViewModel {
     }
     
     func filterTasksByDay(_ tasks: [TaskInstance]) -> [TaskInstance] {
-        let today = Calendar.current.startOfDay(for: Date())
-        let todayDayOfTheWeek = Locale.Weekday.fromDay(calendarWeekday: Calendar.current.component(.weekday, from: today))
-        
-        //filter by task interval
-        let intervalTasks = tasks.filter { task in
-            guard let start = task.template?.startDate else { return false }
-            
-            let end = task.template?.endDate //will be nil if continuous
-
-            let isAfterStart = start <= today
-            let isBeforeEnd = end == nil || end! >= today
-
-            return isAfterStart && isBeforeEnd
+        return tasks.filter { task in
+             Calendar.current.isDateInToday(task.time ?? .now)
         }
-        
-        //filter by weekday
-        let weekdayTasks = intervalTasks.filter { task in
-            
-            guard let todayWeek = todayDayOfTheWeek else { return false }
-            return task.template?.weekdays.contains(todayWeek) ?? false
-        }
-        return weekdayTasks
     }
-    
+
     func markAsDone(_ instance: TaskInstance) {
         guard let careRecipient = userService.fetchCurrentPatient() else { return }
         
