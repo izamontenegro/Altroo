@@ -60,7 +60,6 @@ class ComponentPreviewViewController: UIViewController {
         // SEGMENTEDCONTROL
         let segmentedControl = StandardSegmentedControl(
             items: ["F", "M"],
-            width: 113,
             height: 35,
             backgroundColor: UIColor(resource: .white70),
             selectedColor: UIColor(resource: .teal20),

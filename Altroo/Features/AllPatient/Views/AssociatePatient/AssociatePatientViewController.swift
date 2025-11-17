@@ -103,10 +103,10 @@ class AssociatePatientViewController: GradientHeader {
     }
 
     override func viewDidLoad() {
+        setNavbarItems(title: "Assistidos", subtitle: "Acompanhe os assistidos cadastrados no aplicativo ou adicione um novo.")
+
         super.viewDidLoad()
         view.backgroundColor = .blue80
-        
-        setNavbarItems(title: "Assistidos", subtitle: "Acompanhe os assistidos cadastrados no aplicativo ou adicione um novo.")
 
         setupLayout()
         updateView()
@@ -134,7 +134,7 @@ class AssociatePatientViewController: GradientHeader {
         scrollView.addSubview(vStack)
 
         NSLayoutConstraint.activate([
-            scrollView.topAnchor.constraint(equalTo: view.safeAreaLayoutGuide.topAnchor),
+            scrollView.topAnchor.constraint(equalTo: gradientView.bottomAnchor, constant: 20),
             scrollView.leadingAnchor.constraint(equalTo: view.leadingAnchor, constant: Layout.mediumSpacing),
             scrollView.trailingAnchor.constraint(equalTo: view.trailingAnchor, constant: -Layout.mediumSpacing),
             scrollView.bottomAnchor.constraint(equalTo: view.bottomAnchor, constant: context == .patientSelection ? -Layout.bigButtonBottomPadding : -20),

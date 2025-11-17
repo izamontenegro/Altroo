@@ -9,7 +9,6 @@ import UIKit
 import CloudKit
 
 protocol ProfileViewControllerDelegate: AnyObject {
-    func openChangeCareRecipientSheet()
     func openShareCareRecipientSheet(_ careRecipient: CareRecipient)
     func goToMedicalRecordViewController()
     func goToAllPatient() async
@@ -173,7 +172,7 @@ final class CareRecipientProfileViewController: GradientNavBarViewController {
             action: #selector(didTapEndCareButton)
         )
         endButton.enablePressAnimation()
-
+        
         let buttonsStack = UIStackView(arrangedSubviews: [endButton])
         buttonsStack.axis = .vertical
         buttonsStack.spacing = 12
@@ -229,7 +228,7 @@ final class CareRecipientProfileViewController: GradientNavBarViewController {
         let button = UIButton(type: .system)
         button.backgroundColor = .clear
         button.layer.cornerRadius = 23
-        button.layer.borderWidth = 2
+        button.layer.borderWidth = 3
         button.layer.borderColor = UIColor.teal10.cgColor
         button.heightAnchor.constraint(equalToConstant: 46).isActive = true
         button.addTarget(self, action: action, for: .touchUpInside)
@@ -262,7 +261,6 @@ final class CareRecipientProfileViewController: GradientNavBarViewController {
         delegate?.goToMedicalRecordViewController()
     }
     
-    @objc private func didTapChangeCareRecipientButton() { delegate?.openChangeCareRecipientSheet() }
     @objc private func didTapShareCareRecipientButton() {
         guard let careRecipient = viewModel.currentCareRecipient() else { return }
         delegate?.openShareCareRecipientSheet(careRecipient)
@@ -270,13 +268,13 @@ final class CareRecipientProfileViewController: GradientNavBarViewController {
     
     @objc private func didTapEndCareButton() {
         let alertController = UIAlertController(
-            title: "Tem certeza?",
+            title: "Deseja encerrar o acompanhamento de \(viewModel.getCurrentCareRecipientName())?",
             message: "Essa ação é irreversível.",
             preferredStyle: .alert
         )
         
         let confirmAction = UIAlertAction(title: "Encerrar", style: .destructive) { [weak self] _ in
-            guard let self = self else { return } 
+            guard let self = self else { return }
             self.viewModel.finishCare()
             
             Task {
@@ -291,9 +289,4 @@ final class CareRecipientProfileViewController: GradientNavBarViewController {
         
         present(alertController, animated: true, completion: nil)
     }
-    //    @objc private func didTapEditCaregiverButton() { delegate?.openEditCaregiversSheet() }
 }
-
-//#Preview {
-//    UINavigationController(rootViewController: CareRecipientProfileViewController()
-//}

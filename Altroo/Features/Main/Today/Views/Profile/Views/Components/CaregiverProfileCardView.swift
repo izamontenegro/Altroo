@@ -84,9 +84,8 @@ class CaregiverProfileCardView: UIView {
         avatar.layer.borderColor = UIColor.pureWhite.cgColor
         avatar.layer.borderWidth = 2
 
-        let initials = initialsFromName(name)
         let initialsLabel = StandardLabel(
-            labelText: initials,
+            labelText: name.getInitials(),
             labelFont: .sfPro,
             labelType: .subHeadline,
             labelColor: .pureWhite,

@@ -64,7 +64,7 @@ class AddSymptomViewModel {
        
         let author = coreDataService.currentPerformerName(for: careRecipient)
         
-        careRecipientFacade.addSymptom(name: name, symptomDescription: note, date: fullDate, in: careRecipient)
+        careRecipientFacade.addSymptom(name: name, symptomDescription: note, date: fullDate, author: author, in: careRecipient)
         
         historyService.addHistoryItem(title: "Registrou \(name)", author: author, date: Date(), type: .symptom, to: careRecipient)
     }

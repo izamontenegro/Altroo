@@ -69,6 +69,7 @@ final class MedicationServiceSpy: MedicationServiceProtocol {
 }
 
 final class RoutineTaskServiceSpy: RoutineTaskServiceProtocol {
+    
     //Template
     struct AddCaptured {
         var task: RoutineTask?
@@ -175,9 +176,9 @@ final class RoutineTaskServiceSpy: RoutineTaskServiceProtocol {
     }
     
     
-    func toggleInstanceIsDone(_ instance: TaskInstance) {
+    func toggleInstanceIsDone(_ instance: TaskInstance, author: String, onTime: Date) {
         toggleCalled += 1
-            lastToggledInstance = instance
+        lastToggledInstance = instance
     }
 }
 
@@ -391,11 +392,11 @@ final class RoutineActivitiesFacadeTests: XCTestCase {
         let (sut, _, _, routineTaskSpy, coreDataSpy) = makeSUT()
         let instance = DummyTaskInstance()
 
-        sut.toggleInstanceIsDone(instance)
+        sut.toggleInstanceIsDone(instance, author: "User", time: .now)
 
         XCTAssertEqual(routineTaskSpy.toggleCalled, 1)
         XCTAssertEqual(coreDataSpy.saveContextCalled, 1)
-        XCTAssertEqual(routineTaskSpy.lastToggledInstance?.id, instance.id)
+        XCTAssertTrue(routineTaskSpy.lastToggledInstance === instance)
     }
 
     
@@ -409,6 +410,4 @@ final class RoutineActivitiesFacadeTests: XCTestCase {
         XCTAssertEqual(coreDataSpy.saveContextCalled, 1)
         XCTAssertTrue(routineTaskSpy.lastDeletedInstance === instance)
     }
-
-
 }

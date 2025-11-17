@@ -5,6 +5,8 @@
 //  Created by Izadora de Oliveira Albuquerque Montenegro on 16/10/25.
 //
 
+import UIKit
+
 // MARK: - URINE
 
 enum UrineCharacteristicsEnum: String, CaseIterable {
@@ -26,6 +28,45 @@ enum UrineCharacteristicsEnum: String, CaseIterable {
         }
     }
 }
+
+enum UrineColorsEnum: String, CaseIterable {
+    case light
+    case lightYellow
+    case yellow
+    case orange
+    case red
+    
+    var displayText: String {
+        switch self {
+        case .light:
+            "Translúcido"
+        case .lightYellow:
+            "Amarelo claro"
+        case .yellow:
+            "Amarelo"
+        case .orange:
+            "Alaranjado"
+        case .red:
+            "Avermelhado"
+        }
+    }
+    
+    var color: UIColor {
+        switch self {
+        case .light:
+                .urineLight
+        case .lightYellow:
+                .urineLightYellow
+        case .yellow:
+                .urineYellow
+        case .orange:
+                .urineOrange
+        case .red:
+                .urineRed
+        }
+    }
+}
+
 
 // MARK: - STOOL
 
@@ -77,6 +118,44 @@ enum StoolTypesEnum: String, CaseIterable {
     }
 }
 
+enum StoolColorsEnum: String, CaseIterable {
+    case brown
+    case yellow
+    case black
+    case red
+    case green
+    
+    var displayText: String {
+        switch self {
+        case .brown:
+            "Marrom médio"
+        case .yellow:
+            "Amarelado"
+        case .black:
+            "Marrom escuro"
+        case .red:
+            "Avermelhado"
+        case .green:
+            "Esverdeado"
+        }
+    }
+    
+    var color: UIColor {
+        switch self {
+        case .brown:
+                .stoolBrown
+        case .yellow:
+                .stoolYellow
+        case .black:
+                .stoolBlack
+        case .red:
+                .stoolRed
+        case .green:
+                .stoolGreen
+        }
+    }
+}
+
 // MARK: - MEAL
 
 enum MealAmountEatenEnum: String, CaseIterable {
@@ -114,11 +193,11 @@ enum MealAmountEatenEnum: String, CaseIterable {
 
 enum MealCategoryEnum: String, CaseIterable {
     case breakfast
-       case lunch
-       case snack
-       case dinner
-       case supper
-
+    case lunch
+    case snack
+    case dinner
+    case supper
+    
     var displayText: String {
         switch self {
         case .breakfast:
@@ -142,7 +221,7 @@ enum HydrationAmountEnum: String, CaseIterable {
     case twoCups
     case oneBottle
     case custom
-
+    
     var displayText: String {
         switch self {
         case .oneCup:
@@ -155,7 +234,7 @@ enum HydrationAmountEnum: String, CaseIterable {
             return "Personalizado"
         }
     }
-
+    
     var milliliters: Double {
         switch self {
         case .oneCup:
@@ -165,7 +244,7 @@ enum HydrationAmountEnum: String, CaseIterable {
         case .oneBottle:
             return 1000
         case .custom:
-            return 0 
+            return 0
         }
     }
 }

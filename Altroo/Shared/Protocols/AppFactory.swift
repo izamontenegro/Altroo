@@ -44,7 +44,7 @@ protocol AssociatePatientFactory {
 
 // MARK: - MAIN FLOW
 protocol MainFlowFactory {
-    func makeAnalysisViewController() -> UIViewController
+    func makeReportViewController() -> UIViewController
     func makeTodayViewController(delegate: TodayViewControllerDelegate) -> UIViewController
     func makeHistoryViewController(delegate: HistoryViewControllerDelegate) -> UIViewController
     func makeSettingsViewController(delegate: SettingsViewControllerDelegate) -> UIViewController
@@ -65,8 +65,6 @@ protocol SymptomFactory {
 // MARK: - PROFILE FLOW
 protocol ProfileFactory {
     func makeProfileViewController(delegate: ProfileViewControllerDelegate) -> UIViewController
-    func makeChangeCareRecipientViewController(delegate: ChangeCareRecipientViewControllerDelegate) -> UIViewController
-    //    func makeEditCaregiverViewController() -> UIViewController
     func makeMedicalRecordViewController(delegate: EditMedicalRecordViewControllerDelegate?) -> UIViewController
 }
 protocol EditMedicalRecordFactory {

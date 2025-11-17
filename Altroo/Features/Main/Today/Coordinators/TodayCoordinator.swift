@@ -40,7 +40,7 @@ final class TodayCoordinator: Coordinator {
             if let hydrationVC = vc as? HydrationRecordViewController {
                 hydrationVC.onDismiss = { [weak self] in
                     guard let self else { return }
-
+                    
                     if let todayVC = self.navigation.viewControllers
                         .compactMap({ $0 as? TodayViewController })
                         .first {
@@ -97,7 +97,11 @@ final class TodayCoordinator: Coordinator {
             let nav = UINavigationController()
             let medicationDetailCoord = MedicationDetailCoordinator(navigation: nav, factory: factory)
             add(child: medicationDetailCoord)
-            presentSheet(nav, from: navigation)
+            presentSheet(
+                nav,
+                from: navigation,
+                percentage: 0.9
+            )
             medicationDetailCoord.start()
             return nil
             
@@ -145,7 +149,11 @@ extension TodayCoordinator: TodayViewControllerDelegate {
         guard let vc = makeViewController(for: destination) else { return }
         
         if destination.isSheet {
-            presentSheet(vc, from: navigation)
+            presentSheet(
+                vc,
+                from: navigation,
+                percentage: 0.9
+            )
         } else {
             navigation.pushViewController(vc, animated: true)
         }

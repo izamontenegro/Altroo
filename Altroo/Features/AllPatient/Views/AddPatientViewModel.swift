@@ -25,9 +25,9 @@ final class AddPatientViewModel: ObservableObject {
     @Published var diseases: [DiseaseDraft] = []
     @Published var bedriddenStatus: BedriddenStatus = .notBedridden
     
+    // TODO: REALLY UPDATE THE USERNAME HERE
     @Published var userName: String = ""
     @Published var userNameError: String?
-    let relationshipOptions = ["Cuidador", "Mãe/Pai", "Filha/Filho", "Neta/Neto", "Familiar", "Amigo", "Outro"]
     @Published var selectedUserRelationship: String = "Cuidador"
     @Published var selectedContactRelationship: String = "Filha/Filho"
 
@@ -71,7 +71,7 @@ final class AddPatientViewModel: ObservableObject {
     }
     
     func finalizeCareRecipient() {        
-        newPatient = careRecipientFacade.buildCareRecipient { personalData, personalCare, healthProblems, mental, physical, routine, basicNeeds, event, symptom in
+        newPatient = careRecipientFacade.buildCareRecipient { personalData, personalCare, healthProblems, mental, physical, routine, basicNeeds, event in
             
             // Personal Data
             self.careRecipientFacade.addName(name: self.name, in: personalData)

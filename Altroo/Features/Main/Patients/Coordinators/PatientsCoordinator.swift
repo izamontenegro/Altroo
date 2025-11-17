@@ -46,13 +46,17 @@ final class PatientsCoordinator: Coordinator {
             presentSheet(
                 child.navigation,
                 from: navigation,
-                detents: [.large()],
-                grabber: true
+                percentage: 0.9
             )
+            
             
         case .tutorialAdd:
             let vc = factory.makeTutorialAddSheet()
-            presentSheet(vc, from: navigation)
+            presentSheet(
+                vc,
+                from: navigation,
+                percentage: 0.9
+            )
             
         case .loading:
             // Go to the loading screen.

@@ -15,16 +15,6 @@ struct HistoryView: View {
     var body: some View {
         ScrollView {
             VStack(alignment: .leading, spacing: 12) {
-                StandardLabelRepresentable(
-                    labelFont: .sfPro,
-                    labelType: .title2,
-                    labelWeight: .semibold,
-                    text: "Histórico",
-                    color: UIColor.black10
-                )
-                .padding(.horizontal, 16)
-                .padding(.top, 8)
-                
                 if(viewModel.sections.isEmpty) {
                     Text("Você ainda não adicionou nenhum registro ou atividade.")
                         .font(.headline)

@@ -12,7 +12,7 @@ protocol HistoryViewControllerDelegate: AnyObject {
     func openDetailSheet(_ controller: HistoryViewController, item: HistoryItem)
 }
 
-final class HistoryViewController: GradientNavBarViewController {
+final class HistoryViewController: GradientHeader {
     let viewModel: HistoryViewModel
     weak var delegate: HistoryViewControllerDelegate?
     
@@ -30,9 +30,12 @@ final class HistoryViewController: GradientNavBarViewController {
     @MainActor required init?(coder: NSCoder) { fatalError("init(coder:) has not been implemented") }
     
     override func viewDidLoad() {
-        showBackButton = false
+        setNavbarItems(title: "Histórico", subtitle: "Confira todos os registros realizados anteriormente com a data, autoria do registros e demais detalhes.")
+
         super.viewDidLoad()
         
+        view.backgroundColor = .blue80
+
         let swiftUIView = HistoryView(viewModel: viewModel)
         
         let hosting = UIHostingController(rootView: swiftUIView)
@@ -43,7 +46,7 @@ final class HistoryViewController: GradientNavBarViewController {
         
         hosting.view.translatesAutoresizingMaskIntoConstraints = false
         NSLayoutConstraint.activate([
-            hosting.view.topAnchor.constraint(equalTo: view.topAnchor),
+            hosting.view.topAnchor.constraint(equalTo: gradientView.bottomAnchor),
             hosting.view.leadingAnchor.constraint(equalTo: view.leadingAnchor),
             hosting.view.trailingAnchor.constraint(equalTo: view.trailingAnchor),
             hosting.view.bottomAnchor.constraint(equalTo: view.bottomAnchor),
@@ -54,7 +57,7 @@ final class HistoryViewController: GradientNavBarViewController {
     override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
         showTabBar(true)
-        if viewModel.sections.isEmpty { viewModel.reloadHistory() }
+        viewModel.reloadHistory()
     }
     
 }

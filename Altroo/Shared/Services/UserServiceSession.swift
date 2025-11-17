@@ -49,6 +49,7 @@ class UserServiceSession: UserServiceProtocol {
     
     func createUser(name: String, category: String) -> User {
         let user = User(context: context)
+        user.id = UUID()
         user.name = name
         user.category = category
         try? context.save()
@@ -111,7 +112,7 @@ class UserServiceSession: UserServiceProtocol {
 
         let coordinator = context.persistentStoreCoordinator
 
-        if let result = try? context.fetch(request).first, result != nil {
+        if let result = try? context.fetch(request).first {
             return result
         }
 
@@ -134,7 +135,7 @@ class UserServiceSession: UserServiceProtocol {
 
         var patients: [CareRecipient] = []
 
-        for (index, id) in ids.enumerated() {
+        for (_, id) in ids.enumerated() {
             if let patient = fetchCareRecipient(id: id) {
                 patients.append(patient)
             }

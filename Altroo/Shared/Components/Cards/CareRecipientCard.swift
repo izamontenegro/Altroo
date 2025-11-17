@@ -125,9 +125,8 @@ class CareRecipientCard: UIView {
         avatar.layer.borderColor = isPlusButton ? UIColor.teal20.cgColor : UIColor.blue20.cgColor
         avatar.layer.borderWidth = 2
 
-        let initials = initialsFromName(profileName)
         let initialsLabel = StandardLabel(
-            labelText: isPlusButton ? "+" : initials,
+            labelText: isPlusButton ? "+" : profileName.getInitials(),
             labelFont: .sfPro,
             labelType: isPlusButton ? .largeTitle : .title2,
             labelColor: .pureWhite,
@@ -144,17 +143,4 @@ class CareRecipientCard: UIView {
         ])
         return avatar
     }
-    
-    func initialsFromName(_ name: String) -> String {
-        let comps = name.split(separator: " ")
-        let initials = comps
-            .prefix(2)
-            .compactMap { $0.first?.uppercased() }
-            .joined()
-        return initials.isEmpty ? "?" : initials
-    }
 }
-
-//#Preview {
-//    CareRecipientCard(name: "Karlisson Oliveira", age: 68, frame: CGRect(x: 0, y: 0, width: 300, height: 90))
-//}
