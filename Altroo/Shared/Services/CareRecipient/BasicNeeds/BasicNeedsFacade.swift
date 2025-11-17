@@ -84,7 +84,6 @@ final class BasicNeedsFacade: BasicNeedsFacadeProtocol {
         date: Date,
         color: UrineColorsEnum?,
         in careRecipient: CareRecipient,
-        urineCharacteristics: [UrineCharacteristicsEnum],
         author: String,
         observation: String?
     ) {
@@ -92,7 +91,6 @@ final class BasicNeedsFacade: BasicNeedsFacadeProtocol {
             period: period,
             date: date,
             color: color,
-            characteristics: urineCharacteristics,
             observation: observation, author: author,
             to: careRecipient
         )
@@ -104,7 +102,6 @@ final class BasicNeedsFacade: BasicNeedsFacadeProtocol {
         period: PeriodEnum? = nil,
         date: Date? = nil,
         color: UrineColorsEnum? = nil,
-        characteristics: [UrineCharacteristicsEnum]? = nil,
         observation: String? = nil
     ) {
         urineService.updateUrineRecord(
@@ -112,7 +109,6 @@ final class BasicNeedsFacade: BasicNeedsFacadeProtocol {
             period: period,
             date: date,
             color: color,
-            characteristics: characteristics,
             observation: observation
         )
         persistenceService.save()

@@ -54,13 +54,11 @@ final class UrineRecordViewController: GradientNavBarViewController {
         content.translatesAutoresizingMaskIntoConstraints = false
             
         let urineColorsSection = makeUrineColorSection()
-        let urineCharacteristicsSection = makeUrineCharacteristicsSection()
         let urineObservationSection = makeUrineObservationSection()
         let addButton = configureAddButton()
         
         content.addArrangedSubview(viewTitle)
         content.addArrangedSubview(urineColorsSection)
-        content.addArrangedSubview(urineCharacteristicsSection)
         content.addArrangedSubview(urineObservationSection)
         
         view.addSubview(content)
@@ -118,58 +116,6 @@ final class UrineRecordViewController: GradientNavBarViewController {
         return section
     }
     
-    private func makeUrineCharacteristicsSection() -> UIView {
-        let title = StandardLabel(
-            labelText: "Alguma dessas características?",
-            labelFont: .sfPro,
-            labelType: .callOut,
-            labelColor: .black10,
-            labelWeight: .semibold
-        )
-        
-        let container = UIStackView()
-        container.axis = .vertical
-        container.spacing = 12
-        
-        var currentRow = UIStackView()
-        currentRow.axis = .horizontal
-        currentRow.spacing = 12
-        currentRow.distribution = .fillProportionally
-        
-        var totalWidth: CGFloat = 0
-        let maxWidth = UIScreen.main.bounds.width - 32
-        
-        for characteristic in UrineCharacteristicsEnum.allCases {
-            let button = PrimaryStyleButton(title: characteristic.displayText)
-            button.backgroundColor = .black40
-            button.setTitleColor(.white, for: .normal)
-            button.addTarget(self, action: #selector(characteristicTapped(_:)), for: .touchUpInside)
-            button.tag = characteristicButtons.count
-            
-            characteristicButtons.append(button)
-            
-            let estimatedWidth = button.intrinsicContentSize.width + 32
-            if totalWidth + estimatedWidth > maxWidth {
-                container.addArrangedSubview(currentRow)
-                currentRow = UIStackView()
-                currentRow.axis = .horizontal
-                currentRow.spacing = 12
-                currentRow.distribution = .fillProportionally
-                totalWidth = 0
-            }
-            
-            currentRow.addArrangedSubview(button)
-            totalWidth += estimatedWidth + 12
-        }
-        
-        container.addArrangedSubview(currentRow)
-        
-        let section = UIStackView(arrangedSubviews: [title, container])
-        section.axis = .vertical
-        section.spacing = 16
-        return section
-    }
-
     private func makeUrineObservationSection() -> UIView {
         let title = StandardLabel(
             labelText: "Observação",
@@ -223,22 +169,6 @@ final class UrineRecordViewController: GradientNavBarViewController {
             check.widthAnchor.constraint(equalToConstant: checkSize),
             check.heightAnchor.constraint(equalToConstant: checkSize)
         ])
-    }
-
-    @objc private func characteristicTapped(_ sender: PrimaryStyleButton) {
-        let characteristic = UrineCharacteristicsEnum.allCases[sender.tag]
-        let isSelected = sender.backgroundColor == .teal20
-        
-        if isSelected {
-            sender.backgroundColor = .black40
-            sender.setTitleColor(.white, for: .normal)
-            
-            viewModel.selectedCharacteristics.removeAll { $0 == characteristic }
-        } else {
-            sender.backgroundColor = .teal20
-            sender.setTitleColor(.white, for: .normal)
-            viewModel.selectedCharacteristics.append(characteristic)
-        }
     }
     
     @objc private func observationChanged(_ sender: UITextField) {

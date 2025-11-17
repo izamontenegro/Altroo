@@ -27,7 +27,7 @@ class FeedingService: FeedingServiceProtocol {
         newFeedingRecord.date = Date
         newFeedingRecord.period = period.rawValue
         newFeedingRecord.photo = photo
-        newFeedingRecord.mealCategory = mealCategory.displayText
+        newFeedingRecord.mealCategory = mealCategory.displayName
         newFeedingRecord.author = author
         
         if let basicNeeds = careRecipient.basicNeeds {

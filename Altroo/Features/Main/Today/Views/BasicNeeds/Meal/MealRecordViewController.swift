@@ -106,7 +106,7 @@ final class MealRecordViewController: GradientNavBarViewController {
         let maximumWidth = UIScreen.main.bounds.width - 32
         
         for (index, category) in MealCategoryEnum.allCases.enumerated() {
-            let button = PrimaryStyleButton(title: category.displayText)
+            let button = PrimaryStyleButton(title: category.displayName)
             button.backgroundColor = .black40
             button.setTitleColor(.white, for: .normal)
             button.tag = index

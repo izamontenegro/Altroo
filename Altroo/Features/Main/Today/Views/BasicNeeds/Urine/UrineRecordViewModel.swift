@@ -18,7 +18,6 @@ final class UrineRecordViewModel {
 
     
     @Published var selectedUrineColor: UrineColorsEnum? = nil
-    @Published var selectedCharacteristics: [UrineCharacteristicsEnum] = []
     @Published var urineObservation: String = ""
     
     init(urineService: BasicNeedsFacade, coreDataService: CoreDataService, userService: UserServiceSession, historyService: HistoryService) {
@@ -40,7 +39,7 @@ final class UrineRecordViewModel {
             date: Date(),
             color: selectedUrineColor,
             in: careRecipient,
-            urineCharacteristics: selectedCharacteristics, author: author,
+            author: author,
             observation: urineObservation
         )
         
