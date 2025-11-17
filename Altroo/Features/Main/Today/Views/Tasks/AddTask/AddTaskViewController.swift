@@ -139,7 +139,6 @@ class AddTaskViewController: TaskFormViewController {
     }
     
     func addTimeAction(addAtIndex: Int? = nil) {
-        
         //make new datepicker
         let newPicker = UIDatePicker.make(mode: .time)
         newPicker.date = .now

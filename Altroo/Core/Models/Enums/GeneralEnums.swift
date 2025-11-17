@@ -22,19 +22,6 @@ enum BehaviorEnum: String {
     case cooperative
 }
 
-enum FrequencyEnum: String {
-    case daily
-    case weekly
-    case biweekly
-    case monthly
-}
-
-enum StatusEnum: String {
-    case beforeLunch
-    case afterLunch
-    case other
-}
-
 enum HistoryActivityType: String {
     case urine
     case stool

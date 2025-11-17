@@ -9,8 +9,8 @@ import Foundation
 
 extension Locale.Weekday {
     public static var allWeekDays: [Locale.Weekday] = [
-            .monday, .tuesday, .wednesday, .thursday, .friday, .saturday, .sunday
-        ]
+        .sunday, .monday, .tuesday, .wednesday, .thursday, .friday, .saturday, 
+    ]
     
     enum SymbolStyle {
         case veryShort   // "M", "T", "W"..
@@ -46,7 +46,11 @@ extension Locale.Weekday {
         case .short:
             symbols = calendar.shortStandaloneWeekdaySymbols
         case .full:
-            symbols = calendar.weekdaySymbols
+            if locale.identifier == "pt_BR" {
+                symbols = allFullPortugueseSymbols()
+            } else {
+                symbols = calendar.standaloneWeekdaySymbols
+            }
         }
         
         let calendarIndex: Int
@@ -62,5 +66,22 @@ extension Locale.Weekday {
         }
         
         return symbols[calendarIndex - 1]
+    }
+    
+    func fullPortugueseSymbol(weekday: Locale.Weekday) -> String {
+        switch weekday {
+        case .sunday: "Domingo"
+        case .monday: "Segunda"
+        case .tuesday: "Terça"
+        case .wednesday: "Quarta"
+        case .thursday: "Quinta"
+        case .friday: "Sexta"
+        case .saturday: "Sábado"
+        }
+    }
+    
+    func allFullPortugueseSymbols() -> [String] {
+        let weekdaysStrings = Locale.Weekday.allWeekDays.map { fullPortugueseSymbol(weekday: $0) }
+        return weekdaysStrings
     }
 }

@@ -11,7 +11,6 @@ class CheckOptionButton: PaddedContentIgnoringButton {
 
     var associatedData: Any?
     let color = UIColor(resource: .teal20)
-    // only add the shadow once
     private var innerShadowView: InnerShadowView?
     
     var text: String = ""
@@ -78,8 +77,8 @@ class CheckOptionButton: PaddedContentIgnoringButton {
         layer.cornerRadius = 8
         layer.masksToBounds = true
         
-        contentEdgeInsets = UIEdgeInsets(top: 8,left: 16,
-                                         bottom: 8, right: 16)
+        contentEdgeInsets = UIEdgeInsets(top: 4, left: 16,
+                                         bottom: 4, right: 0)
         translatesAutoresizingMaskIntoConstraints = false
         
         if isSelected {
@@ -90,7 +89,7 @@ class CheckOptionButton: PaddedContentIgnoringButton {
     private func setupSelectedContent() {
         let stack = UIStackView(arrangedSubviews: [icon, label])
         stack.axis = .horizontal
-        stack.spacing = 6
+        stack.spacing = 4
         stack.alignment = .center
         stack.translatesAutoresizingMaskIntoConstraints = false
         
@@ -98,7 +97,7 @@ class CheckOptionButton: PaddedContentIgnoringButton {
         
         NSLayoutConstraint.activate([
             stack.leadingAnchor.constraint(equalTo: leadingAnchor, constant: 4),
-            stack.trailingAnchor.constraint(equalTo: trailingAnchor, constant: -4),
+            stack.trailingAnchor.constraint(equalTo: trailingAnchor),
             stack.topAnchor.constraint(equalTo: topAnchor, constant: 2),
             stack.bottomAnchor.constraint(equalTo: bottomAnchor, constant: -2)
         ])
