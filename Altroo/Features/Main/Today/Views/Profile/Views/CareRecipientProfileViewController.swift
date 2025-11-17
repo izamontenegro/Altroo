@@ -136,13 +136,22 @@ final class CareRecipientProfileViewController: GradientNavBarViewController {
         } else {
             for item in uniqueCaregivers {
                 guard let careRecipient = viewModel.userService.fetchCurrentPatient() else { continue }
+                let participants = viewModel.coreDataService.fetchParticipants(for: careRecipient) ?? []
+                guard let participant = participants.first(where: {
+                    viewModel.coreDataService.matches($0, with: item, in: careRecipient)
+                }) else { continue }
+
+
                 let card = CaregiverProfileCardView(
                     coreDataService: viewModel.coreDataService,
+                    participant: participant,
+                    parentObject: careRecipient,
                     name: item.name,
                     category: item.category,
-                    permission: item.permission,
+                    permission: participant.permission,
                     isOwner: viewModel.coreDataService.isOwner(object: careRecipient)
                 )
+
                 card.translatesAutoresizingMaskIntoConstraints = false
                 card.heightAnchor.constraint(equalToConstant: 54).isActive = true
                 cardsStack.addArrangedSubview(card)

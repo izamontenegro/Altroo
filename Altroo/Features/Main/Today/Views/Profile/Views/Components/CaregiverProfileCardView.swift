@@ -7,6 +7,7 @@
 //
 import UIKit
 import CloudKit
+import CoreData
 
 class CaregiverProfileCardView: UIView {
     let coreDataService: CoreDataService
@@ -15,9 +16,21 @@ class CaregiverProfileCardView: UIView {
     let category: String
     let permission: CKShare.Participant.Permission
     let isOwner: Bool
+    
+    let participant: CKShare.Participant
+    let parentObject: NSManagedObject
 
-    init(coreDataService: CoreDataService, name: String, category: String, permission: CKShare.Participant.Permission, isOwner: Bool) {
+    init(coreDataService: CoreDataService,
+         participant: CKShare.Participant,
+         parentObject: NSManagedObject,
+         name: String,
+         category: String,
+         permission: CKShare.Participant.Permission,
+         isOwner: Bool) {
+
         self.coreDataService = coreDataService
+        self.participant = participant
+        self.parentObject = parentObject
         self.name = name
         self.category = category
         self.permission = permission
@@ -25,6 +38,7 @@ class CaregiverProfileCardView: UIView {
         super.init(frame: .zero)
         buildLayout()
     }
+
 
     @available(*, unavailable)
     required init?(coder: NSCoder) {
@@ -98,7 +112,7 @@ class CaregiverProfileCardView: UIView {
         )
        
         let subtitleLabel = StandardLabel(
-            labelText: "Cuidador",
+            labelText: participant.role == .owner ? "Criador" : "Cuidador",
             labelFont: .sfPro,
             labelType: .footnote,
             labelColor: .black20,
@@ -131,7 +145,7 @@ class CaregiverProfileCardView: UIView {
         chevron.translatesAutoresizingMaskIntoConstraints = false
         chevron.tintColor = .blue10
         chevron.preferredSymbolConfiguration = .init(pointSize: 14, weight: .semibold)
-        chevron.isHidden = !isOwner
+        chevron.isHidden = (!isOwner) || (participant.role == .owner)
         
         let stack = UIStackView(arrangedSubviews: [titleLabel, chevron])
         stack.axis = .horizontal
@@ -147,14 +161,10 @@ class CaregiverProfileCardView: UIView {
             stack.trailingAnchor.constraint(lessThanOrEqualTo: button.trailingAnchor)
         ])
 
-        if isOwner {
+        if isOwner && participant.role != .owner {
             button.menu = makeOwnerMenu()
             button.showsMenuAsPrimaryAction = true
             button.enableHighlightEffect()
-        } else {
-            button.addAction(UIAction { [weak self] _ in
-                self?.didTapAccess()
-            }, for: .touchUpInside)
         }
 
         return button
@@ -163,10 +173,6 @@ class CaregiverProfileCardView: UIView {
 
 // MARK: - Helpers
 private extension CaregiverProfileCardView {
-    
-    func didTapAccess() {
-        print("tapped")
-    }
 
     func initialsFromName(_ name: String) -> String {
         let comps = name.split(separator: " ")
@@ -183,30 +189,62 @@ private extension CaregiverProfileCardView {
         }
     }
     
+    func setPermission(_ newPermission: CKShare.ParticipantPermission) {
+        coreDataService.updateParticipantPermission(
+            for: parentObject,
+            participant: participant,
+            to: newPermission
+        ) { result in
+            DispatchQueue.main.async {
+                switch result {
+                case .success:
+                    print("Permissão alterada para \(newPermission)")
+                case .failure(let error):
+                    print("Erro ao atualizar permissão:", error)
+                }
+            }
+        }
+    }
+
+    func removeCaregiver() {
+        coreDataService.removeParticipant(
+            participant,
+            from: parentObject
+        ) { result in
+            DispatchQueue.main.async {
+                switch result {
+                case .success:
+                    print("Cuidador removido!")
+                case .failure(let error):
+                    print("Erro ao remover cuidador:", error)
+                }
+            }
+        }
+    }
+    
     private func makeOwnerMenu() -> UIMenu {
         let current = permission
 
         let edit = UIAction(
             title: "Pode Editar",
             image: UIImage(systemName: current == .readWrite ? "checkmark" : "")
-        ) { _ in
-            print("Set permission: readWrite")
-//            coreDataService.updateParticipantPermission(for: <#T##NSManagedObject#>, participant: <#T##CKShare.Participant#>, to: <#T##CKShare.ParticipantPermission#>, completion: <#T##(Result<Void, any Error>) -> Void#>)
+        ) { [weak self] _ in
+            self?.setPermission(.readWrite)
         }
 
         let viewOnly = UIAction(
             title: "Pode Visualizar",
             image: UIImage(systemName: current == .readOnly ? "checkmark" : "")
-        ) { _ in
-            print("Set permission: readOnly")
+        ) { [weak self] _ in
+            self?.setPermission(.readOnly)
         }
 
         let remove = UIAction(
             title: "Remover Cuidador",
             image: UIImage(systemName: "xmark"),
             attributes: .destructive
-        ) { _ in
-            print("Remove caregiver")
+        ) { [weak self] _ in
+            self?.removeCaregiver()
         }
 
         return UIMenu(

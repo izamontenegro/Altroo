@@ -31,31 +31,63 @@ extension CoreDataService {
         }
     }
     
-    
-    func updateParticipantPermission(for object: NSManagedObject,
-                                     participant: CKShare.Participant,
-                                     to newPermission: CKShare.ParticipantPermission,
-                                     completion: @escaping (Result<Void, Error>) -> Void) {
+    func updateParticipantPermission(
+        for object: NSManagedObject,
+        participant: CKShare.Participant,
+        to newPermission: CKShare.ParticipantPermission,
+        completion: @escaping (Result<Void, Error>) -> Void
+    ) {
         do {
             let shares = try stack.persistentContainer.fetchShares(matching: [object.objectID])
-            guard let share = shares[object.objectID] else {
-                return completion(.failure(NSError(domain: "Share", code: 404, userInfo: [NSLocalizedDescriptionKey: "Share não encontrado"])))
-            }
-            guard share.currentUserParticipant == share.owner else {
-                return completion(.failure(NSError(domain: "Share", code: 403, userInfo: [NSLocalizedDescriptionKey: "Apenas o dono pode alterar permissões."])))
+            guard let localShare = shares[object.objectID] else {
+                return completion(.failure(
+                    NSError(domain: "Share", code: 404,
+                            userInfo: [NSLocalizedDescriptionKey:
+                                        "Share não encontrado"]))
+                )
             }
             
-            participant.permission = newPermission
-            
-            let ckContainer = stack.ckContainer
-            let db = ckContainer.privateCloudDatabase // dono salva no private
-            let op = CKModifyRecordsOperation(recordsToSave: [share], recordIDsToDelete: nil)
-            op.savePolicy = .changedKeys
-            op.modifyRecordsCompletionBlock = { _, _, error in
-                if let error = error { completion(.failure(error)) }
-                else { completion(.success(())) }
+            guard localShare.currentUserParticipant == localShare.owner else {
+                return completion(.failure(
+                    NSError(domain: "Share", code: 403,
+                            userInfo: [NSLocalizedDescriptionKey:
+                                        "Apenas o dono pode alterar permissões."]))
+                )
             }
-            db.add(op)
+            
+            let db = stack.ckContainer.privateCloudDatabase
+            
+            db.fetch(withRecordID: localShare.recordID) { record, error in
+                if let error { return completion(.failure(error)) }
+                guard let freshShare = record as? CKShare else {
+                    return completion(.failure(
+                        NSError(domain: "Share", code: 500,
+                                userInfo: [NSLocalizedDescriptionKey:
+                                            "Falha ao obter CKShare atualizado"]))
+                    )
+                }
+                
+                if let freshParticipant = freshShare.participants.first(where: { $0.userIdentity == participant.userIdentity }) {
+                    freshParticipant.permission = newPermission
+                } else {
+                    return completion(.failure(
+                        NSError(domain: "Share", code: 406,
+                                userInfo: [NSLocalizedDescriptionKey:
+                                            "Participante não encontrado no CKShare atualizado"]))
+                    )
+                }
+                
+                let op = CKModifyRecordsOperation(recordsToSave: [freshShare])
+                op.savePolicy = .changedKeys
+                
+                op.modifyRecordsCompletionBlock = { _, _, error in
+                    if let error { completion(.failure(error)) }
+                    else { completion(.success(())) }
+                }
+                
+                db.add(op)
+            }
+            
         } catch {
             completion(.failure(error))
         }
@@ -86,20 +118,20 @@ extension CoreDataService {
             let email = part.userIdentity.lookupInfo?.emailAddress?.lowercased()
             let phone = part.userIdentity.lookupInfo?.phoneNumber?.onlyDigits()
             let recordName = part.userIdentity.userRecordID?.recordName
-
+            
             let matchedUser =
-                (email.flatMap { byEmail[$0] }) ??
-                (phone.flatMap { byPhone[$0] }) ??
-                (recordName.flatMap { byRecordName[$0] })
-
+            (email.flatMap { byEmail[$0] }) ??
+            (phone.flatMap { byPhone[$0] }) ??
+            (recordName.flatMap { byRecordName[$0] })
+            
             let isOwner: Bool
             if #available(iOS 15.0, *) {
                 isOwner = (part.role == .owner)
             } else {
                 isOwner = (part.userIdentity.lookupInfo == nil)
             }
-
-           
+            
+            
             let nameFromCK = part.userIdentity.nameComponents?.formatted(.name(style: .long)).trimmingCharacters(in: .whitespacesAndNewlines)
             let nameFromUser = (matchedUser?.value(forKey: "name") as? String)?.trimmingCharacters(in: .whitespacesAndNewlines)
             let displayName: String = {
@@ -110,10 +142,10 @@ extension CoreDataService {
                 if let phone = phone, !phone.isEmpty { return phone }
                 return "Usuário do iCloud"
             }()
-
+            
             let category = matchedUser?.category ?? "—"
             let permission = part.permission
-
+            
             result.append(.init(name: displayName, category: category, permission: permission))
         }
         return result
@@ -143,5 +175,108 @@ extension CoreDataService {
         request.fetchLimit = 1
         
         return try? context.fetch(request).first
+    }
+    
+    func matches(_ participant: CKShare.Participant,
+                 with item: ParticipantsAccess,
+                 in object: NSManagedObject) -> Bool {
+        if item.name == "Você" {
+            do {
+                let shares = try stack.persistentContainer.fetchShares(matching: [object.objectID])
+                if let share = shares[object.objectID] {
+                    return participant == share.currentUserParticipant
+                }
+            } catch {
+                print("Erro ao buscar share: \(error)")
+            }
+        }
+        
+        let ckName = participant.userIdentity.nameComponents?
+            .formatted(.name(style: .long))
+            .trimmingCharacters(in: .whitespacesAndNewlines)
+        
+        let email = participant.userIdentity.lookupInfo?.emailAddress?.lowercased()
+        let phone = participant.userIdentity.lookupInfo?.phoneNumber?.onlyDigits()
+        
+        return
+        ckName == item.name ||
+        email == item.name.lowercased() ||
+        phone == item.name.onlyDigits()
+    }
+
+    func removeParticipant(
+        _ participant: CKShare.Participant,
+        from object: NSManagedObject,
+        completion: @escaping (Result<Void, Error>) -> Void
+    ) {
+        do {
+            // 1. Sempre refetch para garantir versão atual (evita etag error)
+            let shares = try stack.persistentContainer.fetchShares(matching: [object.objectID])
+            guard let share = shares[object.objectID] else {
+                return completion(.failure(NSError(
+                    domain: "Share", code: 404,
+                    userInfo: [NSLocalizedDescriptionKey: "Share não encontrado"]
+                )))
+            }
+            
+            // 2. Confere se o usuário é o dono
+            guard share.currentUserParticipant == share.owner else {
+                return completion(.failure(NSError(
+                    domain: "Share", code: 403,
+                    userInfo: [NSLocalizedDescriptionKey: "Apenas o dono pode remover participantes."]
+                )))
+            }
+            
+            // 3. Não pode remover o owner
+            if participant == share.owner {
+                return completion(.failure(NSError(
+                    domain: "Share", code: 403,
+                    userInfo: [NSLocalizedDescriptionKey: "Não é possível remover o proprietário."]
+                )))
+            }
+            
+            // 4. Remover o participante
+            share.removeParticipant(participant)
+            
+            // 5. salvar com política: ifServerRecordUnchanged → garante etag válido
+            let op = CKModifyRecordsOperation(recordsToSave: [share], recordIDsToDelete: nil)
+            op.savePolicy = .ifServerRecordUnchanged
+            
+            // 👉 retry automático se receber ServerRecordChanged
+            op.modifyRecordsCompletionBlock = { saved, _, error in
+                if let ckError = error as? CKError,
+                   ckError.code == .serverRecordChanged {
+                    
+                    print("⚠️ Share desatualizado, refazendo fetch e tentando de novo...")
+                    
+                    self.refetchAndRetryRemove(
+                        participant,
+                        from: object,
+                        completion: completion
+                    )
+                    return
+                }
+                
+                if let error = error { completion(.failure(error)) }
+                else { completion(.success(())) }
+            }
+            
+            stack.ckContainer.privateCloudDatabase.add(op)
+            
+        } catch {
+            completion(.failure(error))
+        }
+    }
+    
+    
+    /// 🔁 Recarrega o share atualizado e tenta novamente
+    private func refetchAndRetryRemove(
+        _ participant: CKShare.Participant,
+        from object: NSManagedObject,
+        completion: @escaping (Result<Void, Error>) -> Void
+    ) {
+        DispatchQueue.main.asyncAfter(deadline: .now() + 0.4) {  // pequena espera opcional
+            self.removeParticipant(participant, from: object, completion: completion)
+        }
     }
 }
