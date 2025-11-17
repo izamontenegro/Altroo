@@ -117,6 +117,7 @@ final class StoolRecordViewController: GradientNavBarViewController {
         return section
     }
     
+    // TROCAR ESSE BOTAO AQUI
     private func makeStoolTypeButton(type: StoolTypesEnum, index: Int) -> UIButton {
         let button = UIButton(type: .system)
         button.tag = index
