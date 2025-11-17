@@ -1,30 +1,28 @@
 //
-//  CheckOptionButton.swift
+//  OutlineWithIconButton.swift
 //  Altroo
 //
-//  Created by Raissa Parente on 14/11/25.
+//  Created by Raissa Parente on 17/11/25.
 //
-
 import UIKit
 
-class CheckOptionButton: PaddedContentIgnoringButton {
+class OutlineWithIconButton: PaddedContentIgnoringButton {
     var associatedData: Any?
-    let color = UIColor(resource: .teal20)
-    private var innerShadowView: InnerShadowView?
+    let color = UIColor(resource: .blue30)
     
-    var text: String = ""
-    var canSelectMultiple: Bool = false
+    var text: String
+    var iconName: String
     
     lazy var label = StandardLabel(
         labelText: text,
         labelFont: .sfPro,
-        labelType: .footnote,
+        labelType: .callOut,
         labelColor: .blue30,
         labelWeight: .regular
     )
     
-    let icon: UIImageView = {
-        let icon =  UIImageView(image: UIImage(systemName: "checkmark"))
+    lazy var icon: UIImageView = {
+        let icon =  UIImageView(image: UIImage(systemName: iconName))
         icon.tintColor = .blue30
         icon.contentMode = .scaleAspectFit
         icon.setContentHuggingPriority(.required, for: .horizontal)
@@ -33,14 +31,10 @@ class CheckOptionButton: PaddedContentIgnoringButton {
         return icon
     }()
     
-    override var isSelected: Bool {
-        didSet {
-            updateAppearance()
-        }
-    }
 
-    init(title: String) {
+    init(title: String, iconName: String) {
         self.text = title
+        self.iconName = iconName
         super.init(frame: .zero)
         setupBackground()
         setupSelectedContent()
@@ -50,15 +44,6 @@ class CheckOptionButton: PaddedContentIgnoringButton {
         fatalError("init(coder:) has not been implemented")
     }
 
-    override func layoutSubviews() {
-        super.layoutSubviews()
-        innerShadowView?.frame = bounds
-    }
-    
-//    override func touchesEnded(_ touches: Set<UITouch>, with event: UIEvent?) {
-//        super.touchesEnded(touches, with: event)
-//        isSelected.toggle()
-//    }
     
     override var intrinsicContentSize: CGSize {
         let stackSize = subviews.first(where: { $0 is UIStackView })?.systemLayoutSizeFitting(
@@ -72,17 +57,18 @@ class CheckOptionButton: PaddedContentIgnoringButton {
     }
 
     private func setupBackground() {
-        backgroundColor = isSelected ? .blue30 : .clear
+        backgroundColor = .clear
         layer.cornerRadius = 8
         layer.masksToBounds = true
         
-        contentEdgeInsets = UIEdgeInsets(top: 4, left: 16,
-                                         bottom: 4, right: 0)
+        layer.borderColor = UIColor(resource: .blue30).cgColor
+        layer.borderWidth = 1
+        
+        
+        contentEdgeInsets = UIEdgeInsets(top: 6, left: 16,
+                                         bottom: 6, right: 0)
         translatesAutoresizingMaskIntoConstraints = false
         
-        if isSelected {
-            setupInnerShadow()
-        }
     }
     
     private func setupSelectedContent() {
@@ -102,28 +88,6 @@ class CheckOptionButton: PaddedContentIgnoringButton {
         ])
     }
     
-    private func updateAppearance() {
-        backgroundColor = isSelected ? .blue30 : .clear
-        layer.borderColor = isSelected ? UIColor.clear.cgColor : UIColor(resource: .blue30).cgColor
-        layer.borderWidth = 1
-        
-        icon.tintColor = isSelected ? .pureWhite : .blue30
-        icon.image = UIImage(systemName:  isSelected ? "checkmark" : "square")
-        
-        label.labelColor = isSelected ? .pureWhite : .blue30
-        label.configureLabelColor()
-    }
-    
-    private func setupInnerShadow() {
-        let shadow = InnerShadowView(frame: bounds,
-                                     color: UIColor.teal0,
-                                     opacity: 0.20)
-        shadow.isUserInteractionEnabled = false
-        shadow.layer.cornerRadius = layer.cornerRadius
-        addSubview(shadow)
-        innerShadowView = shadow
-    }
-    
     // animation when clicking the button
     override var isHighlighted: Bool {
         didSet {
@@ -135,4 +99,3 @@ class CheckOptionButton: PaddedContentIgnoringButton {
         }
     }
 }
-

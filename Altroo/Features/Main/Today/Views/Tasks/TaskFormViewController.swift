@@ -21,7 +21,6 @@ class TaskFormViewController: GradientNavBarViewController {
     let noteTexfield = ObservationView()
     
     //TIME
-//    var hourPickers: [UIDatePicker] = [] //take out
     lazy var deleteTimeButton: MinusButton = {
         let btn = MinusButton()
         btn.widthAnchor.constraint(equalToConstant: 18).isActive = true
@@ -29,13 +28,11 @@ class TaskFormViewController: GradientNavBarViewController {
         return btn
     }()
     
-    let addTimeButton = PrimaryStyleButton(title: "Novo Horário")
+    let addTimeButton = OutlineWithIconButton(title: "Adicionar Horário", iconName: "plus.circle.fill")
     var addTimeViews: [UIView] = []
     lazy var timePickersFlowView = FlowLayoutView(views: addTimeViews, maxWidth: view.bounds.width - 32)
-    
-    //take out
-    let hourStack: UIStackView = {
-        let stackView = UIStackView()
+    lazy var hourStack: UIStackView = {
+        let stackView = UIStackView(arrangedSubviews: [timePickersFlowView])
         stackView.axis = .vertical
         stackView.alignment = .leading
         stackView.distribution = .fill
@@ -60,7 +57,7 @@ class TaskFormViewController: GradientNavBarViewController {
     
     //sections
     lazy var nameSection = FormSectionView(title: "Nome", content: nameTexfield)
-    private lazy var hourSection = FormSectionView(title: "Horário", content: timePickersFlowView)
+    private lazy var hourSection = FormSectionView(title: "Horário", content: hourStack)
     private lazy var repeatSection = FormSectionView(title: "Essa tarefa irá se repetir?", content: weekdayRow)
     lazy var startSection = FormSectionView(title: "Início", content: startDatePicker)
     var endDateSection: UIView!
@@ -86,11 +83,10 @@ class TaskFormViewController: GradientNavBarViewController {
         
         return stackView
     }()
-    
 
     var weekdayRow: RepeatDaysRow = RepeatDaysRow()
     
-    private let scrollView = UIScrollView.make(direction: .vertical)
+    let scrollView = UIScrollView.make(direction: .vertical)
         
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -129,20 +125,7 @@ class TaskFormViewController: GradientNavBarViewController {
         
         confirmButton.updateTitle(confirmButtonText)
         
-        if showDelete {
-//            deleteButton.updateColor(.red10)
-            view.addSubview(deleteButton)
-            NSLayoutConstraint.activate([
-                deleteButton.centerXAnchor.constraint(equalTo: view.centerXAnchor),
-                deleteButton.bottomAnchor.constraint(equalTo: view.safeAreaLayoutGuide.bottomAnchor, constant: -Layout.mediumSpacing)
-            ])
-            confirmBottomConstraint = confirmButton.bottomAnchor.constraint(equalTo: deleteButton.topAnchor, constant: -Layout.mediumSpacing)
-            confirmBottomConstraint?.isActive = true
-        } else {
-            deleteButton.removeFromSuperview()
-            confirmBottomConstraint = confirmButton.bottomAnchor.constraint(equalTo: view.safeAreaLayoutGuide.bottomAnchor, constant: -Layout.bigButtonBottomPadding)
-            confirmBottomConstraint?.isActive = true
-        }
+        deleteButton.isHidden = !showDelete
     }
 
     func setupContent() {

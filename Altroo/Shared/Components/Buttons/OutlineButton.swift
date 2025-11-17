@@ -45,7 +45,6 @@ final class OutlineButton: UIButton {
         setupButton(title: "")
     }
     
-    // MARK: - Setup
     private func setupButton(title: String) {
         backgroundColor = .clear
         layer.cornerRadius = customCornerRadius ?? 23

@@ -67,6 +67,8 @@ final class FormSectionView: UIStackView {
         
         addArrangedSubview(titleLabel)
         addArrangedSubview(content)
+        content.setContentHuggingPriority(.required, for: .vertical)
+        content.setContentCompressionResistancePriority(.required, for: .vertical)
         addArrangedSubview(errorStack)
     }
     
@@ -78,7 +80,6 @@ final class FormSectionView: UIStackView {
             errorStack.isHidden = true
         }
     }
-    
     
     required init(coder: NSCoder) { fatalError("init(coder:) has not been implemented") }
 }

@@ -9,6 +9,8 @@ import UIKit
 
 final class StandardConfirmationButton: PrimaryStyleButton {
     
+    //TODO: SET MINIMUM HEIGHT
+    
     var title: String
     private let titleLabelCustom = StandardLabel(
         labelText: "",

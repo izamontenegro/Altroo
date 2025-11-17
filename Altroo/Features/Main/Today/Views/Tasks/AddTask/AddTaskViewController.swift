@@ -21,7 +21,6 @@ class AddTaskViewController: TaskFormViewController {
         self.viewModel = viewModel
         super.init(nibName: nil, bundle: nil)
         hidesBottomBarWhenPushed = true
-        
     }
     
     @MainActor required init?(coder: NSCoder) {
@@ -41,7 +40,6 @@ class AddTaskViewController: TaskFormViewController {
         setupTimes()
         
         confirmButton.addTarget(self, action: #selector(didFinishCreating), for: .touchUpInside)
-        
     }
     
     func bindViewModel() {
@@ -82,6 +80,8 @@ class AddTaskViewController: TaskFormViewController {
     }
     
     //MARK: - LOCAL SETUP
+    
+    //DATE
     func setupContinuousButton() {
         let button = PopupMenuButton(title: viewModel.continuousButtonTitle)
         insertContinuousPicker(button, showEndDate: !viewModel.isContinuous)
@@ -115,27 +115,11 @@ class AddTaskViewController: TaskFormViewController {
         }
     }
     
+    
+    //TIME
     func setupTimes() {
-        
-        //view after loading
-        if viewModel.times.isEmpty {
-            addTimeAction()
-            addTimeViews.append(addTimeButton)
-        //there is only 1 picker
-        } else if viewModel.times.count == 1 {
-            addTimeViews.removeLast() //take add button out
-            addTimeAction()
-            //add delete button
-            
-        //more than 1 picker
-        } else {
-            let penultimateElementIndex = addTimeViews.count - 2
-            addTimeAction(addAtIndex: penultimateElementIndex)
-        }
+        addTimeAction()
         addTimeButton.addTarget(self, action: #selector(addTimeButtonTapped(_:)), for: .touchUpInside)
-        
-        timePickersFlowView.reload(with: addTimeViews)
-        //todo: refresh flowlayout
     }
     
     func addTimeAction(addAtIndex: Int? = nil) {
@@ -143,15 +127,23 @@ class AddTaskViewController: TaskFormViewController {
         let newPicker = UIDatePicker.make(mode: .time)
         newPicker.date = .now
         newPicker.addTarget(self, action: #selector(timeChanged(_:)), for: .valueChanged)
-
-        //delete last button
-        if let last = addTimeViews.last, last is MinusButton {
-            addTimeViews.removeLast()
-        }
         
-        //adds to view
-        addTimeViews.append(newPicker)
-        if !viewModel.times.isEmpty {
+        
+        //TODO: EXTRACT TO SETUP FUNC -> MOVE VM.ADDTIME TO BEGINNING
+        //view after loading
+        if viewModel.times.isEmpty {
+            addTimeViews.append(newPicker)
+            addTimeViews.append(addTimeButton)
+        //there is only 1 picker
+        } else if viewModel.times.count == 1 {
+            removeAddTimeButton()
+            addTimeViews.append(newPicker)
+            addTimeViews.append(deleteTimeButton)
+            hourStack.addArrangedSubview(addTimeButton)
+        //more than 1 picker
+        } else {
+            removeDeleteTimeButton()
+            addTimeViews.append(newPicker)
             addTimeViews.append(deleteTimeButton)
         }
 
@@ -159,6 +151,17 @@ class AddTaskViewController: TaskFormViewController {
         viewModel.addTime(from: .now)
         
         //todo: refresh flowlayout
+        timePickersFlowView.reload(with: addTimeViews)
+    }
+    
+    func removeAddTimeButton() {
+        addTimeViews.removeLast()
+        addTimeButton.removeFromSuperview()
+    }
+    
+    func removeDeleteTimeButton() {
+        addTimeViews.removeLast()
+        deleteTimeButton.removeFromSuperview()
     }
     
     
@@ -175,6 +178,20 @@ class AddTaskViewController: TaskFormViewController {
         viewModel.endDate = picker.date
     }
     
+    @objc override func didDeleteLastTime() {
+        if let lastTime = addTimeViews.dropLast().last as? UIDatePicker{
+            //remove view
+            addTimeViews.remove(at: addTimeViews.count-2)
+            lastTime.removeFromSuperview()
+            
+            //remove actual date
+            viewModel.times.removeLast()
+            
+            //reload ui
+            timePickersFlowView.reload(with: addTimeViews)
+        }
+    }
+    
     @objc func timeChanged(_ sender: UIDatePicker) {
         let index = sender.tag
         guard index < viewModel.times.count else { return }
@@ -182,7 +199,6 @@ class AddTaskViewController: TaskFormViewController {
     }
     
     @objc func didFinishCreating() {
-        
         guard viewModel.validateTask() else { return }
         
         viewModel.createTask()
