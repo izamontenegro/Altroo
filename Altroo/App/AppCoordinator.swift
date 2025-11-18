@@ -33,7 +33,7 @@ final class AppCoordinator: Coordinator {
             await waitForSharedPatientSync(timeout: 15)
         }
 
-        if UserDefaults.standard.isFirstLaunch {
+        if !UserDefaults.standard.onboardingCompleted {
             if userService.fetchUser() == nil {
                 _ = userService.createUser(name: "", category: "Cuidador")
             }
