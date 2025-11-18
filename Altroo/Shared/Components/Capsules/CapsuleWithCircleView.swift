@@ -8,6 +8,8 @@ import UIKit
 
 class CapsuleWithCircleView: UIView {
     
+    var capsuleColor: UIColor = UIColor(resource: .teal20)
+    
     var text: String!
     var textColor: UIColor = UIColor(resource: .teal20)
    
@@ -25,9 +27,10 @@ class CapsuleWithCircleView: UIView {
         setupTapGesture()
     }
     
-    convenience init(text: String, textColor: UIColor, nameIcon: String, nameIconColor: UIColor, circleIconColor: UIColor) {
+    convenience init(capsuleColor: UIColor, text: String, textColor: UIColor, nameIcon: String, nameIconColor: UIColor, circleIconColor: UIColor) {
         
         self.init(frame: .zero)
+        self.capsuleColor = capsuleColor
         self.text = text
         self.textColor = textColor
         self.nameIcon = nameIcon
@@ -45,7 +48,7 @@ class CapsuleWithCircleView: UIView {
     }
     
     func makeCapsule() {
-        self.backgroundColor = UIColor(resource: .teal80)
+        self.backgroundColor = capsuleColor
         self.translatesAutoresizingMaskIntoConstraints = false
         
         let stackView = UIStackView()
@@ -66,10 +69,9 @@ class CapsuleWithCircleView: UIView {
         //label
         let label = StandardLabel(labelText: text,
                                   labelFont: .sfPro,
-                                  labelType: .subHeadline,
+                                  labelType: .body,
                                   labelColor: textColor,
-                                  labelWeight: .medium)
-        
+                                  labelWeight: .regular)
         label.adjustsFontSizeToFitWidth = true
         label.minimumScaleFactor = 0.95
         label.lineBreakMode = .byTruncatingTail
@@ -120,11 +122,12 @@ class CapsuleWithCircleView: UIView {
     }
 }
 
-//#Preview {
-//    let button = CapsuleWithCircleView(text: "Editar",
-//                                       textColor: .teal20,
-//                                       nameIcon: "pencil",
-//                                       nameIconColor: .pureWhite,
-//                                       circleIconColor: .teal20)
-//    return button
-//}
+#Preview {
+    let button = CapsuleWithCircleView(capsuleColor: .teal20,
+                                       text: "Editar",
+                                       textColor: .pureWhite,
+                                       nameIcon: "pencil",
+                                       nameIconColor: .teal20,
+                                       circleIconColor: .pureWhite)
+    return button
+}
