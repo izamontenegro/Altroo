@@ -131,6 +131,7 @@ class OnboardingContainerViewController: UIViewController {
             
             nextButton.updateTitle(currentIndex == pages.count - 1 ? "Começar" : "Próximo")
         } else {
+            UserDefaults.standard.onboardingCompleted = true
             delegateOnboarding?.goToAllPatient()
         }
     }
@@ -152,8 +153,8 @@ class OnboardingContainerViewController: UIViewController {
         }
     }
     
-    
     @objc private func skipTapped() {
+        UserDefaults.standard.onboardingCompleted = true
         delegateOnboarding?.goToAllPatient()
     }
 }
