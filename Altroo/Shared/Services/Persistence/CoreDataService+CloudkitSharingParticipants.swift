@@ -143,7 +143,7 @@ extension CoreDataService {
                 return "Usuário do iCloud"
             }()
             
-            let category = matchedUser?.category ?? "—"
+            let category = matchedUser?.category ?? "Cuidador"
             let permission = part.permission
             
             result.append(.init(name: displayName, category: category, permission: permission))

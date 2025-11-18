@@ -139,9 +139,7 @@ final class CareRecipientProfileViewController: GradientNavBarViewController {
             card.translatesAutoresizingMaskIntoConstraints = false
             card.heightAnchor.constraint(equalToConstant: 54).isActive = true
             cardsStack.addArrangedSubview(card)
-        }
-            
-        if !uniqueCaregivers.isEmpty {
+        } else {
             for item in uniqueCaregivers {
                 guard let careRecipient = viewModel.userService.fetchCurrentPatient() else { continue }
                 
