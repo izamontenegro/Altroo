@@ -42,7 +42,7 @@ class AssociatePatientViewController: GradientHeader {
     let addExistingPatientButton: UIButton = {
         let button = UIButton(type: .system)
         let label = StandardLabel(
-            labelText: "Já tenho um assistido cadastrado",
+            labelText: "already_have_assisted".localized,
             labelFont: .sfPro,
             labelType: .body,
             labelColor: .teal10,

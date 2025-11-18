@@ -66,7 +66,7 @@ class TutorialAddSheet: UIViewController {
         mainTitle.numberOfLines = 0
         
         let subTitle = StandardLabel(
-            labelText: "Siga o passo-a-passo a seguir para acessar um perfil já cadastrado na plataforma. ",
+            labelText: "tutorial_subtitle".localized,
             labelFont: .sfPro,
             labelType: .body,
             labelColor: .black30,
@@ -78,9 +78,9 @@ class TutorialAddSheet: UIViewController {
         stackView.setCustomSpacing(0, after: mainTitle)
         stackView.addArrangedSubview(subTitle)
         
-        let line1 = makeLine(title: "Acesse o perfil do assistido", description: "No dispositivo em que o assistido está cadastrado, abra o aplicativo na página hoje e acesse o perfil de quem deseja cuidar.", iconText: "1")
-        let line2 = makeLine(title: "Clique em Convidar Cuidador", description: "Aperte o botão indicado e envie o link de convite da forma que preferir para a pessoa que deseja adicionar como cuidador.", iconText: "2")
-        let line3 = makeLine(title: "Confirme em ”Abrir”", description: "Cheque os seus dados e do paciente e aceite o convite para entrar no perfil.", iconText: "3")
+        let line1 = makeLine(title: "step_one_title".localized, description: "step_one_subtitle".localized, iconText: "1")
+        let line2 = makeLine(title: "step_two_title".localized, description: "step_two_subtitle".localized, iconText: "2")
+        let line3 = makeLine(title: "step_three_title".localized, description: "step_three_subtitle".localized, iconText: "3")
         
         stackView.addArrangedSubview(line1)
         stackView.addArrangedSubview(line2)

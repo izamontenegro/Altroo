@@ -97,3 +97,12 @@
 "assisted_subtitle" = "Acompanhe os assistidos cadastrados no aplicativo ou adicione um novo.";
 "add_assisted" = "Adicionar assistido";
 "already_have_assisted" = "Já tenho um assistido cadastrado";
+
+//tutorial
+"tutorial_subtitle" = "Siga o passo-a-passo a seguir para acessar um perfil já cadastrado na plataforma.";
+"step_one_title" = "Acesse o perfil do assistido";
+"step_one_subtitle" = "No dispositivo em que o assistido está cadastrado, abra o aplicativo na página hoje e acesse o perfil de quem deseja cuidar.";
+"step_two_title" = "Clique em Convidar Cuidador";
+"step_two_subtitle" = "Aperte o botão indicado e envie o link de convite da forma que preferir para a pessoa que deseja adicionar como cuidador.";
+"step_three_title" = "Confirme em ”Abrir”";
+"step_three_subtitle" = "Cheque os seus dados e do paciente e aceite o convite para entrar no perfil.";

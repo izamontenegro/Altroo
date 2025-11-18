@@ -10,9 +10,9 @@
 "onboarding1_title" = "No more mess";
 "onboarding1_description" = "Manage basic needs, medications, tasks, incidents, all in one place";
 "onboarding2_title" = "Connection is key";
-"onboarding2_description" = "Share the patient's profile with family members and other caregivers";
+"onboarding2_description" = "Share the care recipient's profile with family members and other caregivers";
 "onboarding3_title" = "Reports show what matters";
-"onboarding3_description" = "Monitor patient care activities and gain clear insights from patient reports";
+"onboarding3_description" = "Monitor patient care activities and gain clear insights from care recipient reports";
 
 // MARK: - TODAY
 
@@ -24,9 +24,9 @@
 //sections
 "today_section_basic_needs" = "Basic Needs";
 "tasks" = "Tasks";
-"today_section_intercurrences" = "Intercurrences";
+"today_section_intercurrences" = "Incident";
 
-"feeding" = "Feeding";
+"feeding" = "Meals";
 "stool" = "Stool";
 "urine" = "Urine";
 "times" = "time(s)";
@@ -63,8 +63,8 @@
 
 
 // MARK: - Intercurrences
-"add_intercurrence" = "Add Intercurrence";
-"name_intercurrence" = "Name of the intercurrence";
+"add_intercurrence" = "Add Incident";
+"name_intercurrence" = "Name of the incident";
 "add_observations" = "Enter Observations";
 
 
@@ -93,7 +93,16 @@
 
 
 // MARK: - AllPatientsFlow
-"assisted" = "Assisted";
-"assisted_subtitle" = "Track the assisted registered in the app or add a new one.";
-"add_assisted" = "Add assisted";
-"already_have_assisted" = "I already have a registered assisted.";
+"assisted" = "Care Recipients";
+"assisted_subtitle" = "Track the care recipient registered in the app or add a new one.";
+"add_assisted" = "Add care recipient";
+"already_have_assisted" = "I already have a registered care recipient";
+
+//tutorial
+"tutorial_subtitle" = "Follow the step-by-step instructions below to access a profile already registered on the platform.";
+"step_one_title" = "Access the care recipient's profile";
+"step_one_subtitle" = "On the device where the person being cared for is registered, open the app to the page today and access the profile of the person you wish to care for.";
+"step_two_title" = "Click on Invite Caregiver";
+"step_two_subtitle" = "Press the indicated button and send the invitation link in your preferred method to the person you wish to add as a caregiver.";
+"step_three_title" = "Confirm by clicking ”Open”";
+"step_three_subtitle" = "Check your details and the care recipient's details, and accept the invitation to join the profile.";
