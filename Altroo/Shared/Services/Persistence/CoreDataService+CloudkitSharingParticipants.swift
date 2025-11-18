@@ -26,7 +26,7 @@ extension CoreDataService {
             participants.append(share.owner)
             return participants
         } catch {
-            print("Erro ao buscar CKShare/participants: \(error.localizedDescription)")
+            print("Error retrieving CKShare/participants: \(error.localizedDescription)")
             return nil
         }
     }
@@ -43,7 +43,7 @@ extension CoreDataService {
                 return completion(.failure(
                     NSError(domain: "Share", code: 404,
                             userInfo: [NSLocalizedDescriptionKey:
-                                        "Share não encontrado"]))
+                                        "Share not found"]))
                 )
             }
             
@@ -51,7 +51,7 @@ extension CoreDataService {
                 return completion(.failure(
                     NSError(domain: "Share", code: 403,
                             userInfo: [NSLocalizedDescriptionKey:
-                                        "Apenas o dono pode alterar permissões."]))
+                                        "Only the owner can change permissions.."]))
                 )
             }
             
@@ -63,7 +63,7 @@ extension CoreDataService {
                     return completion(.failure(
                         NSError(domain: "Share", code: 500,
                                 userInfo: [NSLocalizedDescriptionKey:
-                                            "Falha ao obter CKShare atualizado"]))
+                                            "Failed to obtain updated CKShare."]))
                     )
                 }
                 
@@ -73,7 +73,7 @@ extension CoreDataService {
                     return completion(.failure(
                         NSError(domain: "Share", code: 406,
                                 userInfo: [NSLocalizedDescriptionKey:
-                                            "Participante não encontrado no CKShare atualizado"]))
+                                            "Participant not found in the updated CKShare."]))
                     )
                 }
                 
@@ -203,21 +203,21 @@ extension CoreDataService {
             guard let share = shares[object.objectID] else {
                 return completion(.failure(NSError(
                     domain: "Share", code: 404,
-                    userInfo: [NSLocalizedDescriptionKey: "Share não encontrado"]
+                    userInfo: [NSLocalizedDescriptionKey: "Share not found"]
                 )))
             }
             
             guard share.currentUserParticipant == share.owner else {
                 return completion(.failure(NSError(
                     domain: "Share", code: 403,
-                    userInfo: [NSLocalizedDescriptionKey: "Apenas o dono pode remover participantes."]
+                    userInfo: [NSLocalizedDescriptionKey: "Only the owner can remove participants.."]
                 )))
             }
             
             if participant == share.owner {
                 return completion(.failure(NSError(
                     domain: "Share", code: 403,
-                    userInfo: [NSLocalizedDescriptionKey: "Não é possível remover o proprietário."]
+                    userInfo: [NSLocalizedDescriptionKey: "It is not possible to remove the owner.."]
                 )))
             }
             
@@ -230,7 +230,7 @@ extension CoreDataService {
                 if let ckError = error as? CKError,
                    ckError.code == .serverRecordChanged {
                     
-                    print("⚠️ Share desatualizado, refazendo fetch e tentando de novo...")
+                    print("Outdated share, retrieving and trying again....")
                     
                     self.refetchAndRetryRemove(
                         participant,

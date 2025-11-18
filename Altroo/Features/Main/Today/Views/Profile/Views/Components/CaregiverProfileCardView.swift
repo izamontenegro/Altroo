@@ -199,9 +199,9 @@ private extension CaregiverProfileCardView {
             DispatchQueue.main.async {
                 switch result {
                 case .success:
-                    print("Permissão alterada para \(newPermission)")
+                    print("Permission changed to \(newPermission)")
                 case .failure(let error):
-                    print("Erro ao atualizar permissão:", error)
+                    print("Error updating permission:", error)
                 }
             }
         }
@@ -217,9 +217,9 @@ private extension CaregiverProfileCardView {
             DispatchQueue.main.async {
                 switch result {
                 case .success:
-                    print("Cuidador removido!")
+                    print("Caregiver removed.")
                 case .failure(let error):
-                    print("Erro ao remover cuidador:", error)
+                    print("Error removing caregiver:", error)
                 }
             }
         }
