@@ -7,10 +7,13 @@
 
 import UIKit
 import Combine
+import SwiftUI
 
 protocol TodayViewControllerDelegate: AnyObject {
     func goTo(_ destination: TodayDestination)
     func goToSymptomDetail(with symptom: Symptom)
+    func goToPrivacyPolicy()
+    func goToLegalNotice()
 }
 
 class TodayViewController: UIViewController {
@@ -294,7 +297,20 @@ class TodayViewController: UIViewController {
         dimmingView = dim
         view.addSubview(dim)
 
-        let alert = HealthDataAlert()
+        let alertVC = UIHostingController(
+            rootView: HealthDataAlertView(
+                onClose: { [weak self] in self?.closeHealthAlert() },
+                onPrivacyPolicy: { [weak self] in
+                    self?.delegate?.goToPrivacyPolicy()
+                },
+                onLegalNotice: { [weak self] in
+                    self?.delegate?.goToLegalNotice()
+                }
+            )
+        )
+        alertVC.view.backgroundColor = .clear
+
+        let alert = alertVC.view!
         alert.translatesAutoresizingMaskIntoConstraints = false
         alert.layer.shadowColor = UIColor.black.cgColor
         alert.layer.shadowOpacity = 0.3
@@ -302,14 +318,14 @@ class TodayViewController: UIViewController {
         alert.layer.shadowOffset = .zero
         alert.alpha = 0
 
+        self.addChild(alertVC)
         view.addSubview(alert)
+        alertVC.didMove(toParent: self)
 
         NSLayoutConstraint.activate([
             alert.centerXAnchor.constraint(equalTo: view.centerXAnchor),
             alert.centerYAnchor.constraint(equalTo: view.centerYAnchor),
         ])
-
-        alert.closeButton.addTarget(self, action: #selector(closeHealthAlert), for: .touchUpInside)
 
         UIView.animate(withDuration: 0.3) {
             dim.alpha = 1

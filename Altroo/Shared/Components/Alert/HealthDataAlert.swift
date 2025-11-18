@@ -8,6 +8,9 @@
 import SwiftUI
 
 struct HealthDataAlertView: View {
+    var onClose: () -> Void = {}
+    var onPrivacyPolicy: () -> Void = {}
+    var onLegalNotice: () -> Void = {}
     
     let cardGradient = LinearGradient(colors: [.blue30, .blue70],
                                       startPoint: .bottom,
@@ -31,7 +34,7 @@ struct HealthDataAlertView: View {
             }
             .overlay(alignment: .topTrailing) {
                 Button {
-                    //TODO: COLOCAR AÇÃO DO BOTÃO
+                    onClose()
                 } label: {
                     Image(systemName: "xmark.circle.fill")
                         .resizable()
@@ -61,7 +64,7 @@ struct HealthDataAlertView: View {
                 .padding()
             
             Button {
-                //TODO: ADICIONAR NAVEGAÇÃO
+                onPrivacyPolicy()
             } label: {
                 HStack(spacing: 8) {
                     Text("Política de Privacidade e Proteção")
@@ -78,7 +81,7 @@ struct HealthDataAlertView: View {
             }
             
             Button {
-                //TODO: ADICIONAR NAVEGAÇÃO
+                onLegalNotice()
             } label: {
                 HStack(spacing: 8) {
                     Text("Aviso Legal")
