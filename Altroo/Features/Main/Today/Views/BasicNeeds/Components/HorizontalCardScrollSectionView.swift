@@ -32,7 +32,7 @@ final class BasicNeedsCardsScrollSectionView: UIView {
         scrollHeight: CGFloat = 170,
         spacing: CGFloat = 12,
         leadingPadding: CGFloat = 5,
-        trailingContentInset: CGFloat = 32
+        trailingContentInset: CGFloat = 16
     ) {
         
         self.imageNames = imageNames
@@ -123,7 +123,7 @@ final class BasicNeedsCardsScrollSectionView: UIView {
         
         let verticalStack = UIStackView(arrangedSubviews: [titleLabel, scrollView])
         verticalStack.axis = .vertical
-        verticalStack.spacing = 12
+        verticalStack.spacing = 8
         verticalStack.alignment = .fill
         verticalStack.translatesAutoresizingMaskIntoConstraints = false
         verticalStack.clipsToBounds = false

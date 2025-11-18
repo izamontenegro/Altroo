@@ -135,7 +135,7 @@ final class StoolRecordViewController: GradientNavBarViewController {
             scrollHeight: 170,
             spacing: 12,
             leadingPadding: 5,
-            trailingContentInset: 32
+            trailingContentInset: 16
         )
         
         section.onCardSelected = { [weak self] index in
