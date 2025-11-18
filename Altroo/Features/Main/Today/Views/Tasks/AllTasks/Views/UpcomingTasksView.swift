@@ -1,0 +1,40 @@
+//
+//  UpcomingTasksView.swift
+//  Altroo
+//
+//  Created by Raissa Parente on 18/11/25.
+//
+import UIKit
+
+final class UpcomingTasksView: UIView {
+    init(viewModel: AllTasksViewModel) {
+        super.init(frame: .zero)
+        translatesAutoresizingMaskIntoConstraints = false
+        setupContent(with: viewModel)
+    }
+
+    required init?(coder: NSCoder) { fatalError() }
+
+    private func setupContent(with viewModel: AllTasksViewModel) {
+        let taskStack = UIStackView()
+        taskStack.axis = .vertical
+        taskStack.spacing = 16
+        taskStack.alignment = .fill
+        taskStack.translatesAutoresizingMaskIntoConstraints = false
+
+        for task in viewModel.upcomingTasks {
+            let card = UpcomingTaskCard(task: task)
+            taskStack.addArrangedSubview(card)
+        }
+        
+        addSubview(taskStack)
+        
+        NSLayoutConstraint.activate([
+            taskStack.topAnchor.constraint(equalTo: topAnchor),
+            taskStack.bottomAnchor.constraint(equalTo: bottomAnchor),
+            taskStack.leadingAnchor.constraint(equalTo: leadingAnchor),
+            taskStack.trailingAnchor.constraint(equalTo: trailingAnchor),
+            taskStack.widthAnchor.constraint(equalTo: widthAnchor),
+        ])
+    }
+}

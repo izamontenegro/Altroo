@@ -58,7 +58,7 @@ class AllTasksViewController: GradientNavBarViewController {
 
     private lazy var todayView = TodayTasksView(viewModel: viewModel)
     private lazy var lateView = LateTasksView(viewModel: viewModel)
-//    private lazy var upcomingView = UpcomingTasksView(viewModel: viewModel)
+    private lazy var upcomingView = UpcomingTasksView(viewModel: viewModel)
 
     
     init(viewModel: AllTasksViewModel, onTaskSelected: ((TaskInstance) -> Void)? = nil) {
@@ -156,8 +156,7 @@ class AllTasksViewController: GradientNavBarViewController {
         case 1:
             showContent(todayView)
         case 2:
-            //TODO: CHANGE FOR UPCOMING
-            showContent(todayView)
+            showContent(upcomingView)
         default: break
         }
     }

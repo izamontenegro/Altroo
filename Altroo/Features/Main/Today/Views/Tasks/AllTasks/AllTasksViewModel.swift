@@ -14,10 +14,10 @@ class AllTasksViewModel {
     
     let coreDataService: CoreDataService
     let historyService: HistoryService
-    
 
     @Published var tasks: [TaskInstance] = []
     @Published var lateTasks: [TaskInstance] = []
+    @Published var upcomingTasks: [RoutineTask] = []
   
     init(taskService: RoutineActivitiesFacade, userService: UserServiceProtocol, coreDataService: CoreDataService, historyService: HistoryService) {
         self.taskService = taskService
@@ -28,6 +28,7 @@ class AllTasksViewModel {
         fetchCareRecipient()
         loadTodayTasks()
         loadLateTasks()
+        loadFutureTasks()
     }
     
     func fetchCareRecipient() {
@@ -67,7 +68,9 @@ class AllTasksViewModel {
         let days = lateTasks
                .compactMap { $0.time }
                .map { Calendar.current.startOfDay(for: $0) }
-           return Array(Set(days))
+        
+        return Array(Set(days))
+            .sorted(by: { $0 > $1 })
     }
     
     func filterLateTasksByDay(_ day: Date) -> [TaskInstance] {
@@ -78,7 +81,17 @@ class AllTasksViewModel {
     
     //MARK: -FUTURE TASKS
     func loadFutureTasks() {
+        guard let careRecipient = currentCareRecipient else { return }
+        let allTasks = taskService.fetchAllTemplateRoutineTasks(from: careRecipient)
         
+        upcomingTasks = allTasks
+            .filter { task in
+                if let end = task.endDate {
+                    return Calendar.current.startOfDay(for: end) > Calendar.current.startOfDay(for: .now)
+                } else {
+                    return true
+                }
+            }
     }
     
     //MARK: -UTILS
