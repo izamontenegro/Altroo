@@ -1,5 +1,5 @@
 //
-//  StoolColorsSectionView.swift
+//  ColorsCardsSectionView.swift
 //  Altroo
 //
 //  Created by Izadora de Oliveira Albuquerque Montenegro on 18/11/25.
@@ -11,18 +11,24 @@ import SwiftUI
 final class ColorsCardsSectionView: UIView {
     
     private(set) var colorCards: [BasicNeedsColorCardHostingView] = []
-    private let colors: [StoolColorsEnum]
-    private var currentSelected: StoolColorsEnum?
+    private let colors: [UIColor]
+    private let titles: [String]
+    private var currentSelectedIndex: Int?
     
-    var onColorSelected: ((StoolColorsEnum) -> Void)?
+    var onColorSelected: ((Int, UIColor) -> Void)?
     
     init(
         title: String,
-        colors: [StoolColorsEnum],
-        selectedColor: StoolColorsEnum? = nil
+        colors: [UIColor],
+        titles: [String],
+        selectedIndex: Int? = nil
     ) {
+        precondition(colors.count == titles.count, "colors e titles precisam ter o mesmo tamanho")
+        
         self.colors = colors
-        self.currentSelected = selectedColor
+        self.titles = titles
+        self.currentSelectedIndex = selectedIndex
+        
         super.init(frame: .zero)
         setupLayout(title: title)
     }
@@ -49,15 +55,18 @@ final class ColorsCardsSectionView: UIView {
         row.distribution = .fillEqually
         row.translatesAutoresizingMaskIntoConstraints = false
         
-        // monta os cards de cor exatamente como antes (sem scroll)
-        for color in colors {
+        for (index, color) in colors.enumerated() {
+            let title = titles[index]
+            let isSelected = (currentSelectedIndex == index)
+            
             let card = BasicNeedsColorCardHostingView(
                 color: color,
-                isSelected: currentSelected == color,
+                title: title,
+                isSelected: isSelected,
                 action: { [weak self] in
                     guard let self else { return }
-                    self.currentSelected = color
-                    self.onColorSelected?(color)
+                    self.currentSelectedIndex = index
+                    self.onColorSelected?(index, color)
                 }
             )
             
@@ -87,10 +96,10 @@ final class ColorsCardsSectionView: UIView {
         ])
     }
     
-    func updateSelection(_ selected: StoolColorsEnum?) {
-        currentSelected = selected
-        for card in colorCards {
-            card.setSelected(card.colorEnum == selected)
+    func updateSelection(index: Int?) {
+        currentSelectedIndex = index
+        for (i, card) in colorCards.enumerated() {
+            card.setSelected(i == index)
         }
     }
 }
@@ -98,23 +107,22 @@ final class ColorsCardsSectionView: UIView {
 final class BasicNeedsColorCardHostingView: UIView {
     private var hostingController: UIHostingController<BasicNeedsColorCard>
     
-    let colorEnum: StoolColorsEnum
-    fileprivate let colorName: UIColor
+    let color: UIColor
     fileprivate let titleText: String
     fileprivate let action: () -> Void
     
-    init(color: StoolColorsEnum,
+    init(color: UIColor,
+         title: String,
          isSelected: Bool = false,
          action: @escaping () -> Void) {
         
-        self.colorEnum = color
-        self.colorName = color.color
-        self.titleText = color.displayText
+        self.color = color
+        self.titleText = title
         self.action = action
         
         let swiftUIView = BasicNeedsColorCard(
-            colorName: colorName,
-            title: titleText,
+            colorName: color,
+            title: title,
             isSelected: isSelected,
             action: action
         )
@@ -146,7 +154,7 @@ final class BasicNeedsColorCardHostingView: UIView {
     
     func setSelected(_ isSelected: Bool) {
         hostingController.rootView = BasicNeedsColorCard(
-            colorName: colorName,
+            colorName: color,
             title: titleText,
             isSelected: isSelected,
             action: action

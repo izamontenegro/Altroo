@@ -22,8 +22,7 @@ final class StoolRecordViewController: GradientNavBarViewController {
     private var cancellables = Set<AnyCancellable>()
     
     private var stoolColorsSectionView: ColorsCardsSectionView?
-    private var stoolColorCards: [BasicNeedsColorCardHostingView] = []
-    private var stoolTypesButtons: [UIView] = []
+    private var stoolTypesSectionView: BasicNeedsCardsScrollSectionView?
     
     private var observationField: UITextField?
     
@@ -80,38 +79,69 @@ final class StoolRecordViewController: GradientNavBarViewController {
     // MARK: - Sections
     
     private func makeStoolColorSection() -> UIView {
+        let colors = StoolColorsEnum.allCases.map { $0.color }
+        let titles = StoolColorsEnum.allCases.map { $0.displayText }
+        
+        let selectedIndex: Int?
+        if let selected = viewModel.selectedStoolColor,
+           let idx = StoolColorsEnum.allCases.firstIndex(of: selected) {
+            selectedIndex = idx
+        } else {
+            selectedIndex = nil
+        }
+        
         let section = ColorsCardsSectionView(
             title: "Cor das Fezes?",
-            colors: StoolColorsEnum.allCases,
-            selectedColor: viewModel.selectedStoolColor
+            colors: colors,
+            titles: titles,
+            selectedIndex: selectedIndex
         )
         
-        section.onColorSelected = { [weak self] color in
+        section.onColorSelected = { [weak self] index, _ in
             guard let self else { return }
-            self.viewModel.selectedStoolColor = color
+            let selectedEnum = StoolColorsEnum.allCases[index]
+            self.viewModel.selectedStoolColor = selectedEnum
         }
         
         self.stoolColorsSectionView = section
+        
         return section
     }
+    
     private func makeStoolTypesSection() -> UIView {
-        var cards: [UIView] = []
+        let types = StoolTypesEnum.allCases
         
-        for (index, type) in StoolTypesEnum.allCases.enumerated() {
-            let card = makeStoolTypeCard(type: type, index: index)
-            cards.append(card)
-            stoolTypesButtons.append(card)
+        let imageNames = types.map { $0.displayImage }
+        let subtitles = types.map { _ in "Tipo" }
+        let titles = types.map { $0.displayText }
+        
+        let selectedIndex: Int?
+        if let selected = viewModel.selectedStoolType,
+           let idx = types.firstIndex(of: selected) {
+            selectedIndex = idx
+        } else {
+            selectedIndex = nil
         }
         
-        let section = HorizontalCardScrollSectionView(
+        let section = BasicNeedsCardsScrollSectionView(
             title: "Como foi o tipo de Fezes?",
-            cards: cards,
+            imageNames: imageNames,
+            subtitles: subtitles,
+            titles: titles,
+            selectedIndex: selectedIndex,
             scrollHeight: 170,
             spacing: 12,
             leadingPadding: 5,
             trailingContentInset: 32
         )
         
+        section.onCardSelected = { [weak self] index in
+            guard let self else { return }
+            let selectedType = StoolTypesEnum.allCases[index]
+            self.viewModel.selectedStoolType = selectedType
+        }
+        
+        self.stoolTypesSectionView = section
         return section
     }
     
@@ -136,7 +166,6 @@ final class StoolRecordViewController: GradientNavBarViewController {
     
     private func makeStoolTypeCard(type: StoolTypesEnum, index: Int) -> UIView {
         let card = BasicNeedsCardHostingView(
-            type: type,
             imageName: type.displayImage,
             subtitle: "Tipo",
             title: type.displayText,
@@ -156,7 +185,6 @@ final class StoolRecordViewController: GradientNavBarViewController {
         
         return card
     }
-    
     private func configureAddButton() -> UIView {
         let button = StandardConfirmationButton(title: "Adicionar")
         button.addTarget(self, action: #selector(createStoolRecord), for: .touchUpInside)
@@ -198,7 +226,16 @@ final class StoolRecordViewController: GradientNavBarViewController {
         viewModel.$selectedStoolColor
             .sink { [weak self] selected in
                 guard let self else { return }
-                self.stoolColorsSectionView?.updateSelection(selected)
+                
+                let index: Int?
+                if let selected,
+                   let idx = StoolColorsEnum.allCases.firstIndex(of: selected) {
+                    index = idx
+                } else {
+                    index = nil
+                }
+                
+                self.stoolColorsSectionView?.updateSelection(index: index)
             }
             .store(in: &cancellables)
         
@@ -206,78 +243,16 @@ final class StoolRecordViewController: GradientNavBarViewController {
             .sink { [weak self] selected in
                 guard let self else { return }
                 
-                for case let card as BasicNeedsCardHostingView in self.stoolTypesButtons {
-                    card.setSelected(card.type == selected)
+                let index: Int?
+                if let selected,
+                   let idx = StoolTypesEnum.allCases.firstIndex(of: selected) {
+                    index = idx
+                } else {
+                    index = nil
                 }
+                
+                self.stoolTypesSectionView?.updateSelection(index: index)
             }
             .store(in: &cancellables)
-    }
-}
-
-// MARK: - SWIFTUI COMPONENTS HOSTINGS
-
-final class BasicNeedsCardHostingView: UIView {
-    private var hostingController: UIHostingController<BasicNeedsTemplateCard>
-    
-    let type: StoolTypesEnum
-    private let imageName: String
-    private let subtitle: String
-    private let titleText: String
-    private let action: () -> Void
-
-    init(type: StoolTypesEnum,
-         imageName: String,
-         subtitle: String,
-         title: String,
-         isSelected: Bool = false,
-         action: @escaping () -> Void) {
-
-        self.type = type
-        self.imageName = imageName
-        self.subtitle = subtitle
-        self.titleText = title
-        self.action = action
-        
-        let swiftUIView = BasicNeedsTemplateCard(
-            imageName: imageName,
-            subtitle: subtitle,
-            title: title,
-            isSelected: isSelected,
-            action: action
-        )
-
-        hostingController = UIHostingController(rootView: swiftUIView)
-
-        super.init(frame: .zero)
-
-        setup()
-    }
-
-    required init?(coder: NSCoder) {
-        fatalError("init(coder:) has not been implemented")
-    }
-
-    private func setup() {
-        hostingController.view.translatesAutoresizingMaskIntoConstraints = false
-        hostingController.view.backgroundColor = .clear
-
-        addSubview(hostingController.view)
-
-        NSLayoutConstraint.activate([
-            hostingController.view.leadingAnchor.constraint(equalTo: leadingAnchor),
-            hostingController.view.trailingAnchor.constraint(equalTo: trailingAnchor),
-            hostingController.view.topAnchor.constraint(equalTo: topAnchor),
-            hostingController.view.bottomAnchor.constraint(equalTo: bottomAnchor)
-        ])
-    }
-    
-    func setSelected(_ isSelected: Bool) {
-        hostingController.rootView = BasicNeedsTemplateCard(
-            imageName: imageName,
-            subtitle: subtitle,
-            title: titleText,
-            isSelected: isSelected,
-            action: action
-        )
     }
 }
