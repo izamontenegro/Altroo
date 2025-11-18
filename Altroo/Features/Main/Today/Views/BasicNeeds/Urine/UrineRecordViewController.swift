@@ -126,7 +126,7 @@ final class UrineRecordViewController: GradientNavBarViewController {
     }
     
     private func configureAddButton() -> UIView {
-        let button = StandardConfirmationButton(title: "Registrar")
+        let button = StandardConfirmationButton(title: "Salvar")
         button.addTarget(self, action: #selector(createUrineRecord), for: .touchUpInside)
         button.translatesAutoresizingMaskIntoConstraints = false
         return button
