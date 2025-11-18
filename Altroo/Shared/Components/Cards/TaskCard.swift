@@ -8,13 +8,17 @@
 import UIKit
 
 protocol TaskCardDelegate: AnyObject {
-    func taskCardDidSelect(_ task: TaskInstance)
     func taskCardDidMarkAsDone(_ task: TaskInstance)
+}
+
+protocol TaskCardNavigationDelegate: AnyObject {
+    func taskCardDidSelect(_ task: TaskInstance)
 }
 
 class TaskCard: InnerShadowView {
     let task: TaskInstance
     weak var delegate: TaskCardDelegate?
+    weak var navigationDelegate: TaskCardNavigationDelegate?
     
     let titleLabel = StandardLabel(labelText: "",
                                    labelFont: .sfPro,
@@ -180,7 +184,7 @@ class TaskCard: InnerShadowView {
     }
     
     @objc private func didTapCard() {
-        delegate?.taskCardDidSelect(task)
+        navigationDelegate?.taskCardDidSelect(task)
     }
 }
 

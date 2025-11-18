@@ -18,8 +18,6 @@ final class UrineRecordViewController: GradientNavBarViewController {
     private let viewModel: UrineRecordViewModel
     private var cancellables = Set<AnyCancellable>()
     
-
-    
     private var colorButtons: [UIButton] = []
     private var characteristicButtons: [UIButton] = []
     private var observationField: UITextField?

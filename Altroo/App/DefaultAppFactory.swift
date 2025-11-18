@@ -9,7 +9,6 @@ import UIKit
 
 // MARK: - DefaultAppFactory
 final class DefaultAppFactory: AppFactory {
-
     
     private let dependencies: AppDependencies
     private let addPatientViewModel: AddPatientViewModel
@@ -274,12 +273,12 @@ extension DefaultAppFactory {
 
 // MARK: - TaskFactory
 extension DefaultAppFactory {
-    func makeAllTasksViewController(onTaskSelected: ((TaskInstance) -> Void)? = nil) -> UIViewController {
+    func makeAllTasksViewController() -> UIViewController {
         let vm = AllTasksViewModel(taskService: dependencies.routineActivitiesFacade,
                                    userService: dependencies.userService,
                                    coreDataService: dependencies.coreDataService,
                                    historyService: dependencies.historyService)
-        let vc = AllTasksViewController(viewModel: vm, onTaskSelected: onTaskSelected)
+        let vc = AllTasksViewController(viewModel: vm)
         return vc
     }
     func makeAddTaskViewController() -> UIViewController {

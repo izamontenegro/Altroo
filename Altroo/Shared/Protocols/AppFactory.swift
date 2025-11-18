@@ -100,7 +100,7 @@ protocol BasicNeedsFactory {
 
 // MARK: - ROUTINE ACTIVITIES FLOW
 protocol RoutineActivitiesFactory {
-    func makeAllTasksViewController(onTaskSelected: ((TaskInstance) -> Void)?) -> UIViewController
+    func makeAllTasksViewController() -> UIViewController
     func makeAddTaskViewController() -> UIViewController
     func makeEditTaskViewController(task: RoutineTask) -> UIViewController
     func makeTaskDetailViewController(task: TaskInstance) -> UIViewController

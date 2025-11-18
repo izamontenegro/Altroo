@@ -11,7 +11,6 @@ class InfoRowView: UIView {
     
     var title: String
     var info: String
-    
     var isLate: Bool
     
     init(title: String, info: String, isLate: Bool = false) {
@@ -35,16 +34,10 @@ class InfoRowView: UIView {
         
         let titleLabel = StandardLabel(labelText: title,
                                        labelFont: .sfPro,
-                                       labelType: .title3,
+                                       labelType: .callOut,
                                        labelColor: isLate ? .red20 : .black40)
         
-        
-        let lateLabel = StandardLabel(labelText: "Em atraso",
-                                     labelFont: .sfPro,
-                                     labelType: .title3,
-                                     labelColor: .red20)
-        
-        let infoLabel = StandardLabel(labelText: info, labelFont: .sfPro, labelType: .title3, labelColor: .black10)
+        let infoLabel = StandardLabel(labelText: info, labelFont: .sfPro, labelType: .callOut, labelColor: .black10, labelWeight: .medium)
         
         infoLabel.numberOfLines = 0
         
@@ -59,19 +52,24 @@ class InfoRowView: UIView {
             infoLabel.topAnchor.constraint(equalTo: self.topAnchor,  constant: 6),
             infoLabel.bottomAnchor.constraint(equalTo: self.bottomAnchor, constant: -6),
             infoLabel.trailingAnchor.constraint(equalTo: self.trailingAnchor, constant: -16),
-            infoLabel.leadingAnchor.constraint(greaterThanOrEqualTo: titleLabel.trailingAnchor, constant: 16)
+            infoLabel.leadingAnchor.constraint(greaterThanOrEqualTo: titleLabel.trailingAnchor)
             ])
         
         titleLabel.setContentHuggingPriority(.defaultHigh, for: .horizontal)
         infoLabel.setContentCompressionResistancePriority(.defaultLow, for: .horizontal)
         
         if isLate {
+            let lateLabel = StandardLabel(labelText: "Em atraso",
+                                         labelFont: .sfPro,
+                                         labelType: .title3,
+                                         labelColor: .red20)
+            
             addSubview(lateLabel)
 
             NSLayoutConstraint.activate([
                 lateLabel.topAnchor.constraint(equalTo: self.topAnchor,  constant: 6),
                 lateLabel.bottomAnchor.constraint(lessThanOrEqualTo: self.bottomAnchor, constant: -6),
-                lateLabel.trailingAnchor.constraint(equalTo: infoLabel.leadingAnchor, constant: 16),
+                lateLabel.trailingAnchor.constraint(equalTo: infoLabel.leadingAnchor, constant: -16),
                 ])
         }
     }

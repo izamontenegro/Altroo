@@ -7,15 +7,21 @@
 import UIKit
 
 final class TodayTasksView: UIView {
+    var onSelectTask: ((TaskInstance) -> Void)?
+    var onMarkDone: ((TaskInstance) -> Void)?
+    
+    var viewModel: AllTasksViewModel
+    
     init(viewModel: AllTasksViewModel) {
+        self.viewModel = viewModel
         super.init(frame: .zero)
         translatesAutoresizingMaskIntoConstraints = false
-        setupContent(with: viewModel)
+        setupContent()
     }
 
     required init?(coder: NSCoder) { fatalError() }
 
-    private func setupContent(with viewModel: AllTasksViewModel) {
+    private func setupContent() {
         let periodStack = UIStackView()
         periodStack.axis = .vertical
         periodStack.spacing = 24
@@ -23,7 +29,7 @@ final class TodayTasksView: UIView {
         periodStack.translatesAutoresizingMaskIntoConstraints = false
         
         for period in PeriodEnum.allCases {
-            periodStack.addArrangedSubview(makeCardByPeriod(period, with: viewModel))
+            periodStack.addArrangedSubview(makeCardByPeriod(period))
         }
         
         addSubview(periodStack)
@@ -35,11 +41,9 @@ final class TodayTasksView: UIView {
             periodStack.trailingAnchor.constraint(equalTo: trailingAnchor),
             periodStack.widthAnchor.constraint(equalTo: widthAnchor),
         ])
-        
-        
     }
     
-    func makeCardByPeriod(_ period: PeriodEnum, with viewModel: AllTasksViewModel) -> UIStackView {
+    func makeCardByPeriod(_ period: PeriodEnum) -> UIStackView {
         //HEADER
         let periodTag = CapsuleIconView(iconName: period.iconName, text: period.name)
         periodTag.backgroundColor = .blue30
@@ -96,7 +100,8 @@ final class TodayTasksView: UIView {
             let card = TaskCard(task: task)
             
             //TODO: FIX SHEET CONTROLLER
-//            card.delegate = self
+            card.delegate = self
+            card.navigationDelegate = self
 
             card.translatesAutoresizingMaskIntoConstraints = false
             cardStack.addArrangedSubview(card)
@@ -130,5 +135,18 @@ final class TodayTasksView: UIView {
         ])
 
         return card
+    }
+}
+
+extension TodayTasksView: TaskCardDelegate, TaskCardNavigationDelegate {
+    func taskCardDidMarkAsDone(_ task: TaskInstance) {
+        onMarkDone?(task)
+        print("todaytaskview CHECK received call from card")
+
+    }
+
+    func taskCardDidSelect(_ task: TaskInstance) {
+        onSelectTask?(task)
+        print("todaytaskview received call from card")
     }
 }

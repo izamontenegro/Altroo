@@ -66,9 +66,9 @@ final class TodayCoordinator: Coordinator {
         case .recordSaturation: return factory.makeRecordSaturationSheet()
             
         case .seeAllTasks:
-            return factory.makeAllTasksViewController { [weak self] task in
-                self?.openTaskDetail(for: task)
-            }
+            let vc =  factory.makeAllTasksViewController() as! AllTasksViewController
+            vc.coordinator = self
+            return vc
             
         case .addNewTask:
             let vc = factory.makeAddTaskViewController() as! AddTaskViewController
@@ -110,7 +110,7 @@ final class TodayCoordinator: Coordinator {
         }
     }
     
-    private func openTaskDetail(for task: TaskInstance)  {
+    func openTaskDetail(for task: TaskInstance)  {
         let vc = factory.makeTaskDetailViewController(task: task) as! TaskDetailViewController
         vc.onEditTapped = {[weak self] task in
             guard let taskTemplate = task.template else { return }
@@ -197,12 +197,28 @@ enum TodayDestination {
     }
 }
 
+extension TodayCoordinator: TaskCardNavigationDelegate {
+    func taskCardDidSelect(_ task: TaskInstance) {
+        let vc = factory.makeTaskDetailViewController(task: task) as! TaskDetailViewController
+        vc.onEditTapped = {[weak self] task in
+            guard let taskTemplate = task.template else { return }
+            self?.goToEditTask(taskTemplate)
+        }
+        
+        presentSheet(
+            vc,
+            from: navigation,
+            percentage: 0.9
+        )
+    }
+}
+
+
 extension TodayCoordinator: AddTaskNavigationDelegate {
     func didFinishAddingTask() {
         let superVC = navigation.viewControllers.first!
-        let vc = factory.makeAllTasksViewController { [weak self] task in
-            self?.openTaskDetail(for: task)
-        }
+        let vc = factory.makeAllTasksViewController() as! AllTasksViewController
+        vc.coordinator = self
         navigation.setViewControllers([superVC, vc], animated: true)
     }
 }

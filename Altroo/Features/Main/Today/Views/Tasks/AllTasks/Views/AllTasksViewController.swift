@@ -12,6 +12,8 @@ class AllTasksViewController: GradientNavBarViewController {
     let viewModel: AllTasksViewModel
     var onTaskSelected: ((TaskInstance) -> Void)?
     
+    weak var coordinator: TodayCoordinator?
+    
     let titleLabel = StandardLabel(labelText: "Tarefas", labelFont: .sfPro, labelType: .title2, labelColor: .black, labelWeight: .semibold)
     
     let descriptionLabel = StandardLabel(labelText: "Confira os tarefas cadastradas no sistema ou adicione uma nova tarefa para visualizá-la aqui.", labelFont: .sfPro, labelType: .body, labelColor: .black, labelWeight: .regular)
@@ -78,6 +80,7 @@ class AllTasksViewController: GradientNavBarViewController {
         setupAddButton()
         makeContent()
         showContent(todayView)
+        bindToCardDelegateActions()
     }
     
     func makeTitle() {
@@ -146,7 +149,7 @@ class AllTasksViewController: GradientNavBarViewController {
     }
     
     @objc func didTapAddButton() {
-        
+        coordinator?.goTo(.addNewTask)
     }
     
     @objc private func segmentChanged(_ sender: UISegmentedControl) {
@@ -163,12 +166,15 @@ class AllTasksViewController: GradientNavBarViewController {
 
 }
 
-extension AllTasksViewController: TaskCardDelegate {
-    func taskCardDidSelect(_ task: TaskInstance) {
-        onTaskSelected?(task)
-    }
-    
-    func taskCardDidMarkAsDone(_ task: TaskInstance) {
-        viewModel.markAsDone(task)
+//DEALING WITH CARD DELEGATES ON SUBVIEW
+extension AllTasksViewController {
+    func bindToCardDelegateActions() {
+        todayView.onSelectTask = { [weak self] task in
+            self?.coordinator?.openTaskDetail(for: task)
+        }
+        
+        todayView.onMarkDone = { [weak self] task in
+            self?.viewModel.markAsDone(task)
+        }
     }
 }

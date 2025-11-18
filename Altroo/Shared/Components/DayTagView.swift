@@ -30,14 +30,12 @@ final class DayTagView: UIView {
     }
     
     required init?(coder: NSCoder) {
-        self.text = ""
-        super.init(coder: coder)
-        setupUI()
+        fatalError("init(coder:) has not been implemented")
     }
     
     private func setupUI() {
         translatesAutoresizingMaskIntoConstraints = false
-        layer.cornerRadius = 4
+        layer.cornerRadius = 8
         clipsToBounds = true
         
         label.text = text
@@ -46,10 +44,10 @@ final class DayTagView: UIView {
         addSubview(label)
         
         NSLayoutConstraint.activate([
-            label.leadingAnchor.constraint(equalTo: trailingAnchor, constant: 5),
+            label.leadingAnchor.constraint(equalTo: leadingAnchor, constant: 6),
             label.topAnchor.constraint(equalTo: topAnchor, constant: 5),
             label.bottomAnchor.constraint(equalTo: bottomAnchor, constant: -5),
-            label.trailingAnchor.constraint(equalTo: trailingAnchor, constant: -5)
+            label.trailingAnchor.constraint(equalTo: trailingAnchor, constant: -6)
         ])
         
         backgroundColor = defaultBackgroundColor

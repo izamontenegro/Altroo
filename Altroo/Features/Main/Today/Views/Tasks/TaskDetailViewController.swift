@@ -10,7 +10,7 @@ import UIKit
 class TaskDetailViewController: UIViewController {
     var taskInstance: TaskInstance
     var taskTemplate: RoutineTask
-
+    
     var onEditTapped: ((TaskInstance) -> Void)?
     
     lazy var vStack: UIStackView = {
@@ -18,7 +18,7 @@ class TaskDetailViewController: UIViewController {
         stackView.axis = .vertical
         stackView.distribution = .fill
         stackView.spacing = 16
-                
+        
         stackView.translatesAutoresizingMaskIntoConstraints = false
         return stackView
     }()
@@ -42,11 +42,11 @@ class TaskDetailViewController: UIViewController {
     func setupUI() {
         view.backgroundColor = .white
         
-        let name = InfoRowView(title: "Nome", info: taskTemplate.name ?? "Nome", isLate: taskInstance.isLateDay || taskInstance.isLatePeriod)
+        let name = InfoRowView(title: "Nome", info: taskTemplate.name ?? "Nome")
         let time = InfoRowView(title: "Horário", info: DateFormatterHelper.hourFormatter(date: taskInstance.time ?? .now), isLate: taskInstance.isLateDay || taskInstance.isLatePeriod)
-        let repetition = StandardLabel(labelText: "Repetição", labelFont: .sfPro, labelType: .callOut, labelColor: .black10, labelWeight: .semibold)
-        let period = InfoRowView(title: "Intervalo", info: makeTimeText(), isLate: taskInstance.isLateDay || taskInstance.isLatePeriod)
-        let notes = InfoRowView(title: "Observação", info: taskTemplate.note ?? "Observação", isLate: taskInstance.isLateDay || taskInstance.isLatePeriod)
+        let repetition = StandardLabel(labelText: "Repetição", labelFont: .sfPro, labelType: .callOut, labelColor: .black40)
+        let period = InfoRowView(title: "Duração", info: makeTimeText())
+        let notes = InfoRowView(title: "Observação", info: taskTemplate.note ?? "Observação")
         
         let dayRow = makeDayRow()
         
@@ -83,36 +83,33 @@ class TaskDetailViewController: UIViewController {
         
     }
     
-    private func makeDayRow() -> UIStackView {
-        let stackView = UIStackView(arrangedSubviews: [])
-        stackView.axis = .horizontal
-        stackView.distribution = .equalCentering
-        stackView.translatesAutoresizingMaskIntoConstraints = false
-                
+    private func makeDayRow() -> FlowLayoutView {
+        var tags: [UIView] = []
+        
         for day in taskTemplate.weekdays {
-            let tag = DayTagView(text: day.localizedSymbol(style: .short))
-
-            stackView.addArrangedSubview(tag)
+            let tag = DayTagView(text: day.localizedSymbol(style: .short).capitalized)
+            tags.append(tag)
         }
         
-        return stackView
+        let row = FlowLayoutView(views: tags, maxWidth: view.bounds.width)
+        return row
     }
     
     private func makeTimeText() -> String {
         if let start = taskTemplate.startDate, let end = taskTemplate.endDate {
             let timeLabelText = "\(DateFormatterHelper.fullDayFormatter(date: start)) - \(DateFormatterHelper.fullDayFormatter(date: end))"
-        
+            
             return timeLabelText
             
         } else if let start = taskTemplate.startDate {
             let timeLabelText = "\(DateFormatterHelper.fullDayFormatter(date: start)) - Contínuo"
-        
+            
             return timeLabelText
         } else {
             return ""
         }
     }
-
+    
     
     @objc func closeTapped() {
         dismiss(animated: true)
@@ -121,19 +118,7 @@ class TaskDetailViewController: UIViewController {
     @objc func editTapped() {
         dismiss(animated: true)
         onEditTapped?(taskInstance)
-
+        
     }
 }
 
-//#Preview {
-//    TaskDetailViewController(task: MockTask(
-//        name: "Administer medications",
-//        note: "Check medication log for proper dosage and timing.",
-//        reminder: true,
-//        time: Calendar.current.date(from: DateComponents(hour: 7, minute: 30))!,
-//        daysOfTheWeek: [.friday, .sunday],
-//        startDate: Calendar.current.date(from: DateComponents(year: 2025, month: 10, day: 10))!,
-//        endDate: nil
-//    )
-//    )
-//}
