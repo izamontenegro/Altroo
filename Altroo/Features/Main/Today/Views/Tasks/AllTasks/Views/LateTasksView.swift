@@ -7,6 +7,9 @@
 import UIKit
 
 final class LateTasksView: UIView {
+    var onSelectTask: ((TaskInstance) -> Void)?
+    var onMarkDone: ((TaskInstance) -> Void)?
+    
     init(viewModel: AllTasksViewModel) {
         super.init(frame: .zero)
         translatesAutoresizingMaskIntoConstraints = false
@@ -72,8 +75,9 @@ final class LateTasksView: UIView {
 
         for task in tasks {
             let card = TaskCard(task: task)
-//            card.delegate = self
-
+            card.delegate = self
+            card.navigationDelegate = self
+            
             card.translatesAutoresizingMaskIntoConstraints = false
             cardStack.addArrangedSubview(card)
             
@@ -86,4 +90,15 @@ final class LateTasksView: UIView {
         return cardStack
     }
 
+}
+
+
+extension LateTasksView: TaskCardDelegate, TaskCardNavigationDelegate {
+    func taskCardDidMarkAsDone(_ task: TaskInstance) {
+        onMarkDone?(task)
+    }
+
+    func taskCardDidSelect(_ task: TaskInstance) {
+        onSelectTask?(task)
+    }
 }

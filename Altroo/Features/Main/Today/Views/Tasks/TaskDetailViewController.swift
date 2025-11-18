@@ -53,6 +53,7 @@ class TaskDetailViewController: UIViewController {
         vStack.addArrangedSubview(name)
         vStack.addArrangedSubview(time)
         vStack.addArrangedSubview(repetition)
+        vStack.setCustomSpacing(6, after: repetition)
         vStack.addArrangedSubview(dayRow)
         vStack.addArrangedSubview(period)
         vStack.addArrangedSubview(notes)

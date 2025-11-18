@@ -98,8 +98,6 @@ final class TodayTasksView: UIView {
         //FILLED CONTENT
         for task in tasks {
             let card = TaskCard(task: task)
-            
-            //TODO: FIX SHEET CONTROLLER
             card.delegate = self
             card.navigationDelegate = self
 
@@ -141,12 +139,10 @@ final class TodayTasksView: UIView {
 extension TodayTasksView: TaskCardDelegate, TaskCardNavigationDelegate {
     func taskCardDidMarkAsDone(_ task: TaskInstance) {
         onMarkDone?(task)
-        print("todaytaskview CHECK received call from card")
 
     }
 
     func taskCardDidSelect(_ task: TaskInstance) {
         onSelectTask?(task)
-        print("todaytaskview received call from card")
     }
 }

@@ -53,24 +53,25 @@ class InfoRowView: UIView {
             infoLabel.bottomAnchor.constraint(equalTo: self.bottomAnchor, constant: -6),
             infoLabel.trailingAnchor.constraint(equalTo: self.trailingAnchor, constant: -16),
             infoLabel.leadingAnchor.constraint(greaterThanOrEqualTo: titleLabel.trailingAnchor)
-            ])
+        ])
         
         titleLabel.setContentHuggingPriority(.defaultHigh, for: .horizontal)
         infoLabel.setContentCompressionResistancePriority(.defaultLow, for: .horizontal)
         
         if isLate {
             let lateLabel = StandardLabel(labelText: "Em atraso",
-                                         labelFont: .sfPro,
-                                         labelType: .title3,
-                                         labelColor: .red20)
+                                          labelFont: .sfPro,
+                                          labelType: .callOut,
+                                          labelColor: .red20,
+                                          labelWeight: .medium)
             
             addSubview(lateLabel)
-
+            
             NSLayoutConstraint.activate([
                 lateLabel.topAnchor.constraint(equalTo: self.topAnchor,  constant: 6),
                 lateLabel.bottomAnchor.constraint(lessThanOrEqualTo: self.bottomAnchor, constant: -6),
                 lateLabel.trailingAnchor.constraint(equalTo: infoLabel.leadingAnchor, constant: -16),
-                ])
+            ])
         }
     }
 }
