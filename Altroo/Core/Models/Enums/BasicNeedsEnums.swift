@@ -109,11 +109,11 @@ enum StoolColorsEnum: String, CaseIterable {
         case .mediumBrown:
             "Marrom médio"
         case .yellow:
-            "Amarelado"
+            "Amarelo"
         case .darkBrown:
             "Marrom escuro"
         case .red:
-            "Avermelhado"
+            "Vermelho"
         case .darkGreen:
             "Verde Escuro"
         }

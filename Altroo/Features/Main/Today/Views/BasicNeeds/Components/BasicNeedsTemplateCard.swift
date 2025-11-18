@@ -11,15 +11,12 @@ struct BasicNeedsTemplateCard: View {
     let imageName: String
     let subtitle: String
     let title: String
-    
-    let action: (() -> Void)
-    
-    @State var isSelected: Bool = false
+    let isSelected: Bool
+    let action: () -> Void
     
     var body: some View {
         Button(action: {
             action()
-            isSelected.toggle()
         }, label: {
             VStack(alignment: .leading, spacing: 5) {
                 Image(imageName)
