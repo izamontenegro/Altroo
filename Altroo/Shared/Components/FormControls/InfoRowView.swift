@@ -12,9 +12,12 @@ class InfoRowView: UIView {
     var title: String
     var info: String
     
-    init(title: String, info: String) {
+    var isLate: Bool
+    
+    init(title: String, info: String, isLate: Bool = false) {
         self.title = title
         self.info = info
+        self.isLate = isLate
         
         super.init(frame: .zero)
         
@@ -26,11 +29,21 @@ class InfoRowView: UIView {
     }
     
     func setupUI() {
-        self.backgroundColor = .blue80
+        self.backgroundColor = isLate ? .red80 : .blue80
         self.layer.cornerRadius = 8
         self.translatesAutoresizingMaskIntoConstraints = false
         
-        let titleLabel = StandardLabel(labelText: title, labelFont: .sfPro, labelType: .title3, labelColor: .black40)
+        let titleLabel = StandardLabel(labelText: title,
+                                       labelFont: .sfPro,
+                                       labelType: .title3,
+                                       labelColor: isLate ? .red20 : .black40)
+        
+        
+        let lateLabel = StandardLabel(labelText: "Em atraso",
+                                     labelFont: .sfPro,
+                                     labelType: .title3,
+                                     labelColor: .red20)
+        
         let infoLabel = StandardLabel(labelText: info, labelFont: .sfPro, labelType: .title3, labelColor: .black10)
         
         infoLabel.numberOfLines = 0
@@ -51,6 +64,16 @@ class InfoRowView: UIView {
         
         titleLabel.setContentHuggingPriority(.defaultHigh, for: .horizontal)
         infoLabel.setContentCompressionResistancePriority(.defaultLow, for: .horizontal)
+        
+        if isLate {
+            addSubview(lateLabel)
+
+            NSLayoutConstraint.activate([
+                lateLabel.topAnchor.constraint(equalTo: self.topAnchor,  constant: 6),
+                lateLabel.bottomAnchor.constraint(lessThanOrEqualTo: self.bottomAnchor, constant: -6),
+                lateLabel.trailingAnchor.constraint(equalTo: infoLabel.leadingAnchor, constant: 16),
+                ])
+        }
     }
 }
 

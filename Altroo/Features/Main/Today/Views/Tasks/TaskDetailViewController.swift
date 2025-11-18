@@ -27,7 +27,6 @@ class TaskDetailViewController: UIViewController {
         self.taskInstance = task
         self.taskTemplate = task.template!
         super.init(nibName: nil, bundle: nil)
-        
     }
     
     required init?(coder: NSCoder) {
@@ -43,11 +42,11 @@ class TaskDetailViewController: UIViewController {
     func setupUI() {
         view.backgroundColor = .white
         
-        let name = InfoRowView(title: "Nome", info: taskTemplate.name ?? "Nome")
-        let time = InfoRowView(title: "Horário", info: DateFormatterHelper.hourFormatter(date: taskInstance.time ?? .now))
+        let name = InfoRowView(title: "Nome", info: taskTemplate.name ?? "Nome", isLate: taskInstance.isLateDay || taskInstance.isLatePeriod)
+        let time = InfoRowView(title: "Horário", info: DateFormatterHelper.hourFormatter(date: taskInstance.time ?? .now), isLate: taskInstance.isLateDay || taskInstance.isLatePeriod)
         let repetition = StandardLabel(labelText: "Repetição", labelFont: .sfPro, labelType: .callOut, labelColor: .black10, labelWeight: .semibold)
-        let period = InfoRowView(title: "Intervalo", info: makeTimeText())
-        let notes = InfoRowView(title: "Observação", info: taskTemplate.note ?? "Observação")
+        let period = InfoRowView(title: "Intervalo", info: makeTimeText(), isLate: taskInstance.isLateDay || taskInstance.isLatePeriod)
+        let notes = InfoRowView(title: "Observação", info: taskTemplate.note ?? "Observação", isLate: taskInstance.isLateDay || taskInstance.isLatePeriod)
         
         let dayRow = makeDayRow()
         
@@ -90,14 +89,9 @@ class TaskDetailViewController: UIViewController {
         stackView.distribution = .equalCentering
         stackView.translatesAutoresizingMaskIntoConstraints = false
                 
-        for day in Locale.Weekday.allWeekDays {
-            //TODO: CHANGE FROM BUTTONS TO TAG
-            let tag = PrimaryStyleButton(title: day.rawValue.first!.uppercased())
-            if taskTemplate.daysOfTheWeek!.contains(day.rawValue) {
-                tag.backgroundColor = .blue30
-            } else {
-                tag.backgroundColor = .black40
-            }
+        for day in taskTemplate.weekdays {
+            let tag = DayTagView(text: day.localizedSymbol(style: .short))
+
             stackView.addArrangedSubview(tag)
         }
         
