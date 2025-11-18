@@ -24,7 +24,6 @@ class AssociatePatientViewController: GradientHeader {
     private let viewModel: AssociatePatientViewModel
     let context: CareRecipientContext
 
-    private var dimmingView: UIView?
     private var cancellables = Set<AnyCancellable>()
 
     private lazy var addNewPatientButton: CareRecipientCard = {
@@ -112,7 +111,6 @@ class AssociatePatientViewController: GradientHeader {
         setupLayout()
         updateView()
         bindViewModel()
-        showHealthAlertIfNeeded()
         
         NotificationCenter.default.addObserver(
             self,
@@ -120,12 +118,6 @@ class AssociatePatientViewController: GradientHeader {
             name: .didFinishCloudKitSync,
             object: nil
         )
-    }
-    
-    private func showHealthAlertIfNeeded() {
-        if !UserDefaults.standard.healthAlertSeen {
-            showHealthDataAlert()
-        }
     }
 
     //TODO: - Add loading view
@@ -182,36 +174,6 @@ class AssociatePatientViewController: GradientHeader {
         vStack.addArrangedSubview(addExistingPatientButton)
     }
     
-    private func showHealthDataAlert() {
-        let dim = UIView(frame: view.bounds)
-        dim.backgroundColor = UIColor.black.withAlphaComponent(0.5)
-        dim.alpha = 0
-        dimmingView = dim
-        view.addSubview(dim)
-
-        let alert = HealthDataAlert()
-        alert.translatesAutoresizingMaskIntoConstraints = false
-        alert.layer.shadowColor = UIColor.black.cgColor
-        alert.layer.shadowOpacity = 0.3
-        alert.layer.shadowRadius = 10
-        alert.layer.shadowOffset = .zero
-        alert.alpha = 0
-
-        view.addSubview(alert)
-
-        NSLayoutConstraint.activate([
-            alert.centerXAnchor.constraint(equalTo: view.centerXAnchor),
-            alert.centerYAnchor.constraint(equalTo: view.centerYAnchor),
-        ])
-
-        alert.closeButton.addTarget(self, action: #selector(closeHealthAlert), for: .touchUpInside)
-
-        UIView.animate(withDuration: 0.3) {
-            dim.alpha = 1
-            alert.alpha = 1
-        }
-    }
-
     @objc private func didTapCareRecipientCard(_ sender: UITapGestureRecognizer) {
         guard let card = sender.view as? CareRecipientCard,
               let careRecipient = card.careRecipient else { return }
@@ -248,16 +210,4 @@ class AssociatePatientViewController: GradientHeader {
     @objc func didTapAddNewPatientButton() { delegate?.goToPatientForms() }
     
     @objc func didTapAddExistingPatientButton() { delegate?.goToTutorialAddSheet() }
-    
-    @objc private func closeHealthAlert() {
-        UserDefaults.standard.healthAlertSeen = true
-
-        UIView.animate(withDuration: 0.3, animations: {
-            self.dimmingView?.alpha = 0
-            self.view.subviews.last?.alpha = 0
-        }, completion: { _ in
-            self.dimmingView?.removeFromSuperview()
-            self.view.subviews.last?.removeFromSuperview()
-        })
-    }
 }
