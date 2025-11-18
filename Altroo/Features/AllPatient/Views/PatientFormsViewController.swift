@@ -117,16 +117,16 @@ class PatientFormsViewController: UIViewController {
     }()
     
     
-    private lazy var nameSection = FormSectionView(title: "Nome", content: nameTextField, isObligatory: true)
+    private lazy var nameSection = FormSectionView(title: "name".localized, content: nameTextField, isObligatory: true)
     private lazy var birthDateSection = FormSectionView(title: "Data de Nascimento", content: datePicker)
     private lazy var ageSection = FormSectionView(title: "Idade", content: ageLabel)
     private lazy var heightSection = FormSectionView(title: "Altura", content: heightInputStack)
-    private lazy var weightSection = FormSectionView(title: "Peso", content: weightInputStack)
+    private lazy var weightSection = FormSectionView(title: "weight".localized, content: weightInputStack)
     private lazy var genderSection = FormSectionView(title: "Sexo", content: genderSegmentedControl)
     private lazy var addressSection = FormSectionView(title: "Endereço", content: addressTextField)
     
     private lazy var contactSection = FormSectionView(title: "Contato de Emergência", content: contactStack)
-    private lazy var contactNameSection = FormSectionView(title: "Nome", content: contactNameTextField, isSubsection: true)
+    private lazy var contactNameSection = FormSectionView(title: "name".localized, content: contactNameTextField, isSubsection: true)
     private lazy var contactPhoneSection = FormSectionView(title: "Telefone", content: contactPhoneTextField, isSubsection: true)
     private lazy var contactRelationshipSection = FormSectionView(title: "Relação", content: relationshipButton, isSubsection: true)
     
@@ -195,7 +195,7 @@ class PatientFormsViewController: UIViewController {
     }()
     
     private let scrollView = UIScrollView.make(direction: .vertical)
-    private let nextStepButton = StandardConfirmationButton(title: "Próximo")
+    private let nextStepButton = StandardConfirmationButton(title: "next".localized)
         
     init(viewModel: AddPatientViewModel) {
         self.viewModel = viewModel

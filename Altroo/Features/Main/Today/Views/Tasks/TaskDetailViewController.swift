@@ -43,11 +43,11 @@ class TaskDetailViewController: UIViewController {
     func setupUI() {
         view.backgroundColor = .white
         
-        let name = InfoRowView(title: "Nome", info: taskTemplate.name ?? "Nome")
-        let time = InfoRowView(title: "Horário", info: DateFormatterHelper.hourFormatter(date: taskInstance.time ?? .now))
+        let name = InfoRowView(title: "name".localized, info: taskTemplate.name ?? "name".localized)
+        let time = InfoRowView(title: String(localized: "time"), info: DateFormatterHelper.hourFormatter(date: taskInstance.time ?? .now))
         let repetition = StandardLabel(labelText: "Repetição", labelFont: .sfPro, labelType: .callOut, labelColor: .black10, labelWeight: .semibold)
         let period = InfoRowView(title: "Intervalo", info: makeTimeText())
-        let notes = InfoRowView(title: "Observação", info: taskTemplate.note ?? "Observação")
+        let notes = InfoRowView(title: "observation".localized, info: taskTemplate.note ?? "observation".localized)
         
         let dayRow = makeDayRow()
         
@@ -68,13 +68,13 @@ class TaskDetailViewController: UIViewController {
     }
     
     private func configureNavBar() {
-        navigationItem.title = "Tarefa"
+        navigationItem.title = "task".localized
         
-        let closeButton = UIBarButtonItem(title: "Fechar", style: .done, target: self, action: #selector(closeTapped))
+        let closeButton = UIBarButtonItem(title: "close".localized, style: .done, target: self, action: #selector(closeTapped))
         closeButton.tintColor = .blue10
         navigationItem.leftBarButtonItem = closeButton
         
-        let editButton = UIBarButtonItem(title: "Editar", style: .plain, target: self, action: #selector(editTapped))
+        let editButton = UIBarButtonItem(title: "edit".localized, style: .plain, target: self, action: #selector(editTapped))
         editButton.tintColor = .blue10
         navigationItem.rightBarButtonItem = editButton
         

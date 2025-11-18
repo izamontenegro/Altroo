@@ -21,7 +21,7 @@ class SurgeryInputView: UIView {
 
     private let nameLabel: UILabel = {
         let label = UILabel()
-        label.text = "Nome"
+        label.text = "name".localized
         label.font = .systemFont(ofSize: 16, weight: .semibold)
         label.textColor = UIColor(resource: .black10)
         label.translatesAutoresizingMaskIntoConstraints = false
@@ -30,7 +30,7 @@ class SurgeryInputView: UIView {
 
     private let dateLabel: UILabel = {
         let label = UILabel()
-        label.text = "Data"
+        label.text = "date".localized
         label.font = .systemFont(ofSize: 16, weight: .semibold)
         label.textColor = UIColor(resource: .black10)
         label.translatesAutoresizingMaskIntoConstraints = false

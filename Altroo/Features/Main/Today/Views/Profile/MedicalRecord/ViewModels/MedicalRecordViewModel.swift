@@ -65,7 +65,7 @@ final class MedicalRecordViewModel {
         let contacts = MedicalRecordFormatter.contactsList(from: personalData?.contacts as? Set<Contact>)
         return """
         Nome: \(name)
-        Data de Nascimento: \(dateOfBirth)      Peso: \(weight)      Altura: \(height)
+        Data de Nascimento: \(dateOfBirth)      \("weight".localized): \(weight)      Altura: \(height)
         Endereço: \(address)
         Contato de Emergência:
         \(contacts)
@@ -142,7 +142,7 @@ final class MedicalRecordViewModel {
         Banho: \(bath)
         Higiene: \(hygiene)
         Excreção: \(excretion)
-        Alimentação: \(feeding)
+        \("feeding".localized): \(feeding)
 
         Equipamentos
         \(equipment)
@@ -195,9 +195,9 @@ final class MedicalRecordViewModel {
         let contactsText: String = contactDisplayItems.isEmpty ? "—" : ""
 
         return [
-            ("Nome", name),
+            ("name".localized, name),
             ("Data de Nascimento", dateOfBirth),
-            ("Peso", weight),
+            ("weight".localized, weight),
             ("Altura", height),
             ("Endereço", address),
             ("Contato de Emergência", contactsText)
@@ -227,7 +227,7 @@ final class MedicalRecordViewModel {
             ("Doenças", diseasesList),
             surgeriesRow,
             ("Alergias", allergies),
-            ("Observação", observation)
+            ("observation".localized, observation)
         ]
     }
     
@@ -268,7 +268,7 @@ final class MedicalRecordViewModel {
             ("Banho", bath),
             ("Higiene", hygiene),
             ("Excreção", excretion),
-            ("Alimentação", feeding),
+            ("feeding".localized, feeding),
             ("Equipamentos", equipment)
         ]
     }

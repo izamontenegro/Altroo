@@ -11,7 +11,7 @@ class TutorialAddSheet: UIViewController {
 
     private lazy var closeButton: UIBarButtonItem = {
         return UIBarButtonItem(
-            title: "Fechar",
+            title: "close".localized,
             style: .plain,
             target: self,
             action: #selector(didTapClose)

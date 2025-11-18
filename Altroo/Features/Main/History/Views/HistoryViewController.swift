@@ -30,7 +30,7 @@ final class HistoryViewController: GradientHeader {
     @MainActor required init?(coder: NSCoder) { fatalError("init(coder:) has not been implemented") }
     
     override func viewDidLoad() {
-        setNavbarItems(title: "Histórico", subtitle: "Confira todos os registros realizados anteriormente com a data, autoria do registros e demais detalhes.")
+        setNavbarItems(title: "history".localized, subtitle: "Confira todos os registros realizados anteriormente com a data, autoria do registros e demais detalhes.")
 
         super.viewDidLoad()
         

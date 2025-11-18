@@ -41,7 +41,7 @@ class MyProfileViewController: GradientNavBarViewController {
     }()
     private let editButton: CapsuleWithCircleView = {
         let label = CapsuleWithCircleView(
-            text: "Editar",
+            text: "edit".localized,
             textColor: .teal20,
             nameIcon: "pencil",
             nameIconColor: .pureWhite,
@@ -53,7 +53,7 @@ class MyProfileViewController: GradientNavBarViewController {
     // TODO: TRAZER INFORMAÇÕES DO USUÁRIO AQUI
     private let name: InfoRowView = {
         let label = InfoRowView(
-            title: "Nome",
+            title: "name".localized,
             info: "Maria Clara"
         )
         return label

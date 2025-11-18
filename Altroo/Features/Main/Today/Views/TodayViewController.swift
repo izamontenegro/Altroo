@@ -123,7 +123,7 @@ class TodayViewController: UIViewController {
             container.heightAnchor.constraint(equalToConstant: 80).isActive = true
             
             let emptyLabel = StandardLabel(
-                labelText: "Nenhuma tarefa registrada.",
+                labelText: "today_empty_tasks".localized,
                 labelFont: .sfPro,
                 labelType: .callOut,
                 labelColor: .black30
@@ -211,10 +211,10 @@ class TodayViewController: UIViewController {
         
         if configs.isEmpty || configs.first(where: { $0.type == .basicNeeds })?.subitems == nil {
             let defaultSubitems = [
-                SubitemConfig(title: "Alimentação", isVisible: true),
-                SubitemConfig(title: "Hidratação", isVisible: true),
-                SubitemConfig(title: "Fezes", isVisible: true),
-                SubitemConfig(title: "Urina", isVisible: true)
+                SubitemConfig(title: "feeding".localized, isVisible: true),
+                SubitemConfig(title: "hydration".localized, isVisible: true),
+                SubitemConfig(title: "stool".localized, isVisible: true),
+                SubitemConfig(title: "urine".localized, isVisible: true)
             ]
             let basicNeedsConfig = TodaySectionConfig(
                 type: .basicNeeds,
@@ -255,7 +255,7 @@ class TodayViewController: UIViewController {
                 ).build(from: config)
                 
                 vStack.addArrangedSubview(StandardLabel(
-                    labelText: "Necessidades Básicas",
+                    labelText: "today_section_basic_needs".localized,
                     labelFont: .sfPro,
                     labelType: .title2,
                     labelColor: .black10,

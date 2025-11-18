@@ -128,7 +128,6 @@ final class CareRecipientProfileViewController: GradientNavBarViewController {
             cardsStack.addArrangedSubview(none)
         } else {
             for item in uniqueCaregivers {
-                print("Nome: \(item.name) | Categoria: \(item.category) | Permissão: \(item.permission.rawValue)")
                 
                 let card = CaregiverProfileCardView(
                     name: item.name,
@@ -263,7 +262,7 @@ final class CareRecipientProfileViewController: GradientNavBarViewController {
             self.delegate?.careRecipientProfileWantsChangeAssociate(self)
         }
         
-        let cancelAction = UIAlertAction(title: "Cancelar", style: .cancel, handler: nil)
+        let cancelAction = UIAlertAction(title: "cancel".localized, style: .cancel, handler: nil)
         
         alertController.addAction(cancelAction)
         alertController.addAction(confirmAction)

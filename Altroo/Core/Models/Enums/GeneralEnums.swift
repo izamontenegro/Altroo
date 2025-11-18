@@ -33,17 +33,17 @@ enum HistoryActivityType: String {
     var displayText: String {
         switch self {
         case .urine:
-            return "Urina"
+            return "urine".localized
         case .stool:
-            return "Fezes"
+            return "stool".localized
         case .task:
-            return "Tarefa"
+            return "task".localized
         case .symptom:
             return "Intercorrência"
         case .hydration:
-            return "Hidratação"
+            return "hydration".localized
         case .meal:
-            return "Alimentação"
+            return "feeding".localized
         }
     }
 }

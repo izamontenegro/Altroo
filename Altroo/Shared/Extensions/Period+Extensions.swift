@@ -21,10 +21,10 @@ extension PeriodEnum {
 
     var displayName: String {
         switch self {
-        case .overnight: return "Madrugada"
-        case .morning:   return "Manhã"
-        case .afternoon: return "Tarde"
-        case .night:     return "Noite"
+        case .overnight: return "overnight".localized
+        case .morning:   return "morning".localized
+        case .afternoon: return "afternoon".localized
+        case .night:     return "night".localized
         }
     }
 

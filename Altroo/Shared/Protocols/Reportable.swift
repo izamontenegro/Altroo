@@ -21,14 +21,14 @@ extension StoolRecord: Reportable {
 }
 
 extension UrineRecord: Reportable {
-    var reportTitle: String { "Urina" }
+    var reportTitle: String { "urine".localized }
     var reportTime: Date? { self.date }
     var reportAuthor: String? { self.author }
     var reportNotes: String? { self.urineObservation }
 }
 
 extension FeedingRecord: Reportable {
-    var reportTitle: String { self.mealCategory ?? "Alimentação" }
+    var reportTitle: String { self.mealCategory ?? "feeding".localized }
     var reportTime: Date? { self.date }
     var reportAuthor: String? { self.author }
     var reportNotes: String? { self.notes }
@@ -42,7 +42,7 @@ extension HydrationRecord: Reportable {
 }
 
 extension TaskInstance: Reportable {
-    var reportTitle: String { self.template?.name ?? "Tarefa" }
+    var reportTitle: String { self.template?.name ?? "task".localized }
     var reportTime: Date? { self.time }
     var reportAuthor: String? { self.author }
     var reportNotes: String? { self.template?.note }
@@ -113,12 +113,12 @@ enum ReportItemType: CaseIterable {
     
     var displayText: String {
         switch self {
-        case .stool: "Fezes"
-        case .urine: "Urina"
-        case .feeding: "Alimentação"
-        case .hydration: "Hidratação"
-        case .task: "Tarefas"
-        case .symptom: "Intercorrências"
+        case .stool: "stool".localized
+        case .urine: "urine".localized
+        case .feeding: "feeding".localized
+        case .hydration: "hydration".localized
+        case .task: "tasks".localized
+        case .symptom: "today_section_intercurrences".localized
         }
     }
     

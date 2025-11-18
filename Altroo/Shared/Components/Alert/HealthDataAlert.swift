@@ -74,7 +74,7 @@ class HealthDataAlert: UIView {
         labelColor: .blue30, labelWeight: .semibold
     )
     
-    let closeButton = OutlineButton(title: "Fechar", color: .blue30)
+    let closeButton = OutlineButton(title: "close".localized, color: .blue30)
             
     func setupUI() {
         

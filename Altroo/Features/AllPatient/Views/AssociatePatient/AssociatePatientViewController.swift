@@ -28,7 +28,7 @@ class AssociatePatientViewController: GradientHeader {
 
     private lazy var addNewPatientButton: CareRecipientCard = {
         let btn = CareRecipientCard(
-            name: "Adicionar assistido",
+            name: "add_assisted".localized,
             isPlusButton: true
         )
         let tapGesture = UITapGestureRecognizer(target: self, action: #selector(didTapAddNewPatientButton))
@@ -103,7 +103,7 @@ class AssociatePatientViewController: GradientHeader {
     }
 
     override func viewDidLoad() {
-        setNavbarItems(title: "Assistidos", subtitle: "Acompanhe os assistidos cadastrados no aplicativo ou adicione um novo.")
+        setNavbarItems(title: "assisted".localized, subtitle: "assisted_subtitle".localized)
 
         super.viewDidLoad()
         view.backgroundColor = .blue80
