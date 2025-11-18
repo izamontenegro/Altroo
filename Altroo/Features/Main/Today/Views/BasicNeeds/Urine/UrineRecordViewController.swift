@@ -18,12 +18,9 @@ final class UrineRecordViewController: GradientNavBarViewController {
     private let viewModel: UrineRecordViewModel
     private var cancellables = Set<AnyCancellable>()
     
-
+    private var urineColorsSectionView: ColorsCardsSectionView?
+    private var observationView: ObservationView?
     
-    private var colorButtons: [UIButton] = []
-    private var characteristicButtons: [UIButton] = []
-    private var observationField: UITextField?
-        
     init(viewModel: UrineRecordViewModel) {
         self.viewModel = viewModel
         super.init(nibName: nil, bundle: nil)
@@ -43,9 +40,11 @@ final class UrineRecordViewController: GradientNavBarViewController {
     }
     
     // MARK: - View Layout
-    
     private func setupLayout() {
-        let viewTitle = StandardHeaderView(title: "Registrar urina", subtitle: "Registre uma micção  e as características da urina do assistido.")
+        let viewTitle = StandardHeaderView(
+            title: "Registrar urina",
+            subtitle: "Registre uma micção e as características da urina do assistido."
+        )
         
         let content = UIStackView()
         content.axis = .vertical
@@ -77,57 +76,50 @@ final class UrineRecordViewController: GradientNavBarViewController {
     // MARK: - Sections
     
     private func makeUrineColorSection() -> UIView {
-        let title = StandardLabel(
-            labelText: "Cor da Urina?",
-            labelFont: .sfPro, labelType: .callOut, labelColor: .black10, labelWeight: .semibold
+        let colors = UrineColorsEnum.allCases.map { $0.color }
+        let titles = UrineColorsEnum.allCases.map { $0.displayText }
+        
+        let selectedIndex: Int?
+        if let selected = viewModel.selectedUrineColor,
+           let idx = UrineColorsEnum.allCases.firstIndex(of: selected) {
+            selectedIndex = idx
+        } else {
+            selectedIndex = nil
+        }
+        
+        let section = ColorsCardsSectionView(
+            title: "Qual foi a coloração da urina?",
+            colors: colors,
+            titles: titles,
+            selectedIndex: selectedIndex
         )
         
-        let row = UIStackView()
-        row.axis = .horizontal
-        row.spacing = 18
-        row.alignment = .center
-        row.distribution = .fillEqually
-        
-        for color in UrineColorsEnum.allCases {
-            let button = UIButton(type: .system)
-            button.translatesAutoresizingMaskIntoConstraints = false
-            button.backgroundColor = color.color
-            button.layer.borderWidth = 2
-            button.layer.borderColor = UIColor.white70.cgColor
-            button.addTarget(self, action: #selector(colorTapped(_:)), for: .touchUpInside)
-
-            let buttonSize = UIScreen.main.bounds.width * 0.15
-            
-            NSLayoutConstraint.activate([
-                button.widthAnchor.constraint(equalToConstant: buttonSize),
-                button.heightAnchor.constraint(equalToConstant: buttonSize)
-            ])
-            button.layer.cornerRadius = buttonSize / 2
-
-            row.addArrangedSubview(button)
-            colorButtons.append(button)
+        section.onColorSelected = { [weak self] index, _ in
+            guard let self else { return }
+            let selectedEnum = UrineColorsEnum.allCases[index]
+            self.viewModel.selectedUrineColor = selectedEnum
         }
-
         
-        let section = UIStackView(arrangedSubviews: [title, row])
-        section.axis = .vertical
-        section.alignment = .leading
-        section.spacing = 16
+        self.urineColorsSectionView = section
         return section
     }
     
     private func makeUrineObservationSection() -> UIView {
         let title = StandardLabel(
             labelText: "Observação",
-            labelFont: .sfPro, labelType: .callOut, labelColor: .black10, labelWeight: .semibold
+            labelFont: .sfPro,
+            labelType: .callOut,
+            labelColor: .black10,
+            labelWeight: .semibold
         )
 
-        let field = StandardTextfield()
-        field.addTarget(self, action: #selector(observationChanged(_:)), for: .editingChanged)
+        let obs = ObservationView(placeholder: "Detalhes opcionais.")
+        obs.delegate = self
+        obs.translatesAutoresizingMaskIntoConstraints = false
         
-        self.observationField = field
+        self.observationView = obs
         
-        let section = UIStackView(arrangedSubviews: [title, field])
+        let section = UIStackView(arrangedSubviews: [title, obs])
         section.axis = .vertical
         section.spacing = 8
         return section
@@ -141,46 +133,12 @@ final class UrineRecordViewController: GradientNavBarViewController {
     }
     
     // MARK: - Actions
-    
-    @objc private func colorTapped(_ sender: UIButton) {
-        guard let index = colorButtons.firstIndex(of: sender) else { return }
-        let selectedColor = UrineColorsEnum.allCases[index]
-        viewModel.selectedUrineColor = selectedColor
-
-        colorButtons.forEach { button in
-            button.layer.borderColor = UIColor.white70.cgColor
-            button.subviews.forEach { if $0.tag == 999 { $0.removeFromSuperview() } }
-        }
-
-        sender.layer.borderColor = UIColor.black10.cgColor
-        sender.layer.borderWidth = 3
-
-        let check = UIImageView(image: UIImage(systemName: "checkmark"))
-        check.tintColor = .black10
-        check.translatesAutoresizingMaskIntoConstraints = false
-        check.tag = 999
-        sender.addSubview(check)
-        
-        let checkSize = UIScreen.main.bounds.width * 0.07
-        
-        NSLayoutConstraint.activate([
-            check.centerXAnchor.constraint(equalTo: sender.centerXAnchor),
-            check.centerYAnchor.constraint(equalTo: sender.centerYAnchor),
-            check.widthAnchor.constraint(equalToConstant: checkSize),
-            check.heightAnchor.constraint(equalToConstant: checkSize)
-        ])
-    }
-    
-    @objc private func observationChanged(_ sender: UITextField) {
-        viewModel.urineObservation = sender.text ?? "--"
-    }
-    
     @objc private func createUrineRecord() {
         viewModel.createUrineRecord()
-        
         delegate?.didFinishAddingUrineRecord()
     }
     
+    // MARK: - Keyboard
     private func setupTapToDismiss() {
         let tap = UITapGestureRecognizer(target: self, action: #selector(dismissKeyboard))
         tap.cancelsTouchesInView = false
@@ -193,19 +151,28 @@ final class UrineRecordViewController: GradientNavBarViewController {
 
     
     // MARK: - Combine Bindings
-    
     private func bindViewModel() {
         viewModel.$selectedUrineColor
-            .sink { [weak self] color in
-                guard let color, let self else { return }
-                for button in self.colorButtons {
-                    if button.backgroundColor == color.color {
-                        button.layer.borderColor = UIColor.blue50.cgColor
-                    } else {
-                        button.layer.borderColor = UIColor.white70.cgColor
-                    }
+            .sink { [weak self] selected in
+                guard let self else { return }
+                
+                let idx: Int?
+                if let selected,
+                   let index = UrineColorsEnum.allCases.firstIndex(of: selected) {
+                    idx = index
+                } else {
+                    idx = nil
                 }
+                
+                self.urineColorsSectionView?.updateSelection(index: idx)
             }
             .store(in: &cancellables)
+    }
+}
+
+// MARK: - ObservationViewDelegate
+extension UrineRecordViewController: ObservationViewDelegate {
+    func observationView(_ view: ObservationView, didChangeText text: String) {
+        viewModel.urineObservation = text.isEmpty ? "--" : text
     }
 }
