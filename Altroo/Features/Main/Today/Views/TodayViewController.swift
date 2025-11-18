@@ -20,6 +20,8 @@ class TodayViewController: UIViewController {
     var onTaskSelected: ((TaskInstance) -> Void)?
     var symptomsCard: SymptomsCard
     var feedingRecords: [FeedingRecord] = []
+    
+    private var dimmingView: UIView?
     private var cancellables = Set<AnyCancellable>()
 
     private var profileToolbar: ProfileToolbarContainer?
@@ -87,6 +89,7 @@ class TodayViewController: UIViewController {
         ])
         
         setupBindings()
+        showHealthAlertIfNeeded()
     }
     
     override func viewWillAppear(_ animated: Bool) {
@@ -104,6 +107,12 @@ class TodayViewController: UIViewController {
         
         symptomsCard.updateSymptoms(viewModel.todaySymptoms)
         addSections()
+    }
+    
+    private func showHealthAlertIfNeeded() {
+        if !UserDefaults.standard.healthAlertSeen {
+            showHealthDataAlert()
+        }
     }
 
     func makeCardByPeriod() -> UIView {
@@ -276,5 +285,47 @@ class TodayViewController: UIViewController {
                 vStack.addArrangedSubview(symptomsCard)
             }
         }
+    }
+    
+    private func showHealthDataAlert() {
+        let dim = UIView(frame: view.bounds)
+        dim.backgroundColor = UIColor.black.withAlphaComponent(0.5)
+        dim.alpha = 0
+        dimmingView = dim
+        view.addSubview(dim)
+
+        let alert = HealthDataAlert()
+        alert.translatesAutoresizingMaskIntoConstraints = false
+        alert.layer.shadowColor = UIColor.black.cgColor
+        alert.layer.shadowOpacity = 0.3
+        alert.layer.shadowRadius = 10
+        alert.layer.shadowOffset = .zero
+        alert.alpha = 0
+
+        view.addSubview(alert)
+
+        NSLayoutConstraint.activate([
+            alert.centerXAnchor.constraint(equalTo: view.centerXAnchor),
+            alert.centerYAnchor.constraint(equalTo: view.centerYAnchor),
+        ])
+
+        alert.closeButton.addTarget(self, action: #selector(closeHealthAlert), for: .touchUpInside)
+
+        UIView.animate(withDuration: 0.3) {
+            dim.alpha = 1
+            alert.alpha = 1
+        }
+    }
+    
+    @objc private func closeHealthAlert() {
+        UserDefaults.standard.healthAlertSeen = true
+
+        UIView.animate(withDuration: 0.3, animations: {
+            self.dimmingView?.alpha = 0
+            self.view.subviews.last?.alpha = 0
+        }, completion: { _ in
+            self.dimmingView?.removeFromSuperview()
+            self.view.subviews.last?.removeFromSuperview()
+        })
     }
 }
