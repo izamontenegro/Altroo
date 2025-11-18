@@ -37,7 +37,16 @@ final class AppCoordinator: Coordinator {
             navigation.present(loadingVC!, animated: false)
 
             await waitForSharedPatientSync(timeout: 5)
-
+            
+            let fetchRequest = NSFetchRequest<CareRecipient>(entityName: "CareRecipient")
+            if let sharedPatients = try? CoreDataStack.shared.context.fetch(fetchRequest),
+               let newPatient = sharedPatients.last {
+                userService.setCurrentPatient(newPatient)
+                userService.addPatient(newPatient)
+                loadingVC?.dismiss(animated: false)
+                return
+            }
+            
             loadingVC?.dismiss(animated: false)
         }
 
@@ -57,14 +66,6 @@ final class AppCoordinator: Coordinator {
     private func waitForSharedPatientSync(timeout: Int) async {
         for _ in 1...timeout {
             try? await Task.sleep(nanoseconds: 1_000_000_000)
-        }
-        
-        let fetchRequest = NSFetchRequest<CareRecipient>(entityName: "CareRecipient")
-        if let sharedPatients = try? CoreDataStack.shared.context.fetch(fetchRequest),
-           let newPatient = sharedPatients.last {
-            userService.setCurrentPatient(newPatient)
-            userService.addPatient(newPatient)
-            return
         }
         return
     }
