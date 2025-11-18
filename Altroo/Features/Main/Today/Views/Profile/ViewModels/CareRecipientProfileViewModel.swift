@@ -31,7 +31,26 @@ final class CareRecipientProfileViewModel {
     
     func finishCare() {
         guard let recipient = currentCareRecipient() else { return }
-        coreDataService.deleteCareRecipient(recipient)
+        
+        if coreDataService.isOwner(object: recipient) {
+            coreDataService.deleteCareRecipient(recipient)
+        } else {
+            userService.removePatient(recipient)
+            userService.removeCurrentPatient()
+//            coreDataService.removeParticipant(
+//                participant,
+//                from: parentObject
+//            ) { result in
+//                DispatchQueue.main.async {
+//                    switch result {
+//                    case .success:
+//                        print("Caregiver removed.")
+//                    case .failure(let error):
+//                        print("Error removing caregiver:", error)
+//                    }
+//                }
+//            }
+        }
     }
     
     func caregiversForCurrentRecipient() -> [ParticipantsAccess] {
