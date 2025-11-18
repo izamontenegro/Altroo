@@ -351,7 +351,7 @@ class TodayViewController: UIViewController {
     
     @objc private func closeHealthAlert() {
         UserDefaults.standard.healthAlertSeen = true
-
+        
         UIView.animate(withDuration: 0.3, animations: {
             self.dimmingView?.alpha = 0
             self.view.subviews.last?.alpha = 0
@@ -359,7 +359,8 @@ class TodayViewController: UIViewController {
             self.dimmingView?.removeFromSuperview()
             self.view.subviews.last?.removeFromSuperview()
         })
-
+    }
+    
     @objc private func handleRefresh() {
         fetchData()
     }
