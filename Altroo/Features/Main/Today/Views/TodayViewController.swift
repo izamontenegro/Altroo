@@ -35,6 +35,13 @@ class TodayViewController: UIViewController {
         return scrollView
     }()
     
+    private lazy var refreshControl: UIRefreshControl = {
+        let refreshControl = UIRefreshControl()
+        refreshControl.tintColor = .black30
+        refreshControl.addTarget(self, action: #selector(handleRefresh), for: .valueChanged)
+        return refreshControl
+    }()
+    
     let vStack: UIStackView = {
         let stackView = UIStackView(arrangedSubviews: [])
         stackView.axis = .vertical
@@ -64,6 +71,7 @@ class TodayViewController: UIViewController {
         toolbar.delegate = self
         self.profileToolbar = toolbar
 
+        scrollView.refreshControl = refreshControl
         
         view.addSubview(scrollView)
         scrollView.addSubview(vStack)
@@ -94,6 +102,10 @@ class TodayViewController: UIViewController {
         navigationController?.setNavigationBarHidden(true, animated: false)
         showTabBar(true)
         
+        fetchData()
+    }
+    
+    private func fetchData() {
         viewModel.fetchAllTodaySymptoms()
         viewModel.fetchStoolQuantity()
         viewModel.fetchUrineQuantity()
@@ -104,6 +116,10 @@ class TodayViewController: UIViewController {
         
         symptomsCard.updateSymptoms(viewModel.todaySymptoms)
         addSections()
+        
+        if refreshControl.isRefreshing {
+            refreshControl.endRefreshing()
+        }
     }
 
     func makeCardByPeriod() -> UIView {
@@ -276,5 +292,9 @@ class TodayViewController: UIViewController {
                 vStack.addArrangedSubview(symptomsCard)
             }
         }
+    }
+    
+    @objc private func handleRefresh() {
+        fetchData()
     }
 }

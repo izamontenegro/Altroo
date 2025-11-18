@@ -19,6 +19,8 @@ final class ProfileCoordinator: Coordinator {
     
     private var cloudSharingCoordinator: CloudSharingCoordinator?
     
+    var onEndCare: (() -> Void)?
+    
     init(navigation: UINavigationController, factory: AppFactory, associateFactory: AssociatePatientFactory) {
         self.factory = factory
         self.navigation = navigation
@@ -32,19 +34,10 @@ final class ProfileCoordinator: Coordinator {
 }
 
 extension ProfileCoordinator: ProfileViewControllerDelegate {
-    func careRecipientProfileWantsChangeAssociate(_ controller: UIViewController) {
-        controller.dismiss(animated: true) { [weak self] in
-            guard let self else { return }
-            let associate = AssociatePatientCoordinator(
-                navigation: self.navigation,
-                factory: self.associateFactory
-            )
-            self.add(child: associate)
-            associate.onFinish = { [weak self, weak associate] in
-                guard let self, let associate else { return }
-                self.remove(child: associate)
-            }
-            associate.start()
+    
+    func goToAllPatient() async {
+        await MainActor.run {
+            onEndCare?()
         }
     }
     
@@ -73,7 +66,9 @@ extension ProfileCoordinator: ProfileViewControllerDelegate {
         
         self.cloudSharingCoordinator = sharingCoordinator
         
-        sharingCoordinator.presentSharingSheet()
+        Task {
+            await sharingCoordinator.presentSharingSheet()
+        }
     }
 }
 
