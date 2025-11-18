@@ -24,7 +24,7 @@ final class StoolRecordViewController: GradientNavBarViewController {
     private var stoolColorsSectionView: ColorsCardsSectionView?
     private var stoolTypesSectionView: BasicNeedsCardsScrollSectionView?
     
-    private var observationField: UITextField?
+    private var observationView: ObservationView?
     
     init(viewModel: StoolRecordViewModel) {
         self.viewModel = viewModel
@@ -45,7 +45,10 @@ final class StoolRecordViewController: GradientNavBarViewController {
     }
     
     private func setupLayout() {
-        let viewTitle = StandardHeaderView(title: "Registrar fezes", subtitle: "Registre uma evacuação e as características das fezes do assistido.")
+        let viewTitle = StandardHeaderView(
+            title: "Registrar fezes",
+            subtitle: "Registre uma evacuação e as características das fezes do assistido."
+        )
         
         let content = UIStackView()
         content.axis = .vertical
@@ -72,7 +75,8 @@ final class StoolRecordViewController: GradientNavBarViewController {
             content.trailingAnchor.constraint(equalTo: view.trailingAnchor, constant: -16),
             
             addButton.bottomAnchor.constraint(equalTo: view.safeAreaLayoutGuide.bottomAnchor, constant: -24),
-            addButton.centerXAnchor.constraint(equalTo: view.centerXAnchor)
+            addButton.centerXAnchor.constraint(equalTo: view.centerXAnchor),
+            addButton.widthAnchor.constraint(equalToConstant: 188)
         ])
     }
     
@@ -104,7 +108,6 @@ final class StoolRecordViewController: GradientNavBarViewController {
         }
         
         self.stoolColorsSectionView = section
-        
         return section
     }
     
@@ -124,7 +127,7 @@ final class StoolRecordViewController: GradientNavBarViewController {
         }
         
         let section = BasicNeedsCardsScrollSectionView(
-            title: "Como foi o tipo de Fezes?",
+            title: "Qual foi o tipo de Fezes?",
             imageNames: imageNames,
             subtitles: subtitles,
             titles: titles,
@@ -148,15 +151,19 @@ final class StoolRecordViewController: GradientNavBarViewController {
     private func makeStoolNotesSection() -> UIView {
         let title = StandardLabel(
             labelText: "Observação",
-            labelFont: .sfPro, labelType: .callOut, labelColor: .black10, labelWeight: .semibold
+            labelFont: .sfPro,
+            labelType: .callOut,
+            labelColor: .black10,
+            labelWeight: .semibold
         )
         
-        let field = StandardTextfield()
-        field.addTarget(self, action: #selector(observationChanged(_:)), for: .editingChanged)
+        let observationView = ObservationView(placeholder: "Detalhes opcionais")
+        observationView.delegate = self
+        observationView.translatesAutoresizingMaskIntoConstraints = false
         
-        self.observationField = field
+        self.observationView = observationView
         
-        let section = UIStackView(arrangedSubviews: [title, field])
+        let section = UIStackView(arrangedSubviews: [title, observationView])
         section.axis = .vertical
         section.spacing = 8
         return section
@@ -164,29 +171,8 @@ final class StoolRecordViewController: GradientNavBarViewController {
     
     // MARK: - Components
     
-    private func makeStoolTypeCard(type: StoolTypesEnum, index: Int) -> UIView {
-        let card = BasicNeedsCardHostingView(
-            imageName: type.displayImage,
-            subtitle: "Tipo",
-            title: type.displayText,
-            isSelected: viewModel.selectedStoolType == type,
-            action: { [weak self] in
-                guard let self else { return }
-                self.viewModel.selectedStoolType = type
-            }
-        )
-        
-        card.translatesAutoresizingMaskIntoConstraints = false
-        
-        NSLayoutConstraint.activate([
-            card.widthAnchor.constraint(equalToConstant: 120),
-            card.heightAnchor.constraint(equalToConstant: 160)
-        ])
-        
-        return card
-    }
     private func configureAddButton() -> UIView {
-        let button = StandardConfirmationButton(title: "Adicionar")
+        let button = StandardConfirmationButton(title: "Salvar")
         button.addTarget(self, action: #selector(createStoolRecord), for: .touchUpInside)
         button.translatesAutoresizingMaskIntoConstraints = false
         return button
@@ -194,19 +180,8 @@ final class StoolRecordViewController: GradientNavBarViewController {
     
     // MARK: - Actions
     
-    @objc private func typeTapped(_ sender: UIButton) {
-        let type = StoolTypesEnum.allCases[sender.tag]
-        selectedStoolType = type
-        viewModel.selectedStoolType = type
-    }
-    
-    @objc private func observationChanged(_ sender: UITextField) {
-        viewModel.notes = sender.text ?? "--"
-    }
-    
     @objc private func createStoolRecord() {
         viewModel.createStoolRecord()
-        
         delegate?.didFinishAddingStoolRecord()
     }
     
@@ -254,5 +229,13 @@ final class StoolRecordViewController: GradientNavBarViewController {
                 self.stoolTypesSectionView?.updateSelection(index: index)
             }
             .store(in: &cancellables)
+    }
+}
+
+// MARK: - ObservationViewDelegate
+
+extension StoolRecordViewController: ObservationViewDelegate {
+    func observationView(_ view: ObservationView, didChangeText text: String) {
+        viewModel.notes = text.isEmpty ? "--" : text
     }
 }

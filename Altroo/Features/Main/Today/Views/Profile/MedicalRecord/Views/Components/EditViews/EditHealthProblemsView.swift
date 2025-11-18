@@ -36,7 +36,7 @@ final class EditHealthProblemsView: UIView {
     }()
 
     private lazy var observationView: ObservationView = {
-        let view = ObservationView()
+        let view = ObservationView(placeholder: "Mais informações")
         view.translatesAutoresizingMaskIntoConstraints = false
         return view
     }()

@@ -21,7 +21,6 @@ final class BasicNeedsCardsScrollSectionView: UIView {
     private let leadingPadding: CGFloat
     private let trailingContentInset: CGFloat
     
-    /// devolve o índice do card selecionado
     var onCardSelected: ((Int) -> Void)?
     
     init(
@@ -35,10 +34,6 @@ final class BasicNeedsCardsScrollSectionView: UIView {
         leadingPadding: CGFloat = 5,
         trailingContentInset: CGFloat = 32
     ) {
-        precondition(
-            imageNames.count == subtitles.count && subtitles.count == titles.count,
-            "imageNames, subtitles e titles precisam ter o mesmo tamanho"
-        )
         
         self.imageNames = imageNames
         self.subtitles = subtitles
@@ -65,7 +60,7 @@ final class BasicNeedsCardsScrollSectionView: UIView {
         let titleLabel = StandardLabel(
             labelText: title,
             labelFont: .sfPro,
-            labelType: .callOut,
+            labelType: .body,
             labelColor: .black10,
             labelWeight: .semibold
         )
@@ -97,7 +92,6 @@ final class BasicNeedsCardsScrollSectionView: UIView {
             row.heightAnchor.constraint(equalTo: scrollView.heightAnchor)
         ])
         
-        // monta os cards
         for index in imageNames.indices {
             let imageName = imageNames[index]
             let subtitle = subtitles[index]

@@ -18,7 +18,7 @@ class TaskFormViewController: GradientNavBarViewController {
     private var confirmBottomConstraint: NSLayoutConstraint?
 
     let nameTexfield = StandardTextfield(placeholder: "Nome")
-    let noteTexfield = ObservationView()
+    let noteTexfield = ObservationView(placeholder: "Detalhes da sua tarefa")
 
     var hourPickers: [UIDatePicker] = []
     let addTimeButton = PrimaryStyleButton(title: "Novo Horário")
