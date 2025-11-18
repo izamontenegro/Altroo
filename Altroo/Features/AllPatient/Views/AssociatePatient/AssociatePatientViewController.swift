@@ -119,6 +119,12 @@ class AssociatePatientViewController: GradientHeader {
             object: nil
         )
     }
+    
+    override func viewWillAppear(_ animated: Bool) {
+        super.viewWillAppear(animated)
+        navigationController?.setNavigationBarHidden(true, animated: false)
+        showTabBar(true)
+    }
 
     //TODO: - Add loading view
     @objc private func remoteDataChanged() {
@@ -134,7 +140,7 @@ class AssociatePatientViewController: GradientHeader {
         scrollView.addSubview(vStack)
 
         NSLayoutConstraint.activate([
-            scrollView.topAnchor.constraint(equalTo: gradientView.bottomAnchor, constant: 20),
+            scrollView.topAnchor.constraint(equalTo: gradientView.bottomAnchor),
             scrollView.leadingAnchor.constraint(equalTo: view.leadingAnchor, constant: Layout.mediumSpacing),
             scrollView.trailingAnchor.constraint(equalTo: view.trailingAnchor, constant: -Layout.mediumSpacing),
             scrollView.bottomAnchor.constraint(equalTo: view.bottomAnchor, constant: context == .patientSelection ? -Layout.bigButtonBottomPadding : -20),

@@ -11,6 +11,7 @@ import CoreData
 final class AppCoordinator: Coordinator {
     
     var childCoordinators: [Coordinator] = []
+    weak var parentCoordinator: AppCoordinator?
     var navigation: UINavigationController
     private let factory: AppFactory
     
@@ -29,8 +30,24 @@ final class AppCoordinator: Coordinator {
     
     @MainActor
     func start() async {
+        var loadingVC: LoadingReceivedPatient?
+
         if receivedPatientViaShare {
-            await waitForSharedPatientSync(timeout: 15)
+            loadingVC = LoadingReceivedPatient()
+            navigation.present(loadingVC!, animated: false)
+
+            await waitForSharedPatientSync(timeout: 5)
+            
+            let fetchRequest = NSFetchRequest<CareRecipient>(entityName: "CareRecipient")
+            if let sharedPatients = try? CoreDataStack.shared.context.fetch(fetchRequest),
+               let newPatient = sharedPatients.last {
+                userService.setCurrentPatient(newPatient)
+                userService.addPatient(newPatient)
+                loadingVC?.dismiss(animated: false)
+                return
+            }
+            
+            loadingVC?.dismiss(animated: false)
         }
 
         if !UserDefaults.standard.onboardingCompleted {
@@ -47,16 +64,8 @@ final class AppCoordinator: Coordinator {
     
     @MainActor
     private func waitForSharedPatientSync(timeout: Int) async {
-        for i in 1...timeout {
+        for _ in 1...timeout {
             try? await Task.sleep(nanoseconds: 1_000_000_000)
-            
-            let fetchRequest = NSFetchRequest<CareRecipient>(entityName: "CareRecipient")
-            if let sharedPatients = try? CoreDataStack.shared.context.fetch(fetchRequest),
-               let newPatient = sharedPatients.last {
-                userService.setCurrentPatient(newPatient)
-                userService.addPatient(newPatient)
-                return
-            }
         }
         return
     }
@@ -76,6 +85,7 @@ final class AppCoordinator: Coordinator {
     private func showMainFlow() {
         let mainCoordinator = MainCoordinator(navigation: navigation,
                                               factory: factory)
+        mainCoordinator.parentCoordinator = self
         mainCoordinator.onLogout = { [weak self, weak mainCoordinator] in
             guard let self, let mainCoordinator else { return }
             self.remove(child: mainCoordinator)
@@ -97,5 +107,29 @@ final class AppCoordinator: Coordinator {
         }
         add(child: associatePatientCoordinator)
         associatePatientCoordinator.start()
+    }
+    
+    @MainActor
+    func restartToAllPatients() {
+        childCoordinators.removeAll()
+        userService.removeCurrentPatient()
+
+        UIView.transition(with: navigation.view,
+                          duration: 0.3,
+                          options: [.transitionCrossDissolve],
+                          animations: {
+            self.navigation.view.alpha = 0
+        }) { _ in
+
+            self.navigation.viewControllers = []
+            self.showAllPatientsFlow()
+
+            UIView.transition(with: self.navigation.view,
+                              duration: 0.3,
+                              options: [.transitionCrossDissolve],
+                              animations: {
+                self.navigation.view.alpha = 1
+            })
+        }
     }
 }
