@@ -23,7 +23,7 @@ class EditSymptomViewController: SymptomFormViewController {
     
     override func viewDidLoad() {
         super.viewDidLoad()
-        configure(title: "Editar Intercorrência", subtitle: "", confirmButtonText: "Salvar", showDelete: true)
+        configure(title: "Editar Intercorrência", subtitle: "", confirmButtonText: "save".localized, showDelete: true)
         bindViewModel()
         
         confirmButton.addTarget(self, action: #selector(didTapSave), for: .touchUpInside)

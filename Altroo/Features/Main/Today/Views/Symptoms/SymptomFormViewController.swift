@@ -10,7 +10,7 @@ class SymptomFormViewController: GradientNavBarViewController {
     let titleLabel = StandardHeaderView(title: "", subtitle: "")
     
     let confirmButton = StandardConfirmationButton(title: "")
-    let deleteButton = OutlineButton(title: "Deletar", color: .red20)
+    let deleteButton = OutlineButton(title: "delete".localized, color: .red20)
     
     private var confirmBottomConstraint: NSLayoutConstraint?
     
@@ -20,8 +20,8 @@ class SymptomFormViewController: GradientNavBarViewController {
     let timePicker: UIDatePicker = UIDatePicker.make(mode: .time)
     let datePicker: UIDatePicker = UIDatePicker.make(mode: .date)
     
-    lazy var nameSection = FormSectionView(title: "Nome", content: nameTexfield)
-    lazy var dateSection = FormSectionView(title: "Data", content: datePicker)
+    lazy var nameSection = FormSectionView(title: "name".localized, content: nameTexfield)
+    lazy var dateSection = FormSectionView(title: "date".localized, content: datePicker)
 
     let contentStack: UIStackView = {
         let stackView = UIStackView(arrangedSubviews: [])
@@ -77,16 +77,16 @@ class SymptomFormViewController: GradientNavBarViewController {
         contentStack.addArrangedSubview(titleLabel)
         
         //name
-        nameTexfield.placeholder = "Nome da intercorrência"
+        nameTexfield.placeholder = "name_intercurrence".localized
         contentStack.addArrangedSubview(nameSection)
         
         //notes
         noteTexfield.placeholder = "Registrar observações"
-        let noteSection = FormSectionView(title: "Observações", content: noteTexfield)
+        let noteSection = FormSectionView(title: "observations".localized, content: noteTexfield)
         contentStack.addArrangedSubview(noteSection)
         
         //time
-        let timeSection = FormSectionView(title: "Horário", content: timePicker)
+        let timeSection = FormSectionView(title: String(localized: "time"), content: timePicker)
                 
         //date and time
         let dateTimeStack = UIStackView(arrangedSubviews: [dateSection, timeSection])

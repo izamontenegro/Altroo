@@ -172,7 +172,7 @@ final class UrineRecordViewController: GradientNavBarViewController {
 
     private func makeUrineObservationSection() -> UIView {
         let title = StandardLabel(
-            labelText: "Observação",
+            labelText: "observation".localized,
             labelFont: .sfPro, labelType: .callOut, labelColor: .black10, labelWeight: .semibold
         )
 

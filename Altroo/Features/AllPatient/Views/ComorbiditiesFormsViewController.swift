@@ -41,7 +41,7 @@ class ComorbiditiesFormsViewController: UIViewController {
         labelWeight: .semibold
     )
     
-    private let nextStepButton = StandardConfirmationButton(title: "Próximo")
+    private let nextStepButton = StandardConfirmationButton(title: "next".localized)
     
     let bedriddenMovableButton = BedriddenButton(bedriddenState: .movement)
     let bedriddenNoMovementButton = BedriddenButton(bedriddenState: .noMovement)

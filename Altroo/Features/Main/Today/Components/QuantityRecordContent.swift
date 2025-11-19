@@ -30,7 +30,7 @@ class QuantityRecordContent: UIView {
         )
         
         let textLabel = StandardLabel(
-            labelText: "vez(es)",
+            labelText: "times".localized,
             labelFont: .sfPro,
             labelType: .subHeadline,
             labelColor: .black10.withAlphaComponent(0.7),

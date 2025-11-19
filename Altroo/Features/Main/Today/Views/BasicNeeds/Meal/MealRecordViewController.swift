@@ -194,7 +194,7 @@ final class MealRecordViewController: GradientNavBarViewController {
     
     private func makeMealObservationSection() -> UIView {
         let title = StandardLabel(
-            labelText: "Observação",
+            labelText: "observation".localized,
             labelFont: .sfPro,
             labelType: .callOut,
             labelColor: .black10,
@@ -212,7 +212,7 @@ final class MealRecordViewController: GradientNavBarViewController {
     }
     
     private func configureConfirmationButton() -> StandardConfirmationButton {
-        let button = StandardConfirmationButton(title: "Adicionar")
+        let button = StandardConfirmationButton(title: "add".localized)
         button.addTarget(self, action: #selector(createFeedingRecord), for: .touchUpInside)
         button.translatesAutoresizingMaskIntoConstraints = false
         return button

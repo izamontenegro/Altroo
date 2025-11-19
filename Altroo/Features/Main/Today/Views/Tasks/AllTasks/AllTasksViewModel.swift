@@ -59,6 +59,6 @@ class AllTasksViewModel {
         
         taskService.toggleInstanceIsDone(instance, author: author, time: .now)
 
-        historyService.addHistoryItem(title: "Realizou \(instance.template?.name ?? "tarefa")", author: author, date: Date(), type: .task, to: careRecipient)
+        historyService.addHistoryItem(title: "Realizou \(instance.template?.name ?? "task".localized)", author: author, date: Date(), type: .task, to: careRecipient)
     }
 }

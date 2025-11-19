@@ -19,11 +19,11 @@ struct BasicNeedsSectionBuilder {
         
         let visibleItems = config.subitems?.filter(\.isVisible).map(\.title) ?? []
         
-        if visibleItems.contains("Alimentação") {
+        if visibleItems.contains("feeding".localized) {
             let feedingListView = FeedingRecordList()
             feedingListView.update(with: feedingRecords)
             let feedingCard = RecordCard(
-                title: "Alimentação",
+                title: "feeding".localized,
                 iconName: "takeoutbag.and.cup.and.straw.fill",
                 contentView: feedingListView
             )
@@ -31,7 +31,7 @@ struct BasicNeedsSectionBuilder {
             sectionStack.addArrangedSubview(feedingCard)
         }
         
-        if visibleItems.contains("Hidratação") {
+        if visibleItems.contains("hydration".localized) {
             let iconName: String
             if #available(iOS 17.0, *) {
                 iconName = "waterbottle.fill"
@@ -44,7 +44,7 @@ struct BasicNeedsSectionBuilder {
             }
 
             let hydrationCard = RecordCard(
-                title: "Hidratação",
+                title: "hydration".localized,
                 iconName: iconName,
                 showPlusButton: false,
                 contentView: waterRecord,
@@ -58,21 +58,21 @@ struct BasicNeedsSectionBuilder {
             sectionStack.addArrangedSubview(hydrationCard)
         }
         
-        if visibleItems.contains("Fezes") || visibleItems.contains("Urina") {
+        if visibleItems.contains("stool".localized) || visibleItems.contains("urine".localized) {
             let bottomRow = UIStackView()
             bottomRow.axis = .horizontal
             bottomRow.spacing = 16
             bottomRow.distribution = .fillEqually
             
-            if visibleItems.contains("Fezes") {
-                let stoolCard = RecordCard(title: "Fezes", iconName: "toilet.fill", contentView: QuantityRecordContent(quantity: viewModel.todayStoolQuantity))
+            if visibleItems.contains("stool".localized) {
+                let stoolCard = RecordCard(title: "stool".localized, iconName: "toilet.fill", contentView: QuantityRecordContent(quantity: viewModel.todayStoolQuantity))
                 stoolCard.onAddButtonTap = { delegate?.goTo(.recordStool)
                 }
                 
                 bottomRow.addArrangedSubview(stoolCard)
             }
             
-            if visibleItems.contains("Urina") {
+            if visibleItems.contains("urine".localized) {
                 let iconName: String
                 if #available(iOS 17.0, *) {
                     iconName = "drop.halffull"
@@ -80,7 +80,7 @@ struct BasicNeedsSectionBuilder {
                     iconName = "drop.fill"
                 }
                 
-                let urineCard = RecordCard(title: "Urina", iconName: iconName, contentView: QuantityRecordContent(quantity: viewModel.todayUrineQuantity))
+                let urineCard = RecordCard(title: "urine".localized, iconName: iconName, contentView: QuantityRecordContent(quantity: viewModel.todayUrineQuantity))
                 urineCard.onAddButtonTap = { delegate?.goTo(.recordUrine)
                 }
                 

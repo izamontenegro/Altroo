@@ -85,7 +85,7 @@ struct ReportItemRow: View {
             }
             
             if let observation {
-                Text("Observação: \(observation.isEmpty ? "--" : observation)")
+                Text("\("observation".localized): \(observation.isEmpty ? "--" : observation)")
                     .font(.footnote)
                     .foregroundStyle(.black20)
             }

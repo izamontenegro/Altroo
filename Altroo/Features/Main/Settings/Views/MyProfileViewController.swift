@@ -54,7 +54,7 @@ class MyProfileViewController: GradientNavBarViewController {
     }()
     private let editButton: CapsuleWithCircleView = {
         let label = CapsuleWithCircleView(
-            capsuleColor: .teal20, text: "Editar",
+            capsuleColor: .teal20, text: "edit".localized,
             textColor: .pureWhite,
             nameIcon: "pencil",
             nameIconColor: .teal20,

@@ -259,8 +259,8 @@ final class MedicalRecordViewController: GradientNavBarViewController {
                 bodyStackView.addArrangedSubview(groupStackView)
                 continue
             }
-            if row.title == "Contato de Emergência", row.value.isEmpty, !viewModel.contactDisplayItems.isEmpty {
-                bodyStackView.addArrangedSubview(makeSubsectionHeader("Contato de Emergência"))
+            if row.title == "emergency_contact".localized, row.value.isEmpty, !viewModel.contactDisplayItems.isEmpty {
+                bodyStackView.addArrangedSubview(makeSubsectionHeader("emergency_contact".localized))
                 let groupStackView = UIStackView()
                 groupStackView.axis = .vertical
                 groupStackView.spacing = 4

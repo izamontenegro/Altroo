@@ -141,8 +141,7 @@ final class CareRecipientProfileViewController: GradientNavBarViewController {
             cardsStack.addArrangedSubview(card)
         } else {
             for item in uniqueCaregivers {
-                guard let careRecipient = viewModel.userService.fetchCurrentPatient() else { continue }
-                
+                guard let careRecipient = viewModel.userService.fetchCurrentPatient() else { continue }                
                 let participants = viewModel.coreDataService.fetchParticipants(for: careRecipient) ?? []
                 guard let participant = participants.first(where: {
                     viewModel.coreDataService.matches($0, with: item, in: careRecipient)
@@ -290,7 +289,7 @@ final class CareRecipientProfileViewController: GradientNavBarViewController {
             }
         }
         
-        let cancelAction = UIAlertAction(title: "Cancelar", style: .cancel, handler: nil)
+        let cancelAction = UIAlertAction(title: "cancel".localized, style: .cancel, handler: nil)
         
         alertController.addAction(cancelAction)
         alertController.addAction(confirmAction)

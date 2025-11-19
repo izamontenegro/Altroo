@@ -36,8 +36,8 @@ struct HistoryDetailSheet: View {
                    
                     InfoRowPill(left: "Concluída por", right: authorText, rightEmphasis: true)
                     HStack {
-                        InfoRowPill(left: "Horário", right: timeText, rightEmphasis: true)
-                        InfoRowPill(left: "Data", right: dateText, rightEmphasis: true)
+                        InfoRowPill(left: String(localized: "time"), right: timeText, rightEmphasis: true)
+                        InfoRowPill(left: "date".localized, right: dateText, rightEmphasis: true)
                     }
                     
                     Divider()
@@ -52,7 +52,7 @@ struct HistoryDetailSheet: View {
             .navigationBarTitleDisplayMode(.inline)
             .toolbar {
                 ToolbarItem(placement: .topBarLeading) {
-                    Button("Fechar") { dismiss() }
+                    Button("close".localized) { dismiss() }
                 }
                 ToolbarItem(placement: .topBarTrailing) {
                     Button("Excluir", role: .destructive) {

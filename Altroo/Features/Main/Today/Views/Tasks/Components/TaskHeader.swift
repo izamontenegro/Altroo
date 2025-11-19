@@ -18,7 +18,7 @@ class TaskHeader: UIView {
     
     private let titleLabel: StandardLabel = {
         let label = StandardLabel(
-            labelText: "Tarefas",
+            labelText: "tasks".localized,
             labelFont: .sfPro,
             labelType: .title2,
             labelColor: .black10,
@@ -28,7 +28,7 @@ class TaskHeader: UIView {
     }()
     
     private lazy var periodTag: CapsuleIconView = {
-        let capsule = CapsuleIconView(iconName: "pencil.and.list.clipboard", text: "Ver Tudo")
+        let capsule = CapsuleIconView(iconName: "pencil.and.list.clipboard", text: "see_all".localized)
         capsule.enablePressEffect()
         capsule.onTap = { [weak self] in
             DispatchQueue.main.asyncAfter(deadline: .now() + 0.1) {

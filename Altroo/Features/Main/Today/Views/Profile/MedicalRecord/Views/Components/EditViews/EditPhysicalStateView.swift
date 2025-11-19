@@ -47,7 +47,7 @@ final class EditPhysicalStateView: UIView {
     private let headerView: EditSectionHeaderView = {
         let headerView = EditSectionHeaderView(
             sectionTitle: "Estado Físico",
-            sectionDescription: "Preencha os campos a seguir quanto aos dados básicos da pessoa cuidada.",
+            sectionDescription: "patient_profile_description".localized,
             sectionIcon: "figure.arms.open"
         )
         headerView.translatesAutoresizingMaskIntoConstraints = false

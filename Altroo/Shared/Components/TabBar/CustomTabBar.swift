@@ -23,11 +23,11 @@ enum Tab: String, CaseIterable {
     
     var tabName: String {
         switch self {
-        case .patients: "Assistidos"
-        case .report: "Relatório"
-        case .today: "Hoje"
-        case .history: "Histórico"
-        case .settings: "Ajustes"
+        case .patients: "assisted".localized
+        case .report: "report".localized
+        case .today: "today".localized
+        case .history: "history".localized
+        case .settings: "settings".localized
         }
     }
 }

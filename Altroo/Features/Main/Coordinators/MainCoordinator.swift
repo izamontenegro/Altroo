@@ -51,7 +51,7 @@ final class MainCoordinator: Coordinator {
         patientsCoord.parentCoordinator = self
         add(child: patientsCoord)
         patientsCoord.start()
-        patientsNav.tabBarItem = UITabBarItem(title: "Assistidos", image: UIImage(systemName: "person.fill"), tag: 0)
+        patientsNav.tabBarItem = UITabBarItem(title: "assisted".localized, image: UIImage(systemName: "person.fill"), tag: 0)
         
         // MARK: - REPORTS
         let analysisNav = UINavigationController()
@@ -60,7 +60,7 @@ final class MainCoordinator: Coordinator {
         )
         add(child: analysisCoord)
         analysisCoord.start()
-        analysisNav.tabBarItem = UITabBarItem(title: "Relatório", image: UIImage(systemName: "chart.bar.xaxis.ascending.badge.clock"), tag: 0)
+        analysisNav.tabBarItem = UITabBarItem(title: "report".localized, image: UIImage(systemName: "chart.bar.xaxis.ascending.badge.clock"), tag: 0)
         
         // MARK: - TODAY
         let todayNav = UINavigationController()
@@ -70,7 +70,7 @@ final class MainCoordinator: Coordinator {
         todayCoord.parentCoordinator = self
         add(child: todayCoord)
         todayCoord.start()
-        todayNav.tabBarItem = UITabBarItem(title: "Hoje", image: UIImage(systemName: "heart.text.square.fill"), tag: 1)
+        todayNav.tabBarItem = UITabBarItem(title: "today".localized, image: UIImage(systemName: "heart.text.square.fill"), tag: 1)
         
         // MARK: - HISTORY
         let histNav = UINavigationController()
@@ -78,7 +78,7 @@ final class MainCoordinator: Coordinator {
             navigation: histNav, factory: factory
         )
         add(child: histCoord); histCoord.start()
-        histNav.tabBarItem = UITabBarItem(title: "Histórico", image: UIImage(systemName: "folder.fill"), tag: 2)
+        histNav.tabBarItem = UITabBarItem(title: "history".localized, image: UIImage(systemName: "folder.fill"), tag: 2)
         
         // MARK: - SETTINGS
         let settingsNav = UINavigationController()
@@ -87,7 +87,7 @@ final class MainCoordinator: Coordinator {
         )
         add(child: settingsCoord)
         settingsCoord.start()
-        settingsNav.tabBarItem = UITabBarItem(title: "Ajustes", image: UIImage(systemName: "gear"), tag: 3)
+        settingsNav.tabBarItem = UITabBarItem(title: "settings".localized, image: UIImage(systemName: "gear"), tag: 3)
         
         // MARK: - TAB BAR CONFIGURATION
         tabBar.viewControllers = [patientsNav, analysisNav, todayNav, histNav, settingsNav]
