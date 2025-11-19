@@ -255,3 +255,14 @@ enum HydrationAmountEnum: String, CaseIterable {
         }
     }
 }
+
+enum HydrationVolumeUnit: String, CaseIterable {
+    case milliliter = "ml"
+    case liter      = "L"
+    case cup        = "xíc"
+    case unit       = "un"
+
+    var displayText: String {
+        rawValue
+    }
+}

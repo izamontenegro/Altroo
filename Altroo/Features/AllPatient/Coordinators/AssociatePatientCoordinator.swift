@@ -44,7 +44,6 @@ final class AssociatePatientCoordinator: Coordinator {
             presentSheet(
                 child.navigation,
                 from: navigation,
-                detents: [.large()],
                 grabber: true
             )
             

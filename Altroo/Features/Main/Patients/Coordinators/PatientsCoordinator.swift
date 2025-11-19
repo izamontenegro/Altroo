@@ -45,7 +45,6 @@ final class PatientsCoordinator: Coordinator {
             presentSheet(
                 child.navigation,
                 from: navigation,
-                detents: [.large()],
                 grabber: true
             )
             

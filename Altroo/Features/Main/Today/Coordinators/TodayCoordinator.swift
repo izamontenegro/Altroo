@@ -181,7 +181,7 @@ enum TodayDestination {
     var isSheet: Bool {
         switch self {
         case .recordHydration, .recordHeartRate, .recordGlycemia,
-                .recordBloodPressure, .recordTemperature, .recordSaturation:
+                .recordBloodPressure, .recordTemperature, .recordSaturation, .recordStool, .recordUrine, .recordFeeding:
             return true
         default:
             return false

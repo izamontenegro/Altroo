@@ -24,19 +24,24 @@ extension Coordinator {
     func presentSheet(
         _ vc: UIViewController,
         from navigation: UINavigationController,
-        detents: [UISheetPresentationController.Detent] = [.medium()],
+        percentage: CGFloat = 0.9,
         grabber: Bool = true,
         animated: Bool = true
     ) {
         vc.modalPresentationStyle = .pageSheet
         
+        let detent = UISheetPresentationController.Detent.custom { context in
+            context.maximumDetentValue * percentage
+        }
+        
         if let sheet = vc.sheetPresentationController {
-            sheet.detents = detents
+            sheet.detents = [detent]
             sheet.prefersGrabberVisible = grabber
         }
         
         navigation.present(vc, animated: animated)
     }
+    
     func goToRoot() {
         navigation.popToRootViewController(animated: true)
     }
