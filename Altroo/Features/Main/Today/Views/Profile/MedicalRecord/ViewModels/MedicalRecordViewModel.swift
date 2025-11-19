@@ -65,9 +65,11 @@ final class MedicalRecordViewModel {
         let contacts = MedicalRecordFormatter.contactsList(from: personalData?.contacts as? Set<Contact>)
         return """
         Nome: \(name)
-        Data de Nascimento: \(dateOfBirth)      \("weight".localized): \(weight)      Altura: \(height)
-        Endereço: \(address)
-        Contato de Emergência:
+        \("birth_date".localized): \(dateOfBirth)      
+        \("weight".localized): \(weight)      
+        \("height".localized): \(height)
+        \("address".localized): \(address)
+        \("emergency_contact".localized):
         \(contacts)
         """
     }
@@ -196,11 +198,11 @@ final class MedicalRecordViewModel {
 
         return [
             ("name".localized, name),
-            ("Data de Nascimento", dateOfBirth),
+            ("birth_date".localized, dateOfBirth),
             ("weight".localized, weight),
-            ("Altura", height),
-            ("Endereço", address),
-            ("Contato de Emergência", contactsText)
+            ("height".localized, height),
+            ("address".localized, address),
+            ("emergency_contact".localized, contactsText)
         ]
     }
     

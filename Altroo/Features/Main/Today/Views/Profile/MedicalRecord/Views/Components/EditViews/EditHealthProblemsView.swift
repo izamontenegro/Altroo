@@ -53,7 +53,7 @@ final class EditHealthProblemsView: UIView {
     private let header: EditSectionHeaderView = {
         let header = EditSectionHeaderView(
             sectionTitle: "Problemas de Saúde",
-            sectionDescription: "Preencha os campos a seguir quanto aos dados básicos da pessoa cuidada.",
+            sectionDescription: "patient_profile_description".localized,
             sectionIcon: "heart.fill"
         )
         header.translatesAutoresizingMaskIntoConstraints = false

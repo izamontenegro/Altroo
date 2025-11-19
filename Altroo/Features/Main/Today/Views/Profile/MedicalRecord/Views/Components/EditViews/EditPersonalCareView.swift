@@ -17,7 +17,7 @@ final class EditPersonalCareView: UIView, UITextFieldDelegate {
     private let header: EditSectionHeaderView = {
         let header = EditSectionHeaderView(
             sectionTitle: "Cuidados Pessoais",
-            sectionDescription: "Preencha os campos a seguir quanto aos dados básicos da pessoa cuidada.",
+            sectionDescription: "patient_profile_description".localized,
             sectionIcon: "hand.raised.fill"
         )
         header.translatesAutoresizingMaskIntoConstraints = false

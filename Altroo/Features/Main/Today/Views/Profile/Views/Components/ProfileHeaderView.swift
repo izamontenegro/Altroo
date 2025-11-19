@@ -98,7 +98,7 @@ private extension ProfileHeader {
         let weightValue = StandardLabel(labelText: weightText, labelFont: .sfPro, labelType: .subHeadline, labelColor: .black20, labelWeight: .regular)
         let weightRow = horizontalRow([weightTitle, weightValue])
 
-        let heightTitle = StandardLabel(labelText: "Altura", labelFont: .sfPro, labelType: .subHeadline, labelColor: .black20, labelWeight: .semibold)
+        let heightTitle = StandardLabel(labelText: "height".localized, labelFont: .sfPro, labelType: .subHeadline, labelColor: .black20, labelWeight: .semibold)
         let heightValue = StandardLabel(labelText: heightText, labelFont: .sfPro, labelType: .subHeadline, labelColor: .black20, labelWeight: .regular)
         let heightRow = horizontalRow([heightTitle, heightValue])
 

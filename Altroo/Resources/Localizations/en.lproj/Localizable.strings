@@ -73,6 +73,11 @@
 "edit" = "Edit";
 "name" = "Name";
 "weight" = "Weight";
+"birth_date" = "Date of Birth";
+"age" = "Age";
+"height" = "Height";
+"gender" = "Gender";
+"address" = "Address";
 "time" = "Time";
 "save" = "Save";
 "date" = "Date";
@@ -106,3 +111,23 @@
 "step_two_subtitle" = "Press the indicated button and send the invitation link in your preferred method to the person you wish to add as a caregiver.";
 "step_three_title" = "Confirm by clicking ”Open”";
 "step_three_subtitle" = "Check your details and the care recipient's details, and accept the invitation to join the profile.";
+
+//form - patient
+"patient_profile_title" = "Care Recipient Profile";
+"patient_profile_description" = "Fill in the following fields with the basic information of the person under care.";
+"patient_name_placeholder" = "Care recipient name";
+"address_placeholder" = "Care recipient address";
+"contact_name_placeholder" = "Contact name";
+"contact_phone_placeholder" = "Phone number with country code";
+"emergency_contact" = "Emergency Contact";
+"contact_phone" = "Phone";
+"relationship" = "Relationship";
+"age_default" = "0 years";
+"age_format" = "%d years";
+
+//form - validator
+"required_section" = "This section is required";
+"invalid_value" = "Invalid value";
+"invalid_age" = "Care recipient under 13 years old";
+"invalid_end_date" = "Invalid end date";
+"invalid_future_date" = "The date cannot be in the future";
