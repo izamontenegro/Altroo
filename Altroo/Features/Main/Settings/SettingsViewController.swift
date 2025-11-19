@@ -19,7 +19,8 @@ class SettingsViewController: GradientHeader {
     weak var delegate: SettingsViewControllerDelegate?
     
     override func viewDidLoad() {
-        setNavbarItems(title: "Ajustes", subtitle: "Personalize sua experiência, mantenha seus dados protegidos e conheça o time que dá vida ao app.")
+        setNavbarItems(title: "Ajustes",
+                       subtitle: "Personalize sua experiência, mantenha seus dados protegidos e conheça o time que dá vida ao app.")
         super.viewDidLoad()
         view.backgroundColor = .blue80
         
@@ -34,8 +35,8 @@ class SettingsViewController: GradientHeader {
     override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
         showTabBar(true)
+        navigationController?.navigationBar.isHidden = true
     }
-    
     
     // MARK: - Subviews
     

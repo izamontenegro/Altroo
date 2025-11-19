@@ -20,7 +20,7 @@ class ProfileToolbarContainer: UIView {
     private var careRecipient: CareRecipient
     private let gradientView = GradientArcView()
     private let capsuleButton = CapsuleWithCircleView(
-        text: "Editar Seções",
+        capsuleColor: .teal80, text: "Editar Seções",
         textColor: .teal20,
         nameIcon: "pencil",
         nameIconColor: .pureWhite,
