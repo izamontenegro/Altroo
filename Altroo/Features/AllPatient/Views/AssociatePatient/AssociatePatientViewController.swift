@@ -23,7 +23,7 @@ class AssociatePatientViewController: GradientHeader {
     weak var delegate: AssociatePatientViewControllerDelegate?
     private let viewModel: AssociatePatientViewModel
     let context: CareRecipientContext
-    
+
     private var cancellables = Set<AnyCancellable>()
 
     private lazy var addNewPatientButton: CareRecipientCard = {
@@ -179,7 +179,7 @@ class AssociatePatientViewController: GradientHeader {
         vStack.setCustomSpacing(Layout.smallSpacing, after: addNewPatientButton)
         vStack.addArrangedSubview(addExistingPatientButton)
     }
-
+    
     @objc private func didTapCareRecipientCard(_ sender: UITapGestureRecognizer) {
         guard let card = sender.view as? CareRecipientCard,
               let careRecipient = card.careRecipient else { return }

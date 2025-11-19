@@ -53,6 +53,8 @@ protocol MainFlowFactory {
 // MARK: - TODAY FLOW
 protocol TodayFactory {
     func makeEditSectionsViewController() -> UIViewController
+    func makePolicyViewController() -> UIViewController
+    func makePrivacyViewController() -> UIViewController
 }
 
 //MARK: - SYMPTOM FLOW
