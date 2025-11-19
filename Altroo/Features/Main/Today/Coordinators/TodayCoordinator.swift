@@ -50,6 +50,8 @@ final class TodayCoordinator: Coordinator {
             return vc
             
         case .recordUrine:
+            
+            
             let vc = factory.makeUrineRecordViewController() as! UrineRecordViewController
             vc.delegate = self
             return vc
@@ -139,14 +141,34 @@ final class TodayCoordinator: Coordinator {
 extension TodayCoordinator: TodayViewControllerDelegate {
     
     func goTo(_ destination: TodayDestination) {
-        guard let vc = makeViewController(for: destination) else { return }
-        
-        if destination.isSheet {
-            presentSheet(vc, from: navigation)
-        } else {
-            navigation.pushViewController(vc, animated: true)
+            switch destination {
+            case .recordHydration, .recordUrine, .recordStool, .recordFeeding:
+                guard let rootVC = makeViewController(for: destination) else { return }
+                
+                let nav = UINavigationController(rootViewController: rootVC)
+                nav.modalPresentationStyle = .pageSheet
+                
+                if let sheet = nav.sheetPresentationController {
+                    sheet.detents = [
+                        .custom(identifier: .init("almostFull")) { context in
+                            return context.maximumDetentValue * 0.9  
+                        }
+                    ]
+                    sheet.prefersGrabberVisible = true
+                }
+                
+                navigation.present(nav, animated: true)
+                
+            default:
+                guard let vc = makeViewController(for: destination) else { return }
+                
+                if destination.isSheet {
+                    presentSheet(vc, from: navigation)
+                } else {
+                    navigation.pushViewController(vc, animated: true)
+                }
+            }
         }
-    }
     
     func goToSymptomDetail(with symptom: Symptom) {
         let vc = factory.makeSymptomDetailViewController(from: symptom) as! SymptomDetailViewController

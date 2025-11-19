@@ -11,7 +11,7 @@ protocol MealRecordNavigationDelegate: AnyObject {
     func didFinishAddingMealRecord()
 }
 
-final class MealRecordViewController: GradientNavBarViewController {
+final class MealRecordViewController: UIViewController {
     weak var delegate: MealRecordNavigationDelegate?
     private var keyboardHandler: KeyboardHandler?
     
@@ -40,23 +40,45 @@ final class MealRecordViewController: GradientNavBarViewController {
         setupLayout()
         bindViewModel()
         setupTapToDismiss()
+        configureNavBar()
         
         keyboardHandler = KeyboardHandler(viewController: self)
     }
     
+    private func configureNavBar() {
+        let closeButton = UIBarButtonItem(title: "Fechar", style: .done, target: self, action: #selector(closeTapped))
+        closeButton.tintColor = .blue20
+        navigationItem.leftBarButtonItem = closeButton
+        
+        let appearance = UINavigationBarAppearance()
+        appearance.configureWithOpaqueBackground()
+        navigationItem.scrollEdgeAppearance = appearance
+    }
+    
+    @objc func closeTapped() {
+        dismiss(animated: true)
+    }
+
     // MARK: - Layout
     
     private func setupLayout() {
-        let headerView = StandardHeaderView(
-            title: "Registrar Alimentação",
-            subtitle: "Registre uma refeição e o nível de aceitação do assistido com a comida."
-        )
-        
+        let scrollView = UIScrollView()
+        scrollView.translatesAutoresizingMaskIntoConstraints = false
+        scrollView.alwaysBounceVertical = true
+
         let contentStackView = UIStackView()
         contentStackView.axis = .vertical
         contentStackView.alignment = .fill
         contentStackView.spacing = 24
         contentStackView.translatesAutoresizingMaskIntoConstraints = false
+
+        view.addSubview(scrollView)
+        scrollView.addSubview(contentStackView)
+
+        let headerView = StandardHeaderView(
+            title: "Registrar alimentação",
+            subtitle: "Registre uma refeição e o nível de aceitação do assistido com a comida."
+        )
         
         let mealCategorySection = makeMealCategorySection()
         let mealAmountEatenSection = makeMealAmountEatenSection()
@@ -69,21 +91,40 @@ final class MealRecordViewController: GradientNavBarViewController {
         contentStackView.addArrangedSubview(mealAmountEatenSection)
         contentStackView.addArrangedSubview(mealObservationSection)
         
-        view.addSubview(contentStackView)
-        view.addSubview(confirmationButton)
+        let buttonContainer = UIView()
+        buttonContainer.translatesAutoresizingMaskIntoConstraints = false
+        buttonContainer.addSubview(confirmationButton)
         
         NSLayoutConstraint.activate([
-            contentStackView.topAnchor.constraint(equalTo: view.safeAreaLayoutGuide.topAnchor, constant: 24),
-            contentStackView.leadingAnchor.constraint(equalTo: view.leadingAnchor, constant: 16),
-            contentStackView.trailingAnchor.constraint(equalTo: view.trailingAnchor, constant: -16),
+            confirmationButton.centerXAnchor.constraint(equalTo: buttonContainer.centerXAnchor),
+            confirmationButton.topAnchor.constraint(equalTo: buttonContainer.topAnchor),
+            confirmationButton.bottomAnchor.constraint(equalTo: buttonContainer.bottomAnchor),
+            confirmationButton.widthAnchor.constraint(equalToConstant: 188),
+            confirmationButton.heightAnchor.constraint(equalToConstant: 48)
+        ])
+        
+        let bottomSpacer = UIView()
+        bottomSpacer.heightAnchor.constraint(equalToConstant: 32).isActive = true
+        
+        contentStackView.addArrangedSubview(buttonContainer)
+        contentStackView.addArrangedSubview(bottomSpacer)
+        
+        NSLayoutConstraint.activate([
+            scrollView.topAnchor.constraint(equalTo: view.safeAreaLayoutGuide.topAnchor),
+            scrollView.leadingAnchor.constraint(equalTo: view.leadingAnchor),
+            scrollView.trailingAnchor.constraint(equalTo: view.trailingAnchor),
+            scrollView.bottomAnchor.constraint(equalTo: view.bottomAnchor),
             
-            confirmationButton.bottomAnchor.constraint(equalTo: view.safeAreaLayoutGuide.bottomAnchor, constant: -24),
-            confirmationButton.centerXAnchor.constraint(equalTo: view.centerXAnchor)
+            contentStackView.topAnchor.constraint(equalTo: scrollView.contentLayoutGuide.topAnchor, constant: 24),
+            contentStackView.leadingAnchor.constraint(equalTo: scrollView.frameLayoutGuide.leadingAnchor, constant: 16),
+            contentStackView.trailingAnchor.constraint(equalTo: scrollView.frameLayoutGuide.trailingAnchor, constant: -16),
+            contentStackView.bottomAnchor.constraint(equalTo: scrollView.contentLayoutGuide.bottomAnchor, constant: -24),
+            
+            contentStackView.widthAnchor.constraint(equalTo: scrollView.frameLayoutGuide.widthAnchor, constant: -32)
         ])
         
         updateConfirmationButtonState(enabled: false)
     }
-    
     // MARK: - Sections
     
     private func makeMealCategorySection() -> UIView {
@@ -107,7 +148,7 @@ final class MealRecordViewController: GradientNavBarViewController {
             subtitles: subtitles,
             titles: titles,
             selectedIndex: selectedIndex,
-            scrollHeight: 170,
+            scrollHeight: 160,
             spacing: 12,
             leadingPadding: 5,
             trailingContentInset: 16

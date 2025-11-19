@@ -29,7 +29,7 @@ final class BasicNeedsCardsScrollSectionView: UIView {
         subtitles: [String],
         titles: [String],
         selectedIndex: Int? = nil,
-        scrollHeight: CGFloat = 170,
+        scrollHeight: CGFloat = 160,
         spacing: CGFloat = 12,
         leadingPadding: CGFloat = 5,
         trailingContentInset: CGFloat = 16

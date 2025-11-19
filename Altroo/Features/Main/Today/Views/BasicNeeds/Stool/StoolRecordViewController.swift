@@ -13,7 +13,7 @@ protocol StoolRecordNavigationDelegate: AnyObject {
     func didFinishAddingStoolRecord()
 }
 
-final class StoolRecordViewController: GradientNavBarViewController {
+final class StoolRecordViewController: UIViewController {
     weak var delegate: StoolRecordNavigationDelegate?
     
     var selectedStoolType: StoolTypesEnum?
@@ -42,46 +42,89 @@ final class StoolRecordViewController: GradientNavBarViewController {
         setupLayout()
         setupTapToDismiss()
         bindViewModel()
+        configureNavBar()
+    }
+    
+    private func configureNavBar() {
+        let closeButton = UIBarButtonItem(title: "Fechar", style: .done, target: self, action: #selector(closeTapped))
+        closeButton.tintColor = .blue20
+        navigationItem.leftBarButtonItem = closeButton
+        
+        let appearance = UINavigationBarAppearance()
+        appearance.configureWithOpaqueBackground()
+        navigationItem.scrollEdgeAppearance = appearance
+    }
+    
+    @objc func closeTapped() {
+        dismiss(animated: true)
     }
     
     private func setupLayout() {
+
+        let scrollView = UIScrollView()
+        scrollView.translatesAutoresizingMaskIntoConstraints = false
+        scrollView.alwaysBounceVertical = true
+
+        let content = UIStackView()
+        content.axis = .vertical
+        content.alignment = .fill
+        content.spacing = 18
+        content.translatesAutoresizingMaskIntoConstraints = false
+
+        view.addSubview(scrollView)
+        scrollView.addSubview(content)
+
         let viewTitle = StandardHeaderView(
             title: "Registrar fezes",
             subtitle: "Registre uma evacuação e as características das fezes do assistido."
         )
-        
-        let content = UIStackView()
-        content.axis = .vertical
-        content.alignment = .fill
-        content.spacing = 24
-        content.translatesAutoresizingMaskIntoConstraints = false
-        
+
         let stoolTypesSection = makeStoolTypesSection()
         let stoolColorsSection = makeStoolColorSection()
         let stoolNotesSection = makeStoolNotesSection()
         let addButton = configureAddButton()
-        
+
         content.addArrangedSubview(viewTitle)
         content.addArrangedSubview(stoolTypesSection)
         content.addArrangedSubview(stoolColorsSection)
         content.addArrangedSubview(stoolNotesSection)
-        
-        view.addSubview(content)
-        view.addSubview(addButton)
-        
+
+        // CONTAINER PARA CENTRALIZAR O BOTÃO COM LARGURA FIXA
+        let buttonContainer = UIView()
+        buttonContainer.translatesAutoresizingMaskIntoConstraints = false
+
+        buttonContainer.addSubview(addButton)
+
         NSLayoutConstraint.activate([
-            content.topAnchor.constraint(equalTo: view.safeAreaLayoutGuide.topAnchor, constant: 24),
-            content.leadingAnchor.constraint(equalTo: view.leadingAnchor, constant: 16),
-            content.trailingAnchor.constraint(equalTo: view.trailingAnchor, constant: -16),
-            
-            addButton.bottomAnchor.constraint(equalTo: view.safeAreaLayoutGuide.bottomAnchor, constant: -24),
-            addButton.centerXAnchor.constraint(equalTo: view.centerXAnchor),
-            addButton.widthAnchor.constraint(equalToConstant: 188)
+            addButton.centerXAnchor.constraint(equalTo: buttonContainer.centerXAnchor),
+            addButton.topAnchor.constraint(equalTo: buttonContainer.topAnchor),
+            addButton.bottomAnchor.constraint(equalTo: buttonContainer.bottomAnchor),
+            addButton.widthAnchor.constraint(equalToConstant: 188),
+            addButton.heightAnchor.constraint(equalToConstant: 48)
+        ])
+
+        // Espaço abaixo pra dar respiro visual
+        let bottomSpacer = UIView()
+        bottomSpacer.heightAnchor.constraint(equalToConstant: 32).isActive = true
+
+        content.addArrangedSubview(buttonContainer)
+        content.addArrangedSubview(bottomSpacer)
+
+        NSLayoutConstraint.activate([
+            scrollView.topAnchor.constraint(equalTo: view.safeAreaLayoutGuide.topAnchor),
+            scrollView.leadingAnchor.constraint(equalTo: view.leadingAnchor),
+            scrollView.trailingAnchor.constraint(equalTo: view.trailingAnchor),
+            scrollView.bottomAnchor.constraint(equalTo: view.bottomAnchor),
+
+            content.topAnchor.constraint(equalTo: scrollView.contentLayoutGuide.topAnchor, constant: 16),
+            content.leadingAnchor.constraint(equalTo: scrollView.frameLayoutGuide.leadingAnchor, constant: 16),
+            content.trailingAnchor.constraint(equalTo: scrollView.frameLayoutGuide.trailingAnchor, constant: -16),
+            content.bottomAnchor.constraint(equalTo: scrollView.contentLayoutGuide.bottomAnchor, constant: -24),
+
+            content.widthAnchor.constraint(equalTo: scrollView.frameLayoutGuide.widthAnchor, constant: -32)
         ])
     }
-    
     // MARK: - Sections
-    
     private func makeStoolColorSection() -> UIView {
         let colors = StoolColorsEnum.allCases.map { $0.color }
         let titles = StoolColorsEnum.allCases.map { $0.displayText }
@@ -132,7 +175,7 @@ final class StoolRecordViewController: GradientNavBarViewController {
             subtitles: subtitles,
             titles: titles,
             selectedIndex: selectedIndex,
-            scrollHeight: 170,
+            scrollHeight: 160,
             spacing: 12,
             leadingPadding: 5,
             trailingContentInset: 16

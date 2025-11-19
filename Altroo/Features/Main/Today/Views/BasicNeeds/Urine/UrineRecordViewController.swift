@@ -12,7 +12,7 @@ protocol UrineRecordNavigationDelegate: AnyObject {
     func didFinishAddingUrineRecord()
 }
 
-final class UrineRecordViewController: GradientNavBarViewController {
+final class UrineRecordViewController: UIViewController {
     weak var delegate: UrineRecordNavigationDelegate?
 
     private let viewModel: UrineRecordViewModel
@@ -37,40 +37,77 @@ final class UrineRecordViewController: GradientNavBarViewController {
         setupLayout()
         bindViewModel()
         setupTapToDismiss()
+        configureNavBar()
     }
     
     // MARK: - View Layout
     private func setupLayout() {
-        let viewTitle = StandardHeaderView(
-            title: "Registrar urina",
-            subtitle: "Registre uma micção e as características da urina do assistido."
-        )
-        
+        let scrollView = UIScrollView()
+        scrollView.translatesAutoresizingMaskIntoConstraints = false
+        scrollView.alwaysBounceVertical = true
+
         let content = UIStackView()
         content.axis = .vertical
         content.alignment = .fill
         content.spacing = 24
         content.translatesAutoresizingMaskIntoConstraints = false
-            
+
+        view.addSubview(scrollView)
+        scrollView.addSubview(content)
+
+        let viewTitle = StandardHeaderView(
+            title: "Registrar urina",
+            subtitle: "Registre uma micção e as características da urina do assistido."
+        )
+
         let urineColorsSection = makeUrineColorSection()
         let urineObservationSection = makeUrineObservationSection()
         let addButton = configureAddButton()
-        
+
         content.addArrangedSubview(viewTitle)
         content.addArrangedSubview(urineColorsSection)
         content.addArrangedSubview(urineObservationSection)
-        
-        view.addSubview(content)
-        view.addSubview(addButton)
-        
+
+        let buttonContainer = UIView()
+        buttonContainer.translatesAutoresizingMaskIntoConstraints = false
+        buttonContainer.addSubview(addButton)
+
         NSLayoutConstraint.activate([
-            content.topAnchor.constraint(equalTo: view.safeAreaLayoutGuide.topAnchor, constant: 24),
-            content.leadingAnchor.constraint(equalTo: view.leadingAnchor, constant: 16),
-            content.trailingAnchor.constraint(equalTo: view.trailingAnchor, constant: -16),
-            
-            addButton.bottomAnchor.constraint(equalTo: view.safeAreaLayoutGuide.bottomAnchor, constant: -24),
-            addButton.centerXAnchor.constraint(equalTo: view.centerXAnchor)
+            addButton.centerXAnchor.constraint(equalTo: buttonContainer.centerXAnchor),
+            addButton.topAnchor.constraint(equalTo: buttonContainer.topAnchor),
+            addButton.bottomAnchor.constraint(equalTo: buttonContainer.bottomAnchor),
+            addButton.widthAnchor.constraint(equalToConstant: 188),
+            addButton.heightAnchor.constraint(equalToConstant: 48)
         ])
+
+        let bottomSpacer = UIView()
+        bottomSpacer.heightAnchor.constraint(equalToConstant: 32).isActive = true
+
+        content.addArrangedSubview(buttonContainer)
+        content.addArrangedSubview(bottomSpacer)
+
+        NSLayoutConstraint.activate([
+            scrollView.topAnchor.constraint(equalTo: view.safeAreaLayoutGuide.topAnchor),
+            scrollView.leadingAnchor.constraint(equalTo: view.leadingAnchor),
+            scrollView.trailingAnchor.constraint(equalTo: view.trailingAnchor),
+            scrollView.bottomAnchor.constraint(equalTo: view.bottomAnchor),
+
+            content.topAnchor.constraint(equalTo: scrollView.contentLayoutGuide.topAnchor, constant: 24),
+            content.leadingAnchor.constraint(equalTo: scrollView.frameLayoutGuide.leadingAnchor, constant: 16),
+            content.trailingAnchor.constraint(equalTo: scrollView.frameLayoutGuide.trailingAnchor, constant: -16),
+            content.bottomAnchor.constraint(equalTo: scrollView.contentLayoutGuide.bottomAnchor, constant: -24),
+
+            content.widthAnchor.constraint(equalTo: scrollView.frameLayoutGuide.widthAnchor, constant: -32)
+        ])
+    }
+    private func configureNavBar() {
+        let closeButton = UIBarButtonItem(title: "Fechar", style: .done, target: self, action: #selector(closeTapped))
+        closeButton.tintColor = .blue20
+        navigationItem.leftBarButtonItem = closeButton
+        
+        let appearance = UINavigationBarAppearance()
+        appearance.configureWithOpaqueBackground()
+        navigationItem.scrollEdgeAppearance = appearance
     }
     
     // MARK: - Sections
@@ -149,6 +186,10 @@ final class UrineRecordViewController: GradientNavBarViewController {
     
     @objc private func dismissKeyboard() {
         view.endEditing(true)
+    }
+    
+    @objc func closeTapped() {
+        dismiss(animated: true)
     }
 
     

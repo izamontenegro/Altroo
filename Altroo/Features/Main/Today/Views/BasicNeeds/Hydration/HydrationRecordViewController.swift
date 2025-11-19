@@ -7,7 +7,7 @@
 import UIKit
 import Combine
 
-final class HydrationRecordViewController: GradientNavBarViewController {
+final class HydrationRecordViewController: UIViewController {
     private let viewModel: HydrationRecordViewModel
     private var cancellables = Set<AnyCancellable>()
     
@@ -38,9 +38,25 @@ final class HydrationRecordViewController: GradientNavBarViewController {
         setupLayout()
         bindViewModel()
         setupTapToDismiss()
+        configureNavBar()
         
         hydrationTargetView.value = Int(viewModel.targetValue)
     }
+    
+    private func configureNavBar() {
+        let closeButton = UIBarButtonItem(title: "Fechar", style: .done, target: self, action: #selector(closeTapped))
+        closeButton.tintColor = .blue20
+        navigationItem.leftBarButtonItem = closeButton
+        
+        let appearance = UINavigationBarAppearance()
+        appearance.configureWithOpaqueBackground()
+        navigationItem.scrollEdgeAppearance = appearance
+    }
+    
+    @objc func closeTapped() {
+        dismiss(animated: true)
+    }
+
     
     override func viewDidDisappear(_ animated: Bool) {
         super.viewDidDisappear(animated)
