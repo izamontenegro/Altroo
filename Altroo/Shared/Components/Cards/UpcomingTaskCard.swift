@@ -97,7 +97,7 @@ class UpcomingTaskCard: InnerShadowView {
         addSubview(titleLabel)
         addSubview(timeTag)
         
-//        setupTapGesture()
+        setupTapGesture()
         NSLayoutConstraint.activate([
             titleLabel.leadingAnchor.constraint(equalTo: leadingAnchor, constant: 12),
             titleLabel.topAnchor.constraint(equalTo: topAnchor, constant: 12),

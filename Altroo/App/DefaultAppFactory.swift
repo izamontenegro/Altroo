@@ -295,7 +295,9 @@ extension DefaultAppFactory {
         return vc
     }
     func makeTaskDetailViewController(mode: TaskDetailMode) -> UIViewController {
-        let vc = TaskDetailViewController(mode: mode)
+        let vm = TaskDetailViewModel(taskService: dependencies.routineActivitiesFacade,
+                                     userService: dependencies.userService)
+        let vc = TaskDetailViewController(mode: mode, viewModel: vm)
         return vc
     }
 }

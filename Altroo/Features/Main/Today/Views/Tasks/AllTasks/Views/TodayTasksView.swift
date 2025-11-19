@@ -139,7 +139,6 @@ final class TodayTasksView: UIView {
 extension TodayTasksView: TaskCardDelegate, TaskCardNavigationDelegate {
     func taskCardDidMarkAsDone(_ task: TaskInstance) {
         onMarkDone?(task)
-
     }
 
     func taskCardDidSelect(_ task: TaskInstance) {

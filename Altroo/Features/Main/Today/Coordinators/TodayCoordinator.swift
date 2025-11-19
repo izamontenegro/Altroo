@@ -113,8 +113,7 @@ final class TodayCoordinator: Coordinator {
     func openTaskDetail(for task: TaskInstance)  {
         let vc = factory.makeTaskDetailViewController(mode: .instance(task)) as! TaskDetailViewController
         vc.onEditTapped = {[weak self] task in
-            guard let taskTemplate = task.template else { return }
-            self?.goToEditTask(taskTemplate)
+            self?.goToEditTask(task)
         }
         
         let nav = UINavigationController(rootViewController: vc)
@@ -130,8 +129,7 @@ final class TodayCoordinator: Coordinator {
     func openTaskTemplateDetail(for task: RoutineTask)  {
         let vc = factory.makeTaskDetailViewController(mode: .template(task)) as! TaskDetailViewController
         vc.onEditTapped = {[weak self] task in
-            guard let taskTemplate = task.template else { return }
-            self?.goToEditTask(taskTemplate)
+            self?.goToEditTask(task)
         }
         
         let nav = UINavigationController(rootViewController: vc)
@@ -219,8 +217,7 @@ extension TodayCoordinator: TaskCardNavigationDelegate {
     func taskCardDidSelect(_ task: TaskInstance) {
         let vc = factory.makeTaskDetailViewController(mode: .instance(task)) as! TaskDetailViewController
         vc.onEditTapped = {[weak self] task in
-            guard let taskTemplate = task.template else { return }
-            self?.goToEditTask(taskTemplate)
+            self?.goToEditTask(task)
         }
         
         presentSheet(

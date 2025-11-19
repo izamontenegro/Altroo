@@ -93,7 +93,6 @@ class TaskCard: InnerShadowView {
         
         loadData()
         
-        
         timeTag = TagView(text: "\(task.time!.formatted(date: .omitted, time: .shortened))", iconName: "alarm.fill")
         if task.isLateDay || task.isLatePeriod {
             timeTag?.defaultBackgroundColor = .red80

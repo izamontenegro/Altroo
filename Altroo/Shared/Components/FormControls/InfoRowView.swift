@@ -45,12 +45,12 @@ class InfoRowView: UIView {
         addSubview(infoLabel)
         
         NSLayoutConstraint.activate([
-            titleLabel.topAnchor.constraint(equalTo: self.topAnchor,  constant: 6),
-            titleLabel.bottomAnchor.constraint(lessThanOrEqualTo: self.bottomAnchor, constant: -6),
+            titleLabel.topAnchor.constraint(equalTo: self.topAnchor,  constant: 8),
+            titleLabel.bottomAnchor.constraint(lessThanOrEqualTo: self.bottomAnchor, constant: -8),
             titleLabel.leadingAnchor.constraint(equalTo: self.leadingAnchor, constant: 16),
             
-            infoLabel.topAnchor.constraint(equalTo: self.topAnchor,  constant: 6),
-            infoLabel.bottomAnchor.constraint(equalTo: self.bottomAnchor, constant: -6),
+            infoLabel.topAnchor.constraint(equalTo: self.topAnchor,  constant: 8),
+            infoLabel.bottomAnchor.constraint(equalTo: self.bottomAnchor, constant: -8),
             infoLabel.trailingAnchor.constraint(equalTo: self.trailingAnchor, constant: -16),
             infoLabel.leadingAnchor.constraint(greaterThanOrEqualTo: titleLabel.trailingAnchor)
         ])

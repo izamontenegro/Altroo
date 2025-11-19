@@ -13,6 +13,8 @@ enum TaskDetailMode {
 }
 
 class TaskDetailViewController: UIViewController {
+    let viewModel: TaskDetailViewModel
+    
     private lazy var taskTemplate: RoutineTask = {
         switch mode {
         case .instance(let inst): return inst.template!
@@ -27,7 +29,8 @@ class TaskDetailViewController: UIViewController {
         }
     }()
     
-    var onEditTapped: ((TaskInstance) -> Void)?
+    var onEditTapped: ((RoutineTask) -> Void)?
+    var onDeleteTapped: ((TaskInstance) -> Void)?
     
     lazy var vStack: UIStackView = {
         let stackView = UIStackView(arrangedSubviews: [])
@@ -41,8 +44,9 @@ class TaskDetailViewController: UIViewController {
     
     let mode: TaskDetailMode
 
-    init(mode: TaskDetailMode) {
+    init(mode: TaskDetailMode, viewModel: TaskDetailViewModel) {
         self.mode = mode
+        self.viewModel = viewModel
         super.init(nibName: nil, bundle: nil)
     }
     
@@ -74,6 +78,8 @@ class TaskDetailViewController: UIViewController {
                 let times = makeTimesRow()
                 
                 let stack = UIStackView(arrangedSubviews: [label, times])
+                stack.axis = .vertical
+                stack.spacing = 6
                 stack.translatesAutoresizingMaskIntoConstraints = false
                 return stack
             }
@@ -104,18 +110,23 @@ class TaskDetailViewController: UIViewController {
     private func configureNavBar() {
         navigationItem.title = "Tarefa"
         
-        let closeButton = UIBarButtonItem(title: "Fechar", style: .done, target: self, action: #selector(closeTapped))
+        let closeButton = UIBarButtonItem(title: "Fechar", style: .plain, target: self, action: #selector(closeTapped))
         closeButton.tintColor = .blue10
         navigationItem.leftBarButtonItem = closeButton
         
-        let editButton = UIBarButtonItem(title: "Editar", style: .plain, target: self, action: #selector(editTapped))
-        editButton.tintColor = .blue10
-        navigationItem.rightBarButtonItem = editButton
+        if let taskInstance, taskInstance.isLateDay {
+            let deleteButton = UIBarButtonItem(title: "Excluir", style: .done, target: self, action: #selector(deleteTapped))
+            deleteButton.tintColor = .red20
+            navigationItem.rightBarButtonItem = deleteButton
+        } else {
+            let editButton = UIBarButtonItem(title: "Editar", style: .done, target: self, action: #selector(editTapped))
+            editButton.tintColor = .blue10
+            navigationItem.rightBarButtonItem = editButton
+        }
         
         let appearance = UINavigationBarAppearance()
         appearance.configureWithOpaqueBackground()
         navigationItem.scrollEdgeAppearance = appearance
-        
     }
     
     private func makeDayRow() -> FlowLayoutView {
@@ -131,9 +142,8 @@ class TaskDetailViewController: UIViewController {
     
     private func makeTimesRow() -> FlowLayoutView {
         var tags: [UIView] = []
-        
         for time in taskTemplate.allTimes! {
-            let tag = DayTagView(text: "\(time.hour):\(time.minute)")
+            let tag = DayTagView(text: "\(time.hour ?? 0):\(time.minute ?? 0)")
             tags.append(tag)
         }
         
@@ -163,9 +173,33 @@ class TaskDetailViewController: UIViewController {
     }
     
     @objc func editTapped() {
-        guard let taskInstance else { return }
         dismiss(animated: true)
-        onEditTapped?(taskInstance)
+        onEditTapped?(taskTemplate)
+    }
+    
+    @objc func deleteTapped() {
+        presentDeleteAlert()
+    }
+    
+    func presentDeleteAlert() {
+        let alertController = UIAlertController(
+            title: "Deseja excluir essa tarefa?",
+            message: "A remoção desta tarefa apagará todos os dados contidos nela.",
+            preferredStyle: .alert
+        )
+        
+        let confirmAction = UIAlertAction(title: "Excluir", style: .destructive) { [weak self] _ in
+            guard let self = self else { return }
+            viewModel.deleteTask(taskTemplate)
+            dismiss(animated: true)
+        }
+        
+        let cancelAction = UIAlertAction(title: "Cancelar", style: .cancel, handler: nil)
+        
+        alertController.addAction(cancelAction)
+        alertController.addAction(confirmAction)
+        
+        present(alertController, animated: true, completion: nil)
     }
 }
 
