@@ -16,6 +16,10 @@ final class OutlineRectangleButton: UIButton {
     private let selectedTextColor = UIColor.pureWhite
     private let unselectedTextColor = UIColor.blue40
     
+    
+      private let horizontalPadding: CGFloat = 24
+      private let verticalPadding: CGFloat = 8
+    
     init(title: String) {
         self.label = StandardLabel(
             labelText: title,
@@ -43,22 +47,36 @@ final class OutlineRectangleButton: UIButton {
     private func setup() {
         translatesAutoresizingMaskIntoConstraints = false
         
-        layer.cornerRadius = 24
-        layer.borderWidth = 2
+        clipsToBounds = true
+        layer.borderWidth = 1
         layer.borderColor = borderColor.cgColor
         backgroundColor = unselectedBackground
         
         addSubview(label)
         label.translatesAutoresizingMaskIntoConstraints = false
+        label.textAlignment = .center
         
         NSLayoutConstraint.activate([
-            label.topAnchor.constraint(equalTo: topAnchor, constant: 8),
-            label.bottomAnchor.constraint(equalTo: bottomAnchor, constant: -8),
-            label.leadingAnchor.constraint(equalTo: leadingAnchor, constant: 24),
-            label.trailingAnchor.constraint(equalTo: trailingAnchor, constant: -24)
+            label.topAnchor.constraint(equalTo: topAnchor, constant: 4),
+            label.bottomAnchor.constraint(equalTo: bottomAnchor, constant: -4),
+            label.leadingAnchor.constraint(equalTo: leadingAnchor, constant: 16),
+            label.trailingAnchor.constraint(equalTo: trailingAnchor, constant: -16)
         ])
         
         updateAppearance()
+    }
+    
+    override func layoutSubviews() {
+        super.layoutSubviews()
+        layer.cornerRadius = 8
+    }
+    
+    override var intrinsicContentSize: CGSize {
+        let labelSize = label.intrinsicContentSize
+        return CGSize(
+            width: labelSize.width + horizontalPadding * 2,
+            height: labelSize.height + verticalPadding * 2
+        )
     }
     
     override var isSelected: Bool {
@@ -70,12 +88,11 @@ final class OutlineRectangleButton: UIButton {
             backgroundColor = selectedBackground
             label.labelColor = selectedTextColor
             label.labelWeight = .medium
-
         } else {
             backgroundColor = unselectedBackground
             label.labelColor = unselectedTextColor
             label.labelWeight = .regular
         }
-        label.configureLabelColor()   // aplica internamente a cor
+        label.configureLabelColor()
     }
 }

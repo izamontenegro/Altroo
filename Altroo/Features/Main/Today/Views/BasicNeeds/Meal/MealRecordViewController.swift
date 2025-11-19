@@ -108,7 +108,7 @@ final class MealRecordViewController: GradientNavBarViewController {
             titles: titles,
             selectedIndex: selectedIndex,
             scrollHeight: 170,
-            spacing: 8,
+            spacing: 12,
             leadingPadding: 5,
             trailingContentInset: 16
         )
@@ -135,25 +135,26 @@ final class MealRecordViewController: GradientNavBarViewController {
         let container = UIStackView()
         container.axis = .horizontal
         container.spacing = 16
-        container.distribution = .fillProportionally
-        
-        
+        container.alignment = .leading
+        container.distribution = .fill
         
         for (index, amount) in MealAmountEatenEnum.allCases.enumerated() {
             let button = OutlineRectangleButton(title: amount.displayText)
+            button.tag = index
             button.addTarget(self, action: #selector(mealAmountEatenTapped(_:)), for: .touchUpInside)
             
             button.setContentHuggingPriority(.required, for: .horizontal)
             button.setContentCompressionResistancePriority(.required, for: .horizontal)
-           
-            mealAmountEatenButtons.append(button)
             
+            mealAmountEatenButtons.append(button)
             container.addArrangedSubview(button)
         }
         
         let section = UIStackView(arrangedSubviews: [title, container])
         section.axis = .vertical
         section.spacing = 16
+        section.alignment = .leading
+        
         return section
     }
     
@@ -184,7 +185,6 @@ final class MealRecordViewController: GradientNavBarViewController {
         return button
     }
     
-    
     // MARK: - Actions
     
     private func updateConfirmationButtonState(enabled: Bool) {
@@ -194,19 +194,13 @@ final class MealRecordViewController: GradientNavBarViewController {
         }
     }
     
-    @objc private func mealAmountEatenTapped(_ sender: PrimaryStyleButton) {
+    @objc private func mealAmountEatenTapped(_ sender: OutlineRectangleButton) {
         let tappedAmount = MealAmountEatenEnum.allCases[sender.tag]
         
         if viewModel.selectedMealAmountEaten == tappedAmount {
             viewModel.selectedMealAmountEaten = nil
         } else {
             viewModel.selectedMealAmountEaten = tappedAmount
-        }
-        
-        mealAmountEatenButtons.enumerated().forEach { index, button in
-            let isSelected = viewModel.selectedMealAmountEaten == MealAmountEatenEnum.allCases[index]
-            button.backgroundColor = isSelected ? .teal20 : .black40
-            button.setTitleColor(.white, for: .normal)
         }
     }
     
@@ -249,8 +243,7 @@ final class MealRecordViewController: GradientNavBarViewController {
                 guard let self else { return }
                 for (index, button) in self.mealAmountEatenButtons.enumerated() {
                     let isSelected = MealAmountEatenEnum.allCases[index] == selected
-                    button.backgroundColor = isSelected ? .teal20 : .black40
-                    button.setTitleColor(.white, for: .normal)
+                    button.isSelected = isSelected
                 }
             }
             .store(in: &cancellables)
