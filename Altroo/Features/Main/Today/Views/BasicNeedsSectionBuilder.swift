@@ -38,8 +38,13 @@ struct BasicNeedsSectionBuilder {
             } else {
                 iconName = "drop.fill"
             }
-            
-            let waterRecord = WaterRecord(currentQuantity: "\(viewModel.waterQuantity)", goalQuantity: "2L")
+            let waterValue = viewModel.waterQuantity
+            let targetValue = viewModel.currentCareRecipient?.waterTarget ?? 0
+
+            let waterRecord = WaterRecord(
+                currentQuantity: "\(waterValue)",
+                goalQuantity: "\(targetValue)ml"
+            )
             waterRecord.onEditTap = { delegate?.goTo(.recordHydration)
             }
 
