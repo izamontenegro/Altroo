@@ -70,7 +70,7 @@ final class ObservationView: UIView, UITextViewDelegate {
             textView.heightAnchor.constraint(greaterThanOrEqualToConstant: 72),
             
             placeholderLabel.topAnchor.constraint(equalTo: textView.topAnchor, constant: 12),
-            placeholderLabel.leadingAnchor.constraint(equalTo: textView.leadingAnchor, constant: 8),
+            placeholderLabel.leadingAnchor.constraint(equalTo: textView.leadingAnchor, constant: 20),
             placeholderLabel.trailingAnchor.constraint(equalTo: textView.trailingAnchor, constant: -20)
         ])
         
