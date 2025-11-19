@@ -7,15 +7,14 @@
 
 import UIKit
 
-//protocol TaskCardDelegate: AnyObject {
-//    func taskCardDidSelect(_ task: TaskInstance)
-//    func taskCardDidMarkAsDone(_ task: TaskInstance)
-//}
+protocol TaskTemplateNavigationDelegate: AnyObject {
+    func taskTemplateDidSelect(_ template: RoutineTask)
+}
 
 class UpcomingTaskCard: InnerShadowView {
     let task: RoutineTask
-    weak var delegate: TaskCardDelegate?
-    
+    weak var navigationDelegate: TaskTemplateNavigationDelegate?
+
     lazy var titleLabel = StandardLabel(labelText: task.name ?? "Tarefa",
                                    labelFont: .sfPro,
                                    labelType: .callOut,
@@ -110,14 +109,14 @@ class UpcomingTaskCard: InnerShadowView {
         
     }
     
-//    func setupTapGesture() {
-////        let cardTapGesture = UITapGestureRecognizer(target: self, action: #selector(didTapCard))
-//        self.addGestureRecognizer(cardTapGesture)
-//        self.isUserInteractionEnabled = true
-//    }
+    func setupTapGesture() {
+        let cardTapGesture = UITapGestureRecognizer(target: self, action: #selector(didTapCard))
+        self.addGestureRecognizer(cardTapGesture)
+        self.isUserInteractionEnabled = true
+    }
     
     
-//    @objc private func didTapCard() {
-//        delegate?.taskCardDidSelect(task)
-//    }
+    @objc private func didTapCard() {
+        navigationDelegate?.taskTemplateDidSelect(task)
+    }
 }

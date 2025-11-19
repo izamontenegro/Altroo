@@ -7,9 +7,25 @@
 
 import UIKit
 
+enum TaskDetailMode {
+    case instance(TaskInstance)
+    case template(RoutineTask)
+}
+
 class TaskDetailViewController: UIViewController {
-    var taskInstance: TaskInstance
-    var taskTemplate: RoutineTask
+    private lazy var taskTemplate: RoutineTask = {
+        switch mode {
+        case .instance(let inst): return inst.template!
+        case .template(let tpl): return tpl
+        }
+    }()
+    
+    private lazy var taskInstance: TaskInstance? = {
+        switch mode {
+        case .instance(let inst): return inst
+        case .template(let tpl): return nil
+        }
+    }()
     
     var onEditTapped: ((TaskInstance) -> Void)?
     
@@ -23,9 +39,10 @@ class TaskDetailViewController: UIViewController {
         return stackView
     }()
     
-    init(task: TaskInstance) {
-        self.taskInstance = task
-        self.taskTemplate = task.template!
+    let mode: TaskDetailMode
+
+    init(mode: TaskDetailMode) {
+        self.mode = mode
         super.init(nibName: nil, bundle: nil)
     }
     
@@ -43,7 +60,24 @@ class TaskDetailViewController: UIViewController {
         view.backgroundColor = .white
         
         let name = InfoRowView(title: "Nome", info: taskTemplate.name ?? "Nome")
-        let time = InfoRowView(title: "Horário", info: DateFormatterHelper.hourFormatter(date: taskInstance.time ?? .now), isLate: taskInstance.isLateDay || taskInstance.isLatePeriod)
+        
+        let time: UIView = {
+            switch mode {
+            case .instance(let inst):
+                return InfoRowView(
+                    title: "Horário",
+                    info: DateFormatterHelper.hourFormatter(date: inst.time ?? .now),
+                    isLate: inst.isLateDay || inst.isLatePeriod
+                )
+            case .template(let tpl):
+                let label = StandardLabel(labelText: "Horários", labelFont: .sfPro, labelType: .callOut, labelColor: .black40)
+                let times = makeTimesRow()
+                
+                let stack = UIStackView(arrangedSubviews: [label, times])
+                stack.translatesAutoresizingMaskIntoConstraints = false
+                return stack
+            }
+        }()
         let repetition = StandardLabel(labelText: "Repetição", labelFont: .sfPro, labelType: .callOut, labelColor: .black40)
         let period = InfoRowView(title: "Duração", info: makeTimeText())
         let notes = InfoRowView(title: "Observação", info: taskTemplate.note ?? "Observação")
@@ -86,7 +120,6 @@ class TaskDetailViewController: UIViewController {
     
     private func makeDayRow() -> FlowLayoutView {
         var tags: [UIView] = []
-        
         for day in taskTemplate.weekdays {
             let tag = DayTagView(text: day.localizedSymbol(style: .short).capitalized)
             tags.append(tag)
@@ -96,6 +129,19 @@ class TaskDetailViewController: UIViewController {
         return row
     }
     
+    private func makeTimesRow() -> FlowLayoutView {
+        var tags: [UIView] = []
+        
+        for time in taskTemplate.allTimes! {
+            let tag = DayTagView(text: "\(time.hour):\(time.minute)")
+            tags.append(tag)
+        }
+        
+        let row = FlowLayoutView(views: tags, maxWidth: view.bounds.width)
+        return row
+    }
+    
+    
     private func makeTimeText() -> String {
         if let start = taskTemplate.startDate, let end = taskTemplate.endDate {
             let timeLabelText = "\(DateFormatterHelper.fullDayFormatter(date: start)) - \(DateFormatterHelper.fullDayFormatter(date: end))"
@@ -103,7 +149,7 @@ class TaskDetailViewController: UIViewController {
             return timeLabelText
             
         } else if let start = taskTemplate.startDate {
-            let timeLabelText = "\(DateFormatterHelper.fullDayFormatter(date: start)) - Contínuo"
+            let timeLabelText = "\(DateFormatterHelper.fullDayFormatter(date: start)) - Sem data final"
             
             return timeLabelText
         } else {
@@ -117,9 +163,9 @@ class TaskDetailViewController: UIViewController {
     }
     
     @objc func editTapped() {
+        guard let taskInstance else { return }
         dismiss(animated: true)
         onEditTapped?(taskInstance)
-        
     }
 }
 

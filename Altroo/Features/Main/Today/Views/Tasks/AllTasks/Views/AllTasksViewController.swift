@@ -185,5 +185,9 @@ extension AllTasksViewController {
             self?.viewModel.markAsDone(task)
         }
         
+        upcomingView.onSelectTask = { [weak self] task in
+            self?.coordinator?.openTaskTemplateDetail(for: task)
+        }
+        
     }
 }

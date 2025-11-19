@@ -7,6 +7,8 @@
 import UIKit
 
 final class UpcomingTasksView: UIView {
+    var onSelectTask: ((RoutineTask) -> Void)?
+
     init(viewModel: AllTasksViewModel) {
         super.init(frame: .zero)
         translatesAutoresizingMaskIntoConstraints = false
@@ -24,6 +26,7 @@ final class UpcomingTasksView: UIView {
 
         for task in viewModel.upcomingTasks {
             let card = UpcomingTaskCard(task: task)
+            card.navigationDelegate = self
             taskStack.addArrangedSubview(card)
         }
         
@@ -36,5 +39,11 @@ final class UpcomingTasksView: UIView {
             taskStack.trailingAnchor.constraint(equalTo: trailingAnchor),
             taskStack.widthAnchor.constraint(equalTo: widthAnchor),
         ])
+    }
+}
+
+extension UpcomingTasksView: TaskTemplateNavigationDelegate {
+    func taskTemplateDidSelect(_ template: RoutineTask) {
+        onSelectTask?(template)
     }
 }

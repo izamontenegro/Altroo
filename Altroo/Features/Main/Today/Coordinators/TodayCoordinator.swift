@@ -111,7 +111,24 @@ final class TodayCoordinator: Coordinator {
     }
     
     func openTaskDetail(for task: TaskInstance)  {
-        let vc = factory.makeTaskDetailViewController(task: task) as! TaskDetailViewController
+        let vc = factory.makeTaskDetailViewController(mode: .instance(task)) as! TaskDetailViewController
+        vc.onEditTapped = {[weak self] task in
+            guard let taskTemplate = task.template else { return }
+            self?.goToEditTask(taskTemplate)
+        }
+        
+        let nav = UINavigationController(rootViewController: vc)
+        nav.modalPresentationStyle = .pageSheet
+        
+        if let sheet = nav.sheetPresentationController {
+            sheet.detents = [.medium()]
+            sheet.prefersGrabberVisible = true
+        }
+        navigation.present(nav, animated: true)
+    }
+    
+    func openTaskTemplateDetail(for task: RoutineTask)  {
+        let vc = factory.makeTaskDetailViewController(mode: .template(task)) as! TaskDetailViewController
         vc.onEditTapped = {[weak self] task in
             guard let taskTemplate = task.template else { return }
             self?.goToEditTask(taskTemplate)
@@ -198,8 +215,9 @@ enum TodayDestination {
 }
 
 extension TodayCoordinator: TaskCardNavigationDelegate {
+    
     func taskCardDidSelect(_ task: TaskInstance) {
-        let vc = factory.makeTaskDetailViewController(task: task) as! TaskDetailViewController
+        let vc = factory.makeTaskDetailViewController(mode: .instance(task)) as! TaskDetailViewController
         vc.onEditTapped = {[weak self] task in
             guard let taskTemplate = task.template else { return }
             self?.goToEditTask(taskTemplate)

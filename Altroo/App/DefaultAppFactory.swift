@@ -119,7 +119,7 @@ extension DefaultAppFactory {
 
 // MARK: - SymptomFactory
 extension DefaultAppFactory {
-    
+
     func makeAddSymptomViewController() -> UIViewController {
         let vm = AddSymptomViewModel(careRecipientFacade: dependencies.careRecipientFacade,
                                      userService: dependencies.userService,
@@ -294,8 +294,8 @@ extension DefaultAppFactory {
         let vc = EditTaskViewController(viewModel: vm)
         return vc
     }
-    func makeTaskDetailViewController(task: TaskInstance) -> UIViewController {
-        let vc = TaskDetailViewController(task: task)
+    func makeTaskDetailViewController(mode: TaskDetailMode) -> UIViewController {
+        let vc = TaskDetailViewController(mode: mode)
         return vc
     }
 }

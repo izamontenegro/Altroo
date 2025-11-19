@@ -103,7 +103,7 @@ protocol RoutineActivitiesFactory {
     func makeAllTasksViewController() -> UIViewController
     func makeAddTaskViewController() -> UIViewController
     func makeEditTaskViewController(task: RoutineTask) -> UIViewController
-    func makeTaskDetailViewController(task: TaskInstance) -> UIViewController
+    func makeTaskDetailViewController(mode: TaskDetailMode) -> UIViewController
 }
 
 // MARK: - MEASUREMENT FLOW
