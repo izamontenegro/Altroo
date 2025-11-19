@@ -4,11 +4,10 @@
 //
 //  Created by Izadora de Oliveira Albuquerque Montenegro on 19/11/25.
 //
-
 import UIKit
 
-final class HydrationMeasureInputView: UIView {
-        
+final class HydrationMeasureInputView: UIView, UITextFieldDelegate {
+    
     var value: Int {
         didSet {
             if value <= 0 {
@@ -30,11 +29,12 @@ final class HydrationMeasureInputView: UIView {
     var maxValue: Int
     
     var onValueChanged: ((Int, HydrationUnit) -> Void)?
-    
+        
     private let valueContainer = UIView()
     private let valueTextField = UITextField()
     private let unitButton = UIButton(type: .system)
 
+    
     init(
         initialValue: Int = 0,
         unit: HydrationUnit = .milliliter,
@@ -58,9 +58,7 @@ final class HydrationMeasureInputView: UIView {
         super.init(coder: coder)
         setupView()
     }
-    
-    // MARK: - Setup
-    
+        
     private func setupView() {
         translatesAutoresizingMaskIntoConstraints = false
         
@@ -95,7 +93,7 @@ final class HydrationMeasureInputView: UIView {
         valueContainer.setContentHuggingPriority(.defaultHigh, for: .horizontal)
         unitButton.setContentHuggingPriority(.required, for: .horizontal)
     }
-    
+        
     private func setupValueContainer() {
         valueContainer.translatesAutoresizingMaskIntoConstraints = false
         valueContainer.backgroundColor = UIColor.white70
@@ -110,6 +108,7 @@ final class HydrationMeasureInputView: UIView {
         valueTextField.textColor = UIColor.black10
         valueTextField.placeholder = "0"
         valueTextField.addTarget(self, action: #selector(valueEditingChanged), for: .editingChanged)
+        valueTextField.delegate = self
         
         valueContainer.addSubview(valueTextField)
         
@@ -124,6 +123,7 @@ final class HydrationMeasureInputView: UIView {
         valueContainer.addGestureRecognizer(tap)
     }
     
+    
     private func setupUnitButton() {
         unitButton.translatesAutoresizingMaskIntoConstraints = false
         unitButton.backgroundColor = UIColor.blue40
@@ -134,8 +134,7 @@ final class HydrationMeasureInputView: UIView {
         unitButton.tintColor = .pureWhite
         unitButton.titleLabel?.font = UIFont.systemFont(ofSize: 17, weight: .regular)
         
-//        unitButton.contentEdgeInsets = UIEdgeInsets(top: 8, left: 16, bottom: 8, right: 12)
-        unitButton.semanticContentAttribute = .forceLeftToRight
+        unitButton.semanticContentAttribute = .forceRightToLeft
         
         unitButton.showsMenuAsPrimaryAction = true
         unitButton.menu = makeUnitMenu()
@@ -149,8 +148,6 @@ final class HydrationMeasureInputView: UIView {
         
         unitButton.setTitle(title, for: .normal)
         unitButton.setImage(image, for: .normal)
-        
-        unitButton.imageEdgeInsets = UIEdgeInsets(top: 0, left: 4, bottom: 0, right: -4)
     }
     
     private func makeUnitMenu() -> UIMenu {
@@ -177,9 +174,34 @@ final class HydrationMeasureInputView: UIView {
     @objc private func valueEditingChanged() {
         let newValue = Int(valueTextField.text ?? "") ?? 0
         let clamped = max(minValue, min(maxValue, newValue))
+        
         if clamped != value {
             value = clamped
-            onValueChanged?(value, unit)
         }
+        
+        if newValue > maxValue {
+            valueTextField.text = "\(maxValue)"
+            value = maxValue
+        }
+        
+        onValueChanged?(value, unit)
+    }
+    
+    func textField(_ textField: UITextField, shouldChangeCharactersIn range: NSRange, replacementString string: String) -> Bool {
+
+        if string.isEmpty { return true }
+
+        let allowed = CharacterSet.decimalDigits
+        if string.rangeOfCharacter(from: allowed.inverted) != nil { return false }
+
+        let oldText = textField.text ?? ""
+        guard let r = Range(range, in: oldText) else { return false }
+        let newText = oldText.replacingCharacters(in: r, with: string)
+
+        if let num = Int(newText), num <= maxValue {
+            return true
+        }
+
+        return false
     }
 }

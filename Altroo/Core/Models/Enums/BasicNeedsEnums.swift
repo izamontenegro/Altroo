@@ -211,11 +211,11 @@ enum MealCategoryEnum: String, CaseIterable {
 // MARK: - HYDRATION
 
 enum HydrationAmountEnum: String, CaseIterable {
+    case custom
     case oneCup
     case twoCups
     case bottle
-    case custom
-    
+   
     var displayText: String {
         switch self {
         case .oneCup:
