@@ -21,6 +21,23 @@ final class MainCoordinator: Coordinator {
     }
     
     private weak var tabBar: AppTabBarController?
+    weak var parentCoordinator: AppCoordinator?
+    
+    func makeProfileCoordinator(using navigation: UINavigationController) -> ProfileCoordinator {
+        let coord = ProfileCoordinator(
+            navigation: navigation,
+            factory: factory,
+            associateFactory: factory
+        )
+        
+        coord.onEndCare = { [weak self] in
+            Task { @MainActor in
+                self?.parentCoordinator?.restartToAllPatients()
+            }
+        }
+        
+        return coord
+    }
     
     func start() {
         let tabBar = AppTabBarController()
@@ -31,6 +48,7 @@ final class MainCoordinator: Coordinator {
         let patientsCoord = PatientsCoordinator(
             navigation: patientsNav, factory: factory
         )
+        patientsCoord.parentCoordinator = self
         add(child: patientsCoord)
         patientsCoord.start()
         patientsNav.tabBarItem = UITabBarItem(title: "assisted".localized, image: UIImage(systemName: "person.fill"), tag: 0)
@@ -49,6 +67,7 @@ final class MainCoordinator: Coordinator {
         let todayCoord = TodayCoordinator(
             navigation: todayNav, factory: factory
         )
+        todayCoord.parentCoordinator = self
         add(child: todayCoord)
         todayCoord.start()
         todayNav.tabBarItem = UITabBarItem(title: "today".localized, image: UIImage(systemName: "heart.text.square.fill"), tag: 1)

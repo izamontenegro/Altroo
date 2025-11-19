@@ -213,6 +213,7 @@ final class MedicalRecordViewController: GradientNavBarViewController {
         editButton.isUserInteractionEnabled = true
         let tapGesture = UITapGestureRecognizer(target: self, action: #selector(didTapEditButton))
         editButton.addGestureRecognizer(tapGesture)
+        editButton.enableHighlightEffect()
         return wrapperStackView
     }
 

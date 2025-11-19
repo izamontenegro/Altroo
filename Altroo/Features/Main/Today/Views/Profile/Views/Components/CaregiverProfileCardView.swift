@@ -7,16 +7,35 @@
 //
 import UIKit
 import CloudKit
+import CoreData
 
 class CaregiverProfileCardView: UIView {
+    let coreDataService: CoreDataService
+
     let name: String
     let category: String
-    let permission: CKShare.Participant.Permission
+    let permission: CKShare.ParticipantPermission
+    let isOwner: Bool
+    
+    let participant: CKShare.Participant?
+    let parentObject: NSManagedObject?
 
-    init(name: String, category: String, permission: CKShare.Participant.Permission) {
+    init(coreDataService: CoreDataService,
+         participant: CKShare.Participant? = nil,
+         parentObject: NSManagedObject? = nil,
+         name: String,
+         category: String,
+         permission: CKShare.ParticipantPermission,
+         isOwner: Bool) {
+
+        self.coreDataService = coreDataService
+        self.participant = participant
+        self.parentObject = parentObject
         self.name = name
         self.category = category
         self.permission = permission
+        self.isOwner = isOwner
+        
         super.init(frame: .zero)
         buildLayout()
     }
@@ -90,9 +109,9 @@ class CaregiverProfileCardView: UIView {
             labelColor: .black10,
             labelWeight: .medium
         )
-       
+        
         let subtitleLabel = StandardLabel(
-            labelText: "Cuidador",
+            labelText: category,
             labelFont: .sfPro,
             labelType: .footnote,
             labelColor: .black20,
@@ -113,7 +132,7 @@ class CaregiverProfileCardView: UIView {
         button.backgroundColor = .clear
 
         let titleLabel = StandardLabel(
-            labelText: permissionLabel(permission),
+            labelText: (participant?.role == .owner || name == "Você") ? "Criador" : permissionLabel(permission),
             labelFont: .sfPro,
             labelType: .subHeadline,
             labelColor: .blue10,
@@ -125,8 +144,8 @@ class CaregiverProfileCardView: UIView {
         chevron.translatesAutoresizingMaskIntoConstraints = false
         chevron.tintColor = .blue10
         chevron.preferredSymbolConfiguration = .init(pointSize: 14, weight: .semibold)
-        chevron.layer.opacity = 0.0
-
+        chevron.isHidden = (!isOwner) || (participant?.role == .owner) || (name == "Você")
+        
         let stack = UIStackView(arrangedSubviews: [titleLabel, chevron])
         stack.axis = .horizontal
         stack.spacing = 4
@@ -136,14 +155,16 @@ class CaregiverProfileCardView: UIView {
         button.addSubview(stack)
         NSLayoutConstraint.activate([
             stack.centerXAnchor.constraint(equalTo: button.centerXAnchor),
-            stack.centerYAnchor.constraint(equalTo: button.centerYAnchor),
+            stack.centerYAnchor.constraint(equalTo: button.topAnchor, constant: 8),
             stack.leadingAnchor.constraint(greaterThanOrEqualTo: button.leadingAnchor),
             stack.trailingAnchor.constraint(lessThanOrEqualTo: button.trailingAnchor)
         ])
 
-        button.addAction(UIAction { [weak self] _ in
-            self?.didTapAccess()
-        }, for: .touchUpInside)
+        if let participant, isOwner, participant.role != .owner {
+            button.menu = makeOwnerMenu()
+            button.showsMenuAsPrimaryAction = true
+            button.enableHighlightEffect()
+        }
 
         return button
     }
@@ -151,16 +172,89 @@ class CaregiverProfileCardView: UIView {
 
 // MARK: - Helpers
 private extension CaregiverProfileCardView {
-    func didTapAccess() {
-        print("tapped")
+
+    func initialsFromName(_ name: String) -> String {
+        let comps = name.split(separator: " ")
+        let initials = comps.prefix(2).compactMap { $0.first?.uppercased() }.joined()
+        return initials.isEmpty ? "?" : initials
     }
-    
+
     func permissionLabel(_ participantPermission: CKShare.ParticipantPermission) -> String {
         switch participantPermission {
-        case .readOnly:  return "Pode visualizar"
-        case .readWrite: return "Pode editar"
-        case .none:      return "Sem acesso"
-        default:         return "Pode visualizar"
+        case .readOnly:  return "Pode Visualizar"
+        case .readWrite: return "Pode Editar"
+        case .none:      return "Sem Acesso"
+        default:         return "Pode Visualizar"
         }
     }
+    
+    func setPermission(_ newPermission: CKShare.ParticipantPermission) {
+        guard let participant, let parentObject else { return }
+
+        coreDataService.updateParticipantPermission(
+            for: parentObject,
+            participant: participant,
+            to: newPermission
+        ) { result in
+            DispatchQueue.main.async {
+                switch result {
+                case .success:
+                    print("Permission changed to \(newPermission)")
+                case .failure(let error):
+                    print("Error updating permission:", error)
+                }
+            }
+        }
+    }
+
+    func removeCaregiver() {
+        guard let participant, let parentObject else { return }
+
+        coreDataService.removeParticipant(
+            participant,
+            from: parentObject
+        ) { result in
+            DispatchQueue.main.async {
+                switch result {
+                case .success:
+                    print("Caregiver removed.")
+                case .failure(let error):
+                    print("Error removing caregiver:", error)
+                }
+            }
+        }
+    }
+    
+    private func makeOwnerMenu() -> UIMenu {
+        let current = permission
+
+        let edit = UIAction(
+            title: "Pode Editar",
+            image: UIImage(systemName: current == .readWrite ? "checkmark" : "")
+        ) { [weak self] _ in
+            self?.setPermission(.readWrite)
+        }
+
+        let viewOnly = UIAction(
+            title: "Pode Visualizar",
+            image: UIImage(systemName: current == .readOnly ? "checkmark" : "")
+        ) { [weak self] _ in
+            self?.setPermission(.readOnly)
+        }
+
+        let remove = UIAction(
+            title: "Remover Cuidador",
+            image: UIImage(systemName: "xmark"),
+            attributes: .destructive
+        ) { [weak self] _ in
+            self?.removeCaregiver()
+        }
+
+        return UIMenu(
+            title: "",
+            options: [.displayInline],
+            children: [edit, viewOnly, remove]
+        )
+    }
+
 }
