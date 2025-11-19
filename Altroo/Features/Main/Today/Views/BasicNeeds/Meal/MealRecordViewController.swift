@@ -231,7 +231,7 @@ final class MealRecordViewController: UIViewController {
     private func updateConfirmationButtonState(enabled: Bool) {
         confirmationButton.isUserInteractionEnabled = enabled
         UIView.animate(withDuration: 0.2) {
-            self.confirmationButton.backgroundColor = enabled ? .teal20 : .black20
+            self.confirmationButton.backgroundColor = enabled ? .teal20 : .white50
         }
     }
     
@@ -293,8 +293,7 @@ final class MealRecordViewController: UIViewController {
         
         Publishers.CombineLatest(viewModel.$selectedMealCategory, viewModel.$selectedMealAmountEaten)
             .sink { [weak self] category, amount in
-                let bothSelected = (category != nil && amount != nil)
-                self?.updateConfirmationButtonState(enabled: bothSelected)
+                self?.updateConfirmationButtonState(enabled: category != nil)
             }
             .store(in: &cancellables)
     }

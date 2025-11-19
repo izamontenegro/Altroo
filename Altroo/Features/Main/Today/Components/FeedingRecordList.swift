@@ -99,6 +99,8 @@ extension FeedingStatus {
             return .completed
         case "parcialmente":
             return .partial
+        case "":
+            return .none
         default:
             return .pending
         }

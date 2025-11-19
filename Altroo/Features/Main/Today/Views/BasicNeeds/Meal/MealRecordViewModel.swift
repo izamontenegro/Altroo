@@ -32,12 +32,14 @@ final class MealRecordViewModel {
     func createFeedingRecord() {
         guard
             let careRecipient = getCurrentCareRecipient(),
-            let selectedMealCategory,
-            let selectedMealAmountEaten
+            let selectedMealCategory
         else { return }
         
         let author = coreDataService.currentPerformerName(for: careRecipient)
         
+        print("oiaaaaaa \(selectedMealCategory.displayName)")
+        
+        // FIXME: - SOLVE THIS
         feedingService.addFeeding(
             amountEaten: selectedMealAmountEaten,
             date: Date(),
