@@ -207,6 +207,8 @@ final class MealRecordViewController: GradientNavBarViewController {
     @objc private func createFeedingRecord() {
         viewModel.createFeedingRecord()
         delegate?.didFinishAddingMealRecord()
+        dismiss(animated: true)
+
     }
     
     private func setupTapToDismiss() {

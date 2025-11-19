@@ -136,6 +136,8 @@ final class UrineRecordViewController: GradientNavBarViewController {
     @objc private func createUrineRecord() {
         viewModel.createUrineRecord()
         delegate?.didFinishAddingUrineRecord()
+        dismiss(animated: true)
+
     }
     
     // MARK: - Keyboard

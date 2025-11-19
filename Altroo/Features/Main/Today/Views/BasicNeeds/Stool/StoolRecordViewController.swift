@@ -183,6 +183,8 @@ final class StoolRecordViewController: GradientNavBarViewController {
     @objc private func createStoolRecord() {
         viewModel.createStoolRecord()
         delegate?.didFinishAddingStoolRecord()
+        dismiss(animated: true)
+
     }
     
     @objc private func dismissKeyboard() {
