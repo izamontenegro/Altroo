@@ -9,7 +9,6 @@ import UIKit
 import CoreData
 
 final class AppCoordinator: Coordinator {
-    
     var childCoordinators: [Coordinator] = []
     weak var parentCoordinator: AppCoordinator?
     var navigation: UINavigationController
@@ -30,33 +29,14 @@ final class AppCoordinator: Coordinator {
     
     @MainActor
     func start() async {
-        var loadingVC: LoadingReceivedPatient?
-
-        if receivedPatientViaShare {
-            loadingVC = LoadingReceivedPatient()
-            navigation.present(loadingVC!, animated: false)
-
-            await waitForSharedPatientSync(timeout: 5)
-            
-            let fetchRequest = NSFetchRequest<CareRecipient>(entityName: "CareRecipient")
-            if let sharedPatients = try? CoreDataStack.shared.context.fetch(fetchRequest),
-               let newPatient = sharedPatients.last {
-                userService.setCurrentPatient(newPatient)
-                userService.addPatient(newPatient)
-                loadingVC?.dismiss(animated: false)
-                return
-            }
-            
-            loadingVC?.dismiss(animated: false)
-        }
 
         if !UserDefaults.standard.onboardingCompleted {
             if userService.fetchUser() == nil {
                 _ = userService.createUser(name: "", category: "Cuidador")
             }
-            showOnboardingFlow()
+            showOnboardingFlow(isReceiving: receivedPatientViaShare)
         } else if userService.fetchCurrentPatient() == nil {
-            showAllPatientsFlow()
+            showAllPatientsFlow(isReceiving: receivedPatientViaShare)
         } else {
             showMainFlow()
         }
@@ -70,13 +50,13 @@ final class AppCoordinator: Coordinator {
         return
     }
 
-    private func showOnboardingFlow() {
+    private func showOnboardingFlow(isReceiving: Bool = false) {
         let onboardingCoordinator = OnboardingCoordinator(navigation: navigation,
                                                           factory: factory)
         onboardingCoordinator.onFinish = { [weak self, weak onboardingCoordinator] in
             guard let self, let onboardingCoordinator else { return }
             self.remove(child: onboardingCoordinator)
-            self.showAllPatientsFlow()
+            self.showAllPatientsFlow(isReceiving: isReceiving)
         }
         add(child: onboardingCoordinator)
         onboardingCoordinator.start()
@@ -97,7 +77,7 @@ final class AppCoordinator: Coordinator {
         mainCoordinator.start()
     }
     
-    private func showAllPatientsFlow() {
+    private func showAllPatientsFlow(isReceiving: Bool = false) {
         let associatePatientCoordinator = AssociatePatientCoordinator(navigation: navigation,
                                                                       factory: factory)
         associatePatientCoordinator.onFinish = { [weak self, weak associatePatientCoordinator] in
@@ -106,7 +86,12 @@ final class AppCoordinator: Coordinator {
             self.showMainFlow()
         }
         add(child: associatePatientCoordinator)
-        associatePatientCoordinator.start()
+        
+        if isReceiving {
+            associatePatientCoordinator.receivePatient()
+        } else {
+            associatePatientCoordinator.start()
+        }
     }
     
     @MainActor
@@ -131,5 +116,11 @@ final class AppCoordinator: Coordinator {
                 self.navigation.view.alpha = 1
             })
         }
+    }
+}
+
+extension AppCoordinator: ShiftFormsViewControllerDelegate {
+    func shiftFormsDidFinish() {
+        
     }
 }

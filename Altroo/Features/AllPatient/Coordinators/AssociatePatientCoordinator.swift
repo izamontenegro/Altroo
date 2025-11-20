@@ -24,7 +24,13 @@ final class AssociatePatientCoordinator: Coordinator {
         navigation.pushViewController(vc, animated: true)
     }
     
-    enum Destination { case patientForms, tutorialAdd, loading, mainFlow }
+    func receivePatient() {
+        let vc = factory.makeAssociatePatientViewController(delegate: self, context: .associatePatient)
+        navigation.pushViewController(vc, animated: true)
+        show(.receivingPatient)
+    }
+    
+    enum Destination { case patientForms, tutorialAdd, loading, mainFlow, receivingPatient }
     
     private func show(_ destination: Destination) {
         switch destination {
@@ -74,6 +80,23 @@ final class AssociatePatientCoordinator: Coordinator {
         case .mainFlow:
             // Go to the Today screen (main navigation flow).
             onFinish?()
+            
+        case .receivingPatient:
+            let child = PatientFormsCoordinator(factory: factory)
+            add(child: child)
+            
+            child.onFinish = { [weak self, weak child] in
+                if let child = child { self?.remove(child: child) }
+                self?.navigation.dismiss(animated: true)
+                self?.goToLoading()
+            }
+            
+            child.start()
+            
+            presentSheet(
+                child.navigation,
+                from: navigation, percentage: 0.9
+            )
         }
     }
 }
