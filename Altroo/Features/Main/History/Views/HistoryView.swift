@@ -42,7 +42,7 @@ struct HistoryView: View {
         .sheet(isPresented: $showSheet, content: {
             if let item = viewModel.selectedItem {
                 HistoryDetailSheet(viewModel: viewModel, item: item)
-                    .presentationDetents([.medium])
+                    .presentationDetents([.fraction(0.7)])
             } else {
                 Text("erro ao selecionar item")
             }

@@ -93,4 +93,3 @@ struct ReportItemRow: View {
         .fontDesign(.rounded)
     }
 }
-
