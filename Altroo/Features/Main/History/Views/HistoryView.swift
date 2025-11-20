@@ -9,6 +9,7 @@ import SwiftUI
 import UIKit
 
 struct HistoryView: View {
+    
     @ObservedObject var viewModel: HistoryViewModel
     @State var showSheet: Bool = false
     
@@ -28,6 +29,7 @@ struct HistoryView: View {
                                 showSheet = true
                             }
                         }
+                        
                         Spacer()
                     }
                 }

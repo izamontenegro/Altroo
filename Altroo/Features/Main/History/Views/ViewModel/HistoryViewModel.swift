@@ -39,7 +39,6 @@ final class HistoryViewModel: ObservableObject {
         self.careRecipientFacade = careRecipientFacade
         self.routineActivitiesFacade = routineActivitiesFacade
     }
-        
     // MARK: - Accessors
     func currentCareRecipient() -> CareRecipient? {
         userService.fetchCurrentPatient()
