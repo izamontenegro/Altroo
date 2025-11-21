@@ -11,7 +11,6 @@ class EditTaskViewController: TaskFormViewController {
     weak var coordinator: TodayCoordinator?
     var viewModel: EditTaskViewModel
     private var cancellables = Set<AnyCancellable>()
-
     
     init(viewModel: EditTaskViewModel) {
         self.viewModel = viewModel
@@ -140,6 +139,7 @@ class EditTaskViewController: TaskFormViewController {
         }
     }
     
+    //TIME
     func setupTimes() {
         for components in viewModel.times {
             if let date = Calendar.current.date(from: components) {

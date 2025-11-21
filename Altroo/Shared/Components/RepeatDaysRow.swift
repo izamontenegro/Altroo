@@ -68,7 +68,7 @@ final class RepeatDaysRow: UIStackView {
     func updateSelectedDays(_ days: [Locale.Weekday]) {
         for button in dayButtons {
             guard let day = button.associatedData as? Locale.Weekday else { continue }
-            button.backgroundColor = days.contains(day) ? .teal20 : .black40
+            button.isSelected = days.contains(day) ? true : false
         }
     }
     

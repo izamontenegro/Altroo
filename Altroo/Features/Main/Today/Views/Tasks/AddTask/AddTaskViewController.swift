@@ -122,39 +122,56 @@ class AddTaskViewController: TaskFormViewController {
         addTimeButton.addTarget(self, action: #selector(addTimeButtonTapped(_:)), for: .touchUpInside)
     }
     
-    func addTimeAction(addAtIndex: Int? = nil) {
-        //make new datepicker
-        let newPicker = UIDatePicker.make(mode: .time)
-        newPicker.date = .now
-        newPicker.tag = viewModel.times.count
-        newPicker.addTarget(self, action: #selector(timeChanged(_:)), for: .valueChanged)
-        
-        
-        //TODO: EXTRACT TO SETUP FUNC -> MOVE VM.ADDTIME TO BEGINNING
-        //view after loading
-        if viewModel.times.isEmpty {
-            addTimeViews.append(newPicker)
-            addTimeViews.append(addTimeButton)
-        //there is only 1 picker
-        } else if viewModel.times.count == 1 {
-            removeAddTimeButton()
-            addTimeViews.append(newPicker)
-            addTimeViews.append(deleteTimeButton)
-            hourStack.addArrangedSubview(addTimeButton)
-        //more than 1 picker
-        } else {
-            removeDeleteTimeButton()
-            addTimeViews.append(newPicker)
-            addTimeViews.append(deleteTimeButton)
-        }
-
-        // adds actual date to task model
+    func addTimeAction() {
         viewModel.addTime(from: .now)
-        
-        //todo: refresh flowlayout
-        timePickersFlowView.reload(with: addTimeViews)
+        rebuildTimeViews()
     }
     
+    func rebuildTimeViews() {
+        //reset everything
+        addTimeViews.removeAll()
+        for view in timePickersFlowView.subviews {
+            view.removeFromSuperview()
+        }
+        addTimeButton.removeFromSuperview()
+
+        let count = viewModel.times.count
+
+        //create all timepickers
+        for (index, time) in viewModel.times.enumerated() {
+            let picker = UIDatePicker.make(mode: .time)
+            if let date = Calendar.current.date(from: time) {
+                picker.date = date
+            }
+            picker.tag = index
+            picker.addTarget(self, action: #selector(timeChanged(_:)), for: .valueChanged)
+            addTimeViews.append(picker)
+        }
+
+        if count == 1 {
+            // only one timepicker - inline add button
+            addTimeViews.append(addTimeButton)
+            
+            if hourStack.arrangedSubviews.contains(addTimeButton) {
+                       hourStack.removeArrangedSubview(addTimeButton)
+                       addTimeButton.removeFromSuperview()
+           }
+            
+            deleteTimeButton.removeFromSuperview()
+
+        } else {
+            //more than one timepicker - inline minus button/downline add button
+            addTimeViews.append(deleteTimeButton)
+
+
+            if !hourStack.arrangedSubviews.contains(addTimeButton) {
+               hourStack.addArrangedSubview(addTimeButton)
+            }
+        }
+
+        timePickersFlowView.reload(with: addTimeViews)
+    }
+
     func removeAddTimeButton() {
         addTimeViews.removeLast()
         addTimeButton.removeFromSuperview()
@@ -180,17 +197,10 @@ class AddTaskViewController: TaskFormViewController {
     }
     
     @objc override func didDeleteLastTime() {
-        if let lastTime = addTimeViews.dropLast().last as? UIDatePicker{
-            //remove view
-            addTimeViews.remove(at: addTimeViews.count-2)
-            lastTime.removeFromSuperview()
-            
-            //remove actual date
-            viewModel.times.removeLast()
-            
-            //reload ui
-            timePickersFlowView.reload(with: addTimeViews)
-        }
+        guard viewModel.times.count > 1 else { return }
+        
+        viewModel.times.removeLast()  //remove actual date
+        rebuildTimeViews()
     }
     
     @objc func timeChanged(_ sender: UIDatePicker) {
