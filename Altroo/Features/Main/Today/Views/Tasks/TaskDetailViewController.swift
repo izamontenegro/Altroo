@@ -30,7 +30,7 @@ class TaskDetailViewController: UIViewController {
     }()
     
     var onEditTapped: ((RoutineTask) -> Void)?
-    var onDeleteTapped: ((TaskInstance) -> Void)?
+    var onDeleteTapped: (() -> Void)?
     
     lazy var vStack: UIStackView = {
         let stackView = UIStackView(arrangedSubviews: [])
@@ -191,6 +191,7 @@ class TaskDetailViewController: UIViewController {
         let confirmAction = UIAlertAction(title: "Excluir", style: .destructive) { [weak self] _ in
             guard let self = self else { return }
             viewModel.deleteTask(taskTemplate)
+            onDeleteTapped?()
             dismiss(animated: true)
         }
         

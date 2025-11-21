@@ -5,27 +5,33 @@
 //  Created by Raissa Parente on 17/11/25.
 //
 import UIKit
+import Combine
 
 final class LateTasksView: UIView {
+    private var cancellables = Set<AnyCancellable>()
+
     var onSelectTask: ((TaskInstance) -> Void)?
     var onMarkDone: ((TaskInstance) -> Void)?
+    
+    var dayStack: UIStackView = {
+        let taskStack = UIStackView()
+        taskStack.axis = .vertical
+        taskStack.spacing = 16
+        taskStack.alignment = .fill
+        taskStack.translatesAutoresizingMaskIntoConstraints = false
+        return taskStack
+    }()
     
     init(viewModel: AllTasksViewModel) {
         super.init(frame: .zero)
         translatesAutoresizingMaskIntoConstraints = false
         setupContent(with: viewModel)
+        bindViewModel(viewModel)
     }
 
     required init?(coder: NSCoder) { fatalError() }
 
     private func setupContent(with viewModel: AllTasksViewModel) {
-        let dayStack = UIStackView()
-        dayStack.axis = .vertical
-        dayStack.spacing = 16
-        dayStack.alignment = .fill
-        dayStack.translatesAutoresizingMaskIntoConstraints = false
-        
-
         for day in viewModel.daysOfLateTasks {
             dayStack.addArrangedSubview(makeLateCardByDay(day, with: viewModel))
         }
@@ -90,6 +96,25 @@ final class LateTasksView: UIView {
         return cardStack
     }
 
+    private func bindViewModel(_ viewModel: AllTasksViewModel) {
+        viewModel.$lateTasks
+            .receive(on: RunLoop.main)
+            .sink { [weak self] tasks in
+                self?.reload(tasks: tasks, viewModel: viewModel)
+            }
+            .store(in: &cancellables)
+    }
+    
+    private func reload(tasks: [TaskInstance], viewModel: AllTasksViewModel) {
+        dayStack.arrangedSubviews.forEach { $0.removeFromSuperview() }
+
+        for day in viewModel.daysOfLateTasks {
+            dayStack.addArrangedSubview(makeLateCardByDay(day, with: viewModel))
+        }
+
+        layoutIfNeeded()
+    }
+    
 }
 
 

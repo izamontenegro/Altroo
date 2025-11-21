@@ -112,9 +112,21 @@ final class TodayCoordinator: Coordinator {
     
     func openTaskDetail(for task: TaskInstance)  {
         let vc = factory.makeTaskDetailViewController(mode: .instance(task)) as! TaskDetailViewController
+        
         vc.onEditTapped = {[weak self] task in
             self?.goToEditTask(task)
         }
+        
+        
+            vc.onDeleteTapped = { [weak self] in
+                guard let self else { return }
+                
+                if let allTasksVC = self.navigation.viewControllers
+                    .compactMap({ $0 as? AllTasksViewController })
+                    .first {
+                    allTasksVC.viewModel.loadLateTasks()
+                }
+            }
         
         let nav = UINavigationController(rootViewController: vc)
         nav.modalPresentationStyle = .pageSheet

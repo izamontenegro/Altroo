@@ -8,7 +8,16 @@ import UIKit
 
 final class UpcomingTasksView: UIView {
     var onSelectTask: ((RoutineTask) -> Void)?
-
+    
+    var taskStack: UIStackView = {
+        let taskStack = UIStackView()
+        taskStack.axis = .vertical
+        taskStack.spacing = 16
+        taskStack.alignment = .fill
+        taskStack.translatesAutoresizingMaskIntoConstraints = false
+        return taskStack
+    }()
+    
     init(viewModel: AllTasksViewModel) {
         super.init(frame: .zero)
         translatesAutoresizingMaskIntoConstraints = false
@@ -40,6 +49,7 @@ final class UpcomingTasksView: UIView {
             taskStack.widthAnchor.constraint(equalTo: widthAnchor),
         ])
     }
+
 }
 
 extension UpcomingTasksView: TaskTemplateNavigationDelegate {

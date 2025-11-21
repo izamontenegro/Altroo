@@ -61,7 +61,6 @@ class AllTasksViewController: GradientNavBarViewController {
     private lazy var todayView = TodayTasksView(viewModel: viewModel)
     private lazy var lateView = LateTasksView(viewModel: viewModel)
     private lazy var upcomingView = UpcomingTasksView(viewModel: viewModel)
-
     
     init(viewModel: AllTasksViewModel, onTaskSelected: ((TaskInstance) -> Void)? = nil) {
         self.viewModel = viewModel
@@ -188,6 +187,5 @@ extension AllTasksViewController {
         upcomingView.onSelectTask = { [weak self] task in
             self?.coordinator?.openTaskTemplateDetail(for: task)
         }
-        
     }
 }
