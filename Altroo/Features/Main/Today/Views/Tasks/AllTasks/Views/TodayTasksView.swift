@@ -83,15 +83,8 @@ final class TodayTasksView: UIView {
         
         //EMPTY CONTENT
         guard !tasks.isEmpty else {
-            let emptyCard = makeEmptyCard()
+            let emptyCard = EmptyCardView(text: "Nenhuma tarefa foi criada para este período")
             cardStack.addArrangedSubview(emptyCard)
-            
-            NSLayoutConstraint.activate([
-                emptyCard.leadingAnchor.constraint(equalTo: cardStack.leadingAnchor),
-                emptyCard.trailingAnchor.constraint(equalTo: cardStack.trailingAnchor),
-                emptyCard.heightAnchor.constraint(equalToConstant: 80)
-            ])
-            
             return cardStack
         }
 
@@ -113,27 +106,7 @@ final class TodayTasksView: UIView {
         return cardStack
     }
 
-    func makeEmptyCard() -> UIView {
-        let card = UIView()
-        card.translatesAutoresizingMaskIntoConstraints = false
-        card.backgroundColor = .pureWhite
-        card.layer.cornerRadius = 10
-    
-        let label = StandardLabel(
-            labelText: "Nenhuma tarefa foi criada para este período",
-            labelFont: .sfPro,
-            labelType: .callOut,
-            labelColor: .black30)
-            
-        card.addSubview(label)
-        
-        NSLayoutConstraint.activate([
-            label.centerXAnchor.constraint(equalTo: card.centerXAnchor),
-            label.centerYAnchor.constraint(equalTo: card.centerYAnchor),
-        ])
 
-        return card
-    }
 }
 
 extension TodayTasksView: TaskCardDelegate, TaskCardNavigationDelegate {

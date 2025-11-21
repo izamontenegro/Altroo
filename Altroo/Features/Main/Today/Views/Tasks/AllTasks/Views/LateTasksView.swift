@@ -32,10 +32,16 @@ final class LateTasksView: UIView {
     required init?(coder: NSCoder) { fatalError() }
 
     private func setupContent(with viewModel: AllTasksViewModel) {
-        for day in viewModel.daysOfLateTasks {
-            dayStack.addArrangedSubview(makeLateCardByDay(day, with: viewModel))
+        if viewModel.lateTasks.isEmpty {
+            let emptyCard = EmptyCardView(text: "Nenhuma tarefa em atraso")
+            dayStack.addArrangedSubview(emptyCard)
+
+        } else {
+            for day in viewModel.daysOfLateTasks {
+                dayStack.addArrangedSubview(makeLateCardByDay(day, with: viewModel))
+            }
         }
-        
+     
         addSubview(dayStack)
         
         NSLayoutConstraint.activate([
@@ -108,8 +114,14 @@ final class LateTasksView: UIView {
     private func reload(tasks: [TaskInstance], viewModel: AllTasksViewModel) {
         dayStack.arrangedSubviews.forEach { $0.removeFromSuperview() }
 
-        for day in viewModel.daysOfLateTasks {
-            dayStack.addArrangedSubview(makeLateCardByDay(day, with: viewModel))
+        if viewModel.lateTasks.isEmpty {
+            let emptyCard = EmptyCardView(text: "Nenhuma tarefa em atraso")
+            dayStack.addArrangedSubview(emptyCard)
+
+        } else {
+            for day in viewModel.daysOfLateTasks {
+                dayStack.addArrangedSubview(makeLateCardByDay(day, with: viewModel))
+            }
         }
 
         layoutIfNeeded()

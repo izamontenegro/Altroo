@@ -116,30 +116,20 @@ class TodayViewController: UIViewController {
         let tasks = viewModel.periodTasks
         
         if tasks.isEmpty {
-            let container = UIView()
-            container.backgroundColor = .pureWhite
-            container.layer.cornerRadius = 12
-            container.translatesAutoresizingMaskIntoConstraints = false
-            container.heightAnchor.constraint(equalToConstant: 80).isActive = true
+            let emptyCard = EmptyCardView(text: "")
             
-            let emptyLabel = StandardLabel(
-                labelText: "Nenhuma tarefa registrada.",
-                labelFont: .sfPro,
-                labelType: .callOut,
-                labelColor: .black30
-            )
-            emptyLabel.textAlignment = .center
-            emptyLabel.translatesAutoresizingMaskIntoConstraints = false
+            let normalText = "Nenhuma tarefa cadastrada para o turno da "
+            let normalString = NSMutableAttributedString(string:normalText)
             
-            container.addSubview(emptyLabel)
-            NSLayoutConstraint.activate([
-                emptyLabel.centerXAnchor.constraint(equalTo: container.centerXAnchor),
-                emptyLabel.centerYAnchor.constraint(equalTo: container.centerYAnchor),
-                emptyLabel.leadingAnchor.constraint(greaterThanOrEqualTo: container.leadingAnchor, constant: 8),
-                emptyLabel.trailingAnchor.constraint(lessThanOrEqualTo: container.trailingAnchor, constant: -8)
-            ])
+
+            let boldText = PeriodEnum.current.name
+            let attrs = [NSAttributedString.Key.font : UIFont.boldSystemFont(ofSize: 16)]
+            let boldString = NSMutableAttributedString(string:boldText, attributes:attrs)
+
+            normalString.append(boldString)
             
-            cardStack.addArrangedSubview(container)
+            emptyCard.label.attributedText = normalString
+            cardStack.addArrangedSubview(emptyCard)
         } else {
             for task in tasks {
                 let card = TaskCard(task: task)

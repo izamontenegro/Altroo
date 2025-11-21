@@ -32,11 +32,17 @@ final class UpcomingTasksView: UIView {
         taskStack.spacing = 16
         taskStack.alignment = .fill
         taskStack.translatesAutoresizingMaskIntoConstraints = false
+        
+        if viewModel.upcomingTasks.isEmpty {
+            let emptyCard = EmptyCardView(text: "Nenhuma tarefa programada para os próximos dias")
+            taskStack.addArrangedSubview(emptyCard)
 
-        for task in viewModel.upcomingTasks {
-            let card = UpcomingTaskCard(task: task)
-            card.navigationDelegate = self
-            taskStack.addArrangedSubview(card)
+        } else {
+            for task in viewModel.upcomingTasks {
+                let card = UpcomingTaskCard(task: task)
+                card.navigationDelegate = self
+                taskStack.addArrangedSubview(card)
+            }
         }
         
         addSubview(taskStack)
