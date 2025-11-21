@@ -141,14 +141,60 @@ class EditTaskViewController: TaskFormViewController {
     
     //TIME
     func setupTimes() {
-        for components in viewModel.times {
-            if let date = Calendar.current.date(from: components) {
-                addTimeAction(date: date, isInitial: true)
-            }
-        }
-        
+        rebuildTimeViews()
         addTimeButton.addTarget(self, action: #selector(addTimeButtonTapped(_:)), for: .touchUpInside)
     }
+    
+    func addTimeAction() {
+        viewModel.addTime(from: .now)
+        rebuildTimeViews()
+    }
+    
+    func rebuildTimeViews() {
+        //reset everything
+        addTimeViews.removeAll()
+        for view in timePickersFlowView.subviews {
+            view.removeFromSuperview()
+        }
+        addTimeButton.removeFromSuperview()
+
+        let count = viewModel.times.count
+
+        //create all timepickers
+        for (index, time) in viewModel.times.enumerated() {
+            let picker = UIDatePicker.make(mode: .time)
+            if let date = Calendar.current.date(from: time) {
+                picker.date = date
+            }
+            picker.tag = index
+            picker.addTarget(self, action: #selector(timeChanged(_:)), for: .valueChanged)
+            addTimeViews.append(picker)
+        }
+
+        if count == 1 {
+            // only one timepicker - inline add button
+            addTimeViews.append(addTimeButton)
+            
+            if hourStack.arrangedSubviews.contains(addTimeButton) {
+                       hourStack.removeArrangedSubview(addTimeButton)
+                       addTimeButton.removeFromSuperview()
+           }
+            
+            deleteTimeButton.removeFromSuperview()
+
+        } else {
+            //more than one timepicker - inline minus button/downline add button
+            addTimeViews.append(deleteTimeButton)
+
+
+            if !hourStack.arrangedSubviews.contains(addTimeButton) {
+               hourStack.addArrangedSubview(addTimeButton)
+            }
+        }
+
+        timePickersFlowView.reload(with: addTimeViews)
+    }
+
     
     func addTimeAction(date: Date = .now, isInitial: Bool = false) {
 //        let newPicker = UIDatePicker.make(mode: .time)
