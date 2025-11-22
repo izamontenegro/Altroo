@@ -42,6 +42,7 @@ struct FeedingInfoEspecific: View {
                         Text("acceptance".localized)
                             .font(.title3)
                             .fontWeight(.medium)
+                            .fontDesign(.rounded)
                             .foregroundStyle(.blue20)
                         Text(reception)
                             .font(.title3)

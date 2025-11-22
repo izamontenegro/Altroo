@@ -26,7 +26,7 @@ enum Tab: String, CaseIterable {
         case .patients: "assisted".localized
         case .report: "report".localized
         case .today: "today".localized
-        case .history: "history".localized
+        case .history: "records".localized
         case .settings: "settings".localized
         }
     }

@@ -42,6 +42,7 @@ struct StoolInfoEspecificView: View {
                         Text("coloring".localized)
                             .font(.title3)
                             .fontWeight(.medium)
+                            .fontDesign(.rounded)
                             .foregroundStyle(.blue20)
                         HStack(spacing: 8) {
                             Text("\(stoolColoration.displayText)")

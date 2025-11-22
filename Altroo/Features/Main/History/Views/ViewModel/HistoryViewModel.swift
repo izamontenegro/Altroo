@@ -46,23 +46,23 @@ final class HistoryViewModel: ObservableObject {
     
     func fetchRecords() {
         guard let currentCareRecipient = currentCareRecipient() else { return }
-                
+        
         let hydrationRecords: [ReportItem] = basicNeedsFacade.fetchHydrations(for: currentCareRecipient)
             .map { .hydration($0) }
         
         let feedingRecords: [ReportItem] = basicNeedsFacade.fetchFeedings(for: currentCareRecipient)
             .map { .feeding($0) }
-
+        
         let stoolRecords: [ReportItem] = basicNeedsFacade.fetchStools(for: currentCareRecipient)
             .map { .stool($0) }
-
+        
         let urineRecords: [ReportItem] = basicNeedsFacade.fetchUrines(for: currentCareRecipient)
             .map { .urine($0) }
         
         let tasksRecords: [ReportItem] = routineActivitiesFacade.fetchAllInstanceRoutineTasks(from: currentCareRecipient)
             .filter { $0.isDone }
             .map { .task($0) }
-
+        
         let symptomRecords: [ReportItem] = careRecipientFacade.fetchAllSymptoms(from: currentCareRecipient)
             .map { .symptom($0) }
         
@@ -112,7 +112,7 @@ final class HistoryViewModel: ObservableObject {
     
     func deleteItem(_ item: ReportItem) {
         guard let recipient = currentCareRecipient() else { return }
-
+        
         switch item {
         case .stool(let stoolRecord):
             basicNeedsFacade.deleteStool(stoolRecord: stoolRecord, from: recipient)

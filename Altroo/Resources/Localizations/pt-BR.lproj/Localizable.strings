@@ -14,9 +14,7 @@
 "onboarding3_title" = "Relatórios mostram o que importa";
 "onboarding3_description" = "Acompanhe as atividades de atendimento e obtenha insights claros dos relatórios dos pacientes";
 
-
 // MARK: - TODAY
-
 // empty
 "today_empty_tasks" = "Nenhuma tarefa registrada.";
 "today_empty_feeding" = "Nenhum registro hoje.";
@@ -41,8 +39,6 @@
 "edit_section_title" = "Editar Seção";
 "edit_section_subtitle" = "Reordene ou oculte seção para personalizar a visualização.";
 
-
-
 // MARK: - Tasks
 "add_task" = "Registrar Tarefa";
 "task_subtitle" = "Registre uma atividade a ser feita e sua duração ou repetições durante a semana.";
@@ -61,12 +57,9 @@
 "night" = "Noite";
 "overnight" = "Madrugada";
 
-
-
 // MARK: - Intercurrences
 "add_intercurrence" = "Adicionar Intercorrência";
 "name_intercurrence" = "Nome da intercorrência";
-
 
 // MARK: - Generals
 "delete" = "Deletar";
@@ -86,7 +79,7 @@
 "see_all" = "Ver Tudo";
 "today" = "Hoje";
 "report" = "Relatório";
-"history" = "Histórico";
+"records" = "Registros";
 "settings" = "Ajustes";
 "close" = "Fechar";
 "add" = "Adicionar";
@@ -95,7 +88,6 @@
 "start" = "Começar";
 "next" = "Próximo";
 "skip" = "Pular";
-
 
 // MARK: - AllPatientsFlow
 "assisted" = "Assistidos";
@@ -132,7 +124,7 @@
 "invalid_end_date" = "Data final inválida";
 "invalid_future_date" = "A data não pode ser futura";
 
-//history
+// MARK: - History
 "history_nav_description" = "Confira todos os registros realizados anteriormente com a data, autoria do registros e demais detalhes";
 "error_selected_item" = "Erro ao selecionar item.";
 "registered_by" = "Registrada por";

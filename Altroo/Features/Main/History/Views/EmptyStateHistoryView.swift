@@ -17,6 +17,7 @@ struct EmptyStateHistoryView: View {
                 Text("history_empty".localized)
                     .font(.title3)
                     .fontWeight(.regular)
+                    .fontDesign(.rounded)
                     .foregroundStyle(.black40)
                     .multilineTextAlignment(.center)
                     .padding(.horizontal)

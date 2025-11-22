@@ -29,19 +29,19 @@ struct HistoryDetailSheet: View {
         NavigationStack {
             ScrollView {
                 VStack(alignment: .leading, spacing: 16) {
-                    // MARK: - Header
-                    ZStack(alignment: .bottomLeading) {
-                        // TODO: ADICIONAR IMAGEM AQUI
-                        Color.blue20
-                            .ignoresSafeArea()
-                        
-                        Text(titleText)
-                            .font(.title2.weight(.semibold))
-                            .fontDesign(.rounded)
-                            .fixedSize(horizontal: false, vertical: true)
-                            .foregroundStyle(.blue80)
-                            .padding()
-                    }
+//                    // MARK: - Header
+//                    ZStack(alignment: .bottomLeading) {
+//                        // TODO: ADICIONAR IMAGEM AQUI
+//                        Color.blue20
+//                            .ignoresSafeArea()
+//                        
+//                        Text(titleText)
+//                            .font(.title2.weight(.semibold))
+//                            .fontDesign(.rounded)
+//                            .fixedSize(horizontal: false, vertical: true)
+//                            .foregroundStyle(.blue80)
+//                            .padding()
+//                    }
 
                     VStack(alignment: .leading, spacing: 16) {
                         // MARK: - Information that all types have
@@ -50,10 +50,12 @@ struct HistoryDetailSheet: View {
                                 Text("registered_by".localized)
                                     .font(.title3)
                                     .fontWeight(.medium)
+                                    .fontDesign(.rounded)
                                     .foregroundStyle(.blue20)
                                 Text(authorText)
                                     .font(.title3)
                                     .fontWeight(.regular)
+                                    .fontDesign(.rounded)
                                     .foregroundStyle(.black10)
                             }
                             HStack(alignment: .top, spacing: 30) {
@@ -61,20 +63,24 @@ struct HistoryDetailSheet: View {
                                     Text("time".localized)
                                         .font(.title3)
                                         .fontWeight(.medium)
+                                        .fontDesign(.rounded)
                                         .foregroundStyle(.blue20)
                                     Text(timeText)
                                         .font(.title3)
                                         .fontWeight(.regular)
+                                        .fontDesign(.rounded)
                                         .foregroundStyle(.black10)
                                 }
                                 VStack(alignment: .leading, spacing: 3) {
                                     Text("date".localized)
                                         .font(.title3)
                                         .fontWeight(.medium)
+                                        .fontDesign(.rounded)
                                         .foregroundStyle(.blue20)
                                     Text(dateText)
                                         .font(.title3)
                                         .fontWeight(.regular)
+                                        .fontDesign(.rounded)
                                         .foregroundStyle(.black10)
                                 }
                             }
