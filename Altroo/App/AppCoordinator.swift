@@ -34,9 +34,9 @@ final class AppCoordinator: Coordinator {
             if userService.fetchUser() == nil {
                 _ = userService.createUser(name: "", category: "Cuidador")
             }
-            showOnboardingFlow(isReceiving: receivedPatientViaShare)
+            showOnboardingFlow(receivedPatientViaShare: receivedPatientViaShare)
         } else if userService.fetchCurrentPatient() == nil {
-            showAllPatientsFlow(isReceiving: receivedPatientViaShare)
+            showAllPatientsFlow(receivedPatientViaShare: receivedPatientViaShare)
         } else {
             showMainFlow()
         }
@@ -50,13 +50,13 @@ final class AppCoordinator: Coordinator {
         return
     }
 
-    private func showOnboardingFlow(isReceiving: Bool = false) {
+    private func showOnboardingFlow(receivedPatientViaShare: Bool = false) {
         let onboardingCoordinator = OnboardingCoordinator(navigation: navigation,
                                                           factory: factory)
         onboardingCoordinator.onFinish = { [weak self, weak onboardingCoordinator] in
             guard let self, let onboardingCoordinator else { return }
             self.remove(child: onboardingCoordinator)
-            self.showAllPatientsFlow(isReceiving: isReceiving)
+            self.showAllPatientsFlow(receivedPatientViaShare: receivedPatientViaShare)
         }
         add(child: onboardingCoordinator)
         onboardingCoordinator.start()
@@ -77,7 +77,7 @@ final class AppCoordinator: Coordinator {
         mainCoordinator.start()
     }
     
-    private func showAllPatientsFlow(isReceiving: Bool = false) {
+    private func showAllPatientsFlow(receivedPatientViaShare: Bool = false) {
         let associatePatientCoordinator = AssociatePatientCoordinator(navigation: navigation,
                                                                       factory: factory)
         associatePatientCoordinator.onFinish = { [weak self, weak associatePatientCoordinator] in
@@ -87,7 +87,7 @@ final class AppCoordinator: Coordinator {
         }
         add(child: associatePatientCoordinator)
         
-        if isReceiving {
+        if receivedPatientViaShare {
             associatePatientCoordinator.receivePatient()
         } else {
             associatePatientCoordinator.start()
