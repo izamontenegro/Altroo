@@ -41,7 +41,7 @@ struct HistoryView: View {
                     HistoryDetailSheet(viewModel: viewModel, item: item)
                         .presentationDetents([.fraction(0.7)])
                 } else {
-                    Text("erro ao selecionar item")
+                    Text("error_selected_item".localized)
                 }
             })
         }

@@ -131,3 +131,17 @@
 "invalid_age" = "Assistido menor de 13 anos";
 "invalid_end_date" = "Data final inválida";
 "invalid_future_date" = "A data não pode ser futura";
+
+//history
+"history_nav_description" = "Confira todos os registros realizados anteriormente com a data, autoria do registros e demais detalhes";
+"error_selected_item" = "Erro ao selecionar item.";
+"registered_by" = "Registrada por";
+"history_empty" = "Você ainda não registrou nenhuma atividade.";
+"coloring" = "Coloração";
+"type" = "Tipo";
+"exclude" = "Excluir";
+"no_observations" = "Sem observações.";
+"title" = "Título";
+"added" = "Adicionados";
+"acceptance" = "Aceitação";
+"category" = "Categoria";

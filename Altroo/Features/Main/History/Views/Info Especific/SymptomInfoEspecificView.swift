@@ -21,7 +21,7 @@ struct SymptomInfoEspecificView: View {
         VStack(alignment: .leading, spacing: 16) {
             VStack(alignment: .leading, spacing: 4) {
                 if let title {
-                    Text("Título")
+                    Text("title".localized)
                         .font(.title3)
                         .fontWeight(.medium)
                         .foregroundStyle(.blue20)
@@ -36,12 +36,12 @@ struct SymptomInfoEspecificView: View {
             
             VStack(alignment: .leading, spacing: 4) {
                 if let observation {
-                    Text("Observação")
+                    Text("observation".localized)
                         .font(.title3)
                         .fontWeight(.medium)
                         .foregroundStyle(.blue20)
                         .fontDesign(.rounded)
-                    Text("\(observation.isEmpty ? "Sem observações." : observation)")
+                    Text("\(observation.isEmpty ? "no_observations".localized : observation)")
                         .font(.title3)
                         .fontWeight(.regular)
                         .fontDesign(.rounded)

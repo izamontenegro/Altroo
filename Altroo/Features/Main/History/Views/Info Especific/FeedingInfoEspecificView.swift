@@ -24,7 +24,7 @@ struct FeedingInfoEspecific: View {
             HStack(alignment: .top, spacing: 50) {
                 VStack(alignment: .leading, spacing: 4) {
                     if let category {
-                        Text("Categoria")
+                        Text("category".localized)
                             .font(.title3)
                             .fontWeight(.medium)
                             .foregroundStyle(.blue20)
@@ -39,7 +39,7 @@ struct FeedingInfoEspecific: View {
                 
                 VStack(alignment: .leading, spacing: 4) {
                     if let reception {
-                        Text("Aceitação")
+                        Text("acceptance".localized)
                             .font(.title3)
                             .fontWeight(.medium)
                             .foregroundStyle(.blue20)
@@ -54,12 +54,12 @@ struct FeedingInfoEspecific: View {
             
             VStack(alignment: .leading, spacing: 4) {
                 if let observation {
-                    Text("Observação")
+                    Text("observation".localized)
                         .font(.title3)
                         .fontWeight(.medium)
                         .fontDesign(.rounded)
                         .foregroundStyle(.blue20)
-                    Text("\(observation.isEmpty ? "Sem observações." : observation)")
+                    Text("\(observation.isEmpty ? "no_observations".localized : observation)")
                         .font(.title3)
                         .fontWeight(.regular)
                         .fontDesign(.rounded)

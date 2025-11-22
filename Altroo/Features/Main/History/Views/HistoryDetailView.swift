@@ -47,7 +47,7 @@ struct HistoryDetailSheet: View {
                         // MARK: - Information that all types have
                         VStack(alignment: .leading, spacing: 8) {
                             VStack(alignment: .leading, spacing: 3) {
-                                Text("Registrada por")
+                                Text("registered_by".localized)
                                     .font(.title3)
                                     .fontWeight(.medium)
                                     .foregroundStyle(.blue20)
@@ -116,7 +116,7 @@ struct HistoryDetailSheet: View {
                         viewModel.deleteHistory(item)
                         dismiss()
                     } label: {
-                        Text("Excluir")
+                        Text("exclude".localized)
                             .font(.body)
                             .fontWeight(.semibold)
                             .foregroundStyle(.red20)

@@ -21,7 +21,7 @@ struct UrineInfoEspecificView: View {
         VStack(alignment: .leading, spacing: 16) {
             VStack(alignment: .leading, spacing: 4) {
                 if let urineColoration {
-                    Text("Coloração")
+                    Text("coloring".localized)
                         .font(.title3)
                         .fontWeight(.medium)
                         .fontDesign(.rounded)
@@ -47,12 +47,12 @@ struct UrineInfoEspecificView: View {
             
             VStack(alignment: .leading, spacing: 4) {
                 if let observation {
-                    Text("Observação")
+                    Text("observation".localized)
                         .font(.title3)
                         .fontWeight(.medium)
                         .fontDesign(.rounded)
                         .foregroundStyle(.blue20)
-                    Text("\(observation.isEmpty ? "Sem observações." : observation)")
+                    Text("\(observation.isEmpty ? "no_observations".localized : observation)")
                         .font(.title3)
                         .fontWeight(.regular)
                         .fontDesign(.rounded)

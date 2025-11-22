@@ -18,7 +18,7 @@ struct HydrationInfoEspecificView: View {
     var body: some View {
         VStack(alignment: .leading, spacing: 4) {
             if let added {
-                Text("Adicionados")
+                Text("added".localized)
                     .font(.title3)
                     .fontWeight(.medium)
                     .foregroundStyle(.blue20)

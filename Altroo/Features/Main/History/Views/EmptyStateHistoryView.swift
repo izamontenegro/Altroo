@@ -14,7 +14,7 @@ struct EmptyStateHistoryView: View {
                 Color.blue80
                     .ignoresSafeArea(edges: .all)
                 
-                Text("Você ainda não registrou nenhuma atividade.")
+                Text("history_empty".localized)
                     .font(.title3)
                     .fontWeight(.regular)
                     .foregroundStyle(.black40)

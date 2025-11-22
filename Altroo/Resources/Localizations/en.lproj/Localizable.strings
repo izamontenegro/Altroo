@@ -131,3 +131,17 @@
 "invalid_age" = "Care recipient under 13 years old";
 "invalid_end_date" = "Invalid end date";
 "invalid_future_date" = "The date cannot be in the future";
+
+//history
+"history_nav_description" = "Check out all previously recorded entries with the date, author of the entry, and other details";
+"error_selected_item" = "Error selecting item.";
+"registered_by" = "Registered by";
+"history_empty" = "You haven't registered any activity yet.";
+"coloring" = "Coloring";
+"type" = "Type";
+"exclude" = "Delete";
+"no_observations" = "No observations.";
+"title" = "Title";
+"added" = "Added";
+"acceptance" = "Acceptance";
+"category" = "Category";

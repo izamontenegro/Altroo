@@ -24,7 +24,7 @@ struct StoolInfoEspecificView: View {
             HStack(alignment: .top, spacing: 40) {
                 VStack(alignment: .leading, spacing: 4) {
                     if let type {
-                        Text("Tipo")
+                        Text("type".localized)
                             .font(.title3)
                             .fontWeight(.medium)
                             .foregroundStyle(.blue20)
@@ -39,7 +39,7 @@ struct StoolInfoEspecificView: View {
                 
                 VStack(alignment: .leading, spacing: 4) {
                     if let stoolColoration {
-                        Text("Coloração")
+                        Text("coloring".localized)
                             .font(.title3)
                             .fontWeight(.medium)
                             .foregroundStyle(.blue20)
@@ -64,12 +64,12 @@ struct StoolInfoEspecificView: View {
             
             VStack(alignment: .leading, spacing: 4) {
                 if let observation {
-                    Text("Observação")
+                    Text("observation".localized)
                         .font(.title3)
                         .fontWeight(.medium)
                         .fontDesign(.rounded)
                         .foregroundStyle(.blue20)
-                    Text("\(observation.isEmpty ? "Sem observações." : observation)")
+                    Text("\(observation.isEmpty ? "no_observations".localized : observation)")
                         .font(.title3)
                         .fontWeight(.regular)
                         .fontDesign(.rounded)
