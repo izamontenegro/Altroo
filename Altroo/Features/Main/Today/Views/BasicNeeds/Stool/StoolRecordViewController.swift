@@ -16,6 +16,8 @@ protocol StoolRecordNavigationDelegate: AnyObject {
 final class StoolRecordViewController: UIViewController {
     weak var delegate: StoolRecordNavigationDelegate?
     
+    private var keyboardHandler: KeyboardHandler?
+    
     var selectedStoolType: StoolTypesEnum?
     
     private let viewModel: StoolRecordViewModel
@@ -43,6 +45,8 @@ final class StoolRecordViewController: UIViewController {
         setupTapToDismiss()
         bindViewModel()
         configureNavBar()
+        
+        keyboardHandler = KeyboardHandler(viewController: self)
     }
     
     private func configureNavBar() {
@@ -89,7 +93,6 @@ final class StoolRecordViewController: UIViewController {
         content.addArrangedSubview(stoolColorsSection)
         content.addArrangedSubview(stoolNotesSection)
 
-        // CONTAINER PARA CENTRALIZAR O BOTÃO COM LARGURA FIXA
         let buttonContainer = UIView()
         buttonContainer.translatesAutoresizingMaskIntoConstraints = false
 
@@ -103,7 +106,6 @@ final class StoolRecordViewController: UIViewController {
             addButton.heightAnchor.constraint(equalToConstant: 48)
         ])
 
-        // Espaço abaixo pra dar respiro visual
         let bottomSpacer = UIView()
         bottomSpacer.heightAnchor.constraint(equalToConstant: 32).isActive = true
 

@@ -83,4 +83,14 @@ final class ObservationView: UIView, UITextViewDelegate {
         placeholderLabel.isHidden = !textView.text.isEmpty
         delegate?.observationView(self, didChangeText: textView.text)
     }
+    
+    func textView(_ textView: UITextView,
+                  shouldChangeTextIn range: NSRange,
+                  replacementText text: String) -> Bool {
+        if text == "\n" {
+            textView.resignFirstResponder()
+            return false
+        }
+        return true
+    }
 }
