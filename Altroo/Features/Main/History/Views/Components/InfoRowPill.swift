@@ -32,3 +32,7 @@ struct InfoRowPill: View {
         )
     }
 }
+
+#Preview {
+    InfoRowPill(left: "Left", right: "Right")
+}
