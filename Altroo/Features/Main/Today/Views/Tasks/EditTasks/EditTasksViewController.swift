@@ -22,11 +22,11 @@ class EditTaskViewController: TaskFormViewController {
     
     override func viewDidLoad() {
         super.viewDidLoad()
-        setupContent()
-        setupContinuousButton()
+
         setupRepeatingDays()
         setupTimes()
-        configure(title: "Editar Tarefa", subtitle: "Registre uma atividade a ser feita e sua duração ou repetições durante a semana.", confirmButtonText: "Salvar", showDelete: true)
+        configure(title: "Editar Tarefa", subtitle: "Registre uma atividade a ser feita e sua duração ou repetições durante a semana.", confirmButtonText: "Salvar", showDelete: true, continuousButtonTitle: viewModel.continuousButtonTitle)
+        rebuildContinuousButton()
         bindViewModel()
         
         confirmButton.addTarget(self, action: #selector(saveChanges), for: .touchUpInside)
@@ -78,15 +78,10 @@ class EditTaskViewController: TaskFormViewController {
             .receive(on: RunLoop.main)
             .sink { [weak self] isContinuous in
                 guard let self else { return }
-                self.continuousButton.setTitle(self.viewModel.continuousButtonTitle, for: .normal)
                 
-                self.rebuildContinuousButton()
-                
-                if isContinuous {
-                    removeEndDate()
-                } else {
-                    addEndDate()
-                }
+                viewModel.endDate = isContinuous ? nil : .now
+                reloadDurationSection(startDate: viewModel.startDate, endDate: viewModel.endDate)
+
             }
             .store(in: &cancellables)
         
@@ -99,16 +94,7 @@ class EditTaskViewController: TaskFormViewController {
             }
             .store(in: &cancellables)
     }
-    
-    func setupContinuousButton() {
-        let button = PopupMenuButton(title: viewModel.continuousButtonTitle)
-        insertContinuousPicker(button, showEndDate: viewModel.isContinuous)
-        continuousButton.showsMenuAsPrimaryAction = true
-        continuousButton.changesSelectionAsPrimaryAction = true
-        
-        rebuildContinuousButton()
-    }
-    
+
     func rebuildContinuousButton() {
         let actions: [UIAction] = viewModel.continuousOptions.map { option in
             let isSelected: Bool

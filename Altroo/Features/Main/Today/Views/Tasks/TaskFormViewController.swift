@@ -44,11 +44,10 @@ class TaskFormViewController: GradientNavBarViewController {
     //DATE
     let startDatePicker: UIDatePicker = UIDatePicker.make(mode: .date)
     let endDatePicker: UIDatePicker = UIDatePicker.make(mode: .date)
-    let dateRow: UIStackView = {
-        let stackView = UIStackView()
+    private lazy var dateRow: UIStackView = {
+        let stackView = UIStackView(arrangedSubviews: [startSection, endSection])
         stackView.axis = .horizontal
-        stackView.alignment = .fill
-        stackView.distribution = .equalSpacing
+        stackView.distribution = .fillProportionally
         stackView.spacing = 8
         stackView.translatesAutoresizingMaskIntoConstraints = false
         return stackView
@@ -56,6 +55,8 @@ class TaskFormViewController: GradientNavBarViewController {
     let dateContent: UIStackView = {
         let stackView = UIStackView()
         stackView.axis = .vertical
+        stackView.alignment = .leading
+        stackView.distribution = .fillProportionally
         stackView.spacing = 8
         stackView.translatesAutoresizingMaskIntoConstraints = false
         return stackView
@@ -65,9 +66,8 @@ class TaskFormViewController: GradientNavBarViewController {
     lazy var nameSection = FormSectionView(title: "Nome", content: nameTexfield)
     private lazy var hourSection = FormSectionView(title: "Horário", content: hourStack)
     private lazy var repeatSection = FormSectionView(title: "Essa tarefa irá se repetir?", content: weekdayRow)
-    lazy var dateSection = FormSectionView(title: "Qual a duração desta tarefa", content: dateContent)
-
-    lazy var startSection = FormSectionView(title: "Início", content: startDatePicker, isSubsection: true)
+    lazy var dateSection = FormSectionView(title: "Qual a duração desta tarefa?", content: dateContent)
+    lazy var startSection = FormSectionView(title: "Data Inicial", content: startDatePicker, isSubsection: true)
     lazy var endSection = FormSectionView(title: "Data Final", content: endDatePicker, isSubsection: true)
     var continuousButton: PopupMenuButton!
     private lazy var noteSection = FormSectionView(title: "Observação", content: noteTexfield)
@@ -78,7 +78,7 @@ class TaskFormViewController: GradientNavBarViewController {
             nameSection,
             hourSection,
             repeatSection,
-            dateRow,
+            dateSection,
             noteSection,
             confirmButton,
             deleteButton
@@ -126,82 +126,47 @@ class TaskFormViewController: GradientNavBarViewController {
         let tapGesture = UITapGestureRecognizer(target: self, action: #selector(dismissKeyboard))
         tapGesture.cancelsTouchesInView = false
         view.addGestureRecognizer(tapGesture)
+        
+        startDatePicker.addTarget(self, action: #selector(startDateChanged(_:)), for: .valueChanged)
+        endDatePicker.addTarget(self, action: #selector(endDateChanged(_:)), for: .valueChanged)
     }
 
-    func configure(title: String, subtitle: String, confirmButtonText: String, showDelete: Bool = false) {
+    func configure(title: String, subtitle: String, confirmButtonText: String, showDelete: Bool = false, continuousButtonTitle: String) {
         titleLabel.update(title: title, subtitle: subtitle)
         
         confirmButton.updateTitle(confirmButtonText)
         
         deleteButton.isHidden = !showDelete
+        
+        setupContinuousButton(with: continuousButtonTitle)
     }
-
-    func setupContent() {
-        //time
-//            hourStack.addArrangedSubview(addTimeButton)
-//        addTimeViews.append(addTimeButton)
-
-            //duration
-            startDatePicker.addTarget(self, action: #selector(startDateChanged(_:)), for: .valueChanged)
-            endDatePicker.addTarget(self, action: #selector(endDateChanged(_:)), for: .valueChanged)
-            endDateSection = FormSectionView(title: "Término", content: endDatePicker)
-            
-            dateRow.addArrangedSubview(startSection)
-        }
     
-    private func updateEndDateVisibility(_ isContinuous: Bool) {
-        if isContinuous {
-            endDateSection.removeFromSuperview()
-        } else {
-            dateRow.insertArrangedSubview(endDateSection, at: 1)
-        }
+    func setupContinuousButton(with title: String) {
+        continuousButton = PopupMenuButton(title: title)
+        continuousButton.showsMenuAsPrimaryAction = true
+        continuousButton.changesSelectionAsPrimaryAction = true
     }
     
     func reloadDurationSection(startDate: Date?, endDate: Date?) {
         //reset everything
-        for view in dateRow.arrangedSubviews {
-            dateRow.removeArrangedSubview(view)
-        }
-        for view in dateSection.arrangedSubviews {
-            dateSection.removeArrangedSubview(view)
-        }
-        for view in endSection.arrangedSubviews {
-            endSection.removeArrangedSubview(view)
-        }
-        
+        dateContent.clearContent()
         
         startDatePicker.date = startDate ?? .now
         
+        //build
         if let endDate {
             endDatePicker.date = endDate
-            
-            dateRow.addArrangedSubview(startSection)
-            dateRow.addArrangedSubview(endSection)
-            
-            dateSection.addSubview(dateRow)
-            dateSection.addSubview(continuousButton)
-        } else {
-            
-        }
-        
-    }
-    
-    func insertContinuousPicker(_ button: PopupMenuButton, showEndDate: Bool) {
-        continuousButton = button
-         let durationSection = FormSectionView(title: "Duração", content: continuousButton)
-         dateRow.addArrangedSubview(durationSection)
-         if showEndDate {
-             dateRow.insertArrangedSubview(endDateSection, at: 1)
-         }
-     }
+            endSection.updateContent(endDatePicker)
 
-    func addEndDate() {
-        dateRow.insertArrangedSubview(endDateSection, at: 1)
+            dateContent.addArrangedSubview(dateRow)
+            dateContent.addArrangedSubview(continuousButton)
+        } else {
+            endSection.updateContent(continuousButton)
+            
+            dateContent.addArrangedSubview(dateRow)
+        }
     }
-    
-    func removeEndDate() {
-        endDateSection.removeFromSuperview()
-    }
+
 
     @objc func startDateChanged(_ picker: UIDatePicker) {}
     @objc func endDateChanged(_ picker: UIDatePicker) {}

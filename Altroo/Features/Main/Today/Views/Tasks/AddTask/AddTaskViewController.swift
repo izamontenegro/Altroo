@@ -32,10 +32,10 @@ class AddTaskViewController: TaskFormViewController {
         
         view.backgroundColor = .pureWhite
         
-        setupContent()
-        configure(title: "Registrar Tarefa", subtitle: "Registre uma atividade a ser feita e sua duração ou repetições durante a semana.", confirmButtonText: "Adicionar")
+        configure(title: "Registrar Tarefa", subtitle: "Registre uma atividade a ser feita e sua duração ou repetições durante a semana.", confirmButtonText: "Adicionar", continuousButtonTitle: viewModel.continuousButtonTitle)
+        rebuildContinuousButton()
         bindViewModel()
-        setupContinuousButton()
+//        setupContinuousButton()
         setupRepeatingDays()
         setupTimes()
         
@@ -61,11 +61,8 @@ class AddTaskViewController: TaskFormViewController {
             .sink { [weak self] isContinuous in
                 guard let self else { return }
                 
-                if isContinuous {
-                    removeEndDate()
-                } else {
-                    addEndDate()
-                }
+                viewModel.endDate = isContinuous ? nil : .now
+                reloadDurationSection(startDate: viewModel.startDate, endDate: viewModel.endDate)
             }
             .store(in: &cancellables)
         
@@ -82,15 +79,6 @@ class AddTaskViewController: TaskFormViewController {
     //MARK: - LOCAL SETUP
     
     //DATE
-    func setupContinuousButton() {
-        let button = PopupMenuButton(title: viewModel.continuousButtonTitle)
-        insertContinuousPicker(button, showEndDate: !viewModel.isContinuous)
-        continuousButton.showsMenuAsPrimaryAction = true
-        continuousButton.changesSelectionAsPrimaryAction = true
-        
-        rebuildContinuousButton()
-    }
-    
     func rebuildContinuousButton() {
         let actions: [UIAction] = viewModel.continuousOptions.map { option in
             let isSelected = (option == viewModel.continuousOptions[0]) == viewModel.isContinuous
@@ -116,7 +104,7 @@ class AddTaskViewController: TaskFormViewController {
     }
     
     
-    //TIME
+    //MARK: -TIME
     func setupTimes() {
         addTimeAction()
         addTimeButton.addTarget(self, action: #selector(addTimeButtonTapped(_:)), for: .touchUpInside)

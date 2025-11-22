@@ -7,6 +7,9 @@
 import UIKit
 
 final class FormSectionView: UIStackView {
+    private let contentContainer = UIView()
+    var content: UIView
+    
     private let errorStack = UIStackView()
     private let errorIcon = UIImageView()
     private var errorLabel = StandardLabel(
@@ -16,13 +19,15 @@ final class FormSectionView: UIStackView {
         labelColor: .red20,
         labelWeight: .regular
     )
-        
+    
     init(title: String, content: UIView, isObligatory: Bool = false, isSubsection: Bool = false) {
+        self.content = content
         super.init(frame: .zero)
         axis = .vertical
         spacing = 8
         translatesAutoresizingMaskIntoConstraints = false
         
+        //TITLE
         let titleLabel = StandardLabel(
             labelText: title,
             labelFont: .sfPro,
@@ -32,6 +37,14 @@ final class FormSectionView: UIStackView {
         )
         titleLabel.numberOfLines = 0
         
+        //CONTENT
+        contentContainer.translatesAutoresizingMaskIntoConstraints = false
+        
+        contentContainer.addSubview(content)
+        content.pinToEdges(of: contentContainer)
+        
+        
+        //ERROR
         if isObligatory {
             let attributed = NSMutableAttributedString(
                 string: title,
@@ -66,9 +79,8 @@ final class FormSectionView: UIStackView {
         errorStack.addArrangedSubview(errorLabel)
         
         addArrangedSubview(titleLabel)
-        addArrangedSubview(content)
-        content.setContentHuggingPriority(.required, for: .vertical)
-        content.setContentCompressionResistancePriority(.required, for: .vertical)
+        addArrangedSubview(contentContainer)
+        
         addArrangedSubview(errorStack)
     }
     
@@ -80,6 +92,19 @@ final class FormSectionView: UIStackView {
             errorStack.isHidden = true
         }
     }
+    
+    func updateContent(_ newContent: UIView) {
+        // remove old content
+        content.removeFromSuperview()
+        
+        // replace reference
+        content = newContent
+        
+        // add new content inside container
+        contentContainer.addSubview(newContent)
+        newContent.pinToEdges(of: contentContainer)
+    }
+    
     
     required init(coder: NSCoder) { fatalError("init(coder:) has not been implemented") }
 }
