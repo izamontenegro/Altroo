@@ -17,10 +17,11 @@ final class FormSectionView: UIStackView {
         labelWeight: .regular
     )
         
-    init(title: String, content: UIView, isObligatory: Bool = false, isSubsection: Bool = false) {
+    init(title: String, content: UIView, isObligatory: Bool = false, isSubsection: Bool = false, isCustomWidth: Bool = false) {
         super.init(frame: .zero)
         axis = .vertical
         spacing = 8
+        alignment = isCustomWidth ? .leading : .fill
         translatesAutoresizingMaskIntoConstraints = false
         
         let titleLabel = StandardLabel(
