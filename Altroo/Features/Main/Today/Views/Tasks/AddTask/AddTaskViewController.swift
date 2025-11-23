@@ -35,7 +35,6 @@ class AddTaskViewController: TaskFormViewController {
         configure(title: "Registrar Tarefa", subtitle: "Registre uma atividade a ser feita e sua duração ou repetições durante a semana.", confirmButtonText: "Adicionar", continuousButtonTitle: viewModel.continuousButtonTitle)
         rebuildContinuousButton()
         bindViewModel()
-//        setupContinuousButton()
         setupRepeatingDays()
         setupTimes()
         

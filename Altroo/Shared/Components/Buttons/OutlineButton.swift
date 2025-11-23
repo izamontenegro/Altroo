@@ -9,11 +9,11 @@ import UIKit
 
 final class OutlineButton: UIButton {
     
-    private let label = StandardLabel(
+    private lazy var label = StandardLabel(
         labelText: "",
         labelFont: .sfPro,
         labelType: .title2,
-        labelColor: .teal10,
+        labelColor: color,
         labelWeight: .semibold
     )
     
@@ -45,14 +45,18 @@ final class OutlineButton: UIButton {
         setupButton(title: "")
     }
     
+    override var intrinsicContentSize: CGSize {
+        return CGSize(width: 230, height: 46)
+    }
+    
     private func setupButton(title: String) {
         backgroundColor = .clear
         layer.cornerRadius = customCornerRadius ?? 23
         layer.borderWidth = 2
         layer.borderColor = color.cgColor
-        
-        heightAnchor.constraint(equalToConstant: 46).isActive = true
-        widthAnchor.constraint(equalToConstant: 230).isActive = true
+//        
+//        heightAnchor.constraint(equalToConstant: 46).isActive = true
+//        widthAnchor.constraint(equalToConstant: 230).isActive = true
         
         label.text = title
         label.labelColor = color
