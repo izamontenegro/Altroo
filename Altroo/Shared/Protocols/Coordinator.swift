@@ -4,6 +4,7 @@
 //
 //  Created by Izadora de Oliveira Albuquerque Montenegro on 22/09/25.
 //
+//
 
 import UIKit
 
@@ -38,8 +39,8 @@ extension Coordinator {
             sheet.detents = [detent]
             sheet.prefersGrabberVisible = grabber
         }
-
-        presenter.present(vc, animated: true)
+        
+        navigation.present(vc, animated: animated)
     }
     
     func goToRoot() {
