@@ -71,7 +71,7 @@ final class MedicalRecordViewController: GradientNavBarViewController {
             scrollView.leadingAnchor.constraint(equalTo: view.leadingAnchor),
             scrollView.trailingAnchor.constraint(equalTo: view.trailingAnchor),
             scrollView.bottomAnchor.constraint(equalTo: view.bottomAnchor),
-            contentStackView.topAnchor.constraint(equalTo: scrollView.topAnchor, constant: 30),
+            contentStackView.topAnchor.constraint(equalTo: scrollView.topAnchor, constant: 16),
             contentStackView.leadingAnchor.constraint(equalTo: view.leadingAnchor, constant: 16),
             contentStackView.trailingAnchor.constraint(equalTo: view.trailingAnchor, constant: -16),
             contentStackView.bottomAnchor.constraint(equalTo: scrollView.bottomAnchor, constant: -40),
@@ -103,30 +103,33 @@ final class MedicalRecordViewController: GradientNavBarViewController {
         let containerView = UIView()
         containerView.backgroundColor = .clear
         let titleLabel = StandardLabel(
-            labelText: "Ficha Médica",
+            labelText: "Ficha do Assistido",
             labelFont: .sfPro,
             labelType: .title2,
             labelColor: .black10,
             labelWeight: .semibold
         )
         let subtitleLabel = StandardLabel(
-            labelText: "Reúna as informações de saúde do assistido em um só lugar, de forma simples e acessível.",
+            labelText: "Este é o espaço onde ficam reunidas todas as informações de saúde do assistido, prontas para consulta.",
             labelFont: .sfPro,
             labelType: .body,
             labelColor: .black30,
             labelWeight: .regular
         )
         subtitleLabel.numberOfLines = 0
+        
         let trackView = UIView()
         trackView.translatesAutoresizingMaskIntoConstraints = false
         trackView.backgroundColor = .blue80
         trackView.layer.cornerRadius = 8
+        
         let fillView = UIView()
         fillView.translatesAutoresizingMaskIntoConstraints = false
         fillView.layer.cornerRadius = 8
         fillView.clipsToBounds = true
         fillView.backgroundColor = .blue10
         trackView.addSubview(fillView)
+        
         let percentageLabel = StandardLabel(
             labelText: "\(Int(round(percent * 100)))%",
             labelFont: .sfPro,
@@ -136,15 +139,19 @@ final class MedicalRecordViewController: GradientNavBarViewController {
         )
         percentageLabel.setContentHuggingPriority(.required, for: .horizontal)
         percentageLabel.setContentCompressionResistancePriority(.required, for: .horizontal)
+        
         let progressRowStackView = UIStackView(arrangedSubviews: [trackView, percentageLabel])
         progressRowStackView.axis = .horizontal
         progressRowStackView.alignment = .center
         progressRowStackView.spacing = 10
+        
         let headerStackView = UIStackView(arrangedSubviews: [titleLabel, subtitleLabel, progressRowStackView])
         headerStackView.axis = .vertical
         headerStackView.spacing = 4
         headerStackView.translatesAutoresizingMaskIntoConstraints = false
+        
         containerView.addSubview(headerStackView)
+        
         NSLayoutConstraint.activate([
             trackView.trailingAnchor.constraint(equalTo: percentageLabel.leadingAnchor, constant: -10),
             trackView.heightAnchor.constraint(equalToConstant: 15),
@@ -158,6 +165,7 @@ final class MedicalRecordViewController: GradientNavBarViewController {
             headerStackView.trailingAnchor.constraint(equalTo: containerView.trailingAnchor),
             headerStackView.bottomAnchor.constraint(equalTo: containerView.bottomAnchor)
         ])
+        
         DispatchQueue.main.async {
             containerView.layoutIfNeeded()
             let gradientLayer = CAGradientLayer()
@@ -168,53 +176,47 @@ final class MedicalRecordViewController: GradientNavBarViewController {
             gradientLayer.cornerRadius = fillView.layer.cornerRadius
             fillView.layer.insertSublayer(gradientLayer, at: 0)
         }
+        
         return containerView
     }
 
     private func makeCompletionAlertAndButton() -> UIView {
-        let wrapperStackView = UIStackView()
-        wrapperStackView.axis = .vertical
-        wrapperStackView.spacing = -15
-        wrapperStackView.translatesAutoresizingMaskIntoConstraints = false
         let alertBoxView = UIView()
-        alertBoxView.backgroundColor = UIColor.teal80
-        alertBoxView.layer.cornerRadius = 5
-        let alertIconImageView = UIImageView(image: UIImage(systemName: "exclamationmark.triangle.fill"))
-        alertIconImageView.tintColor = .teal10
+        alertBoxView.backgroundColor = UIColor.red80
+        alertBoxView.layer.cornerRadius = 8
+        
+        let alertIconImageView = UIImageView(image: UIImage(systemName: "exclamationmark.triangle"))
+        alertIconImageView.tintColor = .red20
         alertIconImageView.translatesAutoresizingMaskIntoConstraints = false
-        alertIconImageView.widthAnchor.constraint(equalToConstant: 36).isActive = true
-        alertIconImageView.heightAnchor.constraint(equalToConstant: 36).isActive = true
+        alertIconImageView.widthAnchor.constraint(equalToConstant: 34).isActive = true
+        alertIconImageView.heightAnchor.constraint(equalToConstant: 34).isActive = true
+        
         let alertLabel = StandardLabel(
-            labelText: "Finalize o preenchimento para ter os dados de saúde do paciente à mão quando precisar.",
+            labelText: "Complete o preenchimento para manter as informações do assistido à mão se precisar.",
             labelFont: .sfPro,
-            labelType: .subHeadline,
-            labelColor: .teal10,
+            labelType: .callOut,
+            labelColor: .red20,
             labelWeight: .regular
         )
         alertLabel.numberOfLines = 0
+        alertLabel.textAlignment = .left
+        
         let alertStackView = UIStackView(arrangedSubviews: [alertIconImageView, alertLabel])
         alertStackView.axis = .horizontal
         alertStackView.alignment = .center
-        alertStackView.spacing = 10
+        alertStackView.spacing = 8
         alertStackView.translatesAutoresizingMaskIntoConstraints = false
+        
         alertBoxView.addSubview(alertStackView)
+        
         NSLayoutConstraint.activate([
             alertStackView.topAnchor.constraint(equalTo: alertBoxView.topAnchor, constant: 8),
-            alertStackView.bottomAnchor.constraint(equalTo: alertBoxView.bottomAnchor, constant: -23),
+            alertStackView.bottomAnchor.constraint(equalTo: alertBoxView.bottomAnchor, constant: -8),
             alertStackView.leadingAnchor.constraint(equalTo: alertBoxView.leadingAnchor, constant: 8),
             alertStackView.trailingAnchor.constraint(equalTo: alertBoxView.trailingAnchor, constant: -8)
         ])
-        let editButton = LargeFilledButton(
-            title: "Editar Ficha Médica",
-            icon: UIImage(systemName: "square.and.pencil")
-        )
-        wrapperStackView.addArrangedSubview(alertBoxView)
-        wrapperStackView.addArrangedSubview(editButton)
-        editButton.isUserInteractionEnabled = true
-        let tapGesture = UITapGestureRecognizer(target: self, action: #selector(didTapEditButton))
-        editButton.addGestureRecognizer(tapGesture)
-        editButton.enableHighlightEffect()
-        return wrapperStackView
+        
+        return alertBoxView
     }
 
     private func makeSubsectionHeader(_ text: String) -> UIView {
