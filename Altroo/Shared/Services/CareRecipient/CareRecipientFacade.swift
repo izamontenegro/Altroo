@@ -55,6 +55,7 @@ extension CareRecipientFacade {
         careRecipient.waterTarget = 2000.0
         careRecipient.waterMeasure = 250.0
         careRecipient.id = UUID()
+        careRecipient.recordUpdatedAt = Date()
         
         configure(personalData, personalCare, healthProblems, mentalState, physicalState, routineActivities, basicNeeds, careRecipientEvent)
         

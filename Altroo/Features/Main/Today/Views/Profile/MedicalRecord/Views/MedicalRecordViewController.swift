@@ -65,7 +65,7 @@ final class MedicalRecordViewController: GradientNavBarViewController {
         contentStackView.spacing = 24
         contentStackView.translatesAutoresizingMaskIntoConstraints = false
         scrollView.addSubview(contentStackView)
-
+        
         NSLayoutConstraint.activate([
             scrollView.topAnchor.constraint(equalTo: view.safeAreaLayoutGuide.topAnchor),
             scrollView.leadingAnchor.constraint(equalTo: view.leadingAnchor),
@@ -88,8 +88,15 @@ final class MedicalRecordViewController: GradientNavBarViewController {
     private func reloadContent() {
         guard let contentStackView = resolveContentStackView() else { return }
         contentStackView.arrangedSubviews.forEach { $0.removeFromSuperview() }
-        contentStackView.addArrangedSubview(makeHeaderSection(percent: viewModel.completionPercentage))
-        contentStackView.addArrangedSubview(makeCompletionAlertAndButton())
+        
+        let headerView = makeHeaderSection(percent: viewModel.completionPercentage)
+        let alertView = makeCompletionAlertAndButton()
+        
+        contentStackView.addArrangedSubview(headerView)
+        contentStackView.addArrangedSubview(alertView)
+        
+        contentStackView.spacing = 16
+        
         for section in viewModel.sections {
             contentStackView.addArrangedSubview(makeSection(
                 title: section.title,
@@ -145,12 +152,26 @@ final class MedicalRecordViewController: GradientNavBarViewController {
         progressRowStackView.alignment = .center
         progressRowStackView.spacing = 10
         
+        let updatedLabel = StandardLabel(labelText: "Última atualização em: ", labelFont: .sfPro, labelType: .subHeadline, labelColor: .black30, labelWeight: .medium)
+        let updatedLabelDate = StandardLabel(labelText: viewModel.getUpdatedAt(), labelFont: .sfPro, labelType: .subHeadline, labelColor: .black30, labelWeight: .regular)
+        
+        let updatedStack = UIStackView()
+        updatedStack.axis = .horizontal
+        updatedStack.spacing = 0
+        
+        updatedStack.addArrangedSubview(updatedLabel)
+        updatedStack.addArrangedSubview(updatedLabelDate)
+        updatedStack.translatesAutoresizingMaskIntoConstraints = false
+        
         let headerStackView = UIStackView(arrangedSubviews: [titleLabel, subtitleLabel, progressRowStackView])
         headerStackView.axis = .vertical
         headerStackView.spacing = 4
         headerStackView.translatesAutoresizingMaskIntoConstraints = false
         
         containerView.addSubview(headerStackView)
+        containerView.addSubview(updatedStack)
+        
+        
         
         NSLayoutConstraint.activate([
             trackView.trailingAnchor.constraint(equalTo: percentageLabel.leadingAnchor, constant: -10),
@@ -160,10 +181,15 @@ final class MedicalRecordViewController: GradientNavBarViewController {
             fillView.centerYAnchor.constraint(equalTo: trackView.centerYAnchor),
             fillView.heightAnchor.constraint(equalTo: trackView.heightAnchor),
             fillView.widthAnchor.constraint(equalTo: trackView.widthAnchor, multiplier: max(0, min(1, percent))),
+            
+            updatedStack.topAnchor.constraint(equalTo: headerStackView.bottomAnchor, constant: 3),
+            
             headerStackView.topAnchor.constraint(equalTo: containerView.topAnchor),
             headerStackView.leadingAnchor.constraint(equalTo: containerView.leadingAnchor),
             headerStackView.trailingAnchor.constraint(equalTo: containerView.trailingAnchor),
-            headerStackView.bottomAnchor.constraint(equalTo: containerView.bottomAnchor)
+            headerStackView.bottomAnchor.constraint(equalTo: updatedStack.topAnchor),
+            
+            updatedStack.bottomAnchor.constraint(equalTo: containerView.bottomAnchor)
         ])
         
         DispatchQueue.main.async {
@@ -236,7 +262,7 @@ final class MedicalRecordViewController: GradientNavBarViewController {
 
     private func makeSection(title: String, rows: [InformationRow], icon: String) -> UIView {
         let containerView = UIView()
-        containerView.backgroundColor = .clear
+        containerView.backgroundColor = .blue80
         let headerView = makeSectionHeader(title: title, icon: icon)
         let bodyStackView = UIStackView()
         bodyStackView.axis = .vertical

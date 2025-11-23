@@ -10,6 +10,7 @@
     <entity name="CareRecipient" representedClassName="CareRecipient" syncable="YES" codeGenerationType="class">
         <attribute name="activeUsersID" optional="YES" attributeType="Transformable" customClassName="[UUID]"/>
         <attribute name="id" optional="YES" attributeType="UUID" usesScalarValueType="NO"/>
+        <attribute name="recordUpdatedAt" optional="YES" attributeType="Date" usesScalarValueType="NO"/>
         <attribute name="usersID" optional="YES" attributeType="Transformable" customClassName="[UUID]"/>
         <attribute name="waterMeasure" optional="YES" attributeType="Double" usesScalarValueType="YES"/>
         <attribute name="waterTarget" optional="YES" attributeType="Double" usesScalarValueType="YES"/>

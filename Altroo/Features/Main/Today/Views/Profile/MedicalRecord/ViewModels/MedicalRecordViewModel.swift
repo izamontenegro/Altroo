@@ -54,6 +54,12 @@ final class MedicalRecordViewModel {
     private func currentPatient() -> CareRecipient? {
         userService.fetchCurrentPatient()
     }
+    
+    func getUpdatedAt() -> String {
+        guard let person = currentPatient() else { return "" }
+        
+        return DateFormatterHelper.birthDateFormatter(from: person.recordUpdatedAt)
+    }
 
     func personalDataText(person: CareRecipient) -> String {
         let personalData = person.personalData
