@@ -216,7 +216,7 @@ enum TodayDestination {
     var isSheet: Bool {
         switch self {
         case .recordHydration, .recordHeartRate, .recordGlycemia,
-                .recordBloodPressure, .recordTemperature, .recordSaturation:
+                .recordBloodPressure, .recordTemperature, .recordSaturation, .addNewTask:
             return true
         default:
             return false
@@ -243,6 +243,7 @@ extension TodayCoordinator: TaskCardNavigationDelegate {
 
 extension TodayCoordinator: AddTaskNavigationDelegate {
     func didFinishAddingTask() {
+        self.navigation.dismiss(animated: true)
         let superVC = navigation.viewControllers.first!
         let vc = factory.makeAllTasksViewController() as! AllTasksViewController
         vc.coordinator = self
