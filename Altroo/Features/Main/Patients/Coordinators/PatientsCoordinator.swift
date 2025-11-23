@@ -46,7 +46,7 @@ final class PatientsCoordinator: Coordinator {
             presentSheet(
                 child.navigation,
                 from: navigation,
-                percentage: 0.9
+                grabber: true
             )
             
             

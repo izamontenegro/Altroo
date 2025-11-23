@@ -17,8 +17,8 @@ class TaskFormViewController: GradientNavBarViewController {
     let deleteButton = OutlineButton(title: "delete".localized, color: .red20)
     private var confirmBottomConstraint: NSLayoutConstraint?
 
-    let nameTexfield = StandardTextfield(placeholder: "name".localized)
-    let noteTexfield = ObservationView()
+    let nameTexfield = StandardTextfield(placeholder: "Nome")
+    let noteTexfield = ObservationView(placeholder: "Detalhes da sua tarefa")
 
     var hourPickers: [UIDatePicker] = []
     let addTimeButton = PrimaryStyleButton(title: "taskform_new_time".localized)
