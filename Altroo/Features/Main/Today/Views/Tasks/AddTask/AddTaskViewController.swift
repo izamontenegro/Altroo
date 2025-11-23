@@ -37,8 +37,23 @@ class AddTaskViewController: TaskFormViewController {
         bindViewModel()
         setupRepeatingDays()
         setupTimes()
+        configureNavBar()
         
         confirmButton.addTarget(self, action: #selector(didFinishCreating), for: .touchUpInside)
+    }
+    
+    private func configureNavBar() {
+        let closeButton = UIBarButtonItem(title: "close".localized, style: .done, target: self, action: #selector(closeTapped))
+        closeButton.tintColor = .blue20
+        navigationItem.leftBarButtonItem = closeButton
+        
+        let appearance = UINavigationBarAppearance()
+        appearance.configureWithOpaqueBackground()
+        navigationItem.scrollEdgeAppearance = appearance
+    }
+    
+    @objc func closeTapped() {
+        dismiss(animated: true)
     }
     
     func bindViewModel() {

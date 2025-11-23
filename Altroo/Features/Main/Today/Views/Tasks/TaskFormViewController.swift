@@ -8,7 +8,7 @@
 import UIKit
 import Combine
 
-class TaskFormViewController: GradientNavBarViewController {
+class TaskFormViewController: UIViewController {
     private var keyboardHandler: KeyboardHandler?
 
     let titleLabel = StandardHeaderView(title: "", subtitle: "")
@@ -18,7 +18,7 @@ class TaskFormViewController: GradientNavBarViewController {
     private var confirmBottomConstraint: NSLayoutConstraint?
 
     let nameTexfield = StandardTextfield(placeholder: "taskform_name".localized)
-    let noteTexfield = ObservationView()
+    let noteTexfield = ObservationView(placeholder: "observations".localized)
     
     //TIME
     lazy var deleteTimeButton: MinusButton = {
@@ -66,7 +66,6 @@ class TaskFormViewController: GradientNavBarViewController {
     lazy var nameSection = FormSectionView(title: "name".localized, content: nameTexfield)
     private lazy var hourSection = FormSectionView(title: String(localized: "time"), content: hourStack)
         
-        //"taskform_repeat".localized
     private lazy var repeatSection = FormSectionView(title: "taskform_repeat".localized, content: weekdayRow)
     lazy var dateSection = FormSectionView(title: "taskform_duration".localized, content: dateContent)
         
@@ -172,8 +171,6 @@ class TaskFormViewController: GradientNavBarViewController {
         }
     }
     
-
-
     @objc func startDateChanged(_ picker: UIDatePicker) {}
     @objc func endDateChanged(_ picker: UIDatePicker) {}
     

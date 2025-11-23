@@ -25,13 +25,57 @@ class EditTaskViewController: TaskFormViewController {
 
         setupRepeatingDays()
         setupTimes()
-        configure(title: "edit_task".localized, subtitle: "task_subtitle".localized, confirmButtonText: "save".localized, showDelete: true, continuousButtonTitle: viewModel.continuousButtonTitle)
+        configure(title: "edit_task".localized, subtitle: "task_subtitle".localized, confirmButtonText: "save".localized, continuousButtonTitle: viewModel.continuousButtonTitle)
         rebuildContinuousButton()
         bindViewModel()
+        configureNavBar()
         
         confirmButton.addTarget(self, action: #selector(saveChanges), for: .touchUpInside)
-        deleteButton.addTarget(self, action: #selector(deleteTask), for: .touchUpInside)
     }
+    
+    private func configureNavBar() {
+        let closeButton = UIBarButtonItem(title: "close".localized, style: .done, target: self, action: #selector(closeTapped))
+        closeButton.tintColor = .blue20
+        navigationItem.leftBarButtonItem = closeButton
+        
+        let deleteButton = UIBarButtonItem(title: "delete".localized, style: .done, target: self, action: #selector(deleteTapped))
+        deleteButton.tintColor = .red20
+        navigationItem.rightBarButtonItem = deleteButton
+        
+        let appearance = UINavigationBarAppearance()
+        appearance.configureWithOpaqueBackground()
+        navigationItem.scrollEdgeAppearance = appearance
+    }
+    
+    @objc func closeTapped() {
+        dismiss(animated: true)
+    }
+    @objc func deleteTapped() {
+        presentDeleteAlert()
+    }
+    
+    func presentDeleteAlert() {
+        let alertController = UIAlertController(
+            title: "delete_task_confirmation_title".localized,
+            message: "delete_task_confirmation_msg".localized,
+            preferredStyle: .alert
+        )
+        
+        let confirmAction = UIAlertAction(title: "delete".localized, style: .destructive) { [weak self] _ in
+            guard let self = self else { return }
+            viewModel.deleteTask()
+            dismiss(animated: true)
+            coordinator?.goToRoot()
+        }
+        
+        let cancelAction = UIAlertAction(title: "cancel".localized, style: .cancel, handler: nil)
+        
+        alertController.addAction(cancelAction)
+        alertController.addAction(confirmAction)
+        
+        present(alertController, animated: true, completion: nil)
+    }
+    
     
     func bindViewModel() {
         NotificationCenter.default.publisher(for: UITextField.textDidChangeNotification, object: nameTexfield)
@@ -203,11 +247,6 @@ class EditTaskViewController: TaskFormViewController {
     
     @objc private func saveChanges() {
         guard viewModel.updateTask() else { return }
-        coordinator?.goToRoot()
-    }
-    
-    @objc private func deleteTask() {
-        viewModel.deleteTask()
         coordinator?.goToRoot()
     }
 }

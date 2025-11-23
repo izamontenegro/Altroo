@@ -172,9 +172,25 @@ final class TodayCoordinator: Coordinator {
     }
     
     private func goToEditTask(_ task: RoutineTask) {
-        let vc = factory.makeEditTaskViewController(task: task) as! EditTaskViewController
+        
+        guard let vc = factory.makeEditTaskViewController(task: task) as? EditTaskViewController else { return }
+                
         vc.coordinator = self
-        navigation.pushViewController(vc, animated: true)
+        
+        let nav = UINavigationController(rootViewController: vc)
+        nav.modalPresentationStyle = .pageSheet
+        
+        if let sheet = nav.sheetPresentationController {
+            sheet.detents = [
+                .custom(identifier: .init("almostFull")) { context in
+                    return context.maximumDetentValue * 0.9
+                }
+            ]
+            sheet.prefersGrabberVisible = true
+        }
+        
+        navigation.present(nav, animated: true)
+
     }
 }
 
@@ -182,7 +198,7 @@ extension TodayCoordinator: TodayViewControllerDelegate {
     
     func goTo(_ destination: TodayDestination) {
             switch destination {
-            case .recordHydration, .recordUrine, .recordStool, .recordFeeding:
+            case .recordHydration, .recordUrine, .recordStool, .recordFeeding, .addNewTask:
                 guard let rootVC = makeViewController(for: destination) else { return }
                 
                 let nav = UINavigationController(rootViewController: rootVC)
@@ -251,9 +267,9 @@ enum TodayDestination {
     
     var isSheet: Bool {
         switch self {
-        case .recordHydration, .recordHeartRate, .recordGlycemia,
-            .addNewTask:
-                .recordBloodPressure, .recordTemperature, .recordSaturation, .recordStool, .recordUrine, .recordFeeding:
+        case .recordHydration, .recordStool, .recordUrine, .recordFeeding,
+                .recordHeartRate, .recordGlycemia, .recordBloodPressure, .recordTemperature, .recordSaturation,
+                .addNewTask:
             return true
         default:
             return false
