@@ -130,4 +130,10 @@ final class BasicNeedsFacade: BasicNeedsFacadeProtocol {
     func fetchUrines(for careRecipient: CareRecipient) -> [UrineRecord] {
         urineService.fetchUrines(for: careRecipient)
     }
+    
+    func fetchUrinesAdded() {
+        print("hello")
+       print("just testingg")
+    }
 }
+
