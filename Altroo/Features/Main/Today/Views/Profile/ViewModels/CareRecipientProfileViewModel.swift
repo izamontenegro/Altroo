@@ -31,12 +31,32 @@ final class CareRecipientProfileViewModel {
     
     func finishCare() {
         guard let recipient = currentCareRecipient() else { return }
-        coreDataService.deleteCareRecipient(recipient)
+        
+        if coreDataService.isOwner(object: recipient) {
+            coreDataService.deleteCareRecipient(recipient)
+        } else {
+            userService.removePatient(recipient)
+            userService.removeCurrentPatient()
+//            coreDataService.removeParticipant(
+//                participant,
+//                from: parentObject
+//            ) { result in
+//                DispatchQueue.main.async {
+//                    switch result {
+//                    case .success:
+//                        print("Caregiver removed.")
+//                    case .failure(let error):
+//                        print("Error removing caregiver:", error)
+//                    }
+//                }
+//            }
+        }
     }
     
     func caregiversForCurrentRecipient() -> [ParticipantsAccess] {
-        guard let recipient = currentCareRecipient() else { return []}
-        return coreDataService.participantsWithCategory(for: recipient)
+        guard let recipient = currentCareRecipient() else { return [] }
+        let participants = coreDataService.participantsWithCategory(for: recipient)
+        return participants
     }
     
     func currentShare() -> CKShare? {
@@ -83,5 +103,10 @@ final class CareRecipientProfileViewModel {
                           to newPermission: CKShare.ParticipantPermission,
                           completion: @escaping (Result<Void, Error>) -> Void) {
         coreDataService.updateParticipantPermission(for: object, participant: participant, to: newPermission, completion: completion)
+    }
+    
+    func getCurrentCareRecipientName() -> String {
+        let name = userService.fetchCurrentPatient()?.personalData?.name ?? ""
+        return name
     }
 }

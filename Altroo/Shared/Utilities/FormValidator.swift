@@ -10,7 +10,7 @@ class FormValidator {
     //FIXME: NOVO TEXTO
     func isEmpty(_ text: String, error: inout String?) -> Bool {
         if text.isEmpty {
-            error = "Essa seção é obrigatória"
+            error = "required_section".localized
             return false
         } else {
             error = nil
@@ -20,7 +20,7 @@ class FormValidator {
     
     func invalidValue(value: Int, minValue: Int, maxValue: Int, error: inout String?) -> Bool {
         if value > maxValue || value < minValue {
-            error = "Valor inválido."
+            error = "invalid_value".localized
             return false
         } else {
             error = nil
@@ -31,7 +31,7 @@ class FormValidator {
     //TODO
     func invalidPhoneFormat(value: Int, minValue: Int, maxValue: Int, error: inout String?) -> Bool {
         if value > maxValue || value < minValue {
-            error = "Valor inválido"
+            error = "invalid_value".localized
             return false
         } else {
             error = nil
@@ -41,7 +41,7 @@ class FormValidator {
     
     func checkFutureDate(_ date: Date, error: inout String?) -> Bool {
         if Calendar.current.startOfDay(for: date) > .now {
-            error = "A data não pode ser futura" //TODO: Redigir
+            error = "invalid_future_date".localized //TODO: Redigir
             return false
         } else {
             error = nil
@@ -55,7 +55,7 @@ class FormValidator {
         let end = Calendar.current.startOfDay(for: endDate)
 
         if end < start {
-            error = "Data final inválida" //TODO: Redigir
+            error = "invalid_end_date".localized //TODO: Redigir
             return false
         } else {
             error = nil
@@ -71,7 +71,7 @@ class FormValidator {
         let difference = calendar.dateComponents([.year], from: birthday, to: today).year
         guard let difference else { return false }
         if  difference < 13 {
-            error = "Assistido menor de 13 anos"
+            error = "invalid_age".localized
             return false
         } else {
             error = nil

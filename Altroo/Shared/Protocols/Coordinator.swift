@@ -38,8 +38,8 @@ extension Coordinator {
             sheet.detents = [detent]
             sheet.prefersGrabberVisible = grabber
         }
-        
-        navigation.present(vc, animated: animated)
+
+        presenter.present(vc, animated: true)
     }
     
     func goToRoot() {

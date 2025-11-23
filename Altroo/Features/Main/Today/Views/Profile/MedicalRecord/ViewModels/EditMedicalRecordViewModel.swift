@@ -12,7 +12,6 @@ final class EditMedicalRecordViewModel {
     var userService: UserServiceProtocol
     let careRecipientFacade: CareRecipientFacade
     
-    let relationshipOptions = ["Cuidador", "Mãe/Pai", "Filha/Filho", "Neta/Neto", "Familiar", "Amigo", "Outro"]
     @Published var selectedContactRelationship: String = "Filha/Filho"
     
     @Published var personalDataFormState = PersonalDataFormState()

@@ -47,30 +47,11 @@ class AllTasksViewModel {
     }
     
     func filterTasksByDay(_ tasks: [TaskInstance]) -> [TaskInstance] {
-        let today = Calendar.current.startOfDay(for: Date())
-        let todayDayOfTheWeek = Locale.Weekday.from(calendarWeekday: Calendar.current.component(.weekday, from: today))
-        
-        //filter by task interval
-        let intervalTasks = tasks.filter { task in
-            guard let start = task.template?.startDate else { return false }
-            
-            let end = task.template?.endDate //will be nil if continuous
-
-            let isAfterStart = start <= today
-            let isBeforeEnd = end == nil || end! >= today
-
-            return isAfterStart && isBeforeEnd
+        return tasks.filter { task in
+             Calendar.current.isDateInToday(task.time ?? .now)
         }
-        
-        //filter by weekday
-        let weekdayTasks = intervalTasks.filter { task in
-            
-            guard let todayWeek = todayDayOfTheWeek else { return false }
-            return task.template?.weekdays.contains(todayWeek) ?? false
-        }
-        return weekdayTasks
     }
-    
+
     func markAsDone(_ instance: TaskInstance) {
         guard let careRecipient = userService.fetchCurrentPatient() else { return }
         
@@ -78,6 +59,6 @@ class AllTasksViewModel {
         
         taskService.toggleInstanceIsDone(instance, author: author, time: .now)
 
-        historyService.addHistoryItem(title: "Realizou \(instance.template?.name ?? "tarefa")", author: author, date: Date(), type: .task, to: careRecipient)
+        historyService.addHistoryItem(title: "Realizou \(instance.template?.name ?? "task".localized)", author: author, date: Date(), type: .task, to: careRecipient)
     }
 }

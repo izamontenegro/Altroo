@@ -9,10 +9,9 @@ import UIKit
 import CloudKit
 
 protocol ProfileViewControllerDelegate: AnyObject {
-    func openChangeCareRecipientSheet()
     func openShareCareRecipientSheet(_ careRecipient: CareRecipient)
     func goToMedicalRecordViewController()
-    func careRecipientProfileWantsChangeAssociate(_ controller: UIViewController)
+    func goToAllPatient() async
 }
 
 final class CareRecipientProfileViewController: GradientNavBarViewController {
@@ -80,13 +79,17 @@ final class CareRecipientProfileViewController: GradientNavBarViewController {
         header.isUserInteractionEnabled = true
         let tap = UITapGestureRecognizer(target: self, action: #selector(didTapHeader))
         header.addGestureRecognizer(tap)
+        header.enableHighlightEffect()
         
         setupCaregiversSection(below: header)
     }
     
     private func setupCaregiversSection(below header: UIView) {
+        let caregivers = viewModel.caregiversForCurrentRecipient()
+        let uniqueCaregivers = caregivers.unique { $0.name }
+        
         let titleLabel = StandardLabel(
-            labelText: "Cuidadores",
+            labelText: "Permissões",
             labelFont: .sfPro,
             labelType: .title2,
             labelColor: .black10,
@@ -94,7 +97,16 @@ final class CareRecipientProfileViewController: GradientNavBarViewController {
         )
         
         let inviteButton = CapsuleIconView(iconName: "paperplane", text: "Convidar cuidador")
-        addTap(to: inviteButton, action: #selector(didTapShareCareRecipientButton))
+        inviteButton.enablePressEffect()
+        inviteButton.onTap = { [weak self] in
+            DispatchQueue.main.asyncAfter(deadline: .now() + 0.1) {
+                self?.didTapShareCareRecipientButton()
+            }
+        }
+        
+        guard let careRecipient = viewModel.userService.fetchCurrentPatient() else { return }
+        let isOwner = viewModel.coreDataService.isOwner(object: careRecipient)
+        inviteButton.isHidden = !(uniqueCaregivers.isEmpty || isOwner)
         
         let topStack = UIStackView(arrangedSubviews: [titleLabel, inviteButton])
         topStack.axis = .horizontal
@@ -109,33 +121,43 @@ final class CareRecipientProfileViewController: GradientNavBarViewController {
             topStack.trailingAnchor.constraint(equalTo: view.trailingAnchor, constant: -16)
         ])
         
-        let caregivers = viewModel.caregiversForCurrentRecipient()
-        let uniqueCaregivers = caregivers.unique { $0.name }
-        
         let cardsStack = UIStackView()
         cardsStack.axis = .vertical
         cardsStack.spacing = 8
         cardsStack.translatesAutoresizingMaskIntoConstraints = false
         view.addSubview(cardsStack)
         
-        if uniqueCaregivers.isEmpty {
-            let none = StandardLabel(
-                labelText: "Nenhum cuidador ainda. Toque em “Convidar cuidador”.",
-                labelFont: .sfPro,
-                labelType: .footnote,
-                labelColor: .black20,
-                labelWeight: .regular
+        if uniqueCaregivers.count <= 1 {
+            let card = CaregiverProfileCardView(
+                coreDataService: viewModel.coreDataService,
+                name: "Você",
+                category: viewModel.userService.fetchUser()?.category ?? "Cuidador",
+                permission: .readWrite,
+                isOwner: true
             )
-            cardsStack.addArrangedSubview(none)
+
+            card.translatesAutoresizingMaskIntoConstraints = false
+            card.heightAnchor.constraint(equalToConstant: 54).isActive = true
+            cardsStack.addArrangedSubview(card)
         } else {
             for item in uniqueCaregivers {
-                print("Nome: \(item.name) | Categoria: \(item.category) | Permissão: \(item.permission.rawValue)")
-                
+                guard let careRecipient = viewModel.userService.fetchCurrentPatient() else { continue }                
+                let participants = viewModel.coreDataService.fetchParticipants(for: careRecipient) ?? []
+                guard let participant = participants.first(where: {
+                    viewModel.coreDataService.matches($0, with: item, in: careRecipient)
+                }) else { continue }
+
+
                 let card = CaregiverProfileCardView(
-                    name: item.name,
+                    coreDataService: viewModel.coreDataService,
+                    participant: participant,
+                    parentObject: careRecipient,
+                    name: item.name.abbreviatedName,
                     category: item.category,
-                    permission: item.permission
+                    permission: participant.permission,
+                    isOwner: viewModel.coreDataService.isOwner(object: careRecipient)
                 )
+
                 card.translatesAutoresizingMaskIntoConstraints = false
                 card.heightAnchor.constraint(equalToConstant: 54).isActive = true
                 cardsStack.addArrangedSubview(card)
@@ -152,20 +174,13 @@ final class CareRecipientProfileViewController: GradientNavBarViewController {
     }
     
     private func setupBottomButtons(below lastView: UIView) {
-        let swapButton = makeFilledButton(
-            icon: UIImage(systemName: "arrow.2.squarepath"),
-            title: "Trocar Perfil de Assistido",
-            action: #selector(didTapChangeCareRecipientButton)
-        )
-        swapButton.enablePressAnimation()
-        
         let endButton = makeOutlineButton(
-            title: "Encerrar Cuidado",
+            title: "Encerrar Acompanhamento",
             action: #selector(didTapEndCareButton)
         )
         endButton.enablePressAnimation()
         
-        let buttonsStack = UIStackView(arrangedSubviews: [swapButton, endButton])
+        let buttonsStack = UIStackView(arrangedSubviews: [endButton])
         buttonsStack.axis = .vertical
         buttonsStack.spacing = 12
         buttonsStack.translatesAutoresizingMaskIntoConstraints = false
@@ -220,7 +235,7 @@ final class CareRecipientProfileViewController: GradientNavBarViewController {
         let button = UIButton(type: .system)
         button.backgroundColor = .clear
         button.layer.cornerRadius = 23
-        button.layer.borderWidth = 2
+        button.layer.borderWidth = 3
         button.layer.borderColor = UIColor.teal10.cgColor
         button.heightAnchor.constraint(equalToConstant: 46).isActive = true
         button.addTarget(self, action: action, for: .touchUpInside)
@@ -253,7 +268,6 @@ final class CareRecipientProfileViewController: GradientNavBarViewController {
         delegate?.goToMedicalRecordViewController()
     }
     
-    @objc private func didTapChangeCareRecipientButton() { delegate?.openChangeCareRecipientSheet() }
     @objc private func didTapShareCareRecipientButton() {
         guard let careRecipient = viewModel.currentCareRecipient() else { return }
         delegate?.openShareCareRecipientSheet(careRecipient)
@@ -261,27 +275,25 @@ final class CareRecipientProfileViewController: GradientNavBarViewController {
     
     @objc private func didTapEndCareButton() {
         let alertController = UIAlertController(
-            title: "Tem certeza?",
-            message: "Essa ação é irreversível.",
+            title: "Deseja encerrar o acompanhamento de \(viewModel.getCurrentCareRecipientName())?",
+            message: "Você precisará ser convidado novamente para ter acesso aos dados do paciente.",
             preferredStyle: .alert
         )
         
         let confirmAction = UIAlertAction(title: "Encerrar", style: .destructive) { [weak self] _ in
-            guard let self = self else { return } 
+            guard let self = self else { return }
             self.viewModel.finishCare()
-            self.delegate?.careRecipientProfileWantsChangeAssociate(self)
+            
+            Task {
+                await self.delegate?.goToAllPatient()
+            }
         }
         
-        let cancelAction = UIAlertAction(title: "Cancelar", style: .cancel, handler: nil)
+        let cancelAction = UIAlertAction(title: "cancel".localized, style: .cancel, handler: nil)
         
         alertController.addAction(cancelAction)
         alertController.addAction(confirmAction)
         
         present(alertController, animated: true, completion: nil)
     }
-    //    @objc private func didTapEditCaregiverButton() { delegate?.openEditCaregiversSheet() }
 }
-
-//#Preview {
-//    UINavigationController(rootViewController: CareRecipientProfileViewController()
-//}

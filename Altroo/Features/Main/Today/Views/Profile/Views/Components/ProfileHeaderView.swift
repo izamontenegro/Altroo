@@ -76,7 +76,7 @@ private extension ProfileHeader {
     func setupInfoStack() -> UIStackView {
         let data = careRecipient.personalData
 
-        let nameText = data?.name ?? "Nome não informado"
+        let nameText = data?.name?.abbreviatedName ?? "Nome não informado"
         let birthText = DateFormatterHelper.birthDateFormatter(from: data?.dateOfBirth)
         let weightText = formattedWeight(from: data?.weight)
         let heightText = formattedHeight(from: data?.height)
@@ -94,11 +94,11 @@ private extension ProfileHeader {
         let birthValue = StandardLabel(labelText: birthText, labelFont: .sfPro, labelType: .subHeadline, labelColor: .black20, labelWeight: .regular)
         let birthRow = horizontalRow([birthTitle, birthValue])
 
-        let weightTitle = StandardLabel(labelText: "Peso", labelFont: .sfPro, labelType: .subHeadline, labelColor: .black20, labelWeight: .semibold)
+        let weightTitle = StandardLabel(labelText: "weight".localized, labelFont: .sfPro, labelType: .subHeadline, labelColor: .black20, labelWeight: .semibold)
         let weightValue = StandardLabel(labelText: weightText, labelFont: .sfPro, labelType: .subHeadline, labelColor: .black20, labelWeight: .regular)
         let weightRow = horizontalRow([weightTitle, weightValue])
 
-        let heightTitle = StandardLabel(labelText: "Altura", labelFont: .sfPro, labelType: .subHeadline, labelColor: .black20, labelWeight: .semibold)
+        let heightTitle = StandardLabel(labelText: "height".localized, labelFont: .sfPro, labelType: .subHeadline, labelColor: .black20, labelWeight: .semibold)
         let heightValue = StandardLabel(labelText: heightText, labelFont: .sfPro, labelType: .subHeadline, labelColor: .black20, labelWeight: .regular)
         let heightRow = horizontalRow([heightTitle, heightValue])
 

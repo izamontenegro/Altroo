@@ -15,6 +15,7 @@ final class TodayCoordinator: Coordinator {
     private let factory: AppFactory
     
     var onRequestLogout: (() -> Void)?
+    weak var parentCoordinator: MainCoordinator?
     
     init(navigation: UINavigationController, factory: AppFactory) {
         self.navigation = navigation
@@ -39,7 +40,7 @@ final class TodayCoordinator: Coordinator {
             if let hydrationVC = vc as? HydrationRecordViewController {
                 hydrationVC.onDismiss = { [weak self] in
                     guard let self else { return }
-
+                    
                     if let todayVC = self.navigation.viewControllers
                         .compactMap({ $0 as? TodayViewController })
                         .first {
@@ -88,15 +89,21 @@ final class TodayCoordinator: Coordinator {
             return vc
             
         case .careRecipientProfile:
-            let profileCoord = ProfileCoordinator(navigation: navigation, factory: factory, associateFactory: factory)
-            add(child: profileCoord); profileCoord.start()
+            guard let main = parentCoordinator else { return nil }
+            let profileCoord = main.makeProfileCoordinator(using: navigation)
+            add(child: profileCoord)
+            profileCoord.start()
             return nil
             
         case .checkMedicationDone:
             let nav = UINavigationController()
             let medicationDetailCoord = MedicationDetailCoordinator(navigation: nav, factory: factory)
             add(child: medicationDetailCoord)
-            presentSheet(nav, from: navigation)
+            presentSheet(
+                nav,
+                from: navigation,
+                percentage: 0.9
+            )
             medicationDetailCoord.start()
             return nil
             
@@ -105,6 +112,12 @@ final class TodayCoordinator: Coordinator {
             
         case .symptomDetail:
             return nil
+        case .privacyPolicy:
+            let vc = factory.makePrivacyViewController() as! PrivacyViewController
+            return vc
+        case .legalNotice:
+            let vc = factory.makePolicyViewController() as! PolicyViewController
+            return vc
         }
     }
     
@@ -185,6 +198,14 @@ extension TodayCoordinator: TodayViewControllerDelegate {
         }
         navigation.present(nav, animated: true)
     }
+    
+    func goToPrivacyPolicy() {
+        goTo(.privacyPolicy)
+    }
+
+    func goToLegalNotice() {
+        goTo(.legalNotice)
+    }
 }
 
 
@@ -199,6 +220,7 @@ enum TodayDestination {
     case seeAllMedication, addNewMedication, checkMedicationDone
     case seeAllEvents, addNewEvent
     case addSymptom, symptomDetail
+    case privacyPolicy, legalNotice
     
     var isSheet: Bool {
         switch self {

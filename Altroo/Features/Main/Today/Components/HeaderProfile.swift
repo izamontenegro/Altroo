@@ -14,7 +14,6 @@ class HeaderProfile: UIView {
             refreshUI()
         }
     }
-    private var profileName: String { return formatName(rawName) }
     var careRecipient: CareRecipient?
     
     // Subviews armazenadas como propriedades para poder atualizá-las depois
@@ -27,7 +26,7 @@ class HeaderProfile: UIView {
         labelWeight: .bold
     )
     private let subtitleLabel = StandardLabel(
-        labelText: "Cuidando de:",
+        labelText: "profile_toolbar_title".localized,
         labelFont: .comfortaa,
         labelType: .subHeadline,
         labelColor: .pureWhite,
@@ -79,37 +78,12 @@ class HeaderProfile: UIView {
         ])
     }
     
-    // MARK: - Atualização de conteúdo
     func update(name: String) {
-        rawName = name // dispara o didSet → refreshUI()
+        rawName = name
     }
     
     private func refreshUI() {
-        let formatted = profileName
-        nameLabel.text = formatted
-        
-        // Atualiza as iniciais do círculo
-        let parts = formatted.split(separator: " ")
-        let firstInitial = parts.first?.prefix(1) ?? ""
-        let secondInitial = parts.dropFirst().first?.prefix(1) ?? ""
-        let initials = "\(firstInitial)\(secondInitial)"
-        profileView.updateInitials(String(initials))
-    }
-    
-    // MARK: - Helpers
-    private func formatName(_ name: String) -> String {
-        let components = name.split(separator: " ")
-        guard !components.isEmpty else { return name }
-        
-        let first = String(components[0])
-        
-        if components.count == 1 {
-            return first
-        }
-        
-        let second = String(components[1])
-        let abbreviatedSecond = second.count > 10 ? "\(second.prefix(1))." : second
-        
-        return "\(first) \(abbreviatedSecond)"
+        nameLabel.text = rawName.abbreviatedName
+        profileView.updateInitials(rawName.getInitials())
     }
 }

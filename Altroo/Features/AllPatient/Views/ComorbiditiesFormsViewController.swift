@@ -41,7 +41,7 @@ class ComorbiditiesFormsViewController: UIViewController {
         labelWeight: .semibold
     )
     
-    private let nextStepButton = StandardConfirmationButton(title: "Próximo")
+    private let nextStepButton = StandardConfirmationButton(title: "next".localized)
     
     let bedriddenMovableButton = BedriddenButton(bedriddenState: .movement)
     let bedriddenNoMovementButton = BedriddenButton(bedriddenState: .noMovement)
@@ -158,19 +158,21 @@ class ComorbiditiesFormsViewController: UIViewController {
     
     @objc
     private func didTapBedriddenButton(_ sender: BedriddenButton) {
-        sender.toggleState()
-
+        if sender.isSelectedState {
+            sender.toggleState()
+            bedriddenStatus = .notBedridden
+            return
+        }
+        
+        bedriddenMovableButton.setSelectedState(false)
+        bedriddenNoMovementButton.setSelectedState(false)
+        
+        sender.setSelectedState(true)
+        
         switch sender.bedriddenState {
         case .movement:
-            if bedriddenStatus != .notBedridden {
-                bedriddenNoMovementButton.toggleState()
-            }
             bedriddenStatus = .bedriddenMovable
-        
         case .noMovement:
-            if bedriddenStatus != .notBedridden {
-                bedriddenMovableButton.toggleState()
-            }
             bedriddenStatus = .bedriddenImmobile
         }
     }

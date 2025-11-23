@@ -15,6 +15,7 @@ final class PatientsCoordinator: Coordinator {
     var onFinish: (() -> Void)?
     
     private weak var tabBar: AppTabBarController?
+    weak var parentCoordinator: MainCoordinator?
 
     init(navigation: UINavigationController, factory: AppFactory) {
         self.factory = factory
@@ -48,9 +49,14 @@ final class PatientsCoordinator: Coordinator {
                 grabber: true
             )
             
+            
         case .tutorialAdd:
             let vc = factory.makeTutorialAddSheet()
-            presentSheet(vc, from: navigation)
+            presentSheet(
+                vc,
+                from: navigation,
+                percentage: 0.9
+            )
             
         case .loading:
             // Go to the loading screen.
@@ -70,29 +76,10 @@ final class PatientsCoordinator: Coordinator {
             }
             
         case .mainFlow:
-            if let tabBar = navigation.tabBarController as? AppTabBarController {
-                UIView.transition(
-                    with: tabBar.view,
-                    duration: 0.35,
-                    options: [.transitionCrossDissolve, .curveEaseInOut],
-                    animations: {
-                        tabBar.selectedIndex = 2
-                        tabBar.model.currentTab = .today
-                    },
-                    completion: { _ in
-                        DispatchQueue.main.asyncAfter(deadline: .now() + 0.1) {
-                            if let todayNav = tabBar.viewControllers?[2] as? UINavigationController,
-                               let todayVC = todayNav.viewControllers.first(where: { $0 is TodayViewController }) as? TodayViewController {
-                                todayVC.didTapProfileView()
-                            }
-                        }
-                        self.onFinish?()
-                    }
-                )
-            } else {
-                onFinish?()
-            }
-
+            guard let main = parentCoordinator else { return }
+            let profileCoord = main.makeProfileCoordinator(using: navigation)
+            add(child: profileCoord)
+            profileCoord.start()
         }
     }
 }
@@ -106,10 +93,10 @@ extension PatientsCoordinator: AssociatePatientViewControllerDelegate {
     func goToLoading() { show(.loading) }
 }
 
-
 extension PatientsCoordinator: ShiftFormsViewControllerDelegate {
     func shiftFormsDidFinish() {
         onFinish?()
     }
 }
+
 

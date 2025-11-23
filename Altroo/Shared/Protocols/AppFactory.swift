@@ -53,6 +53,8 @@ protocol MainFlowFactory {
 // MARK: - TODAY FLOW
 protocol TodayFactory {
     func makeEditSectionsViewController() -> UIViewController
+    func makePolicyViewController() -> UIViewController
+    func makePrivacyViewController() -> UIViewController
 }
 
 //MARK: - SYMPTOM FLOW
@@ -65,8 +67,6 @@ protocol SymptomFactory {
 // MARK: - PROFILE FLOW
 protocol ProfileFactory {
     func makeProfileViewController(delegate: ProfileViewControllerDelegate) -> UIViewController
-    func makeChangeCareRecipientViewController(delegate: ChangeCareRecipientViewControllerDelegate) -> UIViewController
-    //    func makeEditCaregiverViewController() -> UIViewController
     func makeMedicalRecordViewController(delegate: EditMedicalRecordViewControllerDelegate?) -> UIViewController
 }
 protocol EditMedicalRecordFactory {

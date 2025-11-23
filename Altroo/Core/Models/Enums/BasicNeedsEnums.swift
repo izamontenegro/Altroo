@@ -48,7 +48,6 @@ enum UrineColorsEnum: String, CaseIterable {
 }
 
 // MARK: - STOOL
-
 enum StoolTypesEnum: String, CaseIterable {
     case lumpy
     case clumpy
@@ -96,7 +95,6 @@ enum StoolTypesEnum: String, CaseIterable {
         }
     }
 }
-
 enum StoolColorsEnum: String, CaseIterable {
     case mediumBrown
     case yellow
@@ -136,7 +134,6 @@ enum StoolColorsEnum: String, CaseIterable {
 }
 
 // MARK: - MEAL
-
 enum MealAmountEatenEnum: String, CaseIterable {
     case all
     case half
@@ -164,7 +161,6 @@ enum MealAmountEatenEnum: String, CaseIterable {
         }
     }
 }
-
 enum MealCategoryEnum: String, CaseIterable {
     case breakfast
     case morningSnack
@@ -209,7 +205,6 @@ enum MealCategoryEnum: String, CaseIterable {
 }
 
 // MARK: - HYDRATION
-
 enum HydrationAmountEnum: String, CaseIterable {
     case custom
     case oneCup

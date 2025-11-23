@@ -17,7 +17,7 @@ final class EditPersonalCareView: UIView, UITextFieldDelegate {
     private let header: EditSectionHeaderView = {
         let header = EditSectionHeaderView(
             sectionTitle: "Cuidados Pessoais",
-            sectionDescription: "Preencha os campos a seguir quanto aos dados básicos da pessoa cuidada.",
+            sectionDescription: "patient_profile_description".localized,
             sectionIcon: "hand.raised.fill"
         )
         header.translatesAutoresizingMaskIntoConstraints = false
@@ -58,7 +58,7 @@ final class EditPersonalCareView: UIView, UITextFieldDelegate {
     private lazy var bathSection = FormSectionView(title: "Banho", content: bathPopupMenuButton)
     private lazy var hygieneSection = FormSectionView(title: "Higiene", content: hygienePopupMenuButton)
     private lazy var excretionSection = FormSectionView(title: "Excreção", content: excretionPopupMenuButton)
-    private lazy var feedingSection = FormSectionView(title: "Alimentação", content: feedingPopupMenuButton)
+    private lazy var feedingSection = FormSectionView(title: "feeding".localized, content: feedingPopupMenuButton)
     private lazy var equipmentsSection = FormSectionView(title: "Equipamentos", content: equipmentsTextField)
 
     private lazy var firstRowStack: UIStackView = {

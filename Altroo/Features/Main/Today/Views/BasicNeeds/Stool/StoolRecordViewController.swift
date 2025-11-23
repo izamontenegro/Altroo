@@ -195,11 +195,8 @@ final class StoolRecordViewController: UIViewController {
     
     private func makeStoolNotesSection() -> UIView {
         let title = StandardLabel(
-            labelText: "Observação",
-            labelFont: .sfPro,
-            labelType: .callOut,
-            labelColor: .black10,
-            labelWeight: .semibold
+            labelText: "observation".localized,
+            labelFont: .sfPro, labelType: .callOut, labelColor: .black10, labelWeight: .semibold
         )
         
         let observationView = ObservationView(placeholder: "Detalhes opcionais")
@@ -217,7 +214,7 @@ final class StoolRecordViewController: UIViewController {
     // MARK: - Components
     
     private func configureAddButton() -> UIView {
-        let button = StandardConfirmationButton(title: "Salvar")
+        let button = StandardConfirmationButton(title: "add".localized)
         button.addTarget(self, action: #selector(createStoolRecord), for: .touchUpInside)
         button.translatesAutoresizingMaskIntoConstraints = false
         return button

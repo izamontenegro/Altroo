@@ -65,9 +65,11 @@ final class MedicalRecordViewModel {
         let contacts = MedicalRecordFormatter.contactsList(from: personalData?.contacts as? Set<Contact>)
         return """
         Nome: \(name)
-        Data de Nascimento: \(dateOfBirth)      Peso: \(weight)      Altura: \(height)
-        Endereço: \(address)
-        Contato de Emergência:
+        \("birth_date".localized): \(dateOfBirth)      
+        \("weight".localized): \(weight)      
+        \("height".localized): \(height)
+        \("address".localized): \(address)
+        \("emergency_contact".localized):
         \(contacts)
         """
     }
@@ -142,7 +144,7 @@ final class MedicalRecordViewModel {
         Banho: \(bath)
         Higiene: \(hygiene)
         Excreção: \(excretion)
-        Alimentação: \(feeding)
+        \("feeding".localized): \(feeding)
 
         Equipamentos
         \(equipment)
@@ -195,12 +197,12 @@ final class MedicalRecordViewModel {
         let contactsText: String = contactDisplayItems.isEmpty ? "—" : ""
 
         return [
-            ("Nome", name),
-            ("Data de Nascimento", dateOfBirth),
-            ("Peso", weight),
-            ("Altura", height),
-            ("Endereço", address),
-            ("Contato de Emergência", contactsText)
+            ("name".localized, name),
+            ("birth_date".localized, dateOfBirth),
+            ("weight".localized, weight),
+            ("height".localized, height),
+            ("address".localized, address),
+            ("emergency_contact".localized, contactsText)
         ]
     }
     
@@ -227,7 +229,7 @@ final class MedicalRecordViewModel {
             ("Doenças", diseasesList),
             surgeriesRow,
             ("Alergias", allergies),
-            ("Observação", observation)
+            ("observation".localized, observation)
         ]
     }
     
@@ -268,7 +270,7 @@ final class MedicalRecordViewModel {
             ("Banho", bath),
             ("Higiene", hygiene),
             ("Excreção", excretion),
-            ("Alimentação", feeding),
+            ("feeding".localized, feeding),
             ("Equipamentos", equipment)
         ]
     }

@@ -30,12 +30,12 @@ final class HistoryViewController: GradientHeader {
     @MainActor required init?(coder: NSCoder) { fatalError("init(coder:) has not been implemented") }
     
     override func viewDidLoad() {
-        setNavbarItems(title: "Histórico", subtitle: "Confira todos os registros realizados anteriormente com a data, autoria do registros e demais detalhes.")
-
+        setNavbarItems(title: "records".localized, subtitle: "history_nav_description".localized)
+        
         super.viewDidLoad()
         
         view.backgroundColor = .blue80
-
+        
         let swiftUIView = HistoryView(viewModel: viewModel)
         
         let hosting = UIHostingController(rootView: swiftUIView)
@@ -45,12 +45,14 @@ final class HistoryViewController: GradientHeader {
         view.addSubview(hosting.view)
         
         hosting.view.translatesAutoresizingMaskIntoConstraints = false
+        
         NSLayoutConstraint.activate([
             hosting.view.topAnchor.constraint(equalTo: gradientView.bottomAnchor),
             hosting.view.leadingAnchor.constraint(equalTo: view.leadingAnchor),
             hosting.view.trailingAnchor.constraint(equalTo: view.trailingAnchor),
             hosting.view.bottomAnchor.constraint(equalTo: view.bottomAnchor),
         ])
+        
         hosting.didMove(toParent: self)
     }
     
@@ -59,6 +61,4 @@ final class HistoryViewController: GradientHeader {
         showTabBar(true)
         viewModel.reloadHistory()
     }
-    
 }
-

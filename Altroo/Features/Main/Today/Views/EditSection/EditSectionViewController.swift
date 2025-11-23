@@ -20,7 +20,7 @@ class EditSectionViewController: GradientNavBarViewController {
     }
 
     // MARK: - Subviews
-    private let header = StandardHeaderView(title: "Editar Seção", subtitle: "Reordene ou oculte seção para personalizar a visualização.")
+    private let header = StandardHeaderView(title: "edit_section_title".localized, subtitle: "edit_section_subtitle".localized)
     
     private lazy var stackView: UIStackView = {
         let stack = UIStackView(arrangedSubviews: [])
@@ -32,14 +32,28 @@ class EditSectionViewController: GradientNavBarViewController {
 
     // MARK: - Layout
     private func setupLayout() {
-        view.addSubview(stackView)
+        let mainStack = setupMainLayout()
+        mainStack.translatesAutoresizingMaskIntoConstraints = false
+        
+        view.addSubview(mainStack)
         
         NSLayoutConstraint.activate([
-            stackView.topAnchor.constraint(equalTo: view.safeAreaLayoutGuide.topAnchor, constant: 12),
-            stackView.leadingAnchor.constraint(equalTo: view.leadingAnchor, constant: Layout.mediumSpacing),
-            stackView.trailingAnchor.constraint(equalTo: view.trailingAnchor, constant: -Layout.mediumSpacing),
-            stackView.bottomAnchor.constraint(lessThanOrEqualTo: view.bottomAnchor, constant: -Layout.mediumSpacing)
+            mainStack.topAnchor.constraint(equalTo: view.safeAreaLayoutGuide.topAnchor, constant: 12),
+            mainStack.leadingAnchor.constraint(equalTo: view.leadingAnchor, constant: Layout.mediumSpacing),
+            mainStack.trailingAnchor.constraint(equalTo: view.trailingAnchor, constant: -Layout.mediumSpacing),
+            mainStack.bottomAnchor.constraint(lessThanOrEqualTo: view.bottomAnchor, constant: -Layout.mediumSpacing)
         ])
+    }
+    
+    private func setupMainLayout() -> UIView {
+        let mainStack = UIStackView()
+        mainStack.axis = .vertical
+        mainStack.spacing = 16
+        
+        mainStack.addArrangedSubview(header)
+        mainStack.addArrangedSubview(stackView)
+
+        return mainStack
     }
     
     // MARK: - Items
@@ -50,15 +64,13 @@ class EditSectionViewController: GradientNavBarViewController {
             stackView.removeArrangedSubview($0)
             $0.removeFromSuperview()
         }
-        
-        stackView.addArrangedSubview(header)
 
         for config in configs {
             switch config.type {
             case .basicNeeds:
-                let items = config.subitems?.map(\.title) ?? ["Alimentação", "Hidratação", "Fezes", "Urina"]
+                let items = config.subitems?.map(\.title) ?? ["feeding".localized, "hydration".localized, "stool".localized, "urine".localized]
                 let sectionView = makeSection(
-                    title: "Necessidades Básicas",
+                    title: "today_section_basic_needs".localized,
                     checked: config.isVisible,
                     items: items,
                     subitemStates: config.subitems
@@ -66,11 +78,11 @@ class EditSectionViewController: GradientNavBarViewController {
                 stackView.addArrangedSubview(sectionView)
 
             case .tasks:
-                let sectionView = makeSection(title: "Tarefas", checked: config.isVisible, items: nil)
+                let sectionView = makeSection(title: "tasks".localized, checked: config.isVisible, items: nil)
                 stackView.addArrangedSubview(sectionView)
 
             case .intercurrences:
-                let sectionView = makeSection(title: "Intercorrências", checked: config.isVisible, items: nil)
+                let sectionView = makeSection(title: "today_section_intercurrences".localized, checked: config.isVisible, items: nil)
                 stackView.addArrangedSubview(sectionView)
             }
         }

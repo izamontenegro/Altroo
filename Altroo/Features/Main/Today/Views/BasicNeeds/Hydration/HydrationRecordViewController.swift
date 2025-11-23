@@ -57,6 +57,9 @@ final class HydrationRecordViewController: UIViewController {
         dismiss(animated: true)
     }
 
+        viewModel.loadTargetValue()
+        hydrationTargetValueField.text = viewModel.targetValue > 0 ? String(Int(viewModel.targetValue)) : nil
+    }
     
     override func viewDidDisappear(_ animated: Bool) {
         super.viewDidDisappear(animated)
@@ -205,6 +208,27 @@ final class HydrationRecordViewController: UIViewController {
         
         return stack
     }
+    
+    private func makeHydrationTargetValueSection() -> UIView {
+        let title = StandardLabel(
+            labelText: "Meta",
+            labelFont: .sfPro,
+            labelType: .callOut,
+            labelColor: .black10,
+            labelWeight: .semibold
+        )
+
+        let textField = StandardTextfield()
+        textField.placeholder = "ml"
+        textField.keyboardType = .numberPad
+        textField.addTarget(self, action: #selector(targetValueChanged(_:)), for: .editingChanged)
+        self.hydrationTargetValueField = textField
+
+        let stack = UIStackView(arrangedSubviews: [title, textField])
+        stack.axis = .vertical
+        stack.spacing = 8
+        return stack
+    }
 
     private func configureConfirmationButton() -> StandardConfirmationButton {
         let button = StandardConfirmationButton(title: "Salvar")
@@ -239,6 +263,12 @@ final class HydrationRecordViewController: UIViewController {
         viewModel.saveHydrationMeasure()
         dismiss(animated: true)
     }
+    
+    @objc private func saveHydrationTarget() {
+        viewModel.saveHydrationTarget()
+        dismiss(animated: true)
+    }
+
 
     private func updateConfirmationButtonState(enabled: Bool) {
         confirmationButton.isUserInteractionEnabled = enabled

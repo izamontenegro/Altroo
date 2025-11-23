@@ -89,7 +89,7 @@ class ComponentPreviewViewController: UIViewController {
         let capsule1 = CapsuleIconView(iconName: "drop.fill",
                                        text: "250ml")
         
-        let capsule2 = CapsuleWithCircleView(text: "Editar",
+        let capsule2 = CapsuleWithCircleView(capsuleColor: .teal20, text: "Editar",
                                              textColor: .teal20,
                                              nameIcon: "pencil",
                                              nameIconColor: .pureWhite,

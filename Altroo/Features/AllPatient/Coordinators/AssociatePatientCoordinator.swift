@@ -43,14 +43,16 @@ final class AssociatePatientCoordinator: Coordinator {
             
             presentSheet(
                 child.navigation,
-                from: navigation,
-                grabber: true
+                from: navigation, percentage: 0.9
             )
             
         case .tutorialAdd:
             // Go to the tutorial on adding a patient.
             let vc = factory.makeTutorialAddSheet()
-            presentSheet(vc, from: navigation)
+            presentSheet(
+                vc,
+                from: navigation, percentage: 0.9
+            )
             
         case .loading:
             // Go to the loading screen.

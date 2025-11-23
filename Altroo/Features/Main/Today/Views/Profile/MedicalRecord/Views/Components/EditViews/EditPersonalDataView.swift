@@ -15,8 +15,7 @@ final class EditPersonalDataView: UIView, UITextFieldDelegate {
     weak var delegate: EditMedicalRecordViewControllerDelegate?
 
     private var subscriptions = Set<AnyCancellable>()
-    private let relationshipOptions = ["Cuidador", "Mãe/Pai", "Filha/Filho", "Neta/Neto", "Familiar", "Amigo", "Outro"]
-
+    
     private lazy var numberFormatter: NumberFormatter = {
         let formatter = NumberFormatter()
         formatter.locale = .current
@@ -30,9 +29,9 @@ final class EditPersonalDataView: UIView, UITextFieldDelegate {
     private let scrollView = UIScrollView.make(direction: .vertical)
     private let contentStackView = UIStackView()
 
-    private let genderSegmentedControl = StandardSegmentedControl(items: ["Feminino", "Masculino"])
-    private let nameTextField = StandardTextfield(placeholder: "Nome do assistido")
-    private let addressTextField = StandardTextfield(placeholder: "Endereço do assistido")
+    private let genderSegmentedControl = StandardSegmentedControl(items: ["F", "M"])
+    private let nameTextField = StandardTextfield(placeholder: "patient_name_placeholder".localized)
+    private let addressTextField = StandardTextfield(placeholder: "address_placeholder".localized)
 
     private let heightTextField: StandardTextfield = {
         let textField = StandardTextfield()
@@ -51,16 +50,16 @@ final class EditPersonalDataView: UIView, UITextFieldDelegate {
     private let contactNameTextField = StandardTextfield(placeholder: "Nome do contato de emergência")
     private let contactPhoneTextField: StandardTextfield = {
         let textField = StandardTextfield()
-        textField.placeholder = "Telefone com DDI"
+        textField.placeholder = "contact_phone_placeholder".localized
         textField.keyboardType = .numberPad
         return textField
     }()
 
     private lazy var relationshipButton: PopupMenuButton = {
-        let button = PopupMenuButton(title: relationshipOptions.first ?? "Cuidador")
+        let button = PopupMenuButton(title: RelationshipOptionsEnum.caregiver.displayText)
         button.showsMenuAsPrimaryAction = true
         button.backgroundColor = .blue40
-        button.menu = createRelationshipMenu(selected: relationshipOptions.first ?? "Cuidador")
+        button.menu = createRelationshipMenu(selected: RelationshipOptionsEnum.caregiver.displayText)
         return button
     }()
 
@@ -82,22 +81,22 @@ final class EditPersonalDataView: UIView, UITextFieldDelegate {
 
     private lazy var headerSection = EditSectionHeaderView(
         sectionTitle: "Dados Pessoais",
-        sectionDescription: "Preencha os campos a seguir quanto aos dados básicos da pessoa cuidada.",
+        sectionDescription: "patient_profile_description".localized,
         sectionIcon: "person.fill"
     )
 
-    private lazy var nameSection = FormSectionView(title: "Nome", content: nameTextField, isObligatory: true)
-    private lazy var dateOfBirthSection = FormSectionView(title: "Data de Nascimento", content: dateOfBirthPicker)
-    private lazy var ageSection = FormSectionView(title: "Idade", content: ageLabel)
-    private lazy var heightSection = FormSectionView(title: "Altura", content: heightStackView)
-    private lazy var weightSection = FormSectionView(title: "Peso", content: weightStackView)
-    private lazy var genderSection = FormSectionView(title: "Sexo", content: genderSegmentedControl)
-    private lazy var addressSection = FormSectionView(title: "Endereço", content: addressTextField)
+    private lazy var nameSection = FormSectionView(title: "name".localized, content: nameTextField, isObligatory: true)
+    private lazy var dateOfBirthSection = FormSectionView(title: "birth_date".localized, content: dateOfBirthPicker)
+    private lazy var ageSection = FormSectionView(title: "age".localized, content: ageLabel)
+    private lazy var heightSection = FormSectionView(title: "height".localized, content: heightStackView)
+    private lazy var weightSection = FormSectionView(title: "weight".localized, content: weightStackView)
+    private lazy var genderSection = FormSectionView(title: "gender".localized, content: genderSegmentedControl)
+    private lazy var addressSection = FormSectionView(title: "address".localized, content: addressTextField)
 
-    private lazy var contactNameSection = FormSectionView(title: "Nome", content: contactNameTextField, isSubsection: true)
-    private lazy var contactPhoneSection = FormSectionView(title: "Telefone", content: contactPhoneTextField, isSubsection: true)
-    private lazy var contactRelationshipSection = FormSectionView(title: "Relação", content: relationshipButton, isSubsection: true)
-    private lazy var contactSection = FormSectionView(title: "Contato de Emergência", content: contactStackView)
+    private lazy var contactNameSection = FormSectionView(title: "name".localized, content: contactNameTextField, isSubsection: true)
+    private lazy var contactPhoneSection = FormSectionView(title: "contact_phone".localized, content: contactPhoneTextField, isSubsection: true)
+    private lazy var contactRelationshipSection = FormSectionView(title: "relationship".localized, content: relationshipButton, isSubsection: true)
+    private lazy var contactSection = FormSectionView(title: "emergency_contact".localized, content: contactStackView)
 
     private lazy var heightStackView: UIStackView = {
         let centimetersLabel = StandardLabel(labelText: "cm", labelFont: .sfPro, labelType: .callOut, labelColor: .black10, labelWeight: .regular)
@@ -318,9 +317,9 @@ final class EditPersonalDataView: UIView, UITextFieldDelegate {
     }
 
     private func createRelationshipMenu(selected: String) -> UIMenu {
-        let actions: [UIAction] = relationshipOptions.map { option in
-            let isSelected = (option == selected)
-            return UIAction(title: option, state: isSelected ? .on : .off) { [weak self] action in
+        let actions: [UIAction] = RelationshipOptionsEnum.allCases.map { option in
+            let isSelected = (option.displayText == selected)
+            return UIAction(title: option.displayText, state: isSelected ? .on : .off) { [weak self] action in
                 guard let self = self else { return }
                 self.relationshipButton.setTitle(action.title, for: .normal)
                 self.relationshipButton.menu = self.createRelationshipMenu(selected: action.title)

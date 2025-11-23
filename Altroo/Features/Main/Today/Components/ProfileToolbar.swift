@@ -20,7 +20,7 @@ class ProfileToolbarContainer: UIView {
     private var careRecipient: CareRecipient
     private let gradientView = GradientArcView()
     private let capsuleButton = CapsuleWithCircleView(
-        text: "Editar Seções",
+        capsuleColor: .teal80, text: "edit_section_title".localized,
         textColor: .teal20,
         nameIcon: "pencil",
         nameIconColor: .pureWhite,
@@ -53,12 +53,11 @@ class ProfileToolbarContainer: UIView {
             gradientView.trailingAnchor.constraint(equalTo: trailingAnchor),
             gradientView.heightAnchor.constraint(equalToConstant: 150),
             
-            headerProfile.topAnchor.constraint(equalTo: safeAreaLayoutGuide.topAnchor, constant: -25),
+            headerProfile.topAnchor.constraint(equalTo: safeAreaLayoutGuide.topAnchor, constant: 30),
             headerProfile.leadingAnchor.constraint(equalTo: leadingAnchor, constant: 16),
             headerProfile.trailingAnchor.constraint(equalTo: trailingAnchor, constant: -16),
-            headerProfile.heightAnchor.constraint(equalToConstant: 100),
             
-            capsuleButton.centerYAnchor.constraint(equalTo: headerProfile.topAnchor, constant: 50),
+            capsuleButton.centerYAnchor.constraint(equalTo: headerProfile.topAnchor),
             capsuleButton.trailingAnchor.constraint(equalTo: headerProfile.trailingAnchor),
             capsuleButton.heightAnchor.constraint(equalToConstant: 31),
             capsuleButton.widthAnchor.constraint(equalToConstant: 137),

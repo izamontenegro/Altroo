@@ -14,14 +14,14 @@ class TaskFormViewController: GradientNavBarViewController {
     let titleLabel = StandardHeaderView(title: "", subtitle: "")
     
     let confirmButton = StandardConfirmationButton(title: "")
-    let deleteButton = OutlineButton(title: "Deletar", color: .red20)
+    let deleteButton = OutlineButton(title: "delete".localized, color: .red20)
     private var confirmBottomConstraint: NSLayoutConstraint?
 
     let nameTexfield = StandardTextfield(placeholder: "Nome")
     let noteTexfield = ObservationView(placeholder: "Detalhes da sua tarefa")
 
     var hourPickers: [UIDatePicker] = []
-    let addTimeButton = PrimaryStyleButton(title: "Novo Horário")
+    let addTimeButton = PrimaryStyleButton(title: "taskform_new_time".localized)
     let startDatePicker: UIDatePicker = UIDatePicker.make(mode: .date)
     let endDatePicker: UIDatePicker = UIDatePicker.make(mode: .date)
     
@@ -46,13 +46,13 @@ class TaskFormViewController: GradientNavBarViewController {
     }()
     
     //sections
-    lazy var nameSection = FormSectionView(title: "Nome", content: nameTexfield)
-    private lazy var hourSection = FormSectionView(title: "Horário", content: hourStack)
-    private lazy var repeatSection = FormSectionView(title: "Repetir", content: weekdayRow)
-    lazy var startSection = FormSectionView(title: "Início", content: startDatePicker)
+    lazy var nameSection = FormSectionView(title: "name".localized, content: nameTexfield)
+    private lazy var hourSection = FormSectionView(title: String(localized: "time"), content: hourStack)
+    private lazy var repeatSection = FormSectionView(title: "taskform_repeat".localized, content: weekdayRow)
+    lazy var startSection = FormSectionView(title: "taskform_start".localized, content: startDatePicker)
     var endDateSection: UIView!
     var continuousButton: PopupMenuButton!
-    private lazy var noteSection = FormSectionView(title: "Observações", content: noteTexfield)
+    private lazy var noteSection = FormSectionView(title: "observations".localized, content: noteTexfield)
 
     private lazy var contentStack: UIStackView = {
         let stackView = UIStackView(arrangedSubviews: [
@@ -137,7 +137,7 @@ class TaskFormViewController: GradientNavBarViewController {
             //duration
             startDatePicker.addTarget(self, action: #selector(startDateChanged(_:)), for: .valueChanged)
             endDatePicker.addTarget(self, action: #selector(endDateChanged(_:)), for: .valueChanged)
-            endDateSection = FormSectionView(title: "Término", content: endDatePicker)
+        endDateSection = FormSectionView(title: "taskform_end".localized, content: endDatePicker)
             
             dateStack.addArrangedSubview(startSection)
         }
@@ -152,7 +152,7 @@ class TaskFormViewController: GradientNavBarViewController {
     
     func insertContinuousPicker(_ button: PopupMenuButton, showEndDate: Bool) {
         continuousButton = button
-         let durationSection = FormSectionView(title: "Duração", content: continuousButton)
+        let durationSection = FormSectionView(title: "taskform_duration".localized, content: continuousButton)
          dateStack.addArrangedSubview(durationSection)
          if showEndDate {
              dateStack.insertArrangedSubview(endDateSection, at: 1)
