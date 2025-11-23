@@ -89,14 +89,14 @@ final class CareRecipientProfileViewController: GradientNavBarViewController {
         let uniqueCaregivers = caregivers.unique { $0.name }
         
         let titleLabel = StandardLabel(
-            labelText: "Permissões",
+            labelText: "permissions".localized,
             labelFont: .sfPro,
             labelType: .title2,
             labelColor: .black10,
             labelWeight: .semibold
         )
         
-        let inviteButton = CapsuleIconView(iconName: "paperplane", text: "Convidar cuidador")
+        let inviteButton = CapsuleIconView(iconName: "paperplane", text: "invite_caregiver".localized)
         inviteButton.enablePressEffect()
         inviteButton.onTap = { [weak self] in
             DispatchQueue.main.asyncAfter(deadline: .now() + 0.1) {
