@@ -74,7 +74,7 @@ class TaskDetailViewController: UIViewController {
                     isLate: inst.isLateDay || inst.isLatePeriod
                 )
             case .template(let tpl):
-                let label = StandardLabel(labelText: "Horários", labelFont: .sfPro, labelType: .callOut, labelColor: .black40)
+                let label = StandardLabel(labelText: "times".localized, labelFont: .sfPro, labelType: .callOut, labelColor: .black40)
                 let times = makeTimesRow()
                 
                 let stack = UIStackView(arrangedSubviews: [label, times])
@@ -84,8 +84,8 @@ class TaskDetailViewController: UIViewController {
                 return stack
             }
         }()
-        let repetition = StandardLabel(labelText: "Repetição", labelFont: .sfPro, labelType: .callOut, labelColor: .black40)
-        let period = InfoRowView(title: "Duração", info: makeTimeText())
+        let repetition = StandardLabel(labelText: "taskdetail_repeat".localized, labelFont: .sfPro, labelType: .callOut, labelColor: .black40)
+        let period = InfoRowView(title: "observataskdetail_durationtion".localized, info: makeTimeText())
         let notes = InfoRowView(title: "observation".localized, info: taskTemplate.note ?? "observation".localized)
         
         let dayRow = makeDayRow()
@@ -115,7 +115,7 @@ class TaskDetailViewController: UIViewController {
         navigationItem.leftBarButtonItem = closeButton
         
         if let taskInstance, taskInstance.isLateDay {
-            let deleteButton = UIBarButtonItem(title: "Excluir", style: .done, target: self, action: #selector(deleteTapped))
+            let deleteButton = UIBarButtonItem(title: "delete".localized, style: .done, target: self, action: #selector(deleteTapped))
             deleteButton.tintColor = .red20
             navigationItem.rightBarButtonItem = deleteButton
         } else {
@@ -159,7 +159,7 @@ class TaskDetailViewController: UIViewController {
             return timeLabelText
             
         } else if let start = taskTemplate.startDate {
-            let timeLabelText = "\(DateFormatterHelper.fullDayFormatter(date: start)) - Sem data final"
+            let timeLabelText = "\(DateFormatterHelper.fullDayFormatter(date: start)) - \("without_end".localized)"
             
             return timeLabelText
         } else {
@@ -183,19 +183,19 @@ class TaskDetailViewController: UIViewController {
     
     func presentDeleteAlert() {
         let alertController = UIAlertController(
-            title: "Deseja excluir essa tarefa?",
-            message: "A remoção desta tarefa apagará todos os dados contidos nela.",
+            title: "delete_task_confirmation_title".localized,
+            message: "delete_task_confirmation_msg".localized,
             preferredStyle: .alert
         )
         
-        let confirmAction = UIAlertAction(title: "Excluir", style: .destructive) { [weak self] _ in
+        let confirmAction = UIAlertAction(title: "delete".localized, style: .destructive) { [weak self] _ in
             guard let self = self else { return }
             viewModel.deleteTask(taskTemplate)
             onDeleteTapped?()
             dismiss(animated: true)
         }
         
-        let cancelAction = UIAlertAction(title: "Cancelar", style: .cancel, handler: nil)
+        let cancelAction = UIAlertAction(title: "cancel".localized, style: .cancel, handler: nil)
         
         alertController.addAction(cancelAction)
         alertController.addAction(confirmAction)

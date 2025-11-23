@@ -24,7 +24,7 @@ class AddTaskViewModel {
     @Published private(set) var fieldErrors: [String: String] = [:]
 
     @Published var isContinuous: Bool = true
-    let continuousOptions = ["Sem data final", "Com data final"]
+    let continuousOptions = ["without_end".localized, "with_end".localized]
     var continuousButtonTitle: String {
         if isContinuous {
             continuousOptions[0]

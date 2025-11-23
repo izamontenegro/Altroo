@@ -23,10 +23,10 @@ enum PeriodEnum: String, CaseIterable {
     
     var name: String {
         switch self {
-        case .morning: "Manhã"
-        case .afternoon: "Tarde"
-        case .night: "Noite"
-        case .overnight: "Madrugada"
+        case .overnight: return "overnight".localized
+        case .morning:   return "morning".localized
+        case .afternoon: return "afternoon".localized
+        case .night:     return "night".localized
         }
     }
     

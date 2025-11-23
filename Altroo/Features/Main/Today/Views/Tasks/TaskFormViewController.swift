@@ -17,7 +17,7 @@ class TaskFormViewController: GradientNavBarViewController {
     let deleteButton = OutlineButton(title: "delete".localized, color: .red20)
     private var confirmBottomConstraint: NSLayoutConstraint?
 
-    let nameTexfield = StandardTextfield(placeholder: "Nome da tarefa")
+    let nameTexfield = StandardTextfield(placeholder: "taskform_name".localized)
     let noteTexfield = ObservationView()
     
     //TIME
@@ -28,8 +28,7 @@ class TaskFormViewController: GradientNavBarViewController {
         return btn
     }()
     
-    //"taskform_new_time".localized
-    let addTimeButton = OutlineWithIconButton(title: "Adicionar Horário", iconName: "plus.circle.fill")
+    let addTimeButton = OutlineWithIconButton(title: "taskform_new_time".localized, iconName: "plus.circle.fill")
     var addTimeViews: [UIView] = []
     lazy var timePickersFlowView = FlowLayoutView(views: addTimeViews, maxWidth: view.bounds.width - 32)
     lazy var hourStack: UIStackView = {
@@ -42,7 +41,6 @@ class TaskFormViewController: GradientNavBarViewController {
         return stackView
     }()
     
-    //DATE
     
     //DATE
     let startDatePicker: UIDatePicker = UIDatePicker.make(mode: .date)
@@ -55,6 +53,7 @@ class TaskFormViewController: GradientNavBarViewController {
         stackView.translatesAutoresizingMaskIntoConstraints = false
         return stackView
     }()
+    
     let dateContent: UIStackView = {
         let stackView = UIStackView()
         stackView.axis = .vertical
@@ -63,20 +62,18 @@ class TaskFormViewController: GradientNavBarViewController {
         stackView.spacing = 8
         stackView.translatesAutoresizingMaskIntoConstraints = false
         return stackView
+    }()
     lazy var nameSection = FormSectionView(title: "name".localized, content: nameTexfield)
     private lazy var hourSection = FormSectionView(title: String(localized: "time"), content: hourStack)
         
         //"taskform_repeat".localized
-    private lazy var repeatSection = FormSectionView(title: "Essa tarefa irá se repetir?", content: weekdayRow)
-    lazy var dateSection = FormSectionView(title: "Qual a duração desta tarefa?", content: dateContent)
+    private lazy var repeatSection = FormSectionView(title: "taskform_repeat".localized, content: weekdayRow)
+    lazy var dateSection = FormSectionView(title: "taskform_duration".localized, content: dateContent)
         
-    private lazy var noteSection = FormSectionView(title: "Observação", content: noteTexfield)
-    lazy var startSection = FormSectionView(title: "Data Inicial", content: startDatePicker, isSubsection: true)
+    lazy var startSection = FormSectionView(title: "taskform_start".localized, content: startDatePicker, isSubsection: true)
         //"taskform_end".localized
-    lazy var endSection = FormSectionView(title: "Data Final", content: endDatePicker, isSubsection: true)
-    lazy var dateSection = FormSectionView(title: "Qual a duração desta tarefa?", content: dateContent)
-    lazy var startSection = FormSectionView(title: "Data Inicial", content: startDatePicker, isSubsection: true)
-    lazy var endSection = FormSectionView(title: "Data Final", content: endDatePicker, isSubsection: true)
+    lazy var endSection = FormSectionView(title: "taskform_end".localized, content: endDatePicker, isSubsection: true)
+
     var continuousButton: PopupMenuButton!
     private lazy var noteSection = FormSectionView(title: "observations".localized, content: noteTexfield)
 
@@ -175,22 +172,6 @@ class TaskFormViewController: GradientNavBarViewController {
         }
     }
     
-    func insertContinuousPicker(_ button: PopupMenuButton, showEndDate: Bool) {
-        continuousButton = button
-        let durationSection = FormSectionView(title: "taskform_duration".localized, content: continuousButton)
-         dateStack.addArrangedSubview(durationSection)
-         if showEndDate {
-             dateStack.insertArrangedSubview(endDateSection, at: 1)
-         }
-     }
-
-    func addEndDate() {
-        dateStack.insertArrangedSubview(endDateSection, at: 1)
-    }
-    
-    func removeEndDate() {
-        endDateSection.removeFromSuperview()
-    }
 
 
     @objc func startDateChanged(_ picker: UIDatePicker) {}
