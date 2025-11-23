@@ -98,14 +98,19 @@ final class MedicalRecordViewController: GradientNavBarViewController {
         contentStackView.spacing = 16
         
         for section in viewModel.sections {
-            contentStackView.addArrangedSubview(makeSection(
+            let sectionView = MedicalRecordSectionView(
                 title: section.title,
+                iconSystemName: section.iconSystemName,
                 rows: section.rows,
-                icon: section.iconSystemName
-            ))
+                surgeryDisplayItems: viewModel.surgeryDisplayItems,
+                contactDisplayItems: viewModel.contactDisplayItems,
+                copyTarget: self,
+                copyAction: #selector(didTapCopyPhoneButton(_:))
+            )
+            contentStackView.addArrangedSubview(sectionView)
         }
     }
-
+    
     func makeHeaderSection(percent: CGFloat) -> UIView {
         let containerView = UIView()
         containerView.backgroundColor = .clear
