@@ -7,10 +7,10 @@
 import Foundation
 
 enum PeriodEnum: String, CaseIterable {
+    case overnight
     case morning
     case afternoon
     case night
-    case overnight
     
     var iconName: String {
         switch self {
