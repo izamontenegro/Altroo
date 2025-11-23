@@ -85,7 +85,7 @@ class TaskDetailViewController: UIViewController {
             }
         }()
         let repetition = StandardLabel(labelText: "taskdetail_repeat".localized, labelFont: .sfPro, labelType: .callOut, labelColor: .black40)
-        let period = InfoRowView(title: "observataskdetail_durationtion".localized, info: makeTimeText())
+        let period = InfoRowView(title: "taskdetail_duration".localized, info: makeTimeText())
         let notes = InfoRowView(title: "observation".localized, info: taskTemplate.note ?? "observation".localized)
         
         let dayRow = makeDayRow()

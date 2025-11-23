@@ -31,9 +31,9 @@ final class TodayCoordinator: Coordinator {
         switch destination {
             
         case .recordFeeding:
-        let vc = factory.makeMealRecordViewController() as! MealRecordViewController
-        vc.delegate = self
-        return vc
+            let vc = factory.makeMealRecordViewController() as! MealRecordViewController
+            vc.delegate = self
+            return vc
             
         case .recordHydration:
             let vc = factory.makeHydrationRecordSheet()
@@ -129,15 +129,15 @@ final class TodayCoordinator: Coordinator {
         }
         
         
-            vc.onDeleteTapped = { [weak self] in
-                guard let self else { return }
-                
-                if let allTasksVC = self.navigation.viewControllers
-                    .compactMap({ $0 as? AllTasksViewController })
-                    .first {
-                    allTasksVC.viewModel.loadLateTasks()
-                }
+        vc.onDeleteTapped = { [weak self] in
+            guard let self else { return }
+            
+            if let allTasksVC = self.navigation.viewControllers
+                .compactMap({ $0 as? AllTasksViewController })
+                .first {
+                allTasksVC.viewModel.loadLateTasks()
             }
+        }
         
         let nav = UINavigationController(rootViewController: vc)
         nav.modalPresentationStyle = .pageSheet
@@ -174,7 +174,7 @@ final class TodayCoordinator: Coordinator {
     private func goToEditTask(_ task: RoutineTask) {
         
         guard let vc = factory.makeEditTaskViewController(task: task) as? EditTaskViewController else { return }
-                
+        
         vc.coordinator = self
         
         let nav = UINavigationController(rootViewController: vc)
@@ -190,41 +190,41 @@ final class TodayCoordinator: Coordinator {
         }
         
         navigation.present(nav, animated: true)
-
+        
     }
 }
 
 extension TodayCoordinator: TodayViewControllerDelegate {
     
     func goTo(_ destination: TodayDestination) {
-            switch destination {
-            case .recordHydration, .recordUrine, .recordStool, .recordFeeding, .addNewTask:
-                guard let rootVC = makeViewController(for: destination) else { return }
-                
-                let nav = UINavigationController(rootViewController: rootVC)
-                nav.modalPresentationStyle = .pageSheet
-                
-                if let sheet = nav.sheetPresentationController {
-                    sheet.detents = [
-                        .custom(identifier: .init("almostFull")) { context in
-                            return context.maximumDetentValue * 0.9  
-                        }
-                    ]
-                    sheet.prefersGrabberVisible = true
-                }
-                
-                navigation.present(nav, animated: true)
-                
-            default:
-                guard let vc = makeViewController(for: destination) else { return }
-                
-                if destination.isSheet {
-                    presentSheet(vc, from: navigation)
-                } else {
-                    navigation.pushViewController(vc, animated: true)
-                }
+        switch destination {
+        case .recordHydration, .recordUrine, .recordStool, .recordFeeding, .addNewTask:
+            guard let rootVC = makeViewController(for: destination) else { return }
+            
+            let nav = UINavigationController(rootViewController: rootVC)
+            nav.modalPresentationStyle = .pageSheet
+            
+            if let sheet = nav.sheetPresentationController {
+                sheet.detents = [
+                    .custom(identifier: .init("almostFull")) { context in
+                        return context.maximumDetentValue * 0.9
+                    }
+                ]
+                sheet.prefersGrabberVisible = true
+            }
+            
+            navigation.present(nav, animated: true)
+            
+        default:
+            guard let vc = makeViewController(for: destination) else { return }
+            
+            if destination.isSheet {
+                presentSheet(vc, from: navigation)
+            } else {
+                navigation.pushViewController(vc, animated: true)
             }
         }
+    }
     
     func goToSymptomDetail(with symptom: Symptom) {
         let vc = factory.makeSymptomDetailViewController(from: symptom) as! SymptomDetailViewController
@@ -245,9 +245,13 @@ extension TodayCoordinator: TodayViewControllerDelegate {
     func goToPrivacyPolicy() {
         goTo(.privacyPolicy)
     }
-
+    
     func goToLegalNotice() {
         goTo(.legalNotice)
+    }
+    
+    func openTaskDetail(with task: TaskInstance) {
+        openTaskDetail(for: task)
     }
 }
 
@@ -278,7 +282,6 @@ enum TodayDestination {
 }
 
 extension TodayCoordinator: TaskCardNavigationDelegate {
-    
     func taskCardDidSelect(_ task: TaskInstance) {
         let vc = factory.makeTaskDetailViewController(mode: .instance(task)) as! TaskDetailViewController
         vc.onEditTapped = {[weak self] task in

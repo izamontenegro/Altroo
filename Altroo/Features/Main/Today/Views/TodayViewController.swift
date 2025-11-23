@@ -14,13 +14,13 @@ protocol TodayViewControllerDelegate: AnyObject {
     func goToSymptomDetail(with symptom: Symptom)
     func goToPrivacyPolicy()
     func goToLegalNotice()
+    func openTaskDetail(with task: TaskInstance)
 }
 
 class TodayViewController: UIViewController {
     
     var viewModel: TodayViewModel
     weak var delegate: TodayViewControllerDelegate?
-    var onTaskSelected: ((TaskInstance) -> Void)?
     var symptomsCard: SymptomsCard
     var feedingRecords: [FeedingRecord] = []
     
@@ -55,7 +55,7 @@ class TodayViewController: UIViewController {
         return stackView
     }()
     
-    init(delegate: TodayViewControllerDelegate? = nil, viewModel: TodayViewModel, onTaskSelected: ((TaskInstance) -> Void)? = nil) {
+    init(delegate: TodayViewControllerDelegate? = nil, viewModel: TodayViewModel) {
         self.delegate = delegate
         self.viewModel = viewModel
         self.symptomsCard = SymptomsCard(symptoms: viewModel.todaySymptoms)
@@ -63,7 +63,6 @@ class TodayViewController: UIViewController {
         super.init(nibName: nil, bundle: nil)
         
         self.symptomsCard.delegate = self
-        self.onTaskSelected = onTaskSelected
     }
     
     override func viewDidLoad() {
@@ -148,7 +147,6 @@ class TodayViewController: UIViewController {
             //"today_empty_tasks".localized
             let normalText = "Nenhuma tarefa cadastrada para o turno da "
             let normalString = NSMutableAttributedString(string:normalText)
-            
 
             let boldText = PeriodEnum.current.name
             let attrs = [NSAttributedString.Key.font : UIFont.boldSystemFont(ofSize: 16)]
@@ -162,6 +160,7 @@ class TodayViewController: UIViewController {
             for task in tasks {
                 let card = TaskCard(task: task)
                 card.delegate = self
+                card.navigationDelegate = self
                 card.translatesAutoresizingMaskIntoConstraints = false
                 cardStack.addArrangedSubview(card)
                 

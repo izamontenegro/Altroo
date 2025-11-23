@@ -9,9 +9,7 @@ import UIKit
 import Combine
 
 class AllTasksViewController: GradientNavBarViewController {
-    let viewModel: AllTasksViewModel
-    var onTaskSelected: ((TaskInstance) -> Void)?
-    
+    let viewModel: AllTasksViewModel    
     weak var coordinator: TodayCoordinator?
     
     let titleLabel = StandardLabel(labelText: "tasks".localized, labelFont: .sfPro, labelType: .title2, labelColor: .black, labelWeight: .semibold)
@@ -36,7 +34,6 @@ class AllTasksViewController: GradientNavBarViewController {
         )
         return label
     }()
-
     
     private lazy var segmentedControl: StandardSegmentedControl = {
         let sc = StandardSegmentedControl(
@@ -64,9 +61,8 @@ class AllTasksViewController: GradientNavBarViewController {
     private lazy var lateView = LateTasksView(viewModel: viewModel)
     private lazy var upcomingView = UpcomingTasksView(viewModel: viewModel)
     
-    init(viewModel: AllTasksViewModel, onTaskSelected: ((TaskInstance) -> Void)? = nil) {
+    init(viewModel: AllTasksViewModel) {
         self.viewModel = viewModel
-        self.onTaskSelected = onTaskSelected
         super.init(nibName: nil, bundle: nil)
         hidesBottomBarWhenPushed = true
     }
