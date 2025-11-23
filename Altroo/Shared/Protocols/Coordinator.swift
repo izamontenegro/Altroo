@@ -4,6 +4,7 @@
 //
 //  Created by Izadora de Oliveira Albuquerque Montenegro on 22/09/25.
 //
+//
 
 import UIKit
 
@@ -21,44 +22,25 @@ extension Coordinator {
     func remove(child: Coordinator) {
         childCoordinators.removeAll { $0 === child }
     }
-    
-//    func presentSheet(
-//        _ vc: UIViewController,
-//        from navigation: UINavigationController,
-//        detents: [UISheetPresentationController.Detent] = [.medium()],
-//        grabber: Bool = true,
-//        animated: Bool = true
-//    ) {
-//        vc.modalPresentationStyle = .pageSheet
-//        
-//        if let sheet = vc.sheetPresentationController {
-//            sheet.detents = detents
-//            sheet.prefersGrabberVisible = grabber
-//        }
-//        
-//        navigation.present(vc, animated: animated)
-//    }
-    
-    func presentSheet(_ vc: UIViewController, from presenter: UIViewController, percentage: Double) {
+    func presentSheet(
+        _ vc: UIViewController,
+        from navigation: UINavigationController,
+        percentage: CGFloat = 0.9,
+        grabber: Bool = true,
+        animated: Bool = true
+    ) {
         vc.modalPresentationStyle = .pageSheet
-
-        if let sheet = vc.sheetPresentationController {
-            sheet.prefersGrabberVisible = true
-            sheet.preferredCornerRadius = 20
-            
-            let eightyID = UISheetPresentationController.Detent.Identifier("eightyPercent")
-            sheet.detents = [
-                .custom(identifier: eightyID) { context in
-                    percentage * context.maximumDetentValue
-                },
-                .large()
-            ]
-            sheet.selectedDetentIdentifier = eightyID
-            sheet.largestUndimmedDetentIdentifier = eightyID
-            
+        
+        let detent = UISheetPresentationController.Detent.custom { context in
+            context.maximumDetentValue * percentage
         }
-
-        presenter.present(vc, animated: true)
+        
+        if let sheet = vc.sheetPresentationController {
+            sheet.detents = [detent]
+            sheet.prefersGrabberVisible = grabber
+        }
+        
+        navigation.present(vc, animated: animated)
     }
     
     func goToRoot() {

@@ -34,14 +34,29 @@ class FeedingCardRecord: UIView {
 
         titleLabel.textAlignment = .left
         
+        var statusText: String = ""
+        switch status {
+        case .completed:
+            statusText = "Total"
+        case .partial:
+            statusText = "Parcialmente"
+        case .pending:
+            statusText = "Não aceitou"
+        case .none:
+            statusText = ""
+        }
+        
         let capsuleIcon = CapsuleIconView(
             iconName: status.iconName,
-            text: status == .completed ? "Total" :
-                  status == .partial ? "Parcialmente" : "Não aceitou",
+            text: statusText,
             mainColor: .teal30,
             accentColor: .teal80,
             contentInsets: UIEdgeInsets(top: 3.5, left: 10, bottom: 3.5, right: 10)
         )
+        
+        if status == .none {
+            capsuleIcon.layer.opacity = 0.0
+        }
         
         capsuleIcon.translatesAutoresizingMaskIntoConstraints = false
         NSLayoutConstraint.activate([
@@ -71,7 +86,7 @@ class FeedingCardRecord: UIView {
         
         NSLayoutConstraint.activate([
             heightAnchor.constraint(equalToConstant: 70),
-            widthAnchor.constraint(equalToConstant: 146)
+            widthAnchor.constraint(equalToConstant: 156)
         ])
     }}
 
@@ -79,12 +94,14 @@ enum FeedingStatus {
     case completed
     case partial
     case pending
+    case none
     
     var iconName: String {
         switch self {
         case .completed: return "circle.fill"
         case .partial: return "circle.righthalf.filled.inverse"
         case .pending: return "circle.dashed"
+        case .none: return ""
         }
     }
 }
