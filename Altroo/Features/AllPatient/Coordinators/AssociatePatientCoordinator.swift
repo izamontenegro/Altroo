@@ -91,7 +91,7 @@ final class AssociatePatientCoordinator: Coordinator {
                 self?.goToLoading()
             }
             
-            child.start()
+            child.associateNewCaregiver()
             
             presentSheet(
                 child.navigation,
@@ -105,7 +105,7 @@ extension AssociatePatientCoordinator: AssociatePatientViewControllerDelegate {
     func goToMainFlow() { onFinish?() }
     func goToPatientForms() { show(.patientForms) }
     func goToComorbiditiesForms() {  }
-    func goToShiftForms() {  }
+    func goToShiftForms(receivedPatientViaShare: Bool = false) {  }
     func goToTutorialAddSheet() { show(.tutorialAdd) }
     func goToLoading() { show(.loading) }
 }

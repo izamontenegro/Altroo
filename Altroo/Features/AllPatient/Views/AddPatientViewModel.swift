@@ -28,6 +28,8 @@ final class AddPatientViewModel: ObservableObject {
     // TODO: REALLY UPDATE THE USERNAME HERE
     @Published var userName: String = ""
     @Published var userNameError: String?
+    @Published var userPhone: String = ""
+    @Published var userPhoneError: String?
     @Published var selectedUserRelationship: String = "Cuidador"
     @Published var selectedContactRelationship: String = "Filha/Filho"
 
@@ -113,12 +115,30 @@ final class AddPatientViewModel: ObservableObject {
         userService.setName(userName)
         userService.setCategory(selectedUserRelationship)
         
+        if !userPhone.isEmpty {
+            userService.setPhone(userPhone)
+        }
+        
         if isAllDay {
             userService.setShift([.afternoon, .overnight, .morning, .night])
         } else {
             let shift = PeriodEnum.shifts(for: startDate, end: endDate)
             userService.setShift(shift)
         }
+    }
+    
+    func finalizeNewCaregiver() {
+        let sharedPatients = userService.fetchSharedPatients()
+        guard let sharedPatient = sharedPatients.first else {
+            print("Nenhum paciente compartilhado encontrado")
+            return
+        }
+        
+        userService.addPatient(sharedPatient)
+        userService.setCurrentPatient(sharedPatient)
+        
+        guard let user = userService.fetchUser() else { return }
+        careRecipientFacade.addCaregiver(sharedPatient, for: user)
     }
 }
 
@@ -159,6 +179,13 @@ extension AddPatientViewModel {
     
     func validateUser() -> Bool {
         guard validator.isEmpty(userName, error: &userNameError) else { return false }
+        
+        if !userPhone.isEmpty {
+            guard validator.invalidPhoneFormat(value: userPhone, minValue: 10, maxValue: 11, error: &userPhoneError) else {
+                return false
+            }
+        }
+        
         return true
     }
     

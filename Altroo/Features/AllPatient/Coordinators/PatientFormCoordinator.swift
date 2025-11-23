@@ -23,6 +23,10 @@ final class PatientFormsCoordinator: Coordinator {
     func start() {
         goToPatientForms()
     }
+    
+    func associateNewCaregiver() {
+        goToShiftForms(receivedPatientViaShare: true)
+    }
 }
 
 extension PatientFormsCoordinator: AssociatePatientViewControllerDelegate {
@@ -37,8 +41,8 @@ extension PatientFormsCoordinator: AssociatePatientViewControllerDelegate {
         let vc = factory.makeComorbiditiesFormViewController(delegate: self)
         navigation.pushViewController(vc, animated: true)
     }
-    func goToShiftForms() {
-        let vc = factory.makeShiftFormViewController(delegate: self)
+    func goToShiftForms(receivedPatientViaShare: Bool) {
+        let vc = factory.makeShiftFormViewController(delegate: self, receivedPatientViaShare: receivedPatientViaShare)
         navigation.pushViewController(vc, animated: true)
     }
 
