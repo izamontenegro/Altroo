@@ -19,12 +19,12 @@ class OnboardingContainerViewController: UIViewController {
     private var pages = [UIViewController]()
     private var currentIndex = 0
     
-    private let nextButton = StandardConfirmationButton(title: "Próximo")
+    private let nextButton = StandardConfirmationButton(title: "next".localized)
     private let pageControl = UIPageControl()
     
     private let backButton: UIButton = {
         let button = UIButton(type: .system)
-        button.setTitle("Voltar", for: .normal)
+        button.setTitle("back".localized, for: .normal)
         button.setImage(UIImage(systemName: "chevron.left"), for: .normal)
         button.tintColor = .teal10
         button.setTitleColor(.teal10, for: .normal)
@@ -35,7 +35,7 @@ class OnboardingContainerViewController: UIViewController {
     
     private let skipButton: UIButton = {
         let button = UIButton(type: .system)
-        button.setTitle("Pular", for: .normal)
+        button.setTitle("skip".localized, for: .normal)
         button.titleLabel?.font = UIFont.systemFont(ofSize: 16, weight: .medium)
         button.setTitleColor(.teal10, for: .normal)
         return button
@@ -47,9 +47,9 @@ class OnboardingContainerViewController: UIViewController {
                                                    options: nil)
         super.init(nibName: nil, bundle: nil)
         
-        let page1 = OnboardingPageViewController(imageName: "onboarding1", title: "Sem mais bagunça", description: "Gerencie necessidades básicas, medicamentos, tarefas, ocorrências, tudo em um só lugar")
-        let page2 = OnboardingPageViewController(imageName: "onboarding2", title: "Conexão é a chave", description: "Compartilhe o perfil do paciente com familiares e outros cuidadores")
-        let page3 = OnboardingPageViewController(imageName: "onboarding3", title: "Relatórios mostram o que importa", description: "Acompanhe as atividades de atendimento e obtenha insights claros dos relatórios dos pacientes", imageHeightMultiplier: 0.6)
+        let page1 = OnboardingPageViewController(imageName: "onboarding1", title: "onboarding1_title".localized, description: "onboarding1_description".localized)
+        let page2 = OnboardingPageViewController(imageName: "onboarding2", title: "onboarding2_title".localized, description: "onboarding2_description".localized)
+        let page3 = OnboardingPageViewController(imageName: "onboarding3", title: "onboarding3_title".localized, description: "onboarding3_description".localized, imageHeightMultiplier: 0.6)
 
         pages = [page1, page2, page3]
         pageController.dataSource = self
@@ -129,8 +129,9 @@ class OnboardingContainerViewController: UIViewController {
             }
             backButton.isUserInteractionEnabled = shouldShowBack
             
-            nextButton.updateTitle(currentIndex == pages.count - 1 ? "Começar" : "Próximo")
+            nextButton.updateTitle(currentIndex == pages.count - 1 ? "start".localized : "next".localized)
         } else {
+            UserDefaults.standard.onboardingCompleted = true
             delegateOnboarding?.goToAllPatient()
         }
     }
@@ -148,12 +149,12 @@ class OnboardingContainerViewController: UIViewController {
             }
             backButton.isUserInteractionEnabled = shouldShowBack
             
-            nextButton.updateTitle("Próximo")
+            nextButton.updateTitle("next".localized)
         }
     }
     
-    
     @objc private func skipTapped() {
+        UserDefaults.standard.onboardingCompleted = true
         delegateOnboarding?.goToAllPatient()
     }
 }
@@ -186,7 +187,7 @@ extension OnboardingContainerViewController: UIPageViewControllerDataSource, UIP
             }
             backButton.isUserInteractionEnabled = shouldShowBack
             
-            nextButton.updateTitle(index == pages.count - 1 ? "Começar" : "Próximo")
+            nextButton.updateTitle(index == pages.count - 1 ? "start".localized : "next".localized)
         }
     }
     

@@ -16,7 +16,7 @@ extension UIView {
         pressDown.minimumPressDuration = 0
         pressDown.cancelsTouchesInView = false
         pressDown.name = withHaptics ? "withHaptics" : nil
-        pressDown.delegate = PressEffectGestureDelegate.shared  // ✅ isolado
+        pressDown.delegate = PressEffectGestureDelegate.shared
         addGestureRecognizer(pressDown)
         isUserInteractionEnabled = true
     }
@@ -51,15 +51,28 @@ extension UIView {
     }
     
     func enableHighlightEffect(withHaptics: Bool = false) {
-        if withHaptics {
-            let generator = UIImpactFeedbackGenerator(style: .light)
-            generator.prepare()
-            generator.impactOccurred()
-        }
+        isUserInteractionEnabled = true
         
-        UIView.animate(withDuration: 0.08, delay: 0, options: [.allowUserInteraction]) {
-            self.alpha = 0.7
-        } completion: { _ in
+        let tapGesture = UILongPressGestureRecognizer(target: self, action: #selector(handleHighlightGesture(_:)))
+        tapGesture.minimumPressDuration = 0
+        tapGesture.cancelsTouchesInView = false
+        tapGesture.delegate = PressEffectGestureDelegate.shared
+        tapGesture.name = withHaptics ? "withHaptics" : nil
+        addGestureRecognizer(tapGesture)
+    }
+    
+    @objc private func handleHighlightGesture(_ gesture: UILongPressGestureRecognizer) {
+        switch gesture.state {
+        case .began:
+            if gesture.name == "withHaptics" {
+                triggerHapticFeedback()
+            }
+            
+            UIView.animate(withDuration: 0.08, delay: 0, options: [.allowUserInteraction]) {
+                self.alpha = 0.7
+            }
+            
+        case .ended, .cancelled, .failed:
             UIView.animate(
                 withDuration: 0.25,
                 delay: 0,
@@ -67,6 +80,9 @@ extension UIView {
             ) {
                 self.alpha = 1
             }
+            
+        default:
+            break
         }
     }
 

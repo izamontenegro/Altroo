@@ -26,7 +26,7 @@ class HeaderProfile: UIView {
         labelWeight: .bold
     )
     private let subtitleLabel = StandardLabel(
-        labelText: "Cuidando de:",
+        labelText: "profile_toolbar_title".localized,
         labelFont: .comfortaa,
         labelType: .subHeadline,
         labelColor: .pureWhite,

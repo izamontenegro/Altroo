@@ -8,7 +8,6 @@
 import UIKit
 
 // MARK: - URINE
-
 enum UrineCharacteristicsEnum: String, CaseIterable {
     case pain
     case excessFoam
@@ -28,7 +27,6 @@ enum UrineCharacteristicsEnum: String, CaseIterable {
         }
     }
 }
-
 enum UrineColorsEnum: String, CaseIterable {
     case light
     case lightYellow
@@ -66,10 +64,7 @@ enum UrineColorsEnum: String, CaseIterable {
         }
     }
 }
-
-
 // MARK: - STOOL
-
 enum StoolTypesEnum: String, CaseIterable {
     case lumpy
     case clumpy
@@ -117,7 +112,6 @@ enum StoolTypesEnum: String, CaseIterable {
         }
     }
 }
-
 enum StoolColorsEnum: String, CaseIterable {
     case brown
     case yellow
@@ -157,7 +151,6 @@ enum StoolColorsEnum: String, CaseIterable {
 }
 
 // MARK: - MEAL
-
 enum MealAmountEatenEnum: String, CaseIterable {
     case all
     case half
@@ -190,7 +183,6 @@ enum MealAmountEatenEnum: String, CaseIterable {
         }
     }
 }
-
 enum MealCategoryEnum: String, CaseIterable {
     case breakfast
     case lunch
@@ -215,7 +207,6 @@ enum MealCategoryEnum: String, CaseIterable {
 }
 
 // MARK: - HYDRATION
-
 enum HydrationAmountEnum: String, CaseIterable {
     case oneCup
     case twoCups

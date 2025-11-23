@@ -14,9 +14,9 @@ class AllTasksViewController: GradientNavBarViewController {
     
     weak var coordinator: TodayCoordinator?
     
-    let titleLabel = StandardLabel(labelText: "Tarefas", labelFont: .sfPro, labelType: .title2, labelColor: .black, labelWeight: .semibold)
+    let titleLabel = StandardLabel(labelText: "tasks".localized, labelFont: .sfPro, labelType: .title2, labelColor: .black, labelWeight: .semibold)
     
-    let descriptionLabel = StandardLabel(labelText: "Confira os tarefas cadastradas no sistema ou adicione uma nova tarefa para visualizá-la aqui.", labelFont: .sfPro, labelType: .body, labelColor: .black, labelWeight: .regular)
+    let descriptionLabel = StandardLabel(labelText: "taskform_subtitle".localized, labelFont: .sfPro, labelType: .body, labelColor: .black, labelWeight: .regular)
     
     let scrollView: UIScrollView = {
         let scrollView = UIScrollView()

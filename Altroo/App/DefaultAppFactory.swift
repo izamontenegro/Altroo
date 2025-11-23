@@ -345,7 +345,8 @@ extension DefaultAppFactory {
 //MARK: - SettingsFactory
 extension DefaultAppFactory {
     func makeMyProfileViewController() -> UIViewController {
-        let vc = MyProfileViewController()
+        let vm = MyProfileViewModel(userService: dependencies.userService)
+        let vc = MyProfileViewController(viewModel: vm)
         return vc
     }
     func makePrivacyViewController() -> UIViewController {

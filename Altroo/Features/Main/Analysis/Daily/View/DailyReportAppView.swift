@@ -16,7 +16,7 @@ struct DailyReportAppView: View {
             //SUBHEADER
             HStack(alignment: .bottom) {
                 ReportTimeSection(
-                    text: "Data",
+                    text: "date".localized,
                     date: $viewModel.startDate,
                     type: .date
                 )

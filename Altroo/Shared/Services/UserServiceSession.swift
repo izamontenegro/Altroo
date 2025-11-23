@@ -13,7 +13,7 @@ class UserServiceSession: UserServiceProtocol {
     
     private let context: NSManagedObjectContext
     private let cloudKitChangeSubject = PassthroughSubject<Void, Never>()
-
+    
     @Published private var currentPatient: CareRecipient?
     
     var currentPatientPublisher: AnyPublisher<CareRecipient?, Never> {
@@ -23,7 +23,7 @@ class UserServiceSession: UserServiceProtocol {
     var cloudKitDidChangePublisher: AnyPublisher<Void, Never> {
         cloudKitChangeSubject.eraseToAnyPublisher()
     }
-
+    
     func handleCloudKitChange() {
         cloudKitChangeSubject.send()
     }
@@ -34,13 +34,13 @@ class UserServiceSession: UserServiceProtocol {
             self.currentPatient = saved
         }
     }
-
+    
     private func fetchCurrentPatientFromStorage() -> CareRecipient? {
         guard let user = fetchUser(),
               let id = user.activeCareRecipient else { return nil }
         return fetchCareRecipient(id: id)
     }
-
+    
     func fetchUser() -> User? {
         let request = User.fetchRequest()
         request.fetchLimit = 1
@@ -82,7 +82,7 @@ class UserServiceSession: UserServiceProtocol {
         if user.careRecipient == nil {
             user.careRecipient = []
         }
-
+        
         if let id = patient.id, !(user.careRecipient?.contains(id) ?? false) {
             user.careRecipient?.append(id)
             save()
@@ -96,35 +96,33 @@ class UserServiceSession: UserServiceProtocol {
               var ids = user.careRecipient,
               let id = patient.id
         else { return }
-
+        
         if let index = ids.firstIndex(of: id) {
             ids.remove(at: index)
             user.careRecipient = ids
             save()
         }
     }
-
     
     func fetchCareRecipient(id: UUID) -> CareRecipient? {
         let context = CoreDataStack.shared.context
         let request: NSFetchRequest<CareRecipient> = CareRecipient.fetchRequest()
         request.predicate = NSPredicate(format: "id == %@", id as CVarArg)
-
+        
         let coordinator = context.persistentStoreCoordinator
-
+        
         if let result = try? context.fetch(request).first {
             return result
         }
-
+        
         request.affectedStores = coordinator?.persistentStores
         return try? context.fetch(request).first
     }
-
     
     func fetchCurrentPatient() -> CareRecipient? {
         return currentPatient
     }
-
+    
     func fetchPatients() -> [CareRecipient] {
         guard
             let user = fetchUser(),
@@ -132,15 +130,15 @@ class UserServiceSession: UserServiceProtocol {
         else {
             return []
         }
-
+        
         var patients: [CareRecipient] = []
-
+        
         for (_, id) in ids.enumerated() {
             if let patient = fetchCareRecipient(id: id) {
                 patients.append(patient)
             }
         }
-
+        
         return patients
     }
     

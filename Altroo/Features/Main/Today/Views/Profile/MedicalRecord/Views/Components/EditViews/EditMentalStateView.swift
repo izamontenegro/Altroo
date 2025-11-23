@@ -17,7 +17,7 @@ final class EditMentalStateView: UIView {
     private let headerView: EditSectionHeaderView = {
         let headerView = EditSectionHeaderView(
             sectionTitle: "Estado Mental",
-            sectionDescription: "Preencha os campos a seguir quanto aos dados básicos da pessoa cuidada.",
+            sectionDescription: "patient_profile_description".localized,
             sectionIcon: "brain.head.profile.fill"
         )
         headerView.translatesAutoresizingMaskIntoConstraints = false

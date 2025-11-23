@@ -30,8 +30,8 @@ final class EditPersonalDataView: UIView, UITextFieldDelegate {
     private let contentStackView = UIStackView()
 
     private let genderSegmentedControl = StandardSegmentedControl(items: ["F", "M"])
-    private let nameTextField = StandardTextfield(placeholder: "Nome do assistido")
-    private let addressTextField = StandardTextfield(placeholder: "Endereço do assistido")
+    private let nameTextField = StandardTextfield(placeholder: "patient_name_placeholder".localized)
+    private let addressTextField = StandardTextfield(placeholder: "address_placeholder".localized)
 
     private let heightTextField: StandardTextfield = {
         let textField = StandardTextfield()
@@ -50,7 +50,7 @@ final class EditPersonalDataView: UIView, UITextFieldDelegate {
     private let contactNameTextField = StandardTextfield(placeholder: "Nome do contato de emergência")
     private let contactPhoneTextField: StandardTextfield = {
         let textField = StandardTextfield()
-        textField.placeholder = "Telefone com DDI"
+        textField.placeholder = "contact_phone_placeholder".localized
         textField.keyboardType = .numberPad
         return textField
     }()
@@ -81,22 +81,22 @@ final class EditPersonalDataView: UIView, UITextFieldDelegate {
 
     private lazy var headerSection = EditSectionHeaderView(
         sectionTitle: "Dados Pessoais",
-        sectionDescription: "Preencha os campos a seguir quanto aos dados básicos da pessoa cuidada.",
+        sectionDescription: "patient_profile_description".localized,
         sectionIcon: "person.fill"
     )
 
-    private lazy var nameSection = FormSectionView(title: "Nome", content: nameTextField, isObligatory: true)
-    private lazy var dateOfBirthSection = FormSectionView(title: "Data de Nascimento", content: dateOfBirthPicker)
-    private lazy var ageSection = FormSectionView(title: "Idade", content: ageLabel)
-    private lazy var heightSection = FormSectionView(title: "Altura", content: heightStackView)
-    private lazy var weightSection = FormSectionView(title: "Peso", content: weightStackView)
-    private lazy var genderSection = FormSectionView(title: "Sexo", content: genderSegmentedControl)
-    private lazy var addressSection = FormSectionView(title: "Endereço", content: addressTextField)
+    private lazy var nameSection = FormSectionView(title: "name".localized, content: nameTextField, isObligatory: true)
+    private lazy var dateOfBirthSection = FormSectionView(title: "birth_date".localized, content: dateOfBirthPicker)
+    private lazy var ageSection = FormSectionView(title: "age".localized, content: ageLabel)
+    private lazy var heightSection = FormSectionView(title: "height".localized, content: heightStackView)
+    private lazy var weightSection = FormSectionView(title: "weight".localized, content: weightStackView)
+    private lazy var genderSection = FormSectionView(title: "gender".localized, content: genderSegmentedControl)
+    private lazy var addressSection = FormSectionView(title: "address".localized, content: addressTextField)
 
-    private lazy var contactNameSection = FormSectionView(title: "Nome", content: contactNameTextField, isSubsection: true)
-    private lazy var contactPhoneSection = FormSectionView(title: "Telefone", content: contactPhoneTextField, isSubsection: true)
-    private lazy var contactRelationshipSection = FormSectionView(title: "Relação", content: relationshipButton, isSubsection: true)
-    private lazy var contactSection = FormSectionView(title: "Contato de Emergência", content: contactStackView)
+    private lazy var contactNameSection = FormSectionView(title: "name".localized, content: contactNameTextField, isSubsection: true)
+    private lazy var contactPhoneSection = FormSectionView(title: "contact_phone".localized, content: contactPhoneTextField, isSubsection: true)
+    private lazy var contactRelationshipSection = FormSectionView(title: "relationship".localized, content: relationshipButton, isSubsection: true)
+    private lazy var contactSection = FormSectionView(title: "emergency_contact".localized, content: contactStackView)
 
     private lazy var heightStackView: UIStackView = {
         let centimetersLabel = StandardLabel(labelText: "cm", labelFont: .sfPro, labelType: .callOut, labelColor: .black10, labelWeight: .regular)

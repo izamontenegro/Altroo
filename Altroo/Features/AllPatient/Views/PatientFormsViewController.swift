@@ -16,7 +16,12 @@ class PatientFormsViewController: UIViewController {
     private let viewModel: AddPatientViewModel
     private var contactsList: [ContactDraft] = []
     
-    private let titleSection = FormTitleSection(title: "Perfil do Assistido", description: "Preencha os campos a seguir quanto aos dados básicos da pessoa cuidada.", totalSteps: 3, currentStep: 1)
+    private let titleSection = FormTitleSection(
+        title: "patient_profile_title".localized,
+        description: "patient_profile_description".localized,
+        totalSteps: 3,
+        currentStep: 1
+    )
     
     private let genderSegmentedControl: StandardSegmentedControl = {
         let items = ["F", "M"]
@@ -24,8 +29,8 @@ class PatientFormsViewController: UIViewController {
         return control
     }()
     
-    private lazy var nameTextField = StandardTextfield(placeholder: "Nome do assistido")
-    
+    private lazy var nameTextField = StandardTextfield(placeholder: "patient_name_placeholder".localized)
+
     private lazy var heightTextField: StandardTextfield = {
         let tf = StandardTextfield()
         tf.placeholder = "0"
@@ -75,11 +80,11 @@ class PatientFormsViewController: UIViewController {
         return stack
     }()
     
-    private lazy var addressTextField = StandardTextfield(placeholder: "Endereço do assistido")
-    private lazy var contactNameTextField = StandardTextfield(placeholder: "Nome do contato")
+    private lazy var addressTextField = StandardTextfield(placeholder: "address_placeholder".localized)
+    private lazy var contactNameTextField = StandardTextfield(placeholder: "contact_name_placeholder".localized)
     private lazy var contactPhoneTextField: StandardTextfield = {
         let tf = StandardTextfield()
-        tf.placeholder = "Telefone com DDI"
+        tf.placeholder = "contact_phone_placeholder".localized
         tf.keyboardType = .numberPad
         return tf
     }()
@@ -117,22 +122,22 @@ class PatientFormsViewController: UIViewController {
     }()
     
     
-    private lazy var nameSection = FormSectionView(title: "Nome", content: nameTextField, isObligatory: true)
-    private lazy var birthDateSection = FormSectionView(title: "Data de Nascimento", content: datePicker)
-    private lazy var ageSection = FormSectionView(title: "Idade", content: ageLabel)
-    private lazy var heightSection = FormSectionView(title: "Altura", content: heightInputStack)
-    private lazy var weightSection = FormSectionView(title: "Peso", content: weightInputStack)
-    private lazy var genderSection = FormSectionView(title: "Sexo", content: genderSegmentedControl)
-    private lazy var addressSection = FormSectionView(title: "Endereço", content: addressTextField)
-    
-    private lazy var contactSection = FormSectionView(title: "Contato de Emergência", content: contactStack)
-    private lazy var contactNameSection = FormSectionView(title: "Nome", content: contactNameTextField, isSubsection: true)
-    private lazy var contactPhoneSection = FormSectionView(title: "Telefone", content: contactPhoneTextField, isSubsection: true)
-    private lazy var contactRelationshipSection = FormSectionView(title: "Relação", content: relationshipButton, isSubsection: true)
-    
+    private lazy var nameSection = FormSectionView(title: "name".localized, content: nameTextField, isObligatory: true)
+    private lazy var birthDateSection = FormSectionView(title: "birth_date".localized, content: datePicker)
+    private lazy var ageSection = FormSectionView(title: "age".localized, content: ageLabel)
+    private lazy var heightSection = FormSectionView(title: "height".localized, content: heightInputStack)
+    private lazy var weightSection = FormSectionView(title: "weight".localized, content: weightInputStack)
+    private lazy var genderSection = FormSectionView(title: "gender".localized, content: genderSegmentedControl)
+    private lazy var addressSection = FormSectionView(title: "address".localized, content: addressTextField)
+
+    private lazy var contactSection = FormSectionView(title: "emergency_contact".localized, content: contactStack)
+    private lazy var contactNameSection = FormSectionView(title: "name".localized, content: contactNameTextField, isSubsection: true)
+    private lazy var contactPhoneSection = FormSectionView(title: "contact_phone".localized, content: contactPhoneTextField, isSubsection: true)
+    private lazy var contactRelationshipSection = FormSectionView(title: "relationship".localized, content: relationshipButton, isSubsection: true)
+
     private lazy var ageLabel: StandardLabel = {
         let label = StandardLabel(
-            labelText: "0 anos",
+            labelText: "age_default".localized,
             labelFont: .sfPro,
             labelType: .body,
             labelColor: .black10,
@@ -195,7 +200,7 @@ class PatientFormsViewController: UIViewController {
     }()
     
     private let scrollView = UIScrollView.make(direction: .vertical)
-    private let nextStepButton = StandardConfirmationButton(title: "Próximo")
+    private let nextStepButton = StandardConfirmationButton(title: "next".localized)
         
     init(viewModel: AddPatientViewModel) {
         self.viewModel = viewModel
@@ -300,11 +305,10 @@ class PatientFormsViewController: UIViewController {
         delegate?.goToComorbiditiesForms()
     }
 
-
     @objc
     private func updateAgeLabel() {
         let age = Calendar.current.dateComponents([.year], from: datePicker.date, to: Date()).year ?? 0
-        ageLabel.updateLabelText("\(age) anos")
+        ageLabel.updateLabelText(String(format: "age_format".localized, age))
     }
 }
 

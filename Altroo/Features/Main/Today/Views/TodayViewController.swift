@@ -7,10 +7,13 @@
 
 import UIKit
 import Combine
+import SwiftUI
 
 protocol TodayViewControllerDelegate: AnyObject {
     func goTo(_ destination: TodayDestination)
     func goToSymptomDetail(with symptom: Symptom)
+    func goToPrivacyPolicy()
+    func goToLegalNotice()
 }
 
 class TodayViewController: UIViewController {
@@ -20,6 +23,8 @@ class TodayViewController: UIViewController {
     var onTaskSelected: ((TaskInstance) -> Void)?
     var symptomsCard: SymptomsCard
     var feedingRecords: [FeedingRecord] = []
+    
+    private var dimmingView: UIView?
     private var cancellables = Set<AnyCancellable>()
 
     private var profileToolbar: ProfileToolbarContainer?
@@ -33,6 +38,13 @@ class TodayViewController: UIViewController {
         scrollView.translatesAutoresizingMaskIntoConstraints = false
         scrollView.showsHorizontalScrollIndicator = false
         return scrollView
+    }()
+    
+    private lazy var refreshControl: UIRefreshControl = {
+        let refreshControl = UIRefreshControl()
+        refreshControl.tintColor = .black30
+        refreshControl.addTarget(self, action: #selector(handleRefresh), for: .valueChanged)
+        return refreshControl
     }()
     
     let vStack: UIStackView = {
@@ -64,6 +76,7 @@ class TodayViewController: UIViewController {
         toolbar.delegate = self
         self.profileToolbar = toolbar
 
+        scrollView.refreshControl = refreshControl
         
         view.addSubview(scrollView)
         scrollView.addSubview(vStack)
@@ -87,6 +100,7 @@ class TodayViewController: UIViewController {
         ])
         
         setupBindings()
+        showHealthAlertIfNeeded()
     }
     
     override func viewWillAppear(_ animated: Bool) {
@@ -94,6 +108,10 @@ class TodayViewController: UIViewController {
         navigationController?.setNavigationBarHidden(true, animated: false)
         showTabBar(true)
         
+        fetchData()
+    }
+    
+    private func fetchData() {
         viewModel.fetchAllTodaySymptoms()
         viewModel.fetchStoolQuantity()
         viewModel.fetchUrineQuantity()
@@ -104,6 +122,16 @@ class TodayViewController: UIViewController {
         
         symptomsCard.updateSymptoms(viewModel.todaySymptoms)
         addSections()
+        
+        if refreshControl.isRefreshing {
+            refreshControl.endRefreshing()
+        }
+    }
+    
+    private func showHealthAlertIfNeeded() {
+        if !UserDefaults.standard.healthAlertSeen {
+            showHealthDataAlert()
+        }
     }
 
     func makeCardByPeriod() -> UIView {
@@ -117,7 +145,7 @@ class TodayViewController: UIViewController {
         
         if tasks.isEmpty {
             let emptyCard = EmptyCardView(text: "")
-            
+            //"today_empty_tasks".localized
             let normalText = "Nenhuma tarefa cadastrada para o turno da "
             let normalString = NSMutableAttributedString(string:normalText)
             
@@ -201,10 +229,10 @@ class TodayViewController: UIViewController {
         
         if configs.isEmpty || configs.first(where: { $0.type == .basicNeeds })?.subitems == nil {
             let defaultSubitems = [
-                SubitemConfig(title: "Alimentação", isVisible: true),
-                SubitemConfig(title: "Hidratação", isVisible: true),
-                SubitemConfig(title: "Fezes", isVisible: true),
-                SubitemConfig(title: "Urina", isVisible: true)
+                SubitemConfig(title: "feeding".localized, isVisible: true),
+                SubitemConfig(title: "hydration".localized, isVisible: true),
+                SubitemConfig(title: "stool".localized, isVisible: true),
+                SubitemConfig(title: "urine".localized, isVisible: true)
             ]
             let basicNeedsConfig = TodaySectionConfig(
                 type: .basicNeeds,
@@ -245,7 +273,7 @@ class TodayViewController: UIViewController {
                 ).build(from: config)
                 
                 vStack.addArrangedSubview(StandardLabel(
-                    labelText: "Necessidades Básicas",
+                    labelText: "today_section_basic_needs".localized,
                     labelFont: .sfPro,
                     labelType: .title2,
                     labelColor: .black10,
@@ -266,5 +294,64 @@ class TodayViewController: UIViewController {
                 vStack.addArrangedSubview(symptomsCard)
             }
         }
+    }
+    
+    private func showHealthDataAlert() {
+        let dim = UIView(frame: view.bounds)
+        dim.backgroundColor = UIColor.black.withAlphaComponent(0.5)
+        dim.alpha = 0
+        dimmingView = dim
+        view.addSubview(dim)
+
+        let alertVC = UIHostingController(
+            rootView: HealthDataAlertView(
+                onClose: { [weak self] in self?.closeHealthAlert() },
+                onPrivacyPolicy: { [weak self] in
+                    self?.delegate?.goToPrivacyPolicy()
+                },
+                onLegalNotice: { [weak self] in
+                    self?.delegate?.goToLegalNotice()
+                }
+            )
+        )
+        alertVC.view.backgroundColor = .clear
+
+        let alert = alertVC.view!
+        alert.translatesAutoresizingMaskIntoConstraints = false
+        alert.layer.shadowColor = UIColor.black.cgColor
+        alert.layer.shadowOpacity = 0.3
+        alert.layer.shadowRadius = 10
+        alert.layer.shadowOffset = .zero
+        alert.alpha = 0
+
+        self.addChild(alertVC)
+        view.addSubview(alert)
+        alertVC.didMove(toParent: self)
+
+        NSLayoutConstraint.activate([
+            alert.centerXAnchor.constraint(equalTo: view.centerXAnchor),
+            alert.centerYAnchor.constraint(equalTo: view.centerYAnchor),
+        ])
+
+        UIView.animate(withDuration: 0.3) {
+            dim.alpha = 1
+            alert.alpha = 1
+        }
+    }
+    
+    @objc private func closeHealthAlert() {
+        UserDefaults.standard.healthAlertSeen = true
+        
+        UIView.animate(withDuration: 0.3, animations: {
+            self.dimmingView?.alpha = 0
+            self.view.subviews.last?.alpha = 0
+        }, completion: { _ in
+            self.dimmingView?.removeFromSuperview()
+            self.view.subviews.last?.removeFromSuperview()
+        })
+    }
+    
+    @objc private func handleRefresh() {
+        fetchData()
     }
 }

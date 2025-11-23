@@ -23,12 +23,12 @@ class AssociatePatientViewController: GradientHeader {
     weak var delegate: AssociatePatientViewControllerDelegate?
     private let viewModel: AssociatePatientViewModel
     let context: CareRecipientContext
-    
+
     private var cancellables = Set<AnyCancellable>()
 
     private lazy var addNewPatientButton: CareRecipientCard = {
         let btn = CareRecipientCard(
-            name: "Adicionar assistido",
+            name: "add_assisted".localized,
             isPlusButton: true
         )
         let tapGesture = UITapGestureRecognizer(target: self, action: #selector(didTapAddNewPatientButton))
@@ -42,7 +42,7 @@ class AssociatePatientViewController: GradientHeader {
     let addExistingPatientButton: UIButton = {
         let button = UIButton(type: .system)
         let label = StandardLabel(
-            labelText: "Já tenho um assistido cadastrado",
+            labelText: "already_have_assisted".localized,
             labelFont: .sfPro,
             labelType: .body,
             labelColor: .teal10,
@@ -103,7 +103,7 @@ class AssociatePatientViewController: GradientHeader {
     }
 
     override func viewDidLoad() {
-        setNavbarItems(title: "Assistidos", subtitle: "Acompanhe os assistidos cadastrados no aplicativo ou adicione um novo.")
+        setNavbarItems(title: "assisted".localized, subtitle: "assisted_subtitle".localized)
 
         super.viewDidLoad()
         view.backgroundColor = .blue80
@@ -118,6 +118,12 @@ class AssociatePatientViewController: GradientHeader {
             name: .didFinishCloudKitSync,
             object: nil
         )
+    }
+    
+    override func viewWillAppear(_ animated: Bool) {
+        super.viewWillAppear(animated)
+        navigationController?.setNavigationBarHidden(true, animated: false)
+        showTabBar(true)
     }
 
     //TODO: - Add loading view
@@ -134,7 +140,7 @@ class AssociatePatientViewController: GradientHeader {
         scrollView.addSubview(vStack)
 
         NSLayoutConstraint.activate([
-            scrollView.topAnchor.constraint(equalTo: gradientView.bottomAnchor, constant: 20),
+            scrollView.topAnchor.constraint(equalTo: gradientView.bottomAnchor),
             scrollView.leadingAnchor.constraint(equalTo: view.leadingAnchor, constant: Layout.mediumSpacing),
             scrollView.trailingAnchor.constraint(equalTo: view.trailingAnchor, constant: -Layout.mediumSpacing),
             scrollView.bottomAnchor.constraint(equalTo: view.bottomAnchor, constant: context == .patientSelection ? -Layout.bigButtonBottomPadding : -20),
@@ -173,7 +179,7 @@ class AssociatePatientViewController: GradientHeader {
         vStack.setCustomSpacing(Layout.smallSpacing, after: addNewPatientButton)
         vStack.addArrangedSubview(addExistingPatientButton)
     }
-
+    
     @objc private func didTapCareRecipientCard(_ sender: UITapGestureRecognizer) {
         guard let card = sender.view as? CareRecipientCard,
               let careRecipient = card.careRecipient else { return }

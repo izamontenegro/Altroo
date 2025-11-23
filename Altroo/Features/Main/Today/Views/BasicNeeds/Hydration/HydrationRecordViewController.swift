@@ -172,7 +172,7 @@ final class HydrationRecordViewController: GradientNavBarViewController {
     }
 
     private func configureConfirmationButton() -> StandardConfirmationButton {
-        let button = StandardConfirmationButton(title: "Salvar")
+        let button = StandardConfirmationButton(title: "save".localized)
         button.addTarget(self, action: #selector(save), for: .touchUpInside)
         button.translatesAutoresizingMaskIntoConstraints = false
         return button
