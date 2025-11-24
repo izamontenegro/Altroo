@@ -9,12 +9,15 @@ import UIKit
 class MedicalRecordSectionHeader: UIView {
     let title: String
     let icon: String
-    
-    init(title: String, icon: String) {
+    private weak var editTarget: AnyObject?
+    private let editAction: Selector?
+
+    init(title: String, icon: String, editTarget: AnyObject?, editAction: Selector?) {
         self.title = title
         self.icon = icon
+        self.editTarget = editTarget
+        self.editAction = editAction
         super.init(frame: .zero)
-        
         setupHeader()
     }
     
@@ -50,7 +53,23 @@ class MedicalRecordSectionHeader: UIView {
         titleStackView.spacing = 8
         titleStackView.translatesAutoresizingMaskIntoConstraints = false
 
-        headerView.addSubview(titleStackView)
+        // Botão de editar (quadradinho com caneta)
+        let editButton = UIButton(type: .system)
+        editButton.translatesAutoresizingMaskIntoConstraints = false
+        editButton.setImage(UIImage(systemName: "square.and.pencil"), for: .normal)
+        editButton.tintColor = .pureWhite
+        editButton.contentEdgeInsets = UIEdgeInsets(top: 4, left: 8, bottom: 4, right: 8)
+        if let target = editTarget, let action = editAction {
+            editButton.addTarget(target, action: action, for: .touchUpInside)
+        }
+
+        let hStack = UIStackView(arrangedSubviews: [titleStackView, UIView(), editButton])
+        hStack.axis = .horizontal
+        hStack.alignment = .center
+        hStack.spacing = 8
+        hStack.translatesAutoresizingMaskIntoConstraints = false
+
+        headerView.addSubview(hStack)
         addSubview(headerView)
 
         NSLayoutConstraint.activate([
@@ -59,8 +78,9 @@ class MedicalRecordSectionHeader: UIView {
             headerView.trailingAnchor.constraint(equalTo: trailingAnchor),
             headerView.bottomAnchor.constraint(equalTo: bottomAnchor),
 
-            titleStackView.leadingAnchor.constraint(equalTo: headerView.leadingAnchor, constant: 12),
-            titleStackView.centerYAnchor.constraint(equalTo: headerView.centerYAnchor)
+            hStack.leadingAnchor.constraint(equalTo: headerView.leadingAnchor, constant: 12),
+            hStack.trailingAnchor.constraint(equalTo: headerView.trailingAnchor, constant: -8),
+            hStack.centerYAnchor.constraint(equalTo: headerView.centerYAnchor)
         ])
     }
 }

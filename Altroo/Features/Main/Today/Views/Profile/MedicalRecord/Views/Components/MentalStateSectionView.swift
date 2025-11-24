@@ -1,34 +1,26 @@
 //
-//  MedicalRecordSectionView.swift
+//  MentalStateSectionView.swift
 //  Altroo
 //
 //  Created by Izadora de Oliveira Albuquerque Montenegro on 23/11/25.
 //
 import UIKit
 
-final class MedicalRecordSectionView: UIView {
+final class MentalStateSectionView: UIView {
 
     init(
-        title: String,
-        iconSystemName: String,
-        rows: [InformationRow],
-        surgeryDisplayItems: [SurgeryDisplayItem],
-        contactDisplayItems: [ContactDisplayItem],
-        copyTarget: AnyObject?,
-        copyAction: Selector,
+        emotionalState: String,
+        orientationState: String,
+        memoryState: String,
         editTarget: AnyObject?,
         editAction: Selector?
     ) {
         super.init(frame: .zero)
         setupView()
         buildLayout(
-            title: title,
-            iconSystemName: iconSystemName,
-            rows: rows,
-            surgeryDisplayItems: surgeryDisplayItems,
-            contactDisplayItems: contactDisplayItems,
-            copyTarget: copyTarget,
-            copyAction: copyAction,
+            emotionalState: emotionalState,
+            orientationState: orientationState,
+            memoryState: memoryState,
             editTarget: editTarget,
             editAction: editAction
         )
@@ -44,38 +36,54 @@ final class MedicalRecordSectionView: UIView {
     }
 
     private func buildLayout(
-        title: String,
-        iconSystemName: String,
-        rows: [InformationRow],
-        surgeryDisplayItems: [SurgeryDisplayItem],
-        contactDisplayItems: [ContactDisplayItem],
-        copyTarget: AnyObject?,
-        copyAction: Selector,
+        emotionalState: String,
+        orientationState: String,
+        memoryState: String,
         editTarget: AnyObject?,
         editAction: Selector?
     ) {
         let headerView = MedicalRecordSectionHeader(
-            title: title,
-            icon: iconSystemName,
+            title: "Estado Mental",
+            icon: "brain.head.profile.fill",
             editTarget: editTarget,
             editAction: editAction
         )
 
         let bodyStackView = UIStackView()
         bodyStackView.axis = .vertical
-        bodyStackView.spacing = 10
+        bodyStackView.spacing = 12
         bodyStackView.translatesAutoresizingMaskIntoConstraints = false
 
-        for row in rows {
-            let subsection = MedicalRecordSubsectionView(
-                row: row,
-                surgeryDisplayItems: surgeryDisplayItems,
-                contactDisplayItems: contactDisplayItems,
-                copyTarget: copyTarget,
-                copyAction: copyAction
-            )
-            bodyStackView.addArrangedSubview(subsection)
-        }
+        let emotionalRow: InformationRow = ("Estado Emocional", emotionalState)
+        let emotionalSubsection = MedicalRecordSubsectionView(
+            row: emotionalRow,
+            surgeryDisplayItems: [],
+            contactDisplayItems: [],
+            copyTarget: nil,
+            copyAction: nil
+        )
+
+        let orientationRow: InformationRow = ("Orientação", orientationState)
+        let orientationSubsection = MedicalRecordSubsectionView(
+            row: orientationRow,
+            surgeryDisplayItems: [],
+            contactDisplayItems: [],
+            copyTarget: nil,
+            copyAction: nil
+        )
+
+        let memoryRow: InformationRow = ("Memória", memoryState)
+        let memorySubsection = MedicalRecordSubsectionView(
+            row: memoryRow,
+            surgeryDisplayItems: [],
+            contactDisplayItems: [],
+            copyTarget: nil,
+            copyAction: nil
+        )
+
+        bodyStackView.addArrangedSubview(emotionalSubsection)
+        bodyStackView.addArrangedSubview(orientationSubsection)
+        bodyStackView.addArrangedSubview(memorySubsection)
 
         addSubview(headerView)
         addSubview(bodyStackView)

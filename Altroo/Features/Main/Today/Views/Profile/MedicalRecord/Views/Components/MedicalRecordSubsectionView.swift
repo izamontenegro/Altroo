@@ -11,7 +11,6 @@ enum MedicalRecordSubsectionType {
     case contact
     case normal
 }
-import UIKit
 
 final class MedicalRecordSubsectionView: UIView {
     
@@ -61,6 +60,7 @@ final class MedicalRecordSubsectionView: UIView {
             headerTitle = row.title
         }
         
+        // Título da subseção
         let titleLabel = StandardLabel(
             labelText: headerTitle,
             labelFont: .sfPro,
@@ -71,21 +71,26 @@ final class MedicalRecordSubsectionView: UIView {
 
         let headerStack = UIStackView(arrangedSubviews: [titleLabel])
         headerStack.axis = .vertical
-        headerStack.spacing = 4
+        headerStack.spacing = 2
         headerStack.translatesAutoresizingMaskIntoConstraints = false
         
+        // Conteúdo da subseção
         let contentStack = UIStackView()
         contentStack.axis = .vertical
-        contentStack.spacing = 4
+        contentStack.spacing = 2
         contentStack.translatesAutoresizingMaskIntoConstraints = false
         
         switch type {
         case .normal:
-            let itemView = MedicalRecordInfoItemView(
-                infotitle: "",
-                infoDescription: row.value
+            let valueLabel = StandardLabel(
+                labelText: row.value,
+                labelFont: .sfPro,
+                labelType: .body,
+                labelColor: .black10,
+                labelWeight: .regular
             )
-            contentStack.addArrangedSubview(itemView)
+            valueLabel.numberOfLines = 0
+            contentStack.addArrangedSubview(valueLabel)
             
         case .surgeries:
             for surgery in surgeryDisplayItems {
@@ -110,6 +115,7 @@ final class MedicalRecordSubsectionView: UIView {
             }
         }
         
+        // Empilha título + conteúdo
         let wrapperStack = UIStackView(arrangedSubviews: [headerStack, contentStack])
         wrapperStack.axis = .vertical
         wrapperStack.spacing = 4

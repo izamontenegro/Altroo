@@ -9,12 +9,6 @@ import Combine
 
 public typealias InformationRow = (title: String, value: String)
 
-public struct MedicalRecordSectionViewModel {
-    public let title: String
-    public let iconSystemName: String
-    public let rows: [InformationRow]
-}
-
 public struct ContactDisplayItem {
     public let name: String
     public let relationship: String?
@@ -30,11 +24,8 @@ public struct SurgeryDisplayItem {
 final class MedicalRecordViewModel {
     var userService: UserServiceProtocol
     
-    @Published private(set) var sections: [MedicalRecordSectionViewModel] = []
     @Published private(set) var completionPercentage: CGFloat = 0.0
-
-    var surgeryDisplayItems: [SurgeryDisplayItem] = []
-    var contactDisplayItems: [ContactDisplayItem] = []
+    @Published private(set) var reloadToken: Int = 0
     
     init(userService: UserServiceProtocol) {
         self.userService = userService
@@ -51,7 +42,6 @@ final class MedicalRecordViewModel {
     
     func getUpdatedAt() -> String {
         guard let person = currentPatient() else { return "" }
-        
         return DateFormatterHelper.birthDateFormatter(from: person.recordUpdatedAt)
     }
     
@@ -59,44 +49,32 @@ final class MedicalRecordViewModel {
     
     func getName() -> String {
         let personalData = currentPatient()?.personalData
-        let name = personalData?.name ?? "Sem registro"
-        
-        return name
+        return personalData?.name ?? "Sem registro"
     }
     
     func getAddress() -> String {
         let personalData = currentPatient()?.personalData
-        let address = personalData?.address ?? "—"
-        
-        return address
+        return personalData?.address ?? "—"
     }
     
     func getBirthDate() -> String {
         let personalData = currentPatient()?.personalData
-        let birthDate = DateFormatterHelper.birthDateFormatter(from: personalData?.dateOfBirth)
-        
-        return birthDate
+        return DateFormatterHelper.birthDateFormatter(from: personalData?.dateOfBirth)
     }
     
     func getWeight() -> String {
         let personalData = currentPatient()?.personalData
-        let weight = MedicalRecordFormatter.formatKg(personalData?.weight)
-        
-        return weight
+        return MedicalRecordFormatter.formatKg(personalData?.weight)
     }
     
     func getHeight() -> String {
         let personalData = currentPatient()?.personalData
-        let height = MedicalRecordFormatter.formatMeters(personalData?.height)
-        
-        return height
+        return MedicalRecordFormatter.formatMeters(personalData?.height)
     }
     
     func getContacts() -> String {
         let personalData = currentPatient()?.personalData
         let contacts = MedicalRecordFormatter.contactsList(from: personalData?.contacts as? Set<Contact>)
-        
-        print(contacts)
         return contacts
     }
 
@@ -114,20 +92,21 @@ final class MedicalRecordViewModel {
     }
 
     func getSurgeriesItems() -> [SurgeryDisplayItem] {
-        surgeryDisplayItems = []
-
         let surgeriesSet = currentHealthProblems?.surgeries as? Set<Surgery> ?? []
-        let sortedSurgeries = surgeriesSet.sorted { ($0.date ?? .distantPast) < ($1.date ?? .distantPast) }
-
-        for surgery in sortedSurgeries {
+        if surgeriesSet.isEmpty { return [] }
+        
+        let sorted = surgeriesSet.sorted { ($0.date ?? .distantPast) < ($1.date ?? .distantPast) }
+        
+        return sorted.map { surgery in
             let name = surgery.name ?? "—"
-            let dateString = surgery.date.map { DateFormatterHelper.birthDateFormatter(from: $0) } ?? "—"
-            surgeryDisplayItems.append(
-                .init(title: "Cirurgias", primary: name, secondary: dateString)
+            let dateString = surgery.date
+                .map { DateFormatterHelper.birthDateFormatter(from: $0) } ?? "—"
+            return SurgeryDisplayItem(
+                title: "Cirurgias",
+                primary: name,
+                secondary: dateString
             )
         }
-
-        return surgeryDisplayItems
     }
 
     func getSurgeriesText() -> String {
@@ -223,128 +202,16 @@ final class MedicalRecordViewModel {
         currentPersonalCare?.equipmentState ?? "Sem registro"
     }
     
+    // MARK: - Rebuild / completion
+
     private func rebuildOutputs() {
         guard let person = currentPatient() else {
             completionPercentage = 0
-            sections = []
-            surgeryDisplayItems = []
-            contactDisplayItems = []
+            reloadToken &+= 1
             return
         }
         completionPercentage = calculateCompletion(for: person)
-        sections = [
-            .init(title: "Dados Pessoais", iconSystemName: "person.fill", rows: rowsPersonalData(from: person)),
-            .init(title: "Problemas de Saúde", iconSystemName: "heart.fill", rows: rowsHealthProblems(from: person)),
-            .init(title: "Estado Físico", iconSystemName: "figure", rows: rowsPhysicalState(from: person)),
-            .init(title: "Estado Mental", iconSystemName: "brain.head.profile.fill", rows: rowsMentalState(from: person)),
-            .init(title: "Cuidados Pessoais", iconSystemName: "hand.raised.fill", rows: rowsPersonalCare(from: person))
-        ]
-    }
-    
-    private func rowsPersonalData(from careRecipient: CareRecipient) -> [InformationRow] {
-        let personalData = careRecipient.personalData
-        let name = personalData?.name ?? "—"
-        let address = personalData?.address ?? "—"
-        let dateOfBirth = DateFormatterHelper.birthDateFormatter(from: personalData?.dateOfBirth)
-        let weight = MedicalRecordFormatter.formatKg(personalData?.weight)
-        let height = MedicalRecordFormatter.formatMeters(personalData?.height)
-
-        contactDisplayItems = []
-        if let contactsSet = personalData?.contacts as? Set<Contact>, !contactsSet.isEmpty {
-            let ordered = contactsSet.sorted { (leftContact, rightContact) in
-                let leftName = leftContact.name ?? ""
-                let rightName = rightContact.name ?? ""
-                return leftName.localizedCaseInsensitiveCompare(rightName) == .orderedAscending
-            }
-            for contact in ordered {
-                let displayName = contact.name ?? "—"
-                let relationshipText = contact.relationship
-                let phoneText = contact.phone ?? "—"
-                contactDisplayItems.append(
-                    .init(name: displayName, relationship: relationshipText, phone: phoneText)
-                )
-            }
-        }
-
-        let contactsText: String = contactDisplayItems.isEmpty ? "—" : ""
-
-        return [
-            ("name".localized, name),
-            ("birth_date".localized, dateOfBirth),
-            ("weight".localized, weight),
-            ("height".localized, height),
-            ("address".localized, address),
-            ("emergency_contact".localized, contactsText)
-        ]
-    }
-    
-    private func rowsHealthProblems(from careRecipient: CareRecipient) -> [InformationRow] {
-        let healthProblems = careRecipient.healthProblems
-        let diseasesList = MedicalRecordFormatter.diseasesBulletList(from: healthProblems?.diseases as? Set<Disease>)
-        
-        surgeryDisplayItems = []
-        let surgeriesSet = healthProblems?.surgeries as? Set<Surgery> ?? []
-        let sortedSurgeries = surgeriesSet
-            .sorted { ($0.date ?? .distantPast) < ($1.date ?? .distantPast) }
-        
-        for surgery in sortedSurgeries {
-            let name = surgery.name ?? "—"
-            let dateString = surgery.date.map { DateFormatterHelper.birthDateFormatter(from: $0) } ?? "—"
-            surgeryDisplayItems.append(.init(title: "Cirurgias", primary: name, secondary: dateString))
-        }
-        
-        let surgeriesRow: InformationRow = surgeryDisplayItems.isEmpty ? ("Cirurgias", "—") : ("Cirurgias", "")
-        
-        let allergies = healthProblems?.allergies ?? "—"
-        let observation = healthProblems?.observation ?? "—"
-        return [
-            ("Doenças", diseasesList),
-            surgeriesRow,
-            ("Alergias", allergies),
-            ("observation".localized, observation)
-        ]
-    }
-    
-    private func rowsPhysicalState(from careRecipient: CareRecipient) -> [InformationRow] {
-        let physicalState = careRecipient.physicalState
-        let vision = physicalState?.visionState.flatMap { VisionEnum(rawValue: $0)?.displayText } ?? "—"
-        let hearing = physicalState?.hearingState.flatMap { HearingEnum(rawValue: $0)?.displayText } ?? "—"
-        let mobility = physicalState?.mobilityState.flatMap { MobilityEnum(rawValue: $0)?.displayText } ?? "—"
-        let oralHealth = physicalState?.oralHealthState.flatMap { OralHealthEnum(rawValue: $0)?.displayText } ?? "—"
-        return [
-            ("Visão", vision),
-            ("Audição", hearing),
-            ("Locomoção", mobility),
-            ("Saúde bucal", oralHealth)
-        ]
-    }
-    
-    private func rowsMentalState(from careRecipient: CareRecipient) -> [InformationRow] {
-        let mentalState = careRecipient.mentalState
-        let emotional = mentalState?.emotionalState.flatMap { EmotionalStateEnum(rawValue: $0)?.displayText } ?? "—"
-        let orientation = mentalState?.orientationState.flatMap { OrientationEnum(rawValue: $0)?.displayText } ?? "—"
-        let memory = mentalState?.memoryState.flatMap { MemoryEnum(rawValue: $0)?.displayText } ?? "—"
-        return [
-            ("Comportamento", emotional),
-            ("Orientação", orientation),
-            ("Memória", memory)
-        ]
-    }
-    
-    private func rowsPersonalCare(from careRecipient: CareRecipient) -> [InformationRow] {
-        let personalCare = careRecipient.personalCare
-        let bath = personalCare?.bathState.flatMap { BathEnum(rawValue: $0)?.displayText } ?? "—"
-        let hygiene = personalCare?.hygieneState.flatMap { HygieneEnum(rawValue: $0)?.displayText } ?? "—"
-        let excretion = personalCare?.excretionState.flatMap { ExcretionEnum(rawValue: $0)?.displayText } ?? "—"
-        let feeding = personalCare?.feedingState.flatMap { FeedingEnum(rawValue: $0)?.displayText } ?? "—"
-        let equipment = personalCare?.equipmentState ?? "—"
-        return [
-            ("Banho", bath),
-            ("Higiene", hygiene),
-            ("Excreção", excretion),
-            ("feeding".localized, feeding),
-            ("Equipamentos", equipment)
-        ]
+        reloadToken &+= 1
     }
     
     private func calculateCompletion(for careRecipient: CareRecipient) -> CGFloat {
@@ -362,10 +229,6 @@ final class MedicalRecordViewModel {
             totalFields += 1
             if let number = value, !number.isNaN { filledFields += 1 }
         }
-        func checkArray(_ value: Any?) {
-            totalFields += 1
-            if let array = value as? [Any], !array.isEmpty { filledFields += 1 }
-        }
         func checkToManySet<T>(_ value: Set<T>?) {
             totalFields += 1
             if let set = value, !set.isEmpty { filledFields += 1 }
@@ -382,6 +245,8 @@ final class MedicalRecordViewModel {
         let healthProblems = careRecipient.healthProblems
         checkString(healthProblems?.observation)
         checkString(healthProblems?.allergies)
+        checkToManySet(healthProblems?.diseases as? Set<Disease>)
+        checkToManySet(healthProblems?.surgeries as? Set<Surgery>)
         
         let mentalState = careRecipient.mentalState
         checkString(mentalState?.cognitionState)
