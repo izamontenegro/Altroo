@@ -30,19 +30,89 @@ final class EditMedicalRecordCoordinator: Coordinator {
         switch destination {
         case .personalData:
             let vc = factory.makeEditPersonalDataViewController(delegate: self)
-            presentSheet(vc, from: navigation, percentage: 0.8)
+            let nav = UINavigationController(rootViewController: vc)
+            nav.modalPresentationStyle = .pageSheet
+
+            if let sheet = nav.sheetPresentationController {
+                sheet.detents = [
+                    .custom(identifier: .init("almostFull")) { context in
+                        context.maximumDetentValue * 0.9
+                    }
+                ]
+                sheet.prefersGrabberVisible = true
+            }
+
+            navigation.setNavigationBarHidden(true, animated: true)
+            navigation.present(nav, animated: true)
+            
         case .healthProblems:
             let vc = factory.makeEditPersonalDataViewController(delegate: self)
-            navigation.present(vc, animated: true)
+            let nav = UINavigationController(rootViewController: vc)
+            nav.modalPresentationStyle = .pageSheet
+
+            if let sheet = nav.sheetPresentationController {
+                sheet.detents = [
+                    .custom(identifier: .init("almostFull")) { context in
+                        context.maximumDetentValue * 0.9
+                    }
+                ]
+                sheet.prefersGrabberVisible = true
+            }
+
+            navigation.setNavigationBarHidden(true, animated: true)
+            navigation.present(nav, animated: true)
+            
         case .physicalState:
             let vc = factory.makeEditPersonalDataViewController(delegate: self)
-            navigation.present(vc, animated: true)
+            let nav = UINavigationController(rootViewController: vc)
+            nav.modalPresentationStyle = .pageSheet
+
+            if let sheet = nav.sheetPresentationController {
+                sheet.detents = [
+                    .custom(identifier: .init("almostFull")) { context in
+                        context.maximumDetentValue * 0.9
+                    }
+                ]
+                sheet.prefersGrabberVisible = true
+            }
+
+            navigation.setNavigationBarHidden(true, animated: true)
+            navigation.present(nav, animated: true)
+            
         case .mentalState:
-            let vc = factory.makeEditMentalStateViewController(delegate: self)
-            navigation.present(vc, animated: true)
+            let vc = factory.makeEditPersonalDataViewController(delegate: self)
+            let nav = UINavigationController(rootViewController: vc)
+            nav.modalPresentationStyle = .pageSheet
+
+            if let sheet = nav.sheetPresentationController {
+                sheet.detents = [
+                    .custom(identifier: .init("almostFull")) { context in
+                        context.maximumDetentValue * 0.9
+                    }
+                ]
+                sheet.prefersGrabberVisible = true
+            }
+
+            navigation.setNavigationBarHidden(true, animated: true)
+            navigation.present(nav, animated: true)
+            
         case .personalCare:
-            let vc = factory.makeEditPersonalCareViewController(delegate: self)
-            navigation.present(vc, animated: true)
+            let vc = factory.makeEditPersonalDataViewController(delegate: self)
+            let nav = UINavigationController(rootViewController: vc)
+            nav.modalPresentationStyle = .pageSheet
+
+            if let sheet = nav.sheetPresentationController {
+                sheet.detents = [
+                    .custom(identifier: .init("almostFull")) { context in
+                        context.maximumDetentValue * 0.9
+                    }
+                ]
+                sheet.prefersGrabberVisible = true
+            }
+
+            navigation.setNavigationBarHidden(true, animated: true)
+            navigation.present(nav, animated: true)
+            
         }
     }
 }

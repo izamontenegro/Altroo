@@ -264,8 +264,8 @@
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
 				CODE_SIGN_ENTITLEMENTS = Altroo/AltrooDebug.entitlements;
 				CODE_SIGN_STYLE = Automatic;
-				CURRENT_PROJECT_VERSION = 2;
-				DEVELOPMENT_TEAM = R45K4498NN;
+				CURRENT_PROJECT_VERSION = 1;
+				DEVELOPMENT_TEAM = NNJL9DUU4V;
 				GENERATE_INFOPLIST_FILE = YES;
 				INFOPLIST_FILE = Altroo/Resources/Info.plist;
 				INFOPLIST_KEY_CFBundleDisplayName = Altroo;
@@ -282,8 +282,8 @@
 					"$(inherited)",
 					"@executable_path/Frameworks",
 				);
-				MARKETING_VERSION = 1.3.0;
-				PRODUCT_BUNDLE_IDENTIFIER = IzadoraMontenegro.Altroo;
+				MARKETING_VERSION = 1.2.0;
+				PRODUCT_BUNDLE_IDENTIFIER = RaissaParente.Altroo;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SWIFT_EMIT_LOC_STRINGS = YES;
 				SWIFT_VERSION = 5.0;
@@ -298,8 +298,8 @@
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
 				CODE_SIGN_ENTITLEMENTS = Altroo/Altroo.entitlements;
 				CODE_SIGN_STYLE = Automatic;
-				CURRENT_PROJECT_VERSION = 2;
-				DEVELOPMENT_TEAM = R45K4498NN;
+				CURRENT_PROJECT_VERSION = 1;
+				DEVELOPMENT_TEAM = NNJL9DUU4V;
 				GENERATE_INFOPLIST_FILE = YES;
 				INFOPLIST_FILE = Altroo/Resources/Info.plist;
 				INFOPLIST_KEY_CFBundleDisplayName = Altroo;
@@ -316,8 +316,8 @@
 					"$(inherited)",
 					"@executable_path/Frameworks",
 				);
-				MARKETING_VERSION = 1.3.0;
-				PRODUCT_BUNDLE_IDENTIFIER = IzadoraMontenegro.Altroo;
+				MARKETING_VERSION = 1.2.0;
+				PRODUCT_BUNDLE_IDENTIFIER = RaissaParente.Altroo;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SWIFT_EMIT_LOC_STRINGS = YES;
 				SWIFT_VERSION = 5.0;
