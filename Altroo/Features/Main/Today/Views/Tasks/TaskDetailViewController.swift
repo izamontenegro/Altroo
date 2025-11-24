@@ -10,7 +10,7 @@ import UIKit
 class TaskDetailViewController: UIViewController {
     var taskInstance: TaskInstance
     var taskTemplate: RoutineTask
-
+    
     var onEditTapped: ((TaskInstance) -> Void)?
     
     lazy var vStack: UIStackView = {
@@ -18,7 +18,7 @@ class TaskDetailViewController: UIViewController {
         stackView.axis = .vertical
         stackView.distribution = .fill
         stackView.spacing = 16
-                
+        
         stackView.translatesAutoresizingMaskIntoConstraints = false
         return stackView
     }()
@@ -89,7 +89,7 @@ class TaskDetailViewController: UIViewController {
         stackView.axis = .horizontal
         stackView.distribution = .equalCentering
         stackView.translatesAutoresizingMaskIntoConstraints = false
-                
+        
         for day in Locale.Weekday.allWeekDays {
             //TODO: CHANGE FROM BUTTONS TO TAG
             let tag = PrimaryStyleButton(title: day.rawValue.first!.uppercased())
@@ -107,18 +107,17 @@ class TaskDetailViewController: UIViewController {
     private func makeTimeText() -> String {
         if let start = taskTemplate.startDate, let end = taskTemplate.endDate {
             let timeLabelText = "\(DateFormatterHelper.fullDayFormatter(date: start)) - \(DateFormatterHelper.fullDayFormatter(date: end))"
-        
+            
             return timeLabelText
             
         } else if let start = taskTemplate.startDate {
             let timeLabelText = "\(DateFormatterHelper.fullDayFormatter(date: start)) - Contínuo"
-        
+            
             return timeLabelText
         } else {
             return ""
         }
     }
-
     
     @objc func closeTapped() {
         dismiss(animated: true)
@@ -127,7 +126,6 @@ class TaskDetailViewController: UIViewController {
     @objc func editTapped() {
         dismiss(animated: true)
         onEditTapped?(taskInstance)
-
     }
 }
 

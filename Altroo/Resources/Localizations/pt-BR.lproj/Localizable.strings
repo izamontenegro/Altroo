@@ -128,7 +128,8 @@
 "history_nav_description" = "Confira todos os registros realizados anteriormente com a data, autoria do registros e demais detalhes";
 "error_selected_item" = "Erro ao selecionar item.";
 "registered_by" = "Registrada por";
-"history_empty" = "Você ainda não registrou nenhuma atividade.";
+"history_empty" = "Você ainda não registrou nada";
+"history_empty_2" = "Adicione um registro na tela 'Hoje’ e o acompanhe por aqui";
 "coloring" = "Coloração";
 "type" = "Tipo";
 "exclude" = "Excluir";

@@ -9,19 +9,34 @@ import SwiftUI
 
 struct EmptyStateHistoryView: View {
     var body: some View {
-        VStack(alignment: .center) {
-            ZStack {
-                Color.blue80
-                    .ignoresSafeArea(edges: .all)
+        ZStack {
+            Color.blue80
+                .ignoresSafeArea(edges: .all)
+            
+            VStack(spacing: 16) {
+                Image("emptyState")
+                    .resizable()
+                    .scaledToFit()
+                    .frame(width: 305)
                 
-                Text("history_empty".localized)
-                    .font(.title3)
-                    .fontWeight(.regular)
-                    .fontDesign(.rounded)
-                    .foregroundStyle(.black40)
-                    .multilineTextAlignment(.center)
-                    .padding(.horizontal)
+                VStack(spacing: 8) {
+                    Text("history_empty".localized)
+                        .font(.title3)
+                        .fontWeight(.medium)
+                        .foregroundStyle(.blue20)
+                    Text("history_empty_2".localized)
+                        .font(.title3)
+                        .fontWeight(.regular)
+                        .foregroundStyle(.black40)
+                }
+                .fontDesign(.rounded)
+                .multilineTextAlignment(.center)
+                .padding(.horizontal)
             }
         }
     }
+}
+
+#Preview {
+    EmptyStateHistoryView()
 }
