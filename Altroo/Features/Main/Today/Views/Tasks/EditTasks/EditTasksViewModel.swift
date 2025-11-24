@@ -24,7 +24,7 @@ class EditTaskViewModel {
     
     @Published var isContinuous: Bool = false
     
-    let continuousOptions = ["Contínuo", "Data Final"]
+    let continuousOptions = ["without_end".localized, "with_end".localized]
     var continuousButtonTitle: String {
         if isContinuous {
             continuousOptions[0]

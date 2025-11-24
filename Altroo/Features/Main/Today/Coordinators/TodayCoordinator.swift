@@ -31,9 +31,9 @@ final class TodayCoordinator: Coordinator {
         switch destination {
             
         case .recordFeeding:
-        let vc = factory.makeMealRecordViewController() as! MealRecordViewController
-        vc.delegate = self
-        return vc
+            let vc = factory.makeMealRecordViewController() as! MealRecordViewController
+            vc.delegate = self
+            return vc
             
         case .recordHydration:
             let vc = factory.makeHydrationRecordSheet()
@@ -69,9 +69,9 @@ final class TodayCoordinator: Coordinator {
         case .recordSaturation: return factory.makeRecordSaturationSheet()
             
         case .seeAllTasks:
-            return factory.makeAllTasksViewController { [weak self] task in
-                self?.openTaskDetail(for: task)
-            }
+            let vc =  factory.makeAllTasksViewController() as! AllTasksViewController
+            vc.coordinator = self
+            return vc
             
         case .addNewTask:
             let vc = factory.makeAddTaskViewController() as! AddTaskViewController
@@ -121,11 +121,38 @@ final class TodayCoordinator: Coordinator {
         }
     }
     
-    private func openTaskDetail(for task: TaskInstance)  {
-        let vc = factory.makeTaskDetailViewController(task: task) as! TaskDetailViewController
+    func openTaskDetail(for task: TaskInstance)  {
+        let vc = factory.makeTaskDetailViewController(mode: .instance(task)) as! TaskDetailViewController
+        
         vc.onEditTapped = {[weak self] task in
-            guard let taskTemplate = task.template else { return }
-            self?.goToEditTask(taskTemplate)
+            self?.goToEditTask(task)
+        }
+        
+        
+        vc.onDeleteTapped = { [weak self] in
+            guard let self else { return }
+            
+            if let allTasksVC = self.navigation.viewControllers
+                .compactMap({ $0 as? AllTasksViewController })
+                .first {
+                allTasksVC.viewModel.loadLateTasks()
+            }
+        }
+        
+        let nav = UINavigationController(rootViewController: vc)
+        nav.modalPresentationStyle = .pageSheet
+        
+        if let sheet = nav.sheetPresentationController {
+            sheet.detents = [.medium()]
+            sheet.prefersGrabberVisible = true
+        }
+        navigation.present(nav, animated: true)
+    }
+    
+    func openTaskTemplateDetail(for task: RoutineTask)  {
+        let vc = factory.makeTaskDetailViewController(mode: .template(task)) as! TaskDetailViewController
+        vc.onEditTapped = {[weak self] task in
+            self?.goToEditTask(task)
         }
         
         let nav = UINavigationController(rootViewController: vc)
@@ -145,43 +172,59 @@ final class TodayCoordinator: Coordinator {
     }
     
     private func goToEditTask(_ task: RoutineTask) {
-        let vc = factory.makeEditTaskViewController(task: task) as! EditTaskViewController
+        
+        guard let vc = factory.makeEditTaskViewController(task: task) as? EditTaskViewController else { return }
+        
         vc.coordinator = self
-        navigation.pushViewController(vc, animated: true)
+        
+        let nav = UINavigationController(rootViewController: vc)
+        nav.modalPresentationStyle = .pageSheet
+        
+        if let sheet = nav.sheetPresentationController {
+            sheet.detents = [
+                .custom(identifier: .init("almostFull")) { context in
+                    return context.maximumDetentValue * 0.9
+                }
+            ]
+            sheet.prefersGrabberVisible = true
+        }
+        
+        navigation.present(nav, animated: true)
+        
     }
 }
 
 extension TodayCoordinator: TodayViewControllerDelegate {
     
     func goTo(_ destination: TodayDestination) {
-            switch destination {
-            case .recordHydration, .recordUrine, .recordStool, .recordFeeding:
-                guard let rootVC = makeViewController(for: destination) else { return }
-                
-                let nav = UINavigationController(rootViewController: rootVC)
-                nav.modalPresentationStyle = .pageSheet
-                
-                if let sheet = nav.sheetPresentationController {
-                    sheet.detents = [
-                        .custom(identifier: .init("almostFull")) { context in
-                            return context.maximumDetentValue * 0.9  
-                        }
-                    ]
-                    sheet.prefersGrabberVisible = true
-                }
-                
-                navigation.present(nav, animated: true)
-                
-            default:
-                guard let vc = makeViewController(for: destination) else { return }
-                
-                if destination.isSheet {
-                    presentSheet(vc, from: navigation)
-                } else {
-                    navigation.pushViewController(vc, animated: true)
-                }
+        switch destination {
+        case .recordHydration, .recordUrine, .recordStool, .recordFeeding, .addNewTask:
+            guard let rootVC = makeViewController(for: destination) else { return }
+            
+            let nav = UINavigationController(rootViewController: rootVC)
+            nav.modalPresentationStyle = .pageSheet
+            
+            if let sheet = nav.sheetPresentationController {
+                sheet.detents = [
+                    .custom(identifier: .init("almostFull")) { context in
+                        return context.maximumDetentValue * 0.9
+                    }
+                ]
+                sheet.prefersGrabberVisible = true
+            }
+            
+            navigation.present(nav, animated: true)
+            
+        default:
+            guard let vc = makeViewController(for: destination) else { return }
+            
+            if destination.isSheet {
+                presentSheet(vc, from: navigation)
+            } else {
+                navigation.pushViewController(vc, animated: true)
             }
         }
+    }
     
     func goToSymptomDetail(with symptom: Symptom) {
         let vc = factory.makeSymptomDetailViewController(from: symptom) as! SymptomDetailViewController
@@ -202,9 +245,13 @@ extension TodayCoordinator: TodayViewControllerDelegate {
     func goToPrivacyPolicy() {
         goTo(.privacyPolicy)
     }
-
+    
     func goToLegalNotice() {
         goTo(.legalNotice)
+    }
+    
+    func openTaskDetail(with task: TaskInstance) {
+        openTaskDetail(for: task)
     }
 }
 
@@ -224,8 +271,9 @@ enum TodayDestination {
     
     var isSheet: Bool {
         switch self {
-        case .recordHydration, .recordHeartRate, .recordGlycemia,
-                .recordBloodPressure, .recordTemperature, .recordSaturation, .recordStool, .recordUrine, .recordFeeding:
+        case .recordHydration, .recordStool, .recordUrine, .recordFeeding,
+                .recordHeartRate, .recordGlycemia, .recordBloodPressure, .recordTemperature, .recordSaturation,
+                .addNewTask:
             return true
         default:
             return false
@@ -233,12 +281,28 @@ enum TodayDestination {
     }
 }
 
+extension TodayCoordinator: TaskCardNavigationDelegate {
+    func taskCardDidSelect(_ task: TaskInstance) {
+        let vc = factory.makeTaskDetailViewController(mode: .instance(task)) as! TaskDetailViewController
+        vc.onEditTapped = {[weak self] task in
+            self?.goToEditTask(task)
+        }
+        
+        presentSheet(
+            vc,
+            from: navigation,
+            percentage: 0.9
+        )
+    }
+}
+
+
 extension TodayCoordinator: AddTaskNavigationDelegate {
     func didFinishAddingTask() {
+        self.navigation.dismiss(animated: true)
         let superVC = navigation.viewControllers.first!
-        let vc = factory.makeAllTasksViewController { [weak self] task in
-            self?.openTaskDetail(for: task)
-        }
+        let vc = factory.makeAllTasksViewController() as! AllTasksViewController
+        vc.coordinator = self
         navigation.setViewControllers([superVC, vc], animated: true)
     }
 }

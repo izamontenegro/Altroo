@@ -43,19 +43,29 @@
 "add_task" = "Registrar Tarefa";
 "task_subtitle" = "Registre uma atividade a ser feita e sua duração ou repetições durante a semana.";
 "edit_task" = "Editar Tarefa";
+"with_end" = "Com data final";
+"without_end" = "Sem data final";
+"delete_task_confirmation_title" = "Deseja excluir essa tarefa?";
+"delete_task_confirmation_msg" = "A remoção desta tarefa apagará todos os dados contidos nela.";
+
 
 //forms
 "task" = "Tarefa";
 "taskform_subtitle" = "Confira os tarefas cadastradas no sistema ou adicione uma nova tarefa para visualizá-la aqui.";
-"taskform_repeat" = "Repetir";
-"taskform_start" = "Início";
-"taskform_end" = "Término";
-"taskform_duration" = "Duração";
-"taskform_new_time" = "Novo Horário";
+"taskform_name" = "Nome da tarefa";
+"taskform_repeat" = "Essa tarefa irá se repetir?";
+"taskform_start" = "Data Inicial";
+"taskform_end" = "Data Final";
+"taskform_duration" = "Qual a duração desta tarefa?";
+"taskform_new_time" = "Adicionar Horário";
 "morning" = "Manhã";
 "afternoon" = "Tarde";
 "night" = "Noite";
 "overnight" = "Madrugada";
+
+"taskdetail_repeat" = "Repetição";
+"taskdetail_duration" = "Duração";
+
 
 // MARK: - Intercurrences
 "add_intercurrence" = "Adicionar Intercorrência";
@@ -72,6 +82,7 @@
 "gender" = "Sexo";
 "address" = "Endereço";
 "time" = "Horário";
+"times" = "Horários";
 "save" = "Salvar";
 "date" = "Data";
 "back" = "Voltar";
@@ -88,6 +99,7 @@
 "start" = "Começar";
 "next" = "Próximo";
 "skip" = "Pular";
+
 
 // MARK: - AllPatientsFlow
 "assisted" = "Assistidos";
