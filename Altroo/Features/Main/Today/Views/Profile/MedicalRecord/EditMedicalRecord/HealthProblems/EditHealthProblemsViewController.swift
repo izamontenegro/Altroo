@@ -86,7 +86,7 @@ final class EditHealthProblemsViewController: UIViewController {
         let surgeriesSection = FormSectionView(title: "Cirurgias", content: surgeriesVerticalStack)
         let allergiesSection = FormSectionView(title: "Alergias", content: allergiesTextField)
         let observationsSection = FormSectionView(title: "observations".localized, content: observationView)
-
+        
         let stack = UIStackView(arrangedSubviews: [
             diseasesSection,
             surgeriesSection,
@@ -136,7 +136,7 @@ final class EditHealthProblemsViewController: UIViewController {
     }
     
     private func configureNavBar() {
-        navigationItem.title = "task".localized
+        navigationItem.title = "Editar".localized
         
         let closeButton = UIBarButtonItem(title: "close".localized, style: .done, target: self, action: #selector(closeTapped))
         closeButton.tintColor = .blue10
@@ -146,6 +146,13 @@ final class EditHealthProblemsViewController: UIViewController {
         appearance.configureWithOpaqueBackground()
         navigationItem.scrollEdgeAppearance = appearance
         
+    }
+    
+    private func configureConfirmationButton() -> StandardConfirmationButton {
+        let button = StandardConfirmationButton(title: "Salvar")
+        button.addTarget(self, action: #selector(persistAllFromView), for: .touchUpInside)
+        button.translatesAutoresizingMaskIntoConstraints = false
+        return button
     }
 
     private func setupUI() {
@@ -163,20 +170,39 @@ final class EditHealthProblemsViewController: UIViewController {
             scrollView.bottomAnchor.constraint(equalTo: view.bottomAnchor)
         ])
 
+
         scrollView.addSubview(contentView)
+        
+        let saveButton = configureConfirmationButton()
+        saveButton.translatesAutoresizingMaskIntoConstraints = false
+
+       
+        
         contentView.translatesAutoresizingMaskIntoConstraints = false
         contentView.layoutMargins = UIEdgeInsets(top: 15, left: 16, bottom: 20, right: 16)
+
+
+        contentView.addSubview(contentStack)
+        contentView.addSubview(saveButton)
+
+        NSLayoutConstraint.activate([
+            saveButton.topAnchor.constraint(equalTo: contentView.bottomAnchor, constant: 24),
+            saveButton.leadingAnchor.constraint(equalTo: scrollView.contentLayoutGuide.leadingAnchor, constant: 16),
+            saveButton.trailingAnchor.constraint(equalTo: scrollView.contentLayoutGuide.trailingAnchor, constant: -16),
+            saveButton.heightAnchor.constraint(equalToConstant: 50),
+            saveButton.bottomAnchor.constraint(equalTo: scrollView.contentLayoutGuide.bottomAnchor, constant: -40)
+        ])
 
         NSLayoutConstraint.activate([
             contentView.topAnchor.constraint(equalTo: scrollView.contentLayoutGuide.topAnchor),
             contentView.leadingAnchor.constraint(equalTo: scrollView.contentLayoutGuide.leadingAnchor),
             contentView.trailingAnchor.constraint(equalTo: scrollView.contentLayoutGuide.trailingAnchor),
-            contentView.bottomAnchor.constraint(equalTo: scrollView.contentLayoutGuide.bottomAnchor),
+
+            contentView.bottomAnchor.constraint(equalTo: saveButton.topAnchor, constant: -24),
+
             contentView.widthAnchor.constraint(equalTo: scrollView.frameLayoutGuide.widthAnchor)
         ])
-
-        contentView.addSubview(contentStack)
-
+        
         NSLayoutConstraint.activate([
             contentStack.topAnchor.constraint(equalTo: contentView.layoutMarginsGuide.topAnchor),
             contentStack.leadingAnchor.constraint(equalTo: contentView.layoutMarginsGuide.leadingAnchor),
@@ -252,7 +278,7 @@ final class EditHealthProblemsViewController: UIViewController {
         surgeryDatePicker.date = viewModel.healthFormState.surgeryDate
     }
 
-    func persistAllFromView() {
+    @objc func persistAllFromView() {
         viewModel.updateObservationText(observationView.textView.text)
         viewModel.persistObservation()
         viewModel.persistAllergies()
@@ -318,6 +344,7 @@ final class EditHealthProblemsViewController: UIViewController {
         viewModel.deleteSurgery(surgery)
         reloadSurgeriesList()
     }
+    
     
     @objc func closeTapped() {
         dismiss(animated: true)

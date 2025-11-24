@@ -111,6 +111,7 @@ final class EditPersonalCareViewController: UIViewController, UITextFieldDelegat
         super.viewDidLoad()
         setupUI()
         configureMenus()
+        configureNavBar()
         bindInitialState()
         equipmentsTextField.addTarget(self, action: #selector(equipmentsTextChanged(_:)), for: .editingChanged)
         equipmentsTextField.delegate = self
@@ -217,5 +218,22 @@ final class EditPersonalCareViewController: UIViewController, UITextFieldDelegat
     func persistAllFromView() {
         viewModel.updateEquipmentsText(equipmentsTextField.text ?? "")
         viewModel.persistPersonalCareFormState()
+    }
+    
+    private func configureNavBar() {
+        navigationItem.title = "Editar".localized
+        
+        let closeButton = UIBarButtonItem(title: "close".localized, style: .done, target: self, action: #selector(closeTapped))
+        closeButton.tintColor = .blue10
+        navigationItem.leftBarButtonItem = closeButton
+        
+        let appearance = UINavigationBarAppearance()
+        appearance.configureWithOpaqueBackground()
+        navigationItem.scrollEdgeAppearance = appearance
+        
+    }
+    
+    @objc func closeTapped() {
+        dismiss(animated: true)
     }
 }

@@ -4,15 +4,14 @@
 //
 //  Created by Izadora de Oliveira Albuquerque Montenegro on 30/10/25.
 //
-
 import UIKit
-import Combine
 
-final class EditPhysicalStateView: UIView {
-    let viewModel: EditMedicalRecordViewModel
+final class EditPhysicalStateViewController: UIViewController {
+
+    let viewModel: EditPhysicalStateViewModel
     weak var delegate: EditMedicalRecordViewControllerDelegate?
 
-    private var subscriptions = Set<AnyCancellable>()
+    // MARK: - UI
 
     private lazy var visionPopupButton: PopupMenuButton = {
         let button = PopupMenuButton(title: VisionEnum.noChanges.displayText)
@@ -42,7 +41,10 @@ final class EditPhysicalStateView: UIView {
         return stack
     }()
 
-    private lazy var locomotionSection = FormSectionView(title: "Locomoção", content: locomotionContentContainer)
+    private lazy var locomotionSection = FormSectionView(
+        title: "Locomoção",
+        content: locomotionContentContainer
+    )
 
     private let headerView: EditSectionHeaderView = {
         let headerView = EditSectionHeaderView(
@@ -110,58 +112,78 @@ final class EditPhysicalStateView: UIView {
         return stack
     }()
 
-    init(viewModel: EditMedicalRecordViewModel) {
+    // MARK: - Init
+
+    init(viewModel: EditPhysicalStateViewModel) {
         self.viewModel = viewModel
-        super.init(frame: .zero)
-        translatesAutoresizingMaskIntoConstraints = false
-        setupUserInterface()
-        configureMenus()
-        bindViewModel()
-        viewModel.loadInitialPhysicalStateFormState()
+        super.init(nibName: nil, bundle: nil)
     }
 
-    required init?(coder: NSCoder) { fatalError("init(coder:) has not been implemented") }
+    @MainActor required init?(coder: NSCoder) {
+        fatalError("init(coder:) has not been implemented")
+    }
+
+    // MARK: - Lifecycle
+
+    override func viewDidLoad() {
+        super.viewDidLoad()
+        setupUserInterface()
+        configureNavBar()
+        configureMenus()
+        loadInitialState()
+    }
+
+    // MARK: - UI Setup
 
     private func setupUserInterface() {
-        backgroundColor = .pureWhite
-        addSubview(headerView)
-        addSubview(formStack)
+        view.backgroundColor = .pureWhite
+        view.addSubview(headerView)
+        view.addSubview(formStack)
 
         NSLayoutConstraint.activate([
-            headerView.topAnchor.constraint(equalTo: safeAreaLayoutGuide.topAnchor, constant: 15),
-            headerView.leadingAnchor.constraint(equalTo: leadingAnchor, constant: 16),
-            headerView.trailingAnchor.constraint(equalTo: trailingAnchor, constant: -16),
+            headerView.topAnchor.constraint(equalTo: view.safeAreaLayoutGuide.topAnchor, constant: 15),
+            headerView.leadingAnchor.constraint(equalTo: view.leadingAnchor, constant: 16),
+            headerView.trailingAnchor.constraint(equalTo: view.trailingAnchor, constant: -16),
 
             formStack.topAnchor.constraint(equalTo: headerView.bottomAnchor, constant: 15),
-            formStack.leadingAnchor.constraint(equalTo: leadingAnchor, constant: 16),
-            formStack.trailingAnchor.constraint(equalTo: trailingAnchor, constant: -16),
-            formStack.bottomAnchor.constraint(lessThanOrEqualTo: bottomAnchor, constant: -20)
+            formStack.leadingAnchor.constraint(equalTo: view.leadingAnchor, constant: 16),
+            formStack.trailingAnchor.constraint(equalTo: view.trailingAnchor, constant: -16),
+            formStack.bottomAnchor.constraint(lessThanOrEqualTo: view.bottomAnchor, constant: -20)
         ])
     }
 
-    private func bindViewModel() {
-        viewModel.$physicalStateFormState
-            .receive(on: DispatchQueue.main)
-            .sink { [weak self] currentState in
-                guard let self else { return }
+    // MARK: - Load initial state
 
-                if let visionState = currentState.visionState {
-                    self.visionPopupButton.setTitle(visionState.displayText, for: .normal)
-                }
-                if let hearingState = currentState.hearingState {
-                    self.hearingPopupButton.setTitle(hearingState.displayText, for: .normal)
-                }
-                if let mobilityState = currentState.mobilityState {
-                    self.locomotionPopupButton.setTitle(mobilityState.displayText, for: .normal)
-                }
-                if let oralHealthState = currentState.oralHealthState {
-                    self.oralHealthColumn.updateSelection(for: oralHealthState)
-                } else {
-                    self.oralHealthColumn.clearSelection()
-                }
-            }
-            .store(in: &subscriptions)
+    private func loadInitialState() {
+        viewModel.loadInitialPhysicalState()
+        let state = viewModel.physicalStateFormState
+
+        if let visionState = state.visionState {
+            visionPopupButton.setTitle(visionState.displayText, for: .normal)
+        } else {
+            visionPopupButton.setTitle(VisionEnum.noChanges.displayText, for: .normal)
+        }
+
+        if let hearingState = state.hearingState {
+            hearingPopupButton.setTitle(hearingState.displayText, for: .normal)
+        } else {
+            hearingPopupButton.setTitle(HearingEnum.withoutDeficit.displayText, for: .normal)
+        }
+
+        if let mobilityState = state.mobilityState {
+            locomotionPopupButton.setTitle(mobilityState.displayText, for: .normal)
+        } else {
+            locomotionPopupButton.setTitle(MobilityEnum.noAssistance.displayText, for: .normal)
+        }
+
+        if let oralHealthState = state.oralHealthState {
+            oralHealthColumn.updateSelection(for: oralHealthState)
+        } else {
+            oralHealthColumn.clearSelection()
+        }
     }
+
+    // MARK: - Menus
 
     private func configureMenus() {
         let visionActions = VisionEnum.allCases.map { option in
@@ -190,5 +212,28 @@ final class EditPhysicalStateView: UIView {
         }
         locomotionPopupButton.menu = UIMenu(children: locomotionActions)
         locomotionPopupButton.showsMenuAsPrimaryAction = true
+    }
+
+    // MARK: - Public helper
+
+    func persistAllFromView() {
+        viewModel.persistPhysicalState()
+    }
+    
+    private func configureNavBar() {
+        navigationItem.title = "Editar".localized
+        
+        let closeButton = UIBarButtonItem(title: "close".localized, style: .done, target: self, action: #selector(closeTapped))
+        closeButton.tintColor = .blue10
+        navigationItem.leftBarButtonItem = closeButton
+        
+        let appearance = UINavigationBarAppearance()
+        appearance.configureWithOpaqueBackground()
+        navigationItem.scrollEdgeAppearance = appearance
+        
+    }
+    
+    @objc func closeTapped() {
+        dismiss(animated: true)
     }
 }

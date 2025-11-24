@@ -4,10 +4,7 @@
 //
 //  Created by Izadora de Oliveira Albuquerque Montenegro on 31/10/25.
 //
-
-import Combine
-import CloudKit
-import CoreData
+import Foundation
 
 struct MentalStateFormState: Equatable {
     var emotionalState: EmotionalStateEnum? = nil
@@ -16,9 +13,23 @@ struct MentalStateFormState: Equatable {
     var cognitionState: CognitionEnum? = nil
 }
 
-extension EditMedicalRecordViewModel {
-    
-    func loadInitialMentalStateFormState() {
+final class EditMentalStateViewModel {
+
+    private let userService: UserServiceProtocol
+    private let careRecipientFacade: CareRecipientFacade
+
+    var mentalStateFormState = MentalStateFormState()
+
+    init(userService: UserServiceProtocol, careRecipientFacade: CareRecipientFacade) {
+        self.userService = userService
+        self.careRecipientFacade = careRecipientFacade
+    }
+
+    func currentPatient() -> CareRecipient? {
+        userService.fetchCurrentPatient()
+    }
+
+    func loadInitialMentalState() {
         guard let patient = currentPatient(),
               let mentalState = patient.mentalState else {
             mentalStateFormState = MentalStateFormState()
@@ -34,30 +45,22 @@ extension EditMedicalRecordViewModel {
     }
 
     func updateEmotionalState(_ value: EmotionalStateEnum?) {
-        var draft = mentalStateFormState
-        draft.emotionalState = value
-        mentalStateFormState = draft
+        mentalStateFormState.emotionalState = value
     }
 
     func updateMemoryState(_ value: MemoryEnum?) {
-        var draft = mentalStateFormState
-        draft.memoryState = value
-        mentalStateFormState = draft
+        mentalStateFormState.memoryState = value
     }
 
     func updateOrientationState(_ value: OrientationEnum?) {
-        var draft = mentalStateFormState
-        draft.orientationState = value
-        mentalStateFormState = draft
+        mentalStateFormState.orientationState = value
     }
 
     func updateCognitionState(_ value: CognitionEnum?) {
-        var draft = mentalStateFormState
-        draft.cognitionState = value
-        mentalStateFormState = draft
+        mentalStateFormState.cognitionState = value
     }
 
-    func persistMentalStateFormState() {
+    func persistMentalState() {
         guard let patient = currentPatient(),
               let mentalState = patient.mentalState else { return }
 

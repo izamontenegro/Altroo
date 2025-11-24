@@ -6,13 +6,11 @@
 //
 
 import UIKit
-import Combine
 
-final class EditMentalStateView: UIView {
-    let viewModel: EditMedicalRecordViewModel
+final class EditMentalStateViewController: UIViewController {
+
+    let viewModel: EditMentalStateViewModel
     weak var delegate: EditMedicalRecordViewControllerDelegate?
-
-    private var subscriptions = Set<AnyCancellable>()
 
     private let headerView: EditSectionHeaderView = {
         let headerView = EditSectionHeaderView(
@@ -26,10 +24,10 @@ final class EditMentalStateView: UIView {
 
     private lazy var emotionalChipsView: WrappingCapsulesView = {
         let titles = EmotionalStateEnum.allCases.map { $0.displayText }
-        let view = WrappingCapsulesView(titles: titles) { [weak self] selectedTitle in
+        let view = WrappingCapsulesView(titles: titles) { [weak self] selected in
             guard let self else { return }
-            if let text = selectedTitle,
-               let value = EmotionalStateEnum.allCases.first(where: { $0.displayText == text }) {
+            if let selected,
+               let value = EmotionalStateEnum.allCases.first(where: { $0.displayText == selected }) {
                 self.viewModel.updateEmotionalState(value)
             } else {
                 self.viewModel.updateEmotionalState(nil)
@@ -38,25 +36,21 @@ final class EditMentalStateView: UIView {
         return view
     }()
 
-    private lazy var emotionalSectionTitleLabel: StandardLabel = {
-        StandardLabel(
-            labelText: "Estado Emocional",
-            labelFont: .sfPro,
-            labelType: .headline,
-            labelColor: .black10,
-            labelWeight: .semibold
-        )
-    }()
+    private lazy var emotionalSectionTitleLabel = StandardLabel(
+        labelText: "Estado Emocional",
+        labelFont: .sfPro,
+        labelType: .headline,
+        labelColor: .black10,
+        labelWeight: .semibold
+    )
 
-    private lazy var orientationTitleLabel: StandardLabel = {
-        StandardLabel(
-            labelText: "Orientação",
-            labelFont: .sfPro,
-            labelType: .headline,
-            labelColor: .black10,
-            labelWeight: .semibold
-        )
-    }()
+    private lazy var orientationTitleLabel = StandardLabel(
+        labelText: "Orientação",
+        labelFont: .sfPro,
+        labelType: .headline,
+        labelColor: .black10,
+        labelWeight: .semibold
+    )
 
     private lazy var orientationColumn = CheckColumnView(
         options: [
@@ -66,8 +60,8 @@ final class EditMentalStateView: UIView {
             OrientationEnum.disorientedInPersons
         ],
         titleProvider: { $0.displayText },
-        onSelect: { [weak self] selectedOption in
-            self?.viewModel.updateOrientationState(selectedOption)
+        onSelect: { [weak self] option in
+            self?.viewModel.updateOrientationState(option)
         }
     )
 
@@ -82,14 +76,16 @@ final class EditMentalStateView: UIView {
     private lazy var memorySection = FormSectionView(title: "Memória", content: memoryPopupButton)
 
     private lazy var formStack: UIStackView = {
-        let emotionalContainer = UIStackView(arrangedSubviews: [emotionalSectionTitleLabel, emotionalChipsView])
+        let emotionalContainer = UIStackView(arrangedSubviews: [
+            emotionalSectionTitleLabel, emotionalChipsView
+        ])
         emotionalContainer.axis = .vertical
-        emotionalContainer.alignment = .fill
         emotionalContainer.spacing = 12
 
-        let orientationContainer = UIStackView(arrangedSubviews: [orientationTitleLabel, orientationColumn])
+        let orientationContainer = UIStackView(arrangedSubviews: [
+            orientationTitleLabel, orientationColumn
+        ])
         orientationContainer.axis = .vertical
-        orientationContainer.alignment = .fill
         orientationContainer.spacing = 12
 
         let stack = UIStackView(arrangedSubviews: [
@@ -103,68 +99,90 @@ final class EditMentalStateView: UIView {
         return stack
     }()
 
-    init(viewModel: EditMedicalRecordViewModel) {
+    // MARK: - INIT
+    
+    init(viewModel: EditMentalStateViewModel) {
         self.viewModel = viewModel
-        super.init(frame: .zero)
-        translatesAutoresizingMaskIntoConstraints = false
-        setupUserInterface()
-        configureMemoryMenu()
-        bindViewModel()
-        viewModel.loadInitialMentalStateFormState()
+        super.init(nibName: nil, bundle: nil)
     }
 
-    required init?(coder: NSCoder) { fatalError("init(coder:) has not been implemented") }
+    @MainActor required init?(coder: NSCoder) {
+        fatalError("init(coder:) not implemented")
+    }
 
-    private func setupUserInterface() {
-        backgroundColor = .pureWhite
-        addSubview(headerView)
-        addSubview(formStack)
+    override func viewDidLoad() {
+        super.viewDidLoad()
+        setupUI()
+        configureMemoryMenu()
+        configureNavBar()
+        loadInitialState()
+    }
+
+    private func setupUI() {
+        view.backgroundColor = .pureWhite
+
+        view.addSubview(headerView)
+        view.addSubview(formStack)
 
         NSLayoutConstraint.activate([
-            headerView.topAnchor.constraint(equalTo: safeAreaLayoutGuide.topAnchor, constant: 15),
-            headerView.leadingAnchor.constraint(equalTo: leadingAnchor, constant: 16),
-            headerView.trailingAnchor.constraint(equalTo: trailingAnchor, constant: -16),
+            headerView.topAnchor.constraint(equalTo: view.safeAreaLayoutGuide.topAnchor, constant: 15),
+            headerView.leadingAnchor.constraint(equalTo: view.leadingAnchor, constant: 16),
+            headerView.trailingAnchor.constraint(equalTo: view.trailingAnchor, constant: -16),
 
             formStack.topAnchor.constraint(equalTo: headerView.bottomAnchor, constant: 15),
-            formStack.leadingAnchor.constraint(equalTo: leadingAnchor, constant: 16),
-            formStack.trailingAnchor.constraint(equalTo: trailingAnchor, constant: -16),
-            formStack.bottomAnchor.constraint(lessThanOrEqualTo: bottomAnchor, constant: -20)
+            formStack.leadingAnchor.constraint(equalTo: view.leadingAnchor, constant: 16),
+            formStack.trailingAnchor.constraint(equalTo: view.trailingAnchor, constant: -16),
+            formStack.bottomAnchor.constraint(lessThanOrEqualTo: view.bottomAnchor, constant: -20)
         ])
     }
 
-    private func bindViewModel() {
-        viewModel.$mentalStateFormState
-            .receive(on: DispatchQueue.main)
-            .sink { [weak self] currentState in
-                guard let self else { return }
+    private func loadInitialState() {
+        viewModel.loadInitialMentalState()
+        let state = viewModel.mentalStateFormState
 
-                if let emotionalState = currentState.emotionalState {
-                    self.emotionalChipsView.updateSelection(with: emotionalState.displayText)
-                } else {
-                    self.emotionalChipsView.updateSelection(with: nil)
-                }
+        emotionalChipsView.updateSelection(with: state.emotionalState?.displayText)
 
-                if let orientationState = currentState.orientationState {
-                    self.orientationColumn.updateSelection(for: orientationState)
-                } else {
-                    self.orientationColumn.clearSelection()
-                }
+        if let orientation = state.orientationState {
+            orientationColumn.updateSelection(for: orientation)
+        } else {
+            orientationColumn.clearSelection()
+        }
 
-                if let memoryState = currentState.memoryState {
-                    self.memoryPopupButton.setTitle(memoryState.displayText, for: .normal)
-                }
-            }
-            .store(in: &subscriptions)
+        if let memory = state.memoryState {
+            memoryPopupButton.setTitle(memory.displayText, for: .normal)
+        }
     }
 
     private func configureMemoryMenu() {
-        let memoryActions = MemoryEnum.allCases.map { option in
-            UIAction(title: option.displayText) { [weak self] _ in
-                self?.memoryPopupButton.setTitle(option.displayText, for: .normal)
-                self?.viewModel.updateMemoryState(option)
+        memoryPopupButton.menu = UIMenu(children:
+            MemoryEnum.allCases.map { option in
+                UIAction(title: option.displayText) { [weak self] _ in
+                    self?.memoryPopupButton.setTitle(option.displayText, for: .normal)
+                    self?.viewModel.updateMemoryState(option)
+                }
             }
-        }
-        memoryPopupButton.menu = UIMenu(children: memoryActions)
+        )
         memoryPopupButton.showsMenuAsPrimaryAction = true
+    }
+
+    func persistAllFromView() {
+        viewModel.persistMentalState()
+    }
+    
+    private func configureNavBar() {
+        navigationItem.title = "Editar".localized
+        
+        let closeButton = UIBarButtonItem(title: "close".localized, style: .done, target: self, action: #selector(closeTapped))
+        closeButton.tintColor = .blue10
+        navigationItem.leftBarButtonItem = closeButton
+        
+        let appearance = UINavigationBarAppearance()
+        appearance.configureWithOpaqueBackground()
+        navigationItem.scrollEdgeAppearance = appearance
+        
+    }
+    
+    @objc func closeTapped() {
+        dismiss(animated: true)
     }
 }

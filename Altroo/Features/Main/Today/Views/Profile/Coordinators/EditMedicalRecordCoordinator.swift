@@ -36,13 +36,12 @@ final class EditMedicalRecordCoordinator: Coordinator {
             if let sheet = nav.sheetPresentationController {
                 sheet.detents = [
                     .custom(identifier: .init("almostFull")) { context in
-                        context.maximumDetentValue * 0.9
+                        context.maximumDetentValue * 0.99
                     }
                 ]
                 sheet.prefersGrabberVisible = true
             }
 
-            navigation.setNavigationBarHidden(true, animated: true)
             navigation.present(nav, animated: true)
             
         case .healthProblems:
@@ -53,13 +52,12 @@ final class EditMedicalRecordCoordinator: Coordinator {
             if let sheet = nav.sheetPresentationController {
                 sheet.detents = [
                     .custom(identifier: .init("almostFull")) { context in
-                        context.maximumDetentValue * 0.9
+                        context.maximumDetentValue * 0.99
                     }
                 ]
                 sheet.prefersGrabberVisible = true
             }
 
-            navigation.setNavigationBarHidden(true, animated: true)
             navigation.present(nav, animated: true)
             
         case .physicalState:
@@ -70,13 +68,12 @@ final class EditMedicalRecordCoordinator: Coordinator {
             if let sheet = nav.sheetPresentationController {
                 sheet.detents = [
                     .custom(identifier: .init("almostFull")) { context in
-                        context.maximumDetentValue * 0.9
+                        context.maximumDetentValue * 0.99
                     }
                 ]
                 sheet.prefersGrabberVisible = true
             }
 
-            navigation.setNavigationBarHidden(true, animated: true)
             navigation.present(nav, animated: true)
             
         case .mentalState:
@@ -87,13 +84,12 @@ final class EditMedicalRecordCoordinator: Coordinator {
             if let sheet = nav.sheetPresentationController {
                 sheet.detents = [
                     .custom(identifier: .init("almostFull")) { context in
-                        context.maximumDetentValue * 0.9
+                        context.maximumDetentValue * 0.99
                     }
                 ]
                 sheet.prefersGrabberVisible = true
             }
 
-            navigation.setNavigationBarHidden(true, animated: true)
             navigation.present(nav, animated: true)
             
         case .personalCare:
@@ -104,15 +100,13 @@ final class EditMedicalRecordCoordinator: Coordinator {
             if let sheet = nav.sheetPresentationController {
                 sheet.detents = [
                     .custom(identifier: .init("almostFull")) { context in
-                        context.maximumDetentValue * 0.9
+                        context.maximumDetentValue * 0.99
                     }
                 ]
                 sheet.prefersGrabberVisible = true
             }
 
-            navigation.setNavigationBarHidden(true, animated: true)
             navigation.present(nav, animated: true)
-            
         }
     }
 }

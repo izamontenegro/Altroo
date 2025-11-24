@@ -4,10 +4,7 @@
 //
 //  Created by Izadora de Oliveira Albuquerque Montenegro on 31/10/25.
 //
-
-import Combine
-import CloudKit
-import CoreData
+import Foundation
 
 struct PhysicalStateFormState: Equatable {
     var visionState: VisionEnum? = nil
@@ -16,10 +13,25 @@ struct PhysicalStateFormState: Equatable {
     var mobilityState: MobilityEnum? = nil
 }
 
+final class EditPhysicalStateViewModel {
 
-extension EditMedicalRecordViewModel {
-    
-    func loadInitialPhysicalStateFormState() {
+    private let userService: UserServiceProtocol
+    private let careRecipientFacade: CareRecipientFacade
+
+    var physicalStateFormState = PhysicalStateFormState()
+
+    init(userService: UserServiceProtocol, careRecipientFacade: CareRecipientFacade) {
+        self.userService = userService
+        self.careRecipientFacade = careRecipientFacade
+    }
+
+    func currentPatient() -> CareRecipient? {
+        userService.fetchCurrentPatient()
+    }
+
+    // MARK: - Load inicial
+
+    func loadInitialPhysicalState() {
         guard let patient = currentPatient(),
               let physicalState = patient.physicalState else {
             physicalStateFormState = PhysicalStateFormState()
@@ -34,31 +46,27 @@ extension EditMedicalRecordViewModel {
         )
     }
 
+    // MARK: - Updates
+
     func updateVisionState(_ value: VisionEnum?) {
-        var draft = physicalStateFormState
-        draft.visionState = value
-        physicalStateFormState = draft
+        physicalStateFormState.visionState = value
     }
 
     func updateHearingState(_ value: HearingEnum?) {
-        var draft = physicalStateFormState
-        draft.hearingState = value
-        physicalStateFormState = draft
+        physicalStateFormState.hearingState = value
     }
 
     func updateOralHealthState(_ value: OralHealthEnum?) {
-        var draft = physicalStateFormState
-        draft.oralHealthState = value
-        physicalStateFormState = draft
+        physicalStateFormState.oralHealthState = value
     }
 
     func updateMobilityState(_ value: MobilityEnum?) {
-        var draft = physicalStateFormState
-        draft.mobilityState = value
-        physicalStateFormState = draft
+        physicalStateFormState.mobilityState = value
     }
 
-    func persistPhysicalStateFormState() {
+    // MARK: - Persistência
+
+    func persistPhysicalState() {
         guard let patient = currentPatient(),
               let physicalState = patient.physicalState else { return }
 
