@@ -25,50 +25,46 @@ class SettingsViewController: GradientHeader {
         view.backgroundColor = .blue80
         
         setupLayout()
-        
-        myprofilebutton.addTarget(self, action: #selector(didTapMyProfileButton), for: .touchUpInside)
-        privacybutton.addTarget(self, action: #selector(didTapPrivacyButton), for: .touchUpInside)
-        policybutton.addTarget(self, action: #selector(didTapPolicyButton), for: .touchUpInside)
-        devsbutton.addTarget(self, action: #selector(didTapDevelopersButton), for: .touchUpInside)
     }
     
     override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
         showTabBar(true)
-        navigationController?.navigationBar.isHidden = true
+        navigationController?.setNavigationBarHidden(true, animated: false)
     }
-    
-    // MARK: - Subviews
-    
-    private let myprofilebutton: ArrowWideRectangleButton = {
-        let emergencybutton = ArrowWideRectangleButton(title: "Meu Perfil")
-        return emergencybutton
-    }()
-    private let privacybutton: ArrowWideRectangleButton = {
-        let privacybutton = ArrowWideRectangleButton(title: "Privacidade e Proteção")
-        return privacybutton
-    }()
-    private let policybutton: ArrowWideRectangleButton = {
-        let privacybutton = ArrowWideRectangleButton(title: "Aviso Legal")
-        return privacybutton
-    }()
-    private let ratingbutton: ArrowWideRectangleButton = {
-        let ratingbutton = ArrowWideRectangleButton(title: "Deixar Avaliação")
-        return ratingbutton
-    }()
-    private let devsbutton: ArrowWideRectangleButton = {
-        let devsbutton = ArrowWideRectangleButton(title: "Desenvolvedoras")
-        return devsbutton
-    }()
     
     // MARK: - Layout
     private func setupLayout() {
-
+        let myprofilebutton = IconTitleArrowButton()
+        myprofilebutton.icon = UIImage(systemName: "person.fill")
+        myprofilebutton.titleText = "Meu Perfil"
+        myprofilebutton.translatesAutoresizingMaskIntoConstraints = false
+        
+        let privacybutton = IconTitleArrowButton()
+        privacybutton.icon = UIImage(systemName: "lock.fill")
+        privacybutton.titleText = "Privacidade e Proteção"
+        privacybutton.translatesAutoresizingMaskIntoConstraints = false
+        
+        let policybutton = IconTitleArrowButton()
+        policybutton.icon = UIImage(systemName: "document.fill")
+        policybutton.titleText = "Aviso Legal"
+        policybutton.translatesAutoresizingMaskIntoConstraints = false
+        
+        let ratingbutton = IconTitleArrowButton()
+        ratingbutton.icon = UIImage(systemName: "star.fill")
+        ratingbutton.titleText = "Deixar Avaliação"
+        ratingbutton.translatesAutoresizingMaskIntoConstraints = false
+        
+        let devsbutton = IconTitleArrowButton()
+        devsbutton.icon = UIImage(systemName: "hammer.fill")
+        devsbutton.titleText = "Desenvolvedoras"
+        devsbutton.translatesAutoresizingMaskIntoConstraints = false
         
         let stackView = UIStackView(arrangedSubviews: [myprofilebutton, privacybutton, policybutton, ratingbutton, devsbutton])
         stackView.axis = .vertical
         stackView.spacing = 16
         stackView.translatesAutoresizingMaskIntoConstraints = false
+        
         view.addSubview(stackView)
         
         NSLayoutConstraint.activate([
@@ -77,6 +73,11 @@ class SettingsViewController: GradientHeader {
             stackView.trailingAnchor.constraint(equalTo: view.trailingAnchor, constant: -16),
             stackView.bottomAnchor.constraint(lessThanOrEqualTo: view.bottomAnchor, constant: -24)
         ])
+        
+        myprofilebutton.addTarget(self, action: #selector(didTapMyProfileButton), for: .touchUpInside)
+        privacybutton.addTarget(self, action: #selector(didTapPrivacyButton), for: .touchUpInside)
+        policybutton.addTarget(self, action: #selector(didTapPolicyButton), for: .touchUpInside)
+        devsbutton.addTarget(self, action: #selector(didTapDevelopersButton), for: .touchUpInside)
     }
     
     // MARK: - BUTTON ACTION
@@ -86,6 +87,6 @@ class SettingsViewController: GradientHeader {
     @objc func didTapDevelopersButton() { delegate?.goToDevelopers() }
 }
 
-//#Preview {
-//    SettingsViewController()
-//}
+#Preview {
+    SettingsViewController()
+}

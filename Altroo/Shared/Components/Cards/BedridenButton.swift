@@ -12,13 +12,13 @@ class BedriddenButton: UIButton {
     var bedriddenState: BedriddenState
     
     var isSelectedState = false
+    
     private var innerShadowView: InnerShadowView?
     
-    
-    
     private lazy var circleIcon = PulseIcon(iconName: bedriddenState.iconName, color: .blue30, iconColor: .pureWhite, shadowColor: .clear)
-    
+
     private var checkIconView: UIImageView!
+    
     private lazy var label = StandardLabel(
         labelText: (bedriddenState == .movement ? "Acamado Com Movimento" :"Acamado Sem Movimento"),
         labelFont: .sfPro,
@@ -52,7 +52,6 @@ class BedriddenButton: UIButton {
         }
     }
     // MARK: - click to change color
-    
     func setSelectedState(_ selected: Bool) {
         isSelectedState = selected
         UIView.animate(withDuration: 0.3) {
@@ -95,6 +94,7 @@ class BedriddenButton: UIButton {
         insertSubview(shadow, at: 0)
         innerShadowView = shadow
     }
+    
     // MARK: - UI Construction
     private func makeContent() -> UIStackView {
         checkIconView = UIImageView(image: UIImage(systemName: bedriddenState.iconCheck))
