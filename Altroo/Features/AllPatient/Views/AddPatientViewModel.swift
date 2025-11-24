@@ -101,6 +101,8 @@ final class AddPatientViewModel: ObservableObject {
         }
         
         guard let newPatient else { return }
+        newPatient.creationDate = Date()
+        newPatient.sharedUUID = UUID().uuidString
         userService.addPatient(newPatient)
         userService.setCurrentPatient(newPatient)
         
@@ -112,12 +114,14 @@ final class AddPatientViewModel: ObservableObject {
     }
     
     func finalizeUser(startDate: Date, endDate: Date) {
-        userService.setName(userName)
-        userService.setCategory(selectedUserRelationship)
-        
-        if !userPhone.isEmpty {
-            userService.setPhone(userPhone)
+        if userService.fetchUser()?.name == "" {
+            userService.setName(userName)
+            if !userPhone.isEmpty {
+                userService.setPhone(userPhone)
+            }
         }
+        
+        userService.setCategory(selectedUserRelationship)
         
         if isAllDay {
             userService.setShift([.afternoon, .overnight, .morning, .night])
@@ -127,18 +131,12 @@ final class AddPatientViewModel: ObservableObject {
         }
     }
     
-    func finalizeNewCaregiver() {
-        let sharedPatients = userService.fetchSharedPatients()
-        guard let sharedPatient = sharedPatients.first else {
-            print("Nenhum paciente compartilhado encontrado")
-            return
-        }
-        
-        userService.addPatient(sharedPatient)
-        userService.setCurrentPatient(sharedPatient)
+    func finalizeNewCaregiver(to patient: CareRecipient) {
+        userService.addPatient(patient)
+        userService.setCurrentPatient(patient)
         
         guard let user = userService.fetchUser() else { return }
-        careRecipientFacade.addCaregiver(sharedPatient, for: user)
+        careRecipientFacade.addCaregiver(patient, for: user)
     }
 }
 
@@ -178,6 +176,8 @@ extension AddPatientViewModel {
     }
     
     func validateUser() -> Bool {
+        
+        if userService.fetchUser()?.name != "" { return true }
         guard validator.isEmpty(userName, error: &userNameError) else { return false }
         
         if !userPhone.isEmpty {

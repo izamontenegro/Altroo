@@ -18,6 +18,7 @@ class ShiftFormViewController: UIViewController {
     
     private let viewModel: AddPatientViewModel
     private let receivedPatientViaShare: Bool
+    private let patient: CareRecipient?
     
     private lazy var titleSection: FormTitleSection = {
         FormTitleSection(
@@ -37,9 +38,10 @@ class ShiftFormViewController: UIViewController {
         )
     }()
     
-    init(viewModel: AddPatientViewModel, receivedPatientViaShare: Bool) {
+    init(viewModel: AddPatientViewModel, receivedPatientViaShare: Bool, patient: CareRecipient? = nil) {
         self.viewModel = viewModel
         self.receivedPatientViaShare = receivedPatientViaShare
+        self.patient = patient
         super.init(nibName: nil, bundle: nil)
     }
     
@@ -274,7 +276,8 @@ class ShiftFormViewController: UIViewController {
         viewModel.finalizeUser(startDate: startTimePicker.date, endDate: endTimePicker.date)
         
         if receivedPatientViaShare {
-            viewModel.finalizeNewCaregiver()
+            guard let patient = patient else { return }
+            viewModel.finalizeNewCaregiver(to: patient)
         } else {
             viewModel.finalizeCareRecipient()
         }

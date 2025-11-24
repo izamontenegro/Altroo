@@ -180,6 +180,6 @@ class ComorbiditiesFormsViewController: UIViewController {
     @objc
     func didTapDoneButton() {
         viewModel.updateHealthProblems(diseases: diseasesList, bedriddenStatus: bedriddenStatus)
-        delegate?.goToShiftForms(receivedPatientViaShare: false)
+        delegate?.goToShiftForms(receivedPatientViaShare: false, patient: nil)
     }
 }

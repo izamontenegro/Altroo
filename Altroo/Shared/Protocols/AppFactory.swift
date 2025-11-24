@@ -39,7 +39,7 @@ protocol AssociatePatientFactory {
     func makeLoading() -> UIViewController
     func makePatientFormViewController(delegate: AssociatePatientViewControllerDelegate) -> UIViewController
     func makeComorbiditiesFormViewController(delegate: AssociatePatientViewControllerDelegate) -> UIViewController
-    func makeShiftFormViewController(delegate: ShiftFormsViewControllerDelegate, receivedPatientViaShare: Bool) -> UIViewController
+    func makeShiftFormViewController(delegate: ShiftFormsViewControllerDelegate, receivedPatientViaShare: Bool, patient: CareRecipient?) -> UIViewController
 }
 
 // MARK: - MAIN FLOW

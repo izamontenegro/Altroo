@@ -11,7 +11,7 @@ import Combine
 protocol AssociatePatientViewControllerDelegate: AnyObject {
     func goToPatientForms()
     func goToComorbiditiesForms()
-    func goToShiftForms(receivedPatientViaShare: Bool)
+    func goToShiftForms(receivedPatientViaShare: Bool, patient: CareRecipient?)
     func goToTutorialAddSheet()
     func goToMainFlow()
 }

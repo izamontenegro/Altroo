@@ -18,6 +18,7 @@ final class AppCoordinator: Coordinator {
     private var userService: UserServiceProtocol
     
     var receivedPatientViaShare: Bool = false
+    var sharedReceivedPatient: CareRecipient?
     
     init(rootNavigation: UINavigationController) {
         self.navigation = rootNavigation
@@ -29,7 +30,11 @@ final class AppCoordinator: Coordinator {
     
     @MainActor
     func start() async {
-
+        
+        // TODO: review if remove current patient
+        if receivedPatientViaShare && userService.fetchCurrentPatient() != nil { userService.removeCurrentPatient()
+        }
+        
         if !UserDefaults.standard.onboardingCompleted {
             if userService.fetchUser() == nil {
                 _ = userService.createUser(name: "", category: "Cuidador")
@@ -40,14 +45,6 @@ final class AppCoordinator: Coordinator {
         } else {
             showMainFlow()
         }
-    }
-    
-    @MainActor
-    private func waitForSharedPatientSync(timeout: Int) async {
-        for _ in 1...timeout {
-            try? await Task.sleep(nanoseconds: 1_000_000_000)
-        }
-        return
     }
 
     private func showOnboardingFlow(receivedPatientViaShare: Bool = false) {
@@ -88,7 +85,8 @@ final class AppCoordinator: Coordinator {
         add(child: associatePatientCoordinator)
         
         if receivedPatientViaShare {
-            associatePatientCoordinator.receivePatient()
+            guard let patient = sharedReceivedPatient else { return }
+            associatePatientCoordinator.receivePatient(patient)
         } else {
             associatePatientCoordinator.start()
         }

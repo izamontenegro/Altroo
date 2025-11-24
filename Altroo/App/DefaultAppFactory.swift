@@ -63,8 +63,8 @@ extension DefaultAppFactory {
         return vc
     }
     
-    func makeShiftFormViewController(delegate: ShiftFormsViewControllerDelegate, receivedPatientViaShare: Bool) -> UIViewController {
-        let vc = ShiftFormViewController(viewModel: addPatientViewModel, receivedPatientViaShare: receivedPatientViaShare)
+    func makeShiftFormViewController(delegate: ShiftFormsViewControllerDelegate, receivedPatientViaShare: Bool, patient: CareRecipient?) -> UIViewController {
+        let vc = ShiftFormViewController(viewModel: addPatientViewModel, receivedPatientViaShare: receivedPatientViaShare, patient: patient)
         vc.delegate = delegate
         return vc
     }

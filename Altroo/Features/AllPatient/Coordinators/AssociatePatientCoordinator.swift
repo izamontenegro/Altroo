@@ -24,15 +24,15 @@ final class AssociatePatientCoordinator: Coordinator {
         navigation.pushViewController(vc, animated: true)
     }
     
-    func receivePatient() {
+    func receivePatient(_ patient: CareRecipient) {
         let vc = factory.makeAssociatePatientViewController(delegate: self, context: .associatePatient)
         navigation.pushViewController(vc, animated: true)
-        show(.receivingPatient)
+        show(.receivingPatient, patient: patient)
     }
     
     enum Destination { case patientForms, tutorialAdd, loading, mainFlow, receivingPatient }
     
-    private func show(_ destination: Destination) {
+    private func show(_ destination: Destination, patient: CareRecipient? = nil) {
         switch destination {
         case .patientForms:
             // Go to the patient creation form.
@@ -91,7 +91,8 @@ final class AssociatePatientCoordinator: Coordinator {
                 self?.goToLoading()
             }
             
-            child.associateNewCaregiver()
+            guard let patient = patient else { return }
+            child.associateNewCaregiver(to: patient)
             
             presentSheet(
                 child.navigation,
@@ -105,7 +106,7 @@ extension AssociatePatientCoordinator: AssociatePatientViewControllerDelegate {
     func goToMainFlow() { onFinish?() }
     func goToPatientForms() { show(.patientForms) }
     func goToComorbiditiesForms() {  }
-    func goToShiftForms(receivedPatientViaShare: Bool = false) {  }
+    func goToShiftForms(receivedPatientViaShare: Bool = false, patient: CareRecipient? = nil) {  }
     func goToTutorialAddSheet() { show(.tutorialAdd) }
     func goToLoading() { show(.loading) }
 }
