@@ -1,0 +1,141 @@
+//
+//  LateTasksView.swift
+//  Altroo
+//
+//  Created by Raissa Parente on 17/11/25.
+//
+import UIKit
+import Combine
+
+final class LateTasksView: UIView {
+    private var cancellables = Set<AnyCancellable>()
+
+    var onSelectTask: ((TaskInstance) -> Void)?
+    var onMarkDone: ((TaskInstance) -> Void)?
+    
+    var dayStack: UIStackView = {
+        let taskStack = UIStackView()
+        taskStack.axis = .vertical
+        taskStack.spacing = 16
+        taskStack.alignment = .fill
+        taskStack.translatesAutoresizingMaskIntoConstraints = false
+        return taskStack
+    }()
+    
+    init(viewModel: AllTasksViewModel) {
+        super.init(frame: .zero)
+        translatesAutoresizingMaskIntoConstraints = false
+        setupContent(with: viewModel)
+        bindViewModel(viewModel)
+    }
+
+    required init?(coder: NSCoder) { fatalError() }
+
+    private func setupContent(with viewModel: AllTasksViewModel) {
+        if viewModel.lateTasks.isEmpty {
+            let emptyCard = EmptyCardView(text: "Nenhuma tarefa em atraso")
+            dayStack.addArrangedSubview(emptyCard)
+
+        } else {
+            for day in viewModel.daysOfLateTasks {
+                dayStack.addArrangedSubview(makeLateCardByDay(day, with: viewModel))
+            }
+        }
+     
+        addSubview(dayStack)
+        
+        NSLayoutConstraint.activate([
+            dayStack.topAnchor.constraint(equalTo: topAnchor),
+            dayStack.bottomAnchor.constraint(equalTo: bottomAnchor),
+            dayStack.leadingAnchor.constraint(equalTo: leadingAnchor),
+            dayStack.trailingAnchor.constraint(equalTo: trailingAnchor),
+            dayStack.widthAnchor.constraint(equalTo: widthAnchor),
+        ])
+    }
+    
+    func makeLateCardByDay(_ day: Date, with viewModel: AllTasksViewModel) -> UIStackView {
+        //HEADER
+        let dayLabel = StandardLabel(
+            labelText: "\(DateFormatterHelper.historyDateNumber(from: day)) - \(DateFormatterHelper.historyWeekdayShort(from: day))",
+            labelFont: .sfPro,
+            labelType: .body,
+            labelColor: .pureWhite)
+        
+        let titleView = UIView()
+        titleView.backgroundColor = .blue50
+        titleView.layer.cornerRadius = 4
+        titleView.translatesAutoresizingMaskIntoConstraints = false
+        titleView.addSubview(dayLabel)
+        
+        NSLayoutConstraint.activate([
+            dayLabel.leadingAnchor.constraint(equalTo: titleView.leadingAnchor, constant: 12),
+            dayLabel.topAnchor.constraint(equalTo: titleView.topAnchor, constant: 10),
+            dayLabel.bottomAnchor.constraint(equalTo: titleView.bottomAnchor, constant: -10),
+        ])
+        
+        let cardStack = UIStackView()
+        cardStack.axis = .vertical
+        cardStack.spacing = 8
+        cardStack.distribution = .fill
+        cardStack.alignment = .fill
+        cardStack.translatesAutoresizingMaskIntoConstraints = false
+        
+        cardStack.addArrangedSubview(titleView)
+        
+        //CONTENT
+        let tasks = viewModel.filterLateTasksByDay(day)
+
+        for task in tasks {
+            let card = TaskCard(task: task)
+            card.delegate = self
+            card.navigationDelegate = self
+            
+            card.translatesAutoresizingMaskIntoConstraints = false
+            cardStack.addArrangedSubview(card)
+            
+            NSLayoutConstraint.activate([
+                card.leadingAnchor.constraint(equalTo: cardStack.leadingAnchor),
+                card.trailingAnchor.constraint(equalTo: cardStack.trailingAnchor)
+            ])
+        }
+        
+        return cardStack
+    }
+
+    private func bindViewModel(_ viewModel: AllTasksViewModel) {
+        viewModel.$lateTasks
+            .receive(on: RunLoop.main)
+            .sink { [weak self] tasks in
+                self?.reload(tasks: tasks, viewModel: viewModel)
+            }
+            .store(in: &cancellables)
+    }
+    
+    private func reload(tasks: [TaskInstance], viewModel: AllTasksViewModel) {
+        dayStack.arrangedSubviews.forEach { $0.removeFromSuperview() }
+
+        if viewModel.lateTasks.isEmpty {
+            let emptyCard = EmptyCardView(text: "Nenhuma tarefa em atraso")
+            dayStack.addArrangedSubview(emptyCard)
+
+        } else {
+            for day in viewModel.daysOfLateTasks {
+                dayStack.addArrangedSubview(makeLateCardByDay(day, with: viewModel))
+            }
+        }
+
+        layoutIfNeeded()
+    }
+    
+}
+
+
+extension LateTasksView: TaskCardDelegate, TaskCardNavigationDelegate {
+    func taskCardDidMarkAsDone(_ task: TaskInstance) {
+        onMarkDone?(task)
+    }
+
+    func taskCardDidSelect(_ task: TaskInstance) {
+        onSelectTask?(task)
+    }
+}

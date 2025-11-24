@@ -11,7 +11,6 @@ class EditTaskViewController: TaskFormViewController {
     weak var coordinator: TodayCoordinator?
     var viewModel: EditTaskViewModel
     private var cancellables = Set<AnyCancellable>()
-
     
     init(viewModel: EditTaskViewModel) {
         self.viewModel = viewModel
@@ -23,16 +22,60 @@ class EditTaskViewController: TaskFormViewController {
     
     override func viewDidLoad() {
         super.viewDidLoad()
-        setupContent()
-        setupContinuousButton()
+
         setupRepeatingDays()
         setupTimes()
-        configure(title: "edit_task".localized, subtitle: "task_subtitle".localized, confirmButtonText: "save".localized, showDelete: true)
+        configure(title: "edit_task".localized, subtitle: "task_subtitle".localized, confirmButtonText: "save".localized, continuousButtonTitle: viewModel.continuousButtonTitle)
+        rebuildContinuousButton()
         bindViewModel()
+        configureNavBar()
         
         confirmButton.addTarget(self, action: #selector(saveChanges), for: .touchUpInside)
-        deleteButton.addTarget(self, action: #selector(deleteTask), for: .touchUpInside)
     }
+    
+    private func configureNavBar() {
+        let closeButton = UIBarButtonItem(title: "close".localized, style: .done, target: self, action: #selector(closeTapped))
+        closeButton.tintColor = .blue20
+        navigationItem.leftBarButtonItem = closeButton
+        
+        let deleteButton = UIBarButtonItem(title: "delete".localized, style: .done, target: self, action: #selector(deleteTapped))
+        deleteButton.tintColor = .red20
+        navigationItem.rightBarButtonItem = deleteButton
+        
+        let appearance = UINavigationBarAppearance()
+        appearance.configureWithOpaqueBackground()
+        navigationItem.scrollEdgeAppearance = appearance
+    }
+    
+    @objc func closeTapped() {
+        dismiss(animated: true)
+    }
+    @objc func deleteTapped() {
+        presentDeleteAlert()
+    }
+    
+    func presentDeleteAlert() {
+        let alertController = UIAlertController(
+            title: "delete_task_confirmation_title".localized,
+            message: "delete_task_confirmation_msg".localized,
+            preferredStyle: .alert
+        )
+        
+        let confirmAction = UIAlertAction(title: "delete".localized, style: .destructive) { [weak self] _ in
+            guard let self = self else { return }
+            viewModel.deleteTask()
+            dismiss(animated: true)
+            coordinator?.goToRoot()
+        }
+        
+        let cancelAction = UIAlertAction(title: "cancel".localized, style: .cancel, handler: nil)
+        
+        alertController.addAction(cancelAction)
+        alertController.addAction(confirmAction)
+        
+        present(alertController, animated: true, completion: nil)
+    }
+    
     
     func bindViewModel() {
         NotificationCenter.default.publisher(for: UITextField.textDidChangeNotification, object: nameTexfield)
@@ -79,15 +122,10 @@ class EditTaskViewController: TaskFormViewController {
             .receive(on: RunLoop.main)
             .sink { [weak self] isContinuous in
                 guard let self else { return }
-                self.continuousButton.setTitle(self.viewModel.continuousButtonTitle, for: .normal)
                 
-                self.rebuildContinuousButton()
-                
-                if isContinuous {
-                    removeEndDate()
-                } else {
-                    addEndDate()
-                }
+                viewModel.endDate = isContinuous ? nil : .now
+                reloadDurationSection(startDate: viewModel.startDate, endDate: viewModel.endDate)
+
             }
             .store(in: &cancellables)
         
@@ -100,16 +138,7 @@ class EditTaskViewController: TaskFormViewController {
             }
             .store(in: &cancellables)
     }
-    
-    func setupContinuousButton() {
-        let button = PopupMenuButton(title: viewModel.continuousButtonTitle)
-        insertContinuousPicker(button, showEndDate: viewModel.isContinuous)
-        continuousButton.showsMenuAsPrimaryAction = true
-        continuousButton.changesSelectionAsPrimaryAction = true
-        
-        rebuildContinuousButton()
-    }
-    
+
     func rebuildContinuousButton() {
         let actions: [UIAction] = viewModel.continuousOptions.map { option in
             let isSelected: Bool
@@ -140,37 +169,62 @@ class EditTaskViewController: TaskFormViewController {
         }
     }
     
+    //TIME
     func setupTimes() {
-        for components in viewModel.times {
-            if let date = Calendar.current.date(from: components) {
-                addTimeAction(date: date, isInitial: true)
-            }
-        }
-        
+        rebuildTimeViews()
         addTimeButton.addTarget(self, action: #selector(addTimeButtonTapped(_:)), for: .touchUpInside)
     }
     
-    func addTimeAction(date: Date = .now, isInitial: Bool = false) {
-        let newPicker = UIDatePicker.make(mode: .time)
-        newPicker.date = date
-        newPicker.tag = hourPickers.count
-        newPicker.addTarget(self, action: #selector(timeChanged(_:)), for: .valueChanged)
-        
-        if let _ = hourStack.arrangedSubviews.last as? PrimaryStyleButton {
-            hourStack.insertArrangedSubview(newPicker, at: hourStack.arrangedSubviews.count - 1)
-        } else {
-            hourStack.addArrangedSubview(newPicker)
-        }
-        hourPickers.append(newPicker)
-        
-        
-        if !isInitial {
-            let index = viewModel.times.count
-            viewModel.addTime(from: newPicker.date)
-        }
-
+    func addTimeAction() {
+        viewModel.addTime(from: .now)
+        rebuildTimeViews()
     }
     
+    func rebuildTimeViews() {
+        //reset everything
+        addTimeViews.removeAll()
+        for view in timePickersFlowView.subviews {
+            view.removeFromSuperview()
+        }
+        addTimeButton.removeFromSuperview()
+
+        let count = viewModel.times.count
+
+        //create all timepickers
+        for (index, time) in viewModel.times.enumerated() {
+            let picker = UIDatePicker.make(mode: .time)
+            if let date = Calendar.current.date(from: time) {
+                picker.date = date
+            }
+            picker.tag = index
+            picker.addTarget(self, action: #selector(timeChanged(_:)), for: .valueChanged)
+            addTimeViews.append(picker)
+        }
+
+        if count == 1 {
+            // only one timepicker - inline add button
+            addTimeViews.append(addTimeButton)
+            
+            if hourStack.arrangedSubviews.contains(addTimeButton) {
+                       hourStack.removeArrangedSubview(addTimeButton)
+                       addTimeButton.removeFromSuperview()
+           }
+            
+            deleteTimeButton.removeFromSuperview()
+
+        } else {
+            //more than one timepicker - inline minus button/downline add button
+            addTimeViews.append(deleteTimeButton)
+
+
+            if !hourStack.arrangedSubviews.contains(addTimeButton) {
+               hourStack.addArrangedSubview(addTimeButton)
+            }
+        }
+
+        timePickersFlowView.reload(with: addTimeViews)
+    }
+
     @objc func timeChanged(_ sender: UIDatePicker) {
         let index = sender.tag
         
@@ -193,11 +247,6 @@ class EditTaskViewController: TaskFormViewController {
     
     @objc private func saveChanges() {
         guard viewModel.updateTask() else { return }
-        coordinator?.goToRoot()
-    }
-    
-    @objc private func deleteTask() {
-        viewModel.deleteTask()
         coordinator?.goToRoot()
     }
 }

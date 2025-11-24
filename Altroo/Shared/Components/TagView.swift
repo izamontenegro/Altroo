@@ -15,13 +15,13 @@ final class TagView: UIView {
         labelText: "",
         labelFont: .sfPro,
         labelType: .subHeadline,
-        labelColor: UIColor(resource: .teal0),
+        labelColor: .blue20,
         labelWeight: .regular
     )
     
-    private let defaultLabelColor: UIColor = .teal10
-    private let defaultBackgroundColor: UIColor = .teal80
-    private let defaultIconTintColor: UIColor = .teal10
+    var defaultLabelColor: UIColor = .blue20
+    var defaultBackgroundColor: UIColor = .blue80
+    var defaultIconTintColor: UIColor = .blue20
     
     private let selectedLabelColor: UIColor = .black10
     private let selectedBackgroundColor: UIColor = .black40.withAlphaComponent(0.5)

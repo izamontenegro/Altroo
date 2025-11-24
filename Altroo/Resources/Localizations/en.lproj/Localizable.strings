@@ -46,23 +46,32 @@
 "add_task" = "Add Task";
 "task_subtitle" = "Record an activity to be done and its duration or repetitions during the week.";
 "edit_task" = "Edit Task";
+"with_end" = "With end date";
+"without_end" = "Without end date";
+"delete_task_confirmation_title" = "Do you want to delete this task?";
+"delete_task_confirmation_msg" = "Deleting this task will erase all data contained in it.";
 
 //forms
 "task" = "Task";
 "taskform_subtitle" = "Check the tasks registered in the system or add a new task to view it here.";
-"taskform_repeat" = "Repeat";
-"taskform_start" = "Start Time";
-"taskform_end" = "End Time";
+"taskform_name" = "Task name";
+"taskform_repeat" = "Will this task repeat?";
+"taskform_start" = "Start Date";
+"taskform_end" = "End Date";
+"taskform_duration" = "What is the duration of this task?";
 "taskform_duration" = "Duration";
-"taskform_new_time" = "New Schedule";
+"taskform_new_time" = "New Time";
 "morning" = "Morning";
 "afternoon" = "Afternoon";
 "night" = "Night";
 "overnight" = "Overnight";
 
+"taskdetail_repeat" = "Repetition";
+"taskdetail_duration" = "Duration";
 
 
 // MARK: - Intercurrences
+"name_intercurrence" = "Incident name";
 "add_intercurrence" = "Add Incident";
 "name_intercurrence" = "Name of the incident";
 "add_observations" = "Enter Observations";
@@ -120,6 +129,8 @@
 "start" = "Start";
 "next" = "Next";
 "skip" = "Skip";
+"records" = "Records";
+"times" = "Times";
 
 
 // MARK: - AllPatientsFlow

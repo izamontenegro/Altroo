@@ -8,8 +8,9 @@
 import UIKit
 
 final class StandardConfirmationButton: PrimaryStyleButton {
-    
+        
     var title: String
+    
     private let titleLabelCustom = StandardLabel(
         labelText: "",
         labelFont: .sfPro,
@@ -28,6 +29,10 @@ final class StandardConfirmationButton: PrimaryStyleButton {
         fatalError("init(coder:) has not been implemented")
     }
     
+    override var intrinsicContentSize: CGSize {
+        return CGSize(width: 230, height: 46)
+    }
+    
     override func layoutSubviews() {
         super.layoutSubviews()
     }
@@ -43,17 +48,18 @@ final class StandardConfirmationButton: PrimaryStyleButton {
         NSLayoutConstraint.activate([
             titleLabelCustom.centerXAnchor.constraint(equalTo: centerXAnchor),
             titleLabelCustom.centerYAnchor.constraint(equalTo: centerYAnchor),
-            
-            widthAnchor.constraint(equalToConstant: 230),
-            heightAnchor.constraint(equalToConstant: 46)
         ])
         
         layer.cornerRadius = 22
-        contentEdgeInsets = UIEdgeInsets(top: 8, left: 64,
-                                         bottom: 8, right: 64)
+//        contentEdgeInsets = UIEdgeInsets(top: 8, left: 64,
+//                                         bottom: 8, right: 64)
         translatesAutoresizingMaskIntoConstraints = false
+        
+        setContentHuggingPriority(.required, for: .horizontal)
+        setContentCompressionResistancePriority(.required, for: .horizontal)
     }
-    // MARK: - Public funcs
+    
+    
     func updateTitle(_ title: String) {
         titleLabelCustom.updateLabelText(title)
     }
