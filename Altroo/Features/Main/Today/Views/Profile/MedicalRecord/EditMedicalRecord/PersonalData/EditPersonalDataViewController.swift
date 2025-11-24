@@ -223,6 +223,9 @@ final class EditPersonalDataViewController: UIViewController, UITextFieldDelegat
         view.addSubview(scrollView)
         scrollView.addSubview(contentStackView)
         
+        let saveButton = configureConfirmationButton()
+        saveButton.translatesAutoresizingMaskIntoConstraints = false
+        
         contentStackView.axis = .vertical
         contentStackView.spacing = 22
         contentStackView.alignment = .fill
@@ -234,7 +237,8 @@ final class EditPersonalDataViewController: UIViewController, UITextFieldDelegat
             dateOfBirthAndAgeStackView,
             physicalInformationStackView,
             addressSection,
-            contactSection
+            contactSection,
+            saveButton
         ].forEach {
             contentStackView.addArrangedSubview($0)
         }
@@ -459,11 +463,13 @@ final class EditPersonalDataViewController: UIViewController, UITextFieldDelegat
     
     /// Valida, aplica erros na UI e, se tudo ok, persiste.
     @discardableResult
-    func validateAndPersist() -> Bool {
+    @objc func validateAndPersist() -> Bool {
         let isValid = viewModel.validatePersonalData()
         applyFieldErrors()
         if isValid {
             viewModel.persistPersonalData()
+            print("oiii")
+            dismiss(animated: true)
         }
         return isValid
     }
@@ -490,5 +496,12 @@ final class EditPersonalDataViewController: UIViewController, UITextFieldDelegat
     
     @objc func closeTapped() {
         dismiss(animated: true)
+    }
+    
+    private func configureConfirmationButton() -> StandardConfirmationButton {
+        let button = StandardConfirmationButton(title: "Salvar")
+        button.addTarget(self, action: #selector(validateAndPersist), for: .touchUpInside)
+        button.translatesAutoresizingMaskIntoConstraints = false
+        return button
     }
 }
