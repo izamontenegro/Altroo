@@ -61,6 +61,31 @@
 "add_intercurrence" = "Adicionar Intercorrência";
 "name_intercurrence" = "Nome da intercorrência";
 
+// General
+"mood_changes" = "Mudança de humor";
+"shaking" = "Tremores";
+"alergy" = "Reação Alérgica";
+"fever" = "Febre";
+
+// Physical & Accident
+"fall" = "Queda";
+"fainting" = "Desmaio";
+"trauma" = "Trauma";
+"wound" = "Ferimento";
+
+// Intestinal
+"vomit" = "Vômito";
+"nausea" = "Náusea";
+"diarrhea" = "Diarreia";
+"abdominal_pain" = "Dor abdominal";
+
+// Neurological
+"convulsion" = "Convulsão";
+"dizziness" = "Tontura";
+"vertigo" = "Vertigem";
+"headache" = "Dor de cabeça";
+"desorientation" = "Desorientação";
+
 // MARK: - Generals
 "delete" = "Deletar";
 "edit" = "Editar";

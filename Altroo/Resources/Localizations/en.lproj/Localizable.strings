@@ -67,6 +67,31 @@
 "name_intercurrence" = "Name of the incident";
 "add_observations" = "Enter Observations";
 
+// General
+"mood_changes" = "Mood changes";
+"shaking" = "Shaking";
+"alergy" = "Allergy";
+"fever" = "Fever";
+
+// Physical & Accident
+"fall" = "Fall";
+"fainting" = "Fainting";
+"trauma" = "Trauma";
+"wound" = "Wound";
+
+// Intestinal
+"vomit" = "Vomiting";
+"nausea" = "Nausea";
+"diarrhea" = "Diarrhea";
+"abdominal_pain" = "Abdominal pain";
+
+// Neurological
+"convulsion" = "Seizure";
+"dizziness" = "Dizziness";
+"vertigo" = "Vertigo";
+"headache" = "Headache";
+"desorientation" = "Disorientation";
+
 
 // MARK: - Generals
 "delete" = "Delete";
