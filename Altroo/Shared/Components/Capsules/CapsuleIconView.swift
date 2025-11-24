@@ -56,7 +56,9 @@ class CapsuleIconView: InnerShadowView {
             self.contentInsets = insets
         }
         
-        makeCapsule()
+       
+            makeCapsule()
+        
     }
     
     required init?(coder: NSCoder) { super.init(coder: coder) }

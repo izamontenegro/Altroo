@@ -15,15 +15,32 @@ final class HydrationRecordViewModel {
     private let historyService: HistoryService
 
     @Published var selectedAmount: HydrationAmountEnum? = nil
+
     @Published var customValue: Double = 0
+    @Published var customUnit: HydrationUnit = .milliliter
+
     @Published var targetValue: Double = 0
+    @Published var targetUnit: HydrationUnit = .milliliter
 
-
-    init(careRecipientFacade: CareRecipientFacade, userService: UserServiceSession, coreDataService: CoreDataService, historyService: HistoryService) {
+    init(
+        careRecipientFacade: CareRecipientFacade,
+        userService: UserServiceSession,
+        coreDataService: CoreDataService,
+        historyService: HistoryService
+    ) {
         self.careRecipientFacade = careRecipientFacade
         self.userService = userService
         self.coreDataService = coreDataService
         self.historyService = historyService
+    }
+    
+    private func convertToMl(_ value: Double, unit: HydrationUnit) -> Double {
+        switch unit {
+        case .milliliter:
+            return value
+        case .liter:
+            return value * 1000.0
+        }
     }
     
     func saveHydrationMeasure() {
@@ -32,9 +49,15 @@ final class HydrationRecordViewModel {
             let amount = selectedAmount
         else { return }
         
-        let totalWater = amount == .custom ? customValue : amount.milliliters
+        let totalWaterMl: Double
         
-        careRecipientFacade.setWaterMeasure(totalWater, careRecipient)
+        if amount == .custom {
+            totalWaterMl = convertToMl(customValue, unit: customUnit)
+        } else {
+            totalWaterMl = amount.milliliters
+        }
+        
+        careRecipientFacade.setWaterMeasure(totalWaterMl, careRecipient)
     }
     
     func saveHydrationTarget() {
@@ -42,7 +65,8 @@ final class HydrationRecordViewModel {
             let careRecipient = userService.fetchCurrentPatient()
         else { return }
        
-        careRecipientFacade.setWaterTarget(targetValue, careRecipient)
+        let targetMl = convertToMl(targetValue, unit: targetUnit)
+        careRecipientFacade.setWaterTarget(targetMl, careRecipient)
     }
     
     func loadTargetValue() {
@@ -51,5 +75,6 @@ final class HydrationRecordViewModel {
         else { return }
         
         targetValue = careRecipient.waterTarget
+        targetUnit = .milliliter
     }
 }

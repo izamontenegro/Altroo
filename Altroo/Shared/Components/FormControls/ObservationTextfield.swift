@@ -4,7 +4,6 @@
 //
 //  Created by Marcelle Ribeiro Queiroz on 16/10/25.
 //
-
 import UIKit
 
 protocol ObservationViewDelegate: AnyObject {
@@ -15,6 +14,15 @@ final class ObservationView: UIView, UITextViewDelegate {
     
     weak var delegate: ObservationViewDelegate?
     
+    private let placeholderLabel: UILabel = {
+        let label = UILabel()
+        label.font = UIFont.systemFont(ofSize: 16)
+        label.textColor = UIColor(resource: .black30)
+        label.numberOfLines = 0
+        label.translatesAutoresizingMaskIntoConstraints = false
+        return label
+    }()
+    
     let textView: UITextView = {
         let textView = UITextView()
         textView.backgroundColor = UIColor(resource: .white70)
@@ -22,85 +30,67 @@ final class ObservationView: UIView, UITextViewDelegate {
         textView.font = UIFont.systemFont(ofSize: 16)
         textView.textColor = UIColor(resource: .black10)
         textView.isScrollEnabled = false
-        textView.textContainerInset = UIEdgeInsets(top: 12, left: 16,
-                                                   bottom: 16, right: 16)
+        textView.textContainerInset = UIEdgeInsets(
+            top: 12,
+            left: 16,
+            bottom: 16,
+            right: 16
+        )
         textView.translatesAutoresizingMaskIntoConstraints = false
         return textView
     }()
     
-    override init(frame: CGRect) {
-        super.init(frame: frame)
+    // MARK: - Init
+    
+    init(placeholder: String) {
+        super.init(frame: .zero)
+        placeholderLabel.text = placeholder
         setupLayout()
         textView.delegate = self
     }
     
-    required init?(coder: NSCoder) {
+    @MainActor required init?(coder: NSCoder) {
         super.init(coder: coder)
+        placeholderLabel.text = "Digite algo..."
         setupLayout()
         textView.delegate = self
     }
+    
+    // MARK: - Layout
     
     private func setupLayout() {
         addSubview(textView)
+        addSubview(placeholderLabel)
         
         NSLayoutConstraint.activate([
             textView.topAnchor.constraint(equalTo: topAnchor),
             textView.leadingAnchor.constraint(equalTo: leadingAnchor),
             textView.trailingAnchor.constraint(equalTo: trailingAnchor),
             textView.bottomAnchor.constraint(equalTo: bottomAnchor),
+            textView.heightAnchor.constraint(greaterThanOrEqualToConstant: 72),
             
-            textView.heightAnchor.constraint(greaterThanOrEqualToConstant: 72)
+            placeholderLabel.topAnchor.constraint(equalTo: textView.topAnchor, constant: 12),
+            placeholderLabel.leadingAnchor.constraint(equalTo: textView.leadingAnchor, constant: 20),
+            placeholderLabel.trailingAnchor.constraint(equalTo: textView.trailingAnchor, constant: -20)
         ])
         
+        placeholderLabel.isHidden = !textView.text.isEmpty
     }
     
     // MARK: - UITextViewDelegate
+    
     func textViewDidChange(_ textView: UITextView) {
+        placeholderLabel.isHidden = !textView.text.isEmpty
         delegate?.observationView(self, didChangeText: textView.text)
     }
-}
-
-class ViewController: UIViewController {
-    private let observationView = ObservationView()
-    private var observationText: String = ""
     
-    override func viewDidLoad() {
-        super.viewDidLoad()
-        view.backgroundColor = .systemBackground
-        
-        observationView.delegate = self
-        
-        view.addSubview(observationView)
-        observationView.translatesAutoresizingMaskIntoConstraints = false
-        
-        NSLayoutConstraint.activate([
-            observationView.topAnchor.constraint(equalTo: view.safeAreaLayoutGuide.topAnchor, constant: 40),
-            observationView.leadingAnchor.constraint(equalTo: view.leadingAnchor, constant: 20),
-            observationView.trailingAnchor.constraint(equalTo: view.trailingAnchor, constant: -20)
-        ])
+    func textView(_ textView: UITextView,
+                  shouldChangeTextIn range: NSRange,
+                  replacementText text: String) -> Bool {
+        if text == "\n" {
+            textView.resignFirstResponder()
+            return false
+        }
+        return true
     }
 }
-
-extension ViewController: ObservationViewDelegate {
-    func observationView(_ view: ObservationView, didChangeText text: String) {
-        observationText = text
-        print("Texto atualizado: \(observationText)")
-        
-        // saveToCoreData(text: observationText)
-    }
-}
-
-import SwiftUI
-
-struct ObservationViewPreview: UIViewRepresentable {
-    func makeUIView(context: Context) -> ObservationView {
-        ObservationView()
-    }
-    
-    func updateUIView(_ uiView: ObservationView, context: Context) {}
-}
-
-//#Preview {
-//    ObservationViewPreview()
-//        .padding()
-//}

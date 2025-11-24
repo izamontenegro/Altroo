@@ -19,7 +19,6 @@ final class StoolRecordViewModel {
     
     @Published var selectedStoolType: StoolTypesEnum? = nil
     @Published var selectedStoolColor: StoolColorsEnum? = nil
-    @Published var selectedCharacteristics: [UrineCharacteristicsEnum] = []
     @Published var notes: String = ""
     
     init(stoolService: BasicNeedsFacade, coreDataService: CoreDataService, userService: UserServiceSession, historyService: HistoryService) {

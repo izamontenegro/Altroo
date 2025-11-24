@@ -31,8 +31,9 @@ final class BasicNeedsFacade: BasicNeedsFacadeProtocol {
     
     // MARK: - FEEDING ACTIONS
     
-    func addFeeding(amountEaten: MealAmountEatenEnum, date: Date, period: PeriodEnum, notes: String, mealCategory: MealCategoryEnum, author: String, in careRecipient: CareRecipient) {
-        feedingService.addFeedingRecord(amountEaten: amountEaten, Date: date, period: period, notes: notes, photo: nil, mealCategory: mealCategory, author: author, in: careRecipient)
+    func addFeeding(amountEaten: MealAmountEatenEnum?, date: Date, period: PeriodEnum, notes: String, mealCategory: MealCategoryEnum, author: String, in careRecipient: CareRecipient) {
+        
+        feedingService.addFeedingRecord(amountEaten: amountEaten, date: date, period: period, notes: notes, photo: nil, mealCategory: mealCategory, author: author, in: careRecipient)
         
         persistenceService.save()
     }
@@ -84,7 +85,6 @@ final class BasicNeedsFacade: BasicNeedsFacadeProtocol {
         date: Date,
         color: UrineColorsEnum?,
         in careRecipient: CareRecipient,
-        urineCharacteristics: [UrineCharacteristicsEnum],
         author: String,
         observation: String?
     ) {
@@ -92,7 +92,6 @@ final class BasicNeedsFacade: BasicNeedsFacadeProtocol {
             period: period,
             date: date,
             color: color,
-            characteristics: urineCharacteristics,
             observation: observation, author: author,
             to: careRecipient
         )
@@ -104,7 +103,6 @@ final class BasicNeedsFacade: BasicNeedsFacadeProtocol {
         period: PeriodEnum? = nil,
         date: Date? = nil,
         color: UrineColorsEnum? = nil,
-        characteristics: [UrineCharacteristicsEnum]? = nil,
         observation: String? = nil
     ) {
         urineService.updateUrineRecord(
@@ -112,7 +110,6 @@ final class BasicNeedsFacade: BasicNeedsFacadeProtocol {
             period: period,
             date: date,
             color: color,
-            characteristics: characteristics,
             observation: observation
         )
         persistenceService.save()

@@ -39,7 +39,7 @@ class StandardLabel: UILabel {
     public private(set) var labelFont: FontStyle
     public private(set) var labelType: LabelType
     public var labelColor: UIColor
-    public private(set) var labelWeight: FontWeight
+    public var labelWeight: FontWeight
     
     
     init(labelText: String, labelFont: FontStyle, labelType: LabelType, labelColor: UIColor, labelWeight: FontWeight = .regular) {
