@@ -21,18 +21,34 @@ extension RoutineTask {
 }
 
 extension TaskInstance {
-    var period: PeriodEnum {
-        let hour = Calendar.current.component(.hour, from: time!)
+    
+    //TODO: TEST
+    var isLatePeriod: Bool {
+        guard !isDone else { return false }
+
+        guard let dueDate = self.time else { return false }
+        guard Calendar.current.isDateInToday(dueDate) else { return false }
         
-        switch hour {
-        case 5..<12:
-            return .morning
-        case 12..<17:
-            return .afternoon
-        case 17..<21:
-            return .night
-        default:
-            return .overnight
+        if self.period.orderIndex < PeriodEnum.current.orderIndex {
+            return true
         }
+        
+        return false
     }
+    
+    
+    var isLateDay: Bool {
+        guard !isDone else { return false }
+        
+        guard let dueDate = self.time else { return false }
+        guard !Calendar.current.isDateInToday(dueDate) else { return false }
+        
+        let today = Date()
+        return dueDate < today
+    }
+    
+    var period: PeriodEnum {
+        PeriodEnum.period(for: time ?? .now) ?? .morning
+    }
+ 
 }
