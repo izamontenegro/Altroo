@@ -53,12 +53,24 @@ class MedicalRecordSectionHeader: UIView {
         titleStackView.spacing = 8
         titleStackView.translatesAutoresizingMaskIntoConstraints = false
 
-        // Botão de editar (quadradinho com caneta)
         let editButton = UIButton(type: .system)
         editButton.translatesAutoresizingMaskIntoConstraints = false
-        editButton.setImage(UIImage(systemName: "square.and.pencil"), for: .normal)
+
+        let editImage = UIImage(
+            systemName: "square.and.pencil",
+            withConfiguration: UIImage.SymbolConfiguration(weight: .bold)
+        )?.withRenderingMode(.alwaysTemplate)
+
+        editButton.setImage(editImage, for: .normal)
         editButton.tintColor = .pureWhite
-        editButton.contentEdgeInsets = UIEdgeInsets(top: 4, left: 8, bottom: 4, right: 8)
+        
+        NSLayoutConstraint.activate([
+            editButton.widthAnchor.constraint(equalToConstant: 21),
+            editButton.heightAnchor.constraint(equalToConstant: 21)
+        ])
+
+        editButton.transform = CGAffineTransform(scaleX: -1, y: 1)
+
         if let target = editTarget, let action = editAction {
             editButton.addTarget(target, action: action, for: .touchUpInside)
         }
