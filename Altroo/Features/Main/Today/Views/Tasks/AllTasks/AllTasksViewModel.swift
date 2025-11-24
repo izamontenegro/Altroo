@@ -44,7 +44,8 @@ class AllTasksViewModel {
         tasks = filterTodayTasks(allTasks)
     }
     
-    func filterTasksByPeriod(_ period: PeriodEnum) -> [TaskInstance] {
+    func
+    filterTasksByPeriod(_ period: PeriodEnum) -> [TaskInstance] {
         return tasks
             .filter({$0.period == period})
             .sorted(by: {$0.time! < $1.time!})

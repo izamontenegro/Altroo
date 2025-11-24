@@ -9,19 +9,30 @@ import UIKit
 final class FlowLayoutView: UIView {
     private let spacing: CGFloat = 8
     private var rows: [UIStackView] = []
-    private var maxWidth: CGFloat
+//    private var maxWidth: CGFloat
     private var storedViews: [UIView]
     
-    init(views: [UIView], maxWidth: CGFloat) {
-        self.maxWidth = maxWidth
+    private var didSetup = false
+    
+    init(views: [UIView]) {
+//        self.maxWidth = maxWidth
         self.storedViews = views
         
         super.init(frame: .zero)
         
-        setupRows(with: views, maxWidth: maxWidth)
+//        setupRows(with: views, maxWidth: maxWidth)
     }
     
     required init?(coder: NSCoder) { fatalError() }
+    
+    override func layoutSubviews() {
+            super.layoutSubviews()
+
+            guard !didSetup, bounds.width > 0 else { return }
+            didSetup = true
+
+            setupRows(with: storedViews, maxWidth: bounds.width)
+   }
     
     private func setupRows(with views: [UIView], maxWidth: CGFloat) {
         var currentRow = newRow()
@@ -65,7 +76,6 @@ final class FlowLayoutView: UIView {
             
             currentRow.addArrangedSubview(view)
             remainingWidth -= buttonWidth
-    
         }
         
         bottomAnchor.constraint(equalTo: previousRow.bottomAnchor).isActive = true
@@ -92,7 +102,7 @@ final class FlowLayoutView: UIView {
         self.removeConstraints(self.constraints)
         
         //rebuild
-        setupRows(with: newViews, maxWidth: maxWidth)
+        setupRows(with: newViews, maxWidth: bounds.width)
         
         //reload
         setNeedsLayout()

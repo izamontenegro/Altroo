@@ -11,15 +11,14 @@ class AddSymptomViewModel {
     let careRecipientFacade: CareRecipientFacade
     let userService: UserServiceProtocol
     let coreDataService: CoreDataService
-    let historyService: HistoryService
     
     var currentCareRecipient: CareRecipient?
     
     @Published var name: String = ""
     @Published var time: Date = .now
     @Published var date: Date = .now
-
     @Published var note: String = ""
+    @Published var selectedSymptom: SymptomExample?
     
     @Published private(set) var fieldErrors: [String: String] = [:]
     private let validator = FormValidator()
@@ -35,11 +34,10 @@ class AddSymptomViewModel {
         return newDate
     }
     
-    init(careRecipientFacade: CareRecipientFacade, userService: UserServiceProtocol, coreDataService: CoreDataService, historyService: HistoryService) {
+    init(careRecipientFacade: CareRecipientFacade, userService: UserServiceProtocol, coreDataService: CoreDataService) {
         self.careRecipientFacade = careRecipientFacade
         self.userService = userService
         self.coreDataService = coreDataService
-        self.historyService = historyService
         
         fetchCareRecipient()
     }
@@ -65,7 +63,5 @@ class AddSymptomViewModel {
         let author = coreDataService.currentPerformerName(for: careRecipient)
         
         careRecipientFacade.addSymptom(name: name, symptomDescription: note, date: fullDate, author: author, in: careRecipient)
-        
-        historyService.addHistoryItem(title: "Registrou \(name)", author: author, date: Date(), type: .symptom, to: careRecipient)
     }
 }
