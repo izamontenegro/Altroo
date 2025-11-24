@@ -16,7 +16,6 @@ final class OutlineRectangleButton: UIButton {
     private let selectedTextColor = UIColor.pureWhite
     private let unselectedTextColor = UIColor.blue40
     
-    
       private let horizontalPadding: CGFloat = 24
       private let verticalPadding: CGFloat = 8
     
