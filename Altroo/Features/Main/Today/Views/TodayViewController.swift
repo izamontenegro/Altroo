@@ -106,8 +106,8 @@ class TodayViewController: UIViewController {
         super.viewWillAppear(animated)
         navigationController?.setNavigationBarHidden(true, animated: false)
         showTabBar(true)
-        
         fetchData()
+        showHealthAlertIfNeeded()
     }
     
     private func fetchData() {
@@ -296,40 +296,47 @@ class TodayViewController: UIViewController {
     }
     
     private func showHealthDataAlert() {
-        let dim = UIView(frame: view.bounds)
+        guard let tabBarVC = self.tabBarController else { return }
+
+        let dim = UIView(frame: tabBarVC.view.bounds)
         dim.backgroundColor = UIColor.black.withAlphaComponent(0.5)
         dim.alpha = 0
+        dim.tag = 998
         dimmingView = dim
-        view.addSubview(dim)
+        tabBarVC.view.addSubview(dim)
 
         let alertVC = UIHostingController(
             rootView: HealthDataAlertView(
                 onClose: { [weak self] in self?.closeHealthAlert() },
                 onPrivacyPolicy: { [weak self] in
+                    self?.dismissHealthAlertUI()
                     self?.delegate?.goToPrivacyPolicy()
                 },
                 onLegalNotice: { [weak self] in
+                    self?.dismissHealthAlertUI()
                     self?.delegate?.goToLegalNotice()
                 }
             )
         )
+        
         alertVC.view.backgroundColor = .clear
-
         let alert = alertVC.view!
+        
         alert.translatesAutoresizingMaskIntoConstraints = false
+        alert.tag = 999
         alert.layer.shadowColor = UIColor.black.cgColor
         alert.layer.shadowOpacity = 0.3
         alert.layer.shadowRadius = 10
         alert.layer.shadowOffset = .zero
         alert.alpha = 0
 
-        self.addChild(alertVC)
-        view.addSubview(alert)
-        alertVC.didMove(toParent: self)
+        tabBarVC.addChild(alertVC)
+        tabBarVC.view.addSubview(alert)
+        alertVC.didMove(toParent: tabBarVC)
 
         NSLayoutConstraint.activate([
-            alert.centerXAnchor.constraint(equalTo: view.centerXAnchor),
-            alert.centerYAnchor.constraint(equalTo: view.centerYAnchor),
+            alert.centerXAnchor.constraint(equalTo: tabBarVC.view.centerXAnchor),
+            alert.centerYAnchor.constraint(equalTo: tabBarVC.view.centerYAnchor)
         ])
 
         UIView.animate(withDuration: 0.3) {
@@ -337,19 +344,38 @@ class TodayViewController: UIViewController {
             alert.alpha = 1
         }
     }
-    
+
     @objc private func closeHealthAlert() {
         UserDefaults.standard.healthAlertSeen = true
-        
-        UIView.animate(withDuration: 0.3, animations: {
-            self.dimmingView?.alpha = 0
-            self.view.subviews.last?.alpha = 0
-        }, completion: { _ in
-            self.dimmingView?.removeFromSuperview()
-            self.view.subviews.last?.removeFromSuperview()
-        })
+        dismissHealthAlertUI()
     }
     
+    private func dismissHealthAlertUI() {
+        guard let tabBarVC = self.tabBarController else { return }
+
+        tabBarVC.view.subviews
+            .filter { $0.tag == 999 }
+            .forEach { view in
+                UIView.animate(withDuration: 0.2, animations: {
+                    view.alpha = 0
+                }, completion: { _ in
+                    view.removeFromSuperview()
+                })
+            }
+
+        tabBarVC.view.subviews
+            .filter { $0.tag == 998 }
+            .forEach { dim in
+                UIView.animate(withDuration: 0.2, animations: {
+                    dim.alpha = 0
+                }, completion: { _ in
+                    dim.removeFromSuperview()
+                })
+            }
+
+        self.dimmingView = nil
+    }
+
     @objc private func handleRefresh() {
         fetchData()
     }
