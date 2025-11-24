@@ -33,7 +33,7 @@ struct EmptyStateHistoryView: View {
                 .multilineTextAlignment(.center)
                 .padding(.horizontal)
             }
-            .padding(.bottom, 60)
+            .padding(.bottom, 100)
         }
     }
 }

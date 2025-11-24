@@ -33,7 +33,7 @@ class MyProfileViewController: GradientNavBarViewController {
     
     private let titleLabel: StandardLabel = {
         let label = StandardLabel(
-            labelText: "Meu Perfil",
+            labelText: "my_profile".localized,
             labelFont: .sfPro,
             labelType: .title2,
             labelColor: .black10,
@@ -43,7 +43,7 @@ class MyProfileViewController: GradientNavBarViewController {
     }()
     private let subtitleLabel: StandardLabel = {
         let label = StandardLabel(
-            labelText: "Gerencie suas informações pessoais",
+            labelText: "my_profile_subtitle".localized,
             labelFont: .sfPro,
             labelType: .body,
             labelColor: .black30,
@@ -106,7 +106,7 @@ class MyProfileViewController: GradientNavBarViewController {
         let currentName = viewModel.caregiverName
 
         let name = InfoRowView(
-            title: "Nome",
+            title: "name".localized,
             info: currentName
         )
 

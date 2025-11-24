@@ -20,7 +20,7 @@ class SettingsViewController: GradientHeader {
     
     override func viewDidLoad() {
         setNavbarItems(title: "settings".localized,
-                       subtitle: "Personalize sua experiência, mantenha seus dados protegidos e conheça o time que dá vida ao app.")
+                       subtitle: "settings_nav_description".localized)
         super.viewDidLoad()
         view.backgroundColor = .blue80
         
@@ -35,29 +35,24 @@ class SettingsViewController: GradientHeader {
     
     // MARK: - Layout
     private func setupLayout() {
-        let myprofilebutton = IconTitleArrowButton()
-        myprofilebutton.icon = UIImage(systemName: "person.fill")
-        myprofilebutton.titleText = "Meu Perfil"
+        let myprofilebutton = IconTitleArrowButton(icon: "person.fill",
+                                                   title: "my_profile".localized)
         myprofilebutton.translatesAutoresizingMaskIntoConstraints = false
-        
-        let privacybutton = IconTitleArrowButton()
-        privacybutton.icon = UIImage(systemName: "lock.fill")
-        privacybutton.titleText = "Privacidade e Proteção"
+
+        let privacybutton = IconTitleArrowButton(icon: "lock.fill",
+                                                 title: "privacy".localized)
         privacybutton.translatesAutoresizingMaskIntoConstraints = false
         
-        let policybutton = IconTitleArrowButton()
-        policybutton.icon = UIImage(systemName: "document.fill")
-        policybutton.titleText = "Aviso Legal"
+        let policybutton = IconTitleArrowButton(icon: "document.fill",
+                                                title: "legal".localized)
         policybutton.translatesAutoresizingMaskIntoConstraints = false
         
-        let ratingbutton = IconTitleArrowButton()
-        ratingbutton.icon = UIImage(systemName: "star.fill")
-        ratingbutton.titleText = "Deixar Avaliação"
+        let ratingbutton = IconTitleArrowButton(icon: "star.fill",
+                                                title: "rating".localized)
         ratingbutton.translatesAutoresizingMaskIntoConstraints = false
         
-        let devsbutton = IconTitleArrowButton()
-        devsbutton.icon = UIImage(systemName: "hammer.fill")
-        devsbutton.titleText = "Desenvolvedoras"
+        let devsbutton = IconTitleArrowButton(icon: "hammer.fill",
+                                              title: "devs".localized)
         devsbutton.translatesAutoresizingMaskIntoConstraints = false
         
         let stackView = UIStackView(arrangedSubviews: [myprofilebutton, privacybutton, policybutton, ratingbutton, devsbutton])

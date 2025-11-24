@@ -30,7 +30,7 @@ class DevelopersViewController: GradientNavBarViewController {
     
     private let titleLabel: StandardLabel = {
         let label = StandardLabel(
-            labelText: "Desenvolvedoras",
+            labelText: "devs".localized,
             labelFont: .sfPro,
             labelType: .title2,
             labelColor: .black10,
@@ -40,7 +40,7 @@ class DevelopersViewController: GradientNavBarViewController {
     }()
     private let subtitleLabel: StandardLabel = {
         let label = StandardLabel(
-            labelText: "Equipe responsável pela criação e desenvolvimento do Altroo",
+            labelText: "devs_nav_description".localized,
             labelFont: .sfPro,
             labelType: .headline,
             labelColor: .black30,
