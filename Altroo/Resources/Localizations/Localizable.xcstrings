@@ -1463,7 +1463,7 @@
         "en" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Your privacy is our priority."
+            "value" : "Your privacy\nis our priority"
           }
         }
       }
