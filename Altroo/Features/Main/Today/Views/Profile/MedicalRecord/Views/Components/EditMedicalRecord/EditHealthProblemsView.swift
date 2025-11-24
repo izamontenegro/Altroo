@@ -6,8 +6,9 @@
 //
 import UIKit
 
-final class EditHealthProblemsView: UIView {
-    let viewModel: EditMedicalRecordViewModel
+final class EditHealthProblemsViewController: UIViewController {
+
+    let viewModel: EditHealthProblemsViewModel
     weak var delegate: EditMedicalRecordViewControllerDelegate?
 
     private let scrollView = UIScrollView()
@@ -111,34 +112,55 @@ final class EditHealthProblemsView: UIView {
     private var endEditingObserver: NSObjectProtocol?
 
     deinit {
-        if let observer = endEditingObserver { NotificationCenter.default.removeObserver(observer) }
+        if let observer = endEditingObserver {
+            NotificationCenter.default.removeObserver(observer)
+        }
     }
 
-    init(viewModel: EditMedicalRecordViewModel) {
+    init(viewModel: EditHealthProblemsViewModel) {
         self.viewModel = viewModel
-        super.init(frame: .zero)
-        translatesAutoresizingMaskIntoConstraints = false
+        super.init(nibName: nil, bundle: nil)
+    }
+
+    @MainActor required init?(coder: NSCoder) {
+        fatalError("init(coder:) has not been implemented")
+    }
+
+    override func viewDidLoad() {
+        super.viewDidLoad()
         setupUI()
+        configureNavBar()
         bindUI()
         fillInformations()
         reloadSurgeriesList()
     }
-
-    required init?(coder: NSCoder) { fatalError("init(coder:) has not been implemented") }
+    
+    private func configureNavBar() {
+        navigationItem.title = "task".localized
+        
+        let closeButton = UIBarButtonItem(title: "close".localized, style: .done, target: self, action: #selector(closeTapped))
+        closeButton.tintColor = .blue10
+        navigationItem.leftBarButtonItem = closeButton
+        
+        let appearance = UINavigationBarAppearance()
+        appearance.configureWithOpaqueBackground()
+        navigationItem.scrollEdgeAppearance = appearance
+        
+    }
 
     private func setupUI() {
-        backgroundColor = .pureWhite
+        view.backgroundColor = .pureWhite
 
-        addSubview(scrollView)
+        view.addSubview(scrollView)
         scrollView.translatesAutoresizingMaskIntoConstraints = false
         scrollView.alwaysBounceVertical = true
         scrollView.keyboardDismissMode = .interactive
 
         NSLayoutConstraint.activate([
-            scrollView.topAnchor.constraint(equalTo: topAnchor),
-            scrollView.leadingAnchor.constraint(equalTo: leadingAnchor),
-            scrollView.trailingAnchor.constraint(equalTo: trailingAnchor),
-            scrollView.bottomAnchor.constraint(equalTo: bottomAnchor)
+            scrollView.topAnchor.constraint(equalTo: view.safeAreaLayoutGuide.topAnchor),
+            scrollView.leadingAnchor.constraint(equalTo: view.leadingAnchor),
+            scrollView.trailingAnchor.constraint(equalTo: view.trailingAnchor),
+            scrollView.bottomAnchor.constraint(equalTo: view.bottomAnchor)
         ])
 
         scrollView.addSubview(contentView)
@@ -161,10 +183,10 @@ final class EditHealthProblemsView: UIView {
             contentStack.trailingAnchor.constraint(equalTo: contentView.layoutMarginsGuide.trailingAnchor),
             contentStack.bottomAnchor.constraint(equalTo: contentView.layoutMarginsGuide.bottomAnchor)
         ])
-        
+
         let tapGesture = UITapGestureRecognizer(target: self, action: #selector(dismissKeyboard))
         tapGesture.cancelsTouchesInView = false
-        addGestureRecognizer(tapGesture)
+        view.addGestureRecognizer(tapGesture)
     }
 
     private func bindUI() {
@@ -191,15 +213,30 @@ final class EditHealthProblemsView: UIView {
         }
     }
 
-    @objc private func diseasesChanged() { viewModel.updateDiseasesText(diseaseTextField.text ?? "") }
+    @objc private func diseasesChanged() {
+        viewModel.updateDiseasesText(diseaseTextField.text ?? "")
+    }
+
     @objc private func diseasesEditingEnded() {
         viewModel.persistDiseaseFormState()
         diseaseTextField.text = viewModel.diseaseFormState.diseasesText
     }
-    @objc private func allergiesChanged() { viewModel.updateAllergiesText(allergiesTextField.text ?? "") }
-    @objc private func allergiesEditingEnded() { viewModel.persistAllergies() }
-    @objc private func surgeryNameChanged() { viewModel.updateSurgeryName(surgeryNameTextField.text ?? "") }
-    @objc private func handleDateChanged() { viewModel.updateSurgeryDate(surgeryDatePicker.date) }
+
+    @objc private func allergiesChanged() {
+        viewModel.updateAllergiesText(allergiesTextField.text ?? "")
+    }
+
+    @objc private func allergiesEditingEnded() {
+        viewModel.persistAllergies()
+    }
+
+    @objc private func surgeryNameChanged() {
+        viewModel.updateSurgeryName(surgeryNameTextField.text ?? "")
+    }
+
+    @objc private func handleDateChanged() {
+        viewModel.updateSurgeryDate(surgeryDatePicker.date)
+    }
 
     @objc private func addSurgeryTapped() {
         viewModel.addSurgeryFromState()
@@ -246,7 +283,11 @@ final class EditHealthProblemsView: UIView {
     private func makeSurgeryRow(for surgery: Surgery) -> UIView {
         let name = surgery.name ?? "—"
         let dateString = DateFormatterHelper.birthDateFormatter(from: surgery.date ?? Date())
-        let infoView = MedicalRecordInfoItemView(infotitle: name, primaryText: dateString, secondaryText: "")
+        let infoView = MedicalRecordInfoItemView(
+            infotitle: name,
+            primaryText: dateString,
+            secondaryText: ""
+        )
 
         let deleteButton = UIButton(type: .system)
         deleteButton.setImage(UIImage(systemName: "trash"), for: .normal)
@@ -267,22 +308,26 @@ final class EditHealthProblemsView: UIView {
 
         return row
     }
-    
-    @objc private func dismissKeyboard() {
-        endEditing(true)
-    }
 
+    @objc private func dismissKeyboard() {
+        view.endEditing(true)
+    }
 
     @objc private func deleteSurgeryTapped(_ sender: UIButton) {
         guard let surgery = objc_getAssociatedObject(sender, &AssociatedKeys.surgeryKey) as? Surgery else { return }
         viewModel.deleteSurgery(surgery)
         reloadSurgeriesList()
     }
+    
+    @objc func closeTapped() {
+        dismiss(animated: true)
+    }
+    
 }
 
 private enum AssociatedKeys { static var surgeryKey: UInt8 = 0 }
 
-extension EditHealthProblemsView: ObservationViewDelegate {
+extension EditHealthProblemsViewController: ObservationViewDelegate {
     func observationView(_ view: ObservationView, didChangeText text: String) {
         viewModel.updateObservationText(text)
     }

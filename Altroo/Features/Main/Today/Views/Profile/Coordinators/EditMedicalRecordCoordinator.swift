@@ -30,19 +30,19 @@ final class EditMedicalRecordCoordinator: Coordinator {
         switch destination {
         case .personalData:
             let vc = factory.makeEditPersonalDataViewController(delegate: self)
-            navigation.pushViewController(vc, animated: true)
+            presentSheet(vc, from: navigation, percentage: 0.8)
         case .healthProblems:
             let vc = factory.makeEditPersonalDataViewController(delegate: self)
-            navigation.pushViewController(vc, animated: true)
+            navigation.present(vc, animated: true)
         case .physicalState:
             let vc = factory.makeEditPersonalDataViewController(delegate: self)
-            navigation.pushViewController(vc, animated: true)
+            navigation.present(vc, animated: true)
         case .mentalState:
             let vc = factory.makeEditMentalStateViewController(delegate: self)
-            navigation.pushViewController(vc, animated: true)
+            navigation.present(vc, animated: true)
         case .personalCare:
             let vc = factory.makeEditPersonalCareViewController(delegate: self)
-            navigation.pushViewController(vc, animated: true)
+            navigation.present(vc, animated: true)
         }
     }
 }
@@ -67,6 +67,4 @@ extension EditMedicalRecordCoordinator: EditMedicalRecordViewControllerDelegate 
     func goToHealthProblems() {
         show(.healthProblems)
     }
-    
-    
 }
