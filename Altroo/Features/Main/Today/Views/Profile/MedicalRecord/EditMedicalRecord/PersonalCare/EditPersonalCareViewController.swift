@@ -25,24 +25,28 @@ final class EditPersonalCareViewController: UIViewController, UITextFieldDelegat
     private lazy var bathPopupMenuButton: PopupMenuButton = {
         let button = PopupMenuButton(title: BathEnum.withAssistance.displayText)
         button.backgroundColor = .blue40
+        button.widthAnchor.constraint(equalToConstant: 170).isActive = true
         return button
     }()
 
     private lazy var hygienePopupMenuButton: PopupMenuButton = {
         let button = PopupMenuButton(title: HygieneEnum.withoutAssistance.displayText)
         button.backgroundColor = .blue40
+        button.widthAnchor.constraint(equalToConstant: 170).isActive = true
         return button
     }()
 
     private lazy var excretionPopupMenuButton: PopupMenuButton = {
         let button = PopupMenuButton(title: ExcretionEnum.normal.displayText)
         button.backgroundColor = .blue40
+        button.widthAnchor.constraint(equalToConstant: 170).isActive = true
         return button
     }()
 
     private lazy var feedingPopupMenuButton: PopupMenuButton = {
         let button = PopupMenuButton(title: FeedingEnum.soft.displayText)
         button.backgroundColor = .blue40
+        button.widthAnchor.constraint(equalToConstant: 170).isActive = true
         return button
     }()
 
@@ -61,19 +65,19 @@ final class EditPersonalCareViewController: UIViewController, UITextFieldDelegat
 
     private lazy var firstRowStack: UIStackView = {
         let stack = UIStackView(arrangedSubviews: [bathSection, hygieneSection])
-        stack.axis = .vertical
+        stack.axis = .horizontal
         stack.spacing = 16
         stack.alignment = .top
-        stack.distribution = .fillEqually
+        stack.distribution = .fillProportionally
         stack.translatesAutoresizingMaskIntoConstraints = false
         return stack
     }()
 
     private lazy var secondRowStack: UIStackView = {
         let stack = UIStackView(arrangedSubviews: [excretionSection, feedingSection])
-        stack.axis = .vertical
-        stack.spacing = 16
+        stack.axis = .horizontal
         stack.alignment = .top
+        stack.spacing = 16
         stack.distribution = .fillProportionally
         stack.translatesAutoresizingMaskIntoConstraints = false
         return stack
