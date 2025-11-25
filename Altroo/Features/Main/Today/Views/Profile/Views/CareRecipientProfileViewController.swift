@@ -153,8 +153,8 @@ final class CareRecipientProfileViewController: GradientNavBarViewController {
         if uniqueCaregivers.count <= 1 {
             let card = CaregiverProfileCardView(
                 coreDataService: viewModel.coreDataService,
-                name: "Você",
-                category: viewModel.userService.fetchUser()?.category ?? "Cuidador",
+                name: "you".localized,
+                category: viewModel.userService.fetchUser()?.category ?? "caregiver".localized,
                 permission: .readWrite,
                 isOwner: true
             )
@@ -198,7 +198,7 @@ final class CareRecipientProfileViewController: GradientNavBarViewController {
     
     private func setupBottomButtons(below lastView: UIView) {
         let endButton = makeOutlineButton(
-            title: "Encerrar Acompanhamento",
+            title: "end_follow_up".localized,
             action: #selector(didTapEndCareButton)
         )
         endButton.enablePressAnimation()

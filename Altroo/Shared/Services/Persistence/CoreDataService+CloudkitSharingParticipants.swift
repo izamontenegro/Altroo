@@ -137,13 +137,13 @@ extension CoreDataService {
             let displayName: String = {
                 if let nameFromCK = nameFromCK, !nameFromCK.isEmpty { return nameFromCK }
                 if let nameFromUser = nameFromUser, !nameFromUser.isEmpty { return nameFromUser }
-                if isOwner { return "Você" }
+                if isOwner { return "you".localized }
                 if let email = email, !email.isEmpty { return email }
                 if let phone = phone, !phone.isEmpty { return phone }
                 return "Usuário do iCloud"
             }()
             
-            let category = matchedUser?.category ?? "Cuidador"
+            let category = matchedUser?.category ?? "caregiver".localized
             let permission = part.permission
             
             result.append(.init(name: displayName, category: category, permission: permission))

@@ -49,7 +49,7 @@ final class TodayTasksView: UIView {
         periodTag.backgroundColor = .blue30
         
         let timeLabel = StandardLabel(
-            labelText: "\(period.startTime):00 até \(period.endTime):00",
+            labelText: "\(period.startTime):00 \("until".localized) \(period.endTime):00",
             labelFont: .sfPro,
             labelType: .footnote,
             labelColor: .blue20)
@@ -83,7 +83,7 @@ final class TodayTasksView: UIView {
         
         //EMPTY CONTENT
         guard !tasks.isEmpty else {
-            let emptyCard = EmptyCardView(text: "Nenhuma tarefa foi criada para este período")
+            let emptyCard = EmptyCardView(text: "no_tasks_this_shift".localized)
             cardStack.addArrangedSubview(emptyCard)
             return cardStack
         }

@@ -30,7 +30,7 @@ final class AddPatientViewModel: ObservableObject {
     @Published var userNameError: String?
     @Published var userPhone: String = ""
     @Published var userPhoneError: String?
-    @Published var selectedUserRelationship: String = "Cuidador"
+    @Published var selectedUserRelationship: String = "caregiver".localized
     @Published var selectedContactRelationship: String = "Filha/Filho"
 
     @Published var isAllDay = true

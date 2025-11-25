@@ -376,6 +376,23 @@
         }
       }
     },
+    "birth" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Birth"
+          }
+        },
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Nascimento"
+          }
+        }
+      }
+    },
     "birth_date" : {
       "extractionState" : "manual",
       "localizations" : {
@@ -410,6 +427,23 @@
         }
       }
     },
+    "caregiver" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Caregiver"
+          }
+        },
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Cuidador"
+          }
+        }
+      }
+    },
     "Carregando..." : {
       "localizations" : {
         "en" : {
@@ -425,8 +459,8 @@
       "localizations" : {
         "en" : {
           "stringUnit" : {
-            "state" : "needs_review",
-            "value" : "Categoria"
+            "state" : "translated",
+            "value" : "Category"
           }
         },
         "pt-BR" : {
@@ -673,12 +707,29 @@
         }
       }
     },
+    "end_follow_up" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "End Follow Up"
+          }
+        },
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Encerrar Acompanhamento"
+          }
+        }
+      }
+    },
     "exclude" : {
       "extractionState" : "manual",
       "localizations" : {
         "en" : {
           "stringUnit" : {
-            "state" : "needs_review",
+            "state" : "translated",
             "value" : "Delete"
           }
         },
@@ -932,6 +983,40 @@
         }
       }
     },
+    "late" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Overdue"
+          }
+        },
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Em atraso"
+          }
+        }
+      }
+    },
+    "medical_record" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Medical Record"
+          }
+        },
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Ficha Médica"
+          }
+        }
+      }
+    },
     "morning" : {
       "extractionState" : "manual",
       "localizations" : {
@@ -993,6 +1078,23 @@
         }
       }
     },
+    "new_task" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "New task"
+          }
+        },
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Nova tarefa"
+          }
+        }
+      }
+    },
     "next" : {
       "extractionState" : "manual",
       "localizations" : {
@@ -1027,12 +1129,29 @@
         }
       }
     },
+    "no_late_tasks" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "No overdue tasks"
+          }
+        },
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Nenhuma tarefa em atraso"
+          }
+        }
+      }
+    },
     "no_observations" : {
       "extractionState" : "manual",
       "localizations" : {
         "en" : {
           "stringUnit" : {
-            "state" : "needs_review",
+            "state" : "translated",
             "value" : "No observations"
           }
         },
@@ -1040,6 +1159,23 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Sem observações"
+          }
+        }
+      }
+    },
+    "no_tasks_this_shift" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "No tasks were created for this period"
+          }
+        },
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Nenhuma tarefa foi criada para este período"
           }
         }
       }
@@ -1208,6 +1344,23 @@
         }
       }
     },
+    "owner" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Creator"
+          }
+        },
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Criador"
+          }
+        }
+      }
+    },
     "patient_name_placeholder" : {
       "extractionState" : "manual",
       "localizations" : {
@@ -1327,6 +1480,23 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Registros"
+          }
+        }
+      }
+    },
+    "register_observations" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Record observations"
+          }
+        },
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Registrar observações"
           }
         }
       }
@@ -1484,6 +1654,23 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Ajustes"
+          }
+        }
+      }
+    },
+    "settings_subtitle" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Personalize your experience, keep your data protected, and meet the team that brings the app to life."
+          }
+        },
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Personalize sua experiência, mantenha seus dados protegidos e conheça o time que dá vida ao app."
           }
         }
       }
@@ -1865,6 +2052,40 @@
         }
       }
     },
+    "title" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Title"
+          }
+        },
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Título"
+          }
+        }
+      }
+    },
+    "to_do" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "To do"
+          }
+        },
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "A fazer"
+          }
+        }
+      }
+    },
     "today" : {
       "extractionState" : "manual",
       "localizations" : {
@@ -1923,13 +2144,13 @@
         "en" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "No tasks registered."
+            "value" : "No tasks registered for the shift of"
           }
         },
         "pt-BR" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Nenhuma tarefa registrada."
+            "value" : "Nenhuma tarefa cadastrada para o turno da"
           }
         }
       }
@@ -2004,6 +2225,23 @@
         }
       }
     },
+    "until" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Until"
+          }
+        },
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Até"
+          }
+        }
+      }
+    },
     "urine" : {
       "extractionState" : "manual",
       "localizations" : {
@@ -2068,6 +2306,23 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Sem data final"
+          }
+        }
+      }
+    },
+    "you" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "You"
+          }
+        },
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Você"
           }
         }
       }

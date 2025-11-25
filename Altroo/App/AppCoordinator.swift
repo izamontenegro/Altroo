@@ -37,7 +37,7 @@ final class AppCoordinator: Coordinator {
         
         if !UserDefaults.standard.onboardingCompleted {
             if userService.fetchUser() == nil {
-                _ = userService.createUser(name: "", category: "Cuidador")
+                _ = userService.createUser(name: "", category: "caregiver".localized)
             }
             showOnboardingFlow(receivedPatientViaShare: receivedPatientViaShare)
         } else if userService.fetchCurrentPatient() == nil {

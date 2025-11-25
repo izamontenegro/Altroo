@@ -33,7 +33,7 @@ final class LateTasksView: UIView {
 
     private func setupContent(with viewModel: AllTasksViewModel) {
         if viewModel.lateTasks.isEmpty {
-            let emptyCard = EmptyCardView(text: "Nenhuma tarefa em atraso")
+            let emptyCard = EmptyCardView(text: "no_late_tasks".localized)
             dayStack.addArrangedSubview(emptyCard)
 
         } else {
@@ -115,7 +115,7 @@ final class LateTasksView: UIView {
         dayStack.arrangedSubviews.forEach { $0.removeFromSuperview() }
 
         if viewModel.lateTasks.isEmpty {
-            let emptyCard = EmptyCardView(text: "Nenhuma tarefa em atraso")
+            let emptyCard = EmptyCardView(text: "no_late_tasks".localized)
             dayStack.addArrangedSubview(emptyCard)
 
         } else {

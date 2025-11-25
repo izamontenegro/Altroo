@@ -91,8 +91,7 @@ extension TodayViewController {
         
         if tasks.isEmpty {
             let emptyCard = EmptyCardView(text: "")
-            //"today_empty_tasks".localized
-            let normalText = "Nenhuma tarefa cadastrada para o turno da "
+            let normalText = "today_empty_tasks".localized
             let normalString = NSMutableAttributedString(string:normalText)
 
             let boldText = PeriodEnum.current.name
