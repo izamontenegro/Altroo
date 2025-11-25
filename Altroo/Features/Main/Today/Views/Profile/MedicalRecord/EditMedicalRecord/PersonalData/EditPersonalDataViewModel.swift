@@ -246,5 +246,8 @@ final class EditPersonalDataViewModel {
                 }
             }
         }
+        
+        careRecipientFacade.updateMedicalRecord(careRecipient: patient)
+
     }
 }

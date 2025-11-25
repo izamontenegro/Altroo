@@ -42,7 +42,7 @@ final class MedicalRecordViewModel {
     
     func getUpdatedAt() -> String {
         guard let person = currentPatient() else { return "" }
-        return DateFormatterHelper.birthDateFormatter(from: person.recordUpdatedAt)
+        return DateFormatterHelper.fullDateFormaterr(from: person.recordUpdatedAt)
     }
     
     // MARK: - PERSONAL DATA

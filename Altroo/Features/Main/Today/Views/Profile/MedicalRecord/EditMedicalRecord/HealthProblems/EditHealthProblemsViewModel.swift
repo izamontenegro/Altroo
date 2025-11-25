@@ -173,6 +173,8 @@ final class EditHealthProblemsViewModel {
                 careRecipientFacade.addDisease(name: name, in: healthProblems)
             }
         }
+        
+        careRecipientFacade.updateMedicalRecord(careRecipient: patient)
     }
 
     func removeDisease(_ disease: Disease) {

@@ -73,6 +73,11 @@ extension CareRecipientFacade {
         }
     }
     
+    func updateMedicalRecord(careRecipient: CareRecipient) {
+        careRecipient.recordUpdatedAt = Date()
+        persistenceService.save()
+    }
+    
     func fetchCareRecipient(by id: UUID) -> CareRecipient? {
         return persistenceService.fetchAllCareRecipients().first(where: { $0.id == id })
     }

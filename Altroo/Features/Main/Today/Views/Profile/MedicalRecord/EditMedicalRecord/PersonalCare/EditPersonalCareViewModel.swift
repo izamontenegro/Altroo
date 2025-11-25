@@ -97,5 +97,7 @@ final class EditPersonalCareViewModel {
 
         personalCare.equipmentState = personalCareFormState.equipmentsText
         careRecipientFacade.persistenceService.save()
+        careRecipientFacade.updateMedicalRecord(careRecipient: patient)
+
     }
 }

@@ -76,5 +76,8 @@ final class EditMentalStateViewModel {
         if let value = mentalStateFormState.cognitionState {
             careRecipientFacade.addCognitionState(cognitionState: value, mentalState: mentalState)
         }
+        
+        careRecipientFacade.updateMedicalRecord(careRecipient: patient)
+
     }
 }

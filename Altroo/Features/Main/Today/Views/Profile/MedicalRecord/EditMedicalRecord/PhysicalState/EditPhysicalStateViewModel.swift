@@ -82,5 +82,9 @@ final class EditPhysicalStateViewModel {
         if let value = physicalStateFormState.mobilityState {
             careRecipientFacade.addMobilityState(mobilityState: value, physicalState: physicalState)
         }
+        
+        careRecipientFacade.updateMedicalRecord(careRecipient: patient)
+        
+        
     }
 }
