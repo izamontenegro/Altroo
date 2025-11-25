@@ -60,6 +60,23 @@
         }
       }
     },
+    "acceptance" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Acceptance"
+          }
+        },
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Aceitação"
+          }
+        }
+      }
+    },
     "Aceitação: %@" : {
       "localizations" : {
         "en" : {
@@ -147,6 +164,23 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Registrar Tarefa"
+          }
+        }
+      }
+    },
+    "added" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Added"
+          }
+        },
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Adicionado"
           }
         }
       }
@@ -386,6 +420,23 @@
         }
       }
     },
+    "category" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Categoria"
+          }
+        },
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Categoria"
+          }
+        }
+      }
+    },
     "close" : {
       "extractionState" : "manual",
       "localizations" : {
@@ -409,6 +460,23 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Coloring:"
+          }
+        }
+      }
+    },
+    "coloring" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Coloring"
+          }
+        },
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Coloração"
           }
         }
       }
@@ -959,6 +1027,23 @@
         }
       }
     },
+    "no_observations" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "No observations"
+          }
+        },
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Sem observações"
+          }
+        }
+      }
+    },
     "O relatório gerado pelo Altroo é totalmente baseado nos registros feitos pelo usuário no aplicativo. Caso alguma informação não apareça, significa que ela não foi registrada." : {
       "localizations" : {
         "en" : {
@@ -1242,6 +1327,23 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Registros"
+          }
+        }
+      }
+    },
+    "registered_by" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Registered by"
+          }
+        },
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Registrado por"
           }
         }
       }
@@ -1554,7 +1656,7 @@
         "en" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Your privacy is our priority."
+            "value" : "Your privacy\nis our priority."
           }
         }
       }
@@ -1881,6 +1983,23 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Siga o passo-a-passo a seguir para acessar um perfil já cadastrado na plataforma."
+          }
+        }
+      }
+    },
+    "type" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Type"
+          }
+        },
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Tipo"
           }
         }
       }

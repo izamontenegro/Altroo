@@ -43,7 +43,6 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
             loadingStartTime = Date()
         }
     }
-
     
     func hideLoadingScreen() {
         Task { @MainActor in
@@ -59,17 +58,16 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
         }
 
         let elapsed = Date().timeIntervalSince(start)
-        let minDelay: TimeInterval = 3.0
+        let minDelay: TimeInterval = 4.5
+        let remaining = max(0, minDelay - elapsed)
 
-        if elapsed >= minDelay {
-            hideLoadingScreen()
-        } else {
-            let remaining = minDelay - elapsed
-            DispatchQueue.main.asyncAfter(deadline: .now() + remaining) {
-                self.hideLoadingScreen()
-            }
+        DispatchQueue.main.asyncAfter(deadline: .now() + remaining) { [weak self] in
+            guard let self else { return }
+            self.hideLoadingScreen()
+            Task { await self.appCoordinator?.start() }
         }
     }
+
 
     // MARK: - Scene Lifecycle
     func scene(_ scene: UIScene,
@@ -103,13 +101,12 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
     
     func windowScene(_ windowScene: UIWindowScene,
                      userDidAcceptCloudKitShareWith metadata: CKShare.Metadata) {
-
         guard let sharedUUID = metadata.share[CKShare.SystemFieldKey.title] as? String else {
             return
         }
-        
+
         if let existingPatient = findPatientForShareTitle(sharedUUID) {
-//            showLoadingScreen()
+            showLoadingScreen()
 
             Task { @MainActor in
                 hideLoadingScreenAfterMinimumDelay()
@@ -117,7 +114,6 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
                 appCoordinator?.sharedReceivedPatient = existingPatient
                 await appCoordinator?.start()
             }
-
             return
         }
 
@@ -133,11 +129,10 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
             }
 
             self.waitingForSharedSync = true
-            self.startSharedStorePolling()
             self.showLoadingScreen()
+            self.startSharedStorePolling()
         }
     }
-
 }
 
 // MARK: - CloudKit Shared Logic Extension

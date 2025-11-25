@@ -12,17 +12,21 @@ struct LoadingReceivePatientView: View {
     let duration: Double = 1.5
     let pause: Double = 0.5
     let isSyncing: Bool
-
+    
     @State private var rotation: Double = 0
     @State private var textOpacity: Double = 1
     @State private var progress: CGFloat = 0
     @State private var showSyncing: Bool = false
-    @State private var syncingAnimationOffset: CGFloat = -250
     @State private var brightness = false
-
+    
+    @State private var minDuration: Double = 4
+    @State private var loadingStartedAt = Date()
+    @State private var didReachEndOnce = false
+    @State private var isInitialLoading: Bool = true
+    
     var body: some View {
         ZStack {
-            Color.white.opacity(0.7)
+            Color.blue80.ignoresSafeArea()
             
             VStack(spacing: 14) {
                 Spacer()
@@ -32,9 +36,7 @@ struct LoadingReceivePatientView: View {
                     .scaledToFit()
                     .frame(width: 165, height: 165)
                     .rotationEffect(.degrees(rotation))
-                    .onAppear {
-                        startRotationStep()
-                    }
+                    .onAppear { startRotationStep() }
                 
                 Text(showSyncing ? "Sincronizando..." : "Carregando...")
                     .font(.custom("Comfortaa-Regular", size: 24))
@@ -42,7 +44,7 @@ struct LoadingReceivePatientView: View {
                     .foregroundColor(.blue30)
                     .opacity(textOpacity)
                     .onAppear {
-                        withAnimation(.easeInOut(duration: 1.0).repeatForever(autoreverses: true)) {
+                        withAnimation(.easeInOut(duration: 1).repeatForever(autoreverses: true)) {
                             textOpacity = 0.3
                         }
                     }
@@ -52,43 +54,43 @@ struct LoadingReceivePatientView: View {
                         .frame(height: 20)
                         .foregroundColor(.blue60)
                     
-                    if isSyncing {
-                        RoundedRectangle(cornerRadius: 12)
-                            .frame(width: 100, height: 20)
-                            .foregroundColor(.blue30)
-                            .offset(x: syncingAnimationOffset)
-                            .onAppear {
-                                let animation = Animation.linear(duration: 1).repeatForever(autoreverses: false)
-                                withAnimation(animation) {
-                                    syncingAnimationOffset = 250
-                                }
-                            }
-                    } else {
+                    if isInitialLoading {
+                        // Initial loading screen is always animated
                         RoundedRectangle(cornerRadius: 12)
                             .frame(width: progressBarWidth, height: 20)
                             .foregroundColor(.blue30)
-                            .animation(.linear(duration: duration), value: progress)
+                    }
+                    else if isSyncing {
+                        // After 4 seconds, if still synchronizing → full bar
+                        RoundedRectangle(cornerRadius: 12)
+                            .frame(width: 250, height: 20)
+                            .foregroundColor(.blue30)
+                    } else {
+                        // If finish early → use accelerated end progress
+                        RoundedRectangle(cornerRadius: 12)
+                            .frame(width: progressBarWidth, height: 20)
+                            .foregroundColor(.blue30)
                     }
                 }
                 .frame(maxWidth: 250)
                 
                 Spacer()
             }
-            .onAppear {
-                if !isSyncing {
-                    animateProgress()
-                } else {
-                    showSyncing = true
+            .onAppear { animateProgress() }
+            .onChange(of: isSyncing) { _, newValue in
+                if newValue == false && !didReachEndOnce {
+                    accelerateProgressToEnd()
                 }
             }
             .padding(.bottom, 100)
-
+            
             VStack {
                 Spacer()
                 Ellipse()
                     .fill(.blue60)
                     .blur(radius: brightness ? 70 : 100)
-                    .frame(width: UIScreen.main.bounds.width * 0.8, height: brightness ? 130 : 90)
+                    .frame(width: UIScreen.main.bounds.width * 0.8,
+                           height: brightness ? 130 : 90)
                     .onAppear {
                         withAnimation(.easeInOut(duration: 2).repeatForever(autoreverses: true)) {
                             brightness.toggle()
@@ -98,7 +100,45 @@ struct LoadingReceivePatientView: View {
         }
         .ignoresSafeArea()
     }
-
+    
+    // MARK: - Progress Animations
+    
+    private func animateProgress() {
+        loadingStartedAt = Date()
+        isInitialLoading = true
+        progress = 0
+        
+        withAnimation(.linear(duration: minDuration)) {
+            progress = 1
+        }
+        
+        DispatchQueue.main.asyncAfter(deadline: .now() + minDuration) {
+            didReachEndOnce = true
+            isInitialLoading = false
+            
+            if isSyncing {
+                showSyncing = true
+            }
+        }
+    }
+    
+    private func accelerateProgressToEnd() {
+        let remaining = max(0, 1 - progress)
+        
+        let fastDuration = max(0.15, min(0.8, remaining * 0.5))
+        
+        withAnimation(.linear(duration: fastDuration)) {
+            progress = 1
+        }
+        
+        DispatchQueue.main.asyncAfter(deadline: .now() + fastDuration) {
+            didReachEndOnce = true
+            isInitialLoading = false
+        }
+    }
+    
+    // MARK: - Rotation Animation
+    
     private func startRotationStep() {
         func rotateOnce() {
             withAnimation(.linear(duration: duration)) {
@@ -110,20 +150,8 @@ struct LoadingReceivePatientView: View {
         }
         rotateOnce()
     }
-
+    
     private var progressBarWidth: CGFloat {
         250 * progress
-    }
-
-    private func animateProgress() {
-        withAnimation(.linear(duration: duration * 5)) {
-            progress = 1
-        }
-
-        DispatchQueue.main.asyncAfter(deadline: .now() + duration * 5) {
-            if isSyncing {
-                showSyncing = true
-            }
-        }
     }
 }
