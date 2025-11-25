@@ -242,12 +242,6 @@ final class MedicalRecordViewModel {
         checkDouble(personalData?.height)
         checkDouble(personalData?.weight)
         
-        let healthProblems = careRecipient.healthProblems
-        checkString(healthProblems?.observation)
-        checkString(healthProblems?.allergies)
-        checkToManySet(healthProblems?.diseases as? Set<Disease>)
-        checkToManySet(healthProblems?.surgeries as? Set<Surgery>)
-        
         let mentalState = careRecipient.mentalState
         checkString(mentalState?.cognitionState)
         checkString(mentalState?.emotionalState)
@@ -265,7 +259,6 @@ final class MedicalRecordViewModel {
         checkString(personalCare?.hygieneState)
         checkString(personalCare?.excretionState)
         checkString(personalCare?.feedingState)
-        checkString(personalCare?.equipmentState)
         
         guard totalFields > 0 else { return 0.0 }
         return CGFloat(Double(filledFields) / Double(totalFields))
