@@ -69,20 +69,32 @@ final class EditPhysicalStateViewController: UIViewController {
         )
     }()
 
-    private lazy var oralHealthColumn = CheckColumnView(
-        options: OralHealthEnum.allCases,
-        titleProvider: { $0.displayText },
-        onSelect: { [weak self] selectedOption in
-            self?.viewModel.updateOralHealthState(selectedOption)
+    private lazy var oralHealthColumn: UIStackView = {
+        let stack = UIStackView()
+        stack.axis = .vertical
+        stack.spacing = 8
+        stack.alignment = .fill
+        stack.distribution = .fill
+
+        OralHealthEnum.allCases.forEach { option in
+            let button = CheckOptionButton(title: option.displayText)
+            button.associatedData = option
+            button.isSelected = false
+
+            button.addTarget(self, action: #selector(didTapOralHealth(_:)), for: .touchUpInside)
+
+            stack.addArrangedSubview(button)
         }
-    )
+
+        return stack
+    }()
 
     private lazy var senseRowStack: UIStackView = {
         let stack = UIStackView(arrangedSubviews: [visionSection, hearingSection])
-        stack.axis = .vertical
+        stack.axis = .horizontal
         stack.spacing = 22
         stack.alignment = .fill
-        stack.distribution = .fill
+        stack.distribution = .fillEqually
         return stack
     }()
 
@@ -102,12 +114,12 @@ final class EditPhysicalStateViewController: UIViewController {
 
         let stack = UIStackView(arrangedSubviews: [
             senseRowStack,
-            locomotionRowStack,
+            locomotionSection,
             oralHealthContainer
         ])
         stack.axis = .vertical
         stack.alignment = .fill
-        stack.spacing = 22
+        stack.spacing = 16
         stack.translatesAutoresizingMaskIntoConstraints = false
         return stack
     }()
@@ -141,7 +153,7 @@ final class EditPhysicalStateViewController: UIViewController {
         view.addSubview(formStack)
 
         NSLayoutConstraint.activate([
-            headerView.topAnchor.constraint(equalTo: view.safeAreaLayoutGuide.topAnchor, constant: 15),
+            headerView.topAnchor.constraint(equalTo: view.safeAreaLayoutGuide.topAnchor, constant: 16),
             headerView.leadingAnchor.constraint(equalTo: view.leadingAnchor, constant: 16),
             headerView.trailingAnchor.constraint(equalTo: view.trailingAnchor, constant: -16),
 
@@ -157,32 +169,41 @@ final class EditPhysicalStateViewController: UIViewController {
     private func loadInitialState() {
         viewModel.loadInitialPhysicalState()
         let state = viewModel.physicalStateFormState
-
+        
         if let visionState = state.visionState {
             visionPopupButton.setTitle(visionState.displayText, for: .normal)
         } else {
             visionPopupButton.setTitle(VisionEnum.noChanges.displayText, for: .normal)
         }
-
+        
         if let hearingState = state.hearingState {
             hearingPopupButton.setTitle(hearingState.displayText, for: .normal)
         } else {
             hearingPopupButton.setTitle(HearingEnum.withoutDeficit.displayText, for: .normal)
         }
-
+        
         if let mobilityState = state.mobilityState {
             locomotionPopupButton.setTitle(mobilityState.displayText, for: .normal)
         } else {
             locomotionPopupButton.setTitle(MobilityEnum.noAssistance.displayText, for: .normal)
         }
-
+        
         if let oralHealthState = state.oralHealthState {
-            oralHealthColumn.updateSelection(for: oralHealthState)
+            oralHealthColumn.arrangedSubviews.forEach { view in
+                if let btn = view as? CheckOptionButton,
+                   let option = btn.associatedData as? OralHealthEnum {
+                    btn.isSelected = (option == oralHealthState)
+                }
+            }
         } else {
-            oralHealthColumn.clearSelection()
+            oralHealthColumn.arrangedSubviews.forEach { view in
+                if let btn = view as? CheckOptionButton {
+                    btn.isSelected = false
+                }
+            }
         }
     }
-
+    
     // MARK: - Menus
 
     private func configureMenus() {
@@ -216,6 +237,17 @@ final class EditPhysicalStateViewController: UIViewController {
 
     // MARK: - Public helper
 
+    @objc private func didTapOralHealth(_ sender: CheckOptionButton) {
+        guard let option = sender.associatedData as? OralHealthEnum else { return }
+
+        oralHealthColumn.arrangedSubviews.forEach { view in
+            if let btn = view as? CheckOptionButton {
+                btn.isSelected = (btn == sender)
+            }
+        }
+
+        viewModel.updateOralHealthState(option)
+    }
     func persistAllFromView() {
         viewModel.persistPhysicalState()
     }

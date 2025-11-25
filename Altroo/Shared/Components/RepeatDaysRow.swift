@@ -30,6 +30,7 @@ final class RepeatDaysRow: UIStackView {
     
     
     private func makeDayButtons(maxWidth: CGFloat) {
+        // ESSES BOTOES AQUI
         let buttons: [UIButton] = Locale.Weekday.allWeekDays.enumerated().map { index, day in
             let button = CheckOptionButton(title: day.localizedSymbol(style: .full).capitalized)
             button.isSelected = selectedDays.contains(day)
