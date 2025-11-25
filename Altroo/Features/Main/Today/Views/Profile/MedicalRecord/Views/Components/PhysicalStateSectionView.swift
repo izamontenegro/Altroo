@@ -81,7 +81,6 @@ final class PhysicalStateSectionView: UIView {
         leftColumn.spacing = 12
         leftColumn.translatesAutoresizingMaskIntoConstraints = false
 
-        // Coluna direita: Audição + Saúde bucal
         let hearingRow: InformationRow = ("Audição", hearing)
         let hearingSubsection = MedicalRecordSubsectionView(
             row: hearingRow,

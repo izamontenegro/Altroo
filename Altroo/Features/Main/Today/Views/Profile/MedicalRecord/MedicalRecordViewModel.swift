@@ -147,8 +147,13 @@ final class MedicalRecordViewModel {
     }
 
     func getOralHealthText() -> String {
-        currentPhysicalState?.oralHealthState
-            .flatMap { OralHealthEnum(rawValue: $0)?.displayText } ?? "Sem registro"
+        guard
+            let rawValues = currentPhysicalState?.oralHealthState,
+            !rawValues.isEmpty
+        else { return "Sem registro" }
+
+        let items = rawValues.compactMap { OralHealthEnum(rawValue: $0)?.displayText }
+        return items.isEmpty ? "Sem registro" : items.joined(separator: ", ")
     }
     
     // MARK: - MENTAL STATE
@@ -252,7 +257,7 @@ final class MedicalRecordViewModel {
         checkString(physicalState?.mobilityState)
         checkString(physicalState?.hearingState)
         checkString(physicalState?.visionState)
-        checkString(physicalState?.oralHealthState)
+        checkToManySet(Set(physicalState?.oralHealthState ?? []))
         
         let personalCare = careRecipient.personalCare
         checkString(personalCare?.bathState)

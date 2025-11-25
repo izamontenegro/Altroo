@@ -45,6 +45,8 @@ final class MedicalRecordSubsectionView: UIView {
         let type: MedicalRecordSubsectionType
         let headerTitle: String
         
+        print(row.value)
+        
         if row.title == "Cirurgias",
            row.value.isEmpty,
            !surgeryDisplayItems.isEmpty {
@@ -60,7 +62,6 @@ final class MedicalRecordSubsectionView: UIView {
             headerTitle = row.title
         }
         
-        // Título da subseção
         let titleLabel = StandardLabel(
             labelText: headerTitle,
             labelFont: .sfPro,
@@ -74,7 +75,6 @@ final class MedicalRecordSubsectionView: UIView {
         headerStack.spacing = 2
         headerStack.translatesAutoresizingMaskIntoConstraints = false
         
-        // Conteúdo da subseção
         let contentStack = UIStackView()
         contentStack.axis = .vertical
         contentStack.spacing = 2
@@ -89,7 +89,12 @@ final class MedicalRecordSubsectionView: UIView {
                 labelColor: .black10,
                 labelWeight: .regular
             )
-            valueLabel.numberOfLines = 0
+            if row.value.first == "•" {
+                valueLabel.numberOfLines = 0
+            } else {
+                valueLabel.numberOfLines = 2
+            }
+            
             contentStack.addArrangedSubview(valueLabel)
             
         case .surgeries:

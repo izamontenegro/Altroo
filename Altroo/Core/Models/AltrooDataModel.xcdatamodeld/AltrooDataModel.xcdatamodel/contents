@@ -139,7 +139,7 @@
     <entity name="PhysicalState" representedClassName="PhysicalState" syncable="YES" codeGenerationType="class">
         <attribute name="hearingState" optional="YES" attributeType="String"/>
         <attribute name="mobilityState" optional="YES" attributeType="String"/>
-        <attribute name="oralHealthState" optional="YES" attributeType="String"/>
+        <attribute name="oralHealthState" optional="YES" attributeType="Transformable" customClassName="[String]"/>
         <attribute name="visionState" optional="YES" attributeType="String"/>
         <relationship name="careRecipient" optional="YES" maxCount="1" deletionRule="Nullify" destinationEntity="CareRecipient" inverseName="physicalState" inverseEntity="CareRecipient"/>
     </entity>

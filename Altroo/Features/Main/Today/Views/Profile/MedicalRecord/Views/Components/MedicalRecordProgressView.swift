@@ -113,7 +113,8 @@ final class MedicalRecordProgressView: UIView {
         func checkDate(_ value: Date?) { total += 1; if value != nil { filled += 1 } }
         func checkDouble(_ value: Double?) { total += 1; if let x = value, !x.isNaN { filled += 1 } }
         func checkArray(_ value: Any?) { total += 1; if let a = value as? [Any], !a.isEmpty { filled += 1 } }
-
+        func checkToManySet<T>(_ v: Set<T>?) { total += 1; if let set = v, !set.isEmpty { filled += 1 } }
+        
         let personalData = careRecipient.personalData
         check(personalData?.name)
         check(personalData?.address)
@@ -136,7 +137,7 @@ final class MedicalRecordProgressView: UIView {
         check(physicalState?.mobilityState)
         check(physicalState?.hearingState)
         check(physicalState?.visionState)
-        check(physicalState?.oralHealthState)
+        checkToManySet(Set(physicalState?.oralHealthState ?? []))
 
         let personalCare = careRecipient.personalCare
         check(personalCare?.bathState)

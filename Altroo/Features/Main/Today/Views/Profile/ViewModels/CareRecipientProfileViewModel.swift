@@ -85,7 +85,7 @@ final class CareRecipientProfileViewModel {
         checkString(mentalState?.cognitionState); checkString(mentalState?.emotionalState); checkString(mentalState?.memoryState); checkString(mentalState?.orientationState)
 
         let physicalState = recipient.physicalState
-        checkString(physicalState?.mobilityState); checkString(physicalState?.hearingState); checkString(physicalState?.visionState); checkString(physicalState?.oralHealthState)
+        checkString(physicalState?.mobilityState); checkString(physicalState?.hearingState); checkString(physicalState?.visionState); checkToManySet(Set(physicalState?.oralHealthState ?? []))
 
         let personalCare = recipient.personalCare
         checkString(personalCare?.bathState); checkString(personalCare?.hygieneState); checkString(personalCare?.excretionState); checkString(personalCare?.feedingState);

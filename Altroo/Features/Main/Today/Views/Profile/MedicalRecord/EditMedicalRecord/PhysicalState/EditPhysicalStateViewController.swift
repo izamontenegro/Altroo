@@ -200,19 +200,15 @@ final class EditPhysicalStateViewController: UIViewController {
             locomotionPopupButton.setTitle(MobilityEnum.noAssistance.displayText, for: .normal)
         }
         
-        if let oralHealthState = state.oralHealthState {
-            oralHealthColumn.arrangedSubviews.forEach { view in
-                if let btn = view as? CheckOptionButton,
-                   let option = btn.associatedData as? OralHealthEnum {
-                    btn.isSelected = (option == oralHealthState)
-                }
-            }
-        } else {
-            oralHealthColumn.arrangedSubviews.forEach { view in
-                if let btn = view as? CheckOptionButton {
-                    btn.isSelected = false
-                }
-            }
+        let selectedStates = Set(state.oralHealthStates)
+
+        oralHealthColumn.arrangedSubviews.forEach { view in
+            guard
+                let button = view as? CheckOptionButton,
+                let option = button.associatedData as? OralHealthEnum
+            else { return }
+
+            button.isSelected = selectedStates.contains(option)
         }
     }
     
@@ -252,13 +248,18 @@ final class EditPhysicalStateViewController: UIViewController {
     @objc private func didTapOralHealth(_ sender: CheckOptionButton) {
         guard let option = sender.associatedData as? OralHealthEnum else { return }
 
-        oralHealthColumn.arrangedSubviews.forEach { view in
-            if let btn = view as? CheckOptionButton {
-                btn.isSelected = (btn == sender)
-            }
-        }
+        sender.isSelected.toggle()
 
-        viewModel.updateOralHealthState(option)
+        let selectedOptions: [OralHealthEnum] = oralHealthColumn.arrangedSubviews.compactMap { view in
+            guard
+                let btn = view as? CheckOptionButton,
+                let opt = btn.associatedData as? OralHealthEnum,
+                btn.isSelected
+            else { return nil }
+            return opt
+        }
+        
+        viewModel.updateOralHealthStates(selectedOptions)
     }
     
     @objc

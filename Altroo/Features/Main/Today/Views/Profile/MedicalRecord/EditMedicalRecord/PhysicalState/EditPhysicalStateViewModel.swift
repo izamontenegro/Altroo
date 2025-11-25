@@ -9,7 +9,7 @@ import Foundation
 struct PhysicalStateFormState: Equatable {
     var visionState: VisionEnum? = nil
     var hearingState: HearingEnum? = nil
-    var oralHealthState: OralHealthEnum? = nil
+    var oralHealthStates: [OralHealthEnum] = []
     var mobilityState: MobilityEnum? = nil
 }
 
@@ -41,7 +41,8 @@ final class EditPhysicalStateViewModel {
         physicalStateFormState = PhysicalStateFormState(
             visionState: physicalState.visionState.flatMap { VisionEnum(rawValue: $0) },
             hearingState: physicalState.hearingState.flatMap { HearingEnum(rawValue: $0) },
-            oralHealthState: physicalState.oralHealthState.flatMap { OralHealthEnum(rawValue: $0) },
+            oralHealthStates: physicalState.oralHealthState?
+                .compactMap { OralHealthEnum(rawValue: $0) } ?? [],
             mobilityState: physicalState.mobilityState.flatMap { MobilityEnum(rawValue: $0) }
         )
     }
@@ -55,9 +56,10 @@ final class EditPhysicalStateViewModel {
     func updateHearingState(_ value: HearingEnum?) {
         physicalStateFormState.hearingState = value
     }
-
-    func updateOralHealthState(_ value: OralHealthEnum?) {
-        physicalStateFormState.oralHealthState = value
+    
+    func updateOralHealthStates(_ values: [OralHealthEnum]) {
+        physicalStateFormState.oralHealthStates = values
+        print(physicalStateFormState.oralHealthStates.count)
     }
 
     func updateMobilityState(_ value: MobilityEnum?) {
@@ -76,15 +78,19 @@ final class EditPhysicalStateViewModel {
         if let value = physicalStateFormState.hearingState {
             careRecipientFacade.addHearingState(hearingState: value, physicalState: physicalState)
         }
-        if let value = physicalStateFormState.oralHealthState {
-            careRecipientFacade.addOralHealthState(oralHealthState: value, physicalState: physicalState)
-        }
+        
+        let oralHealthStates = physicalStateFormState.oralHealthStates
+        
+        
+        careRecipientFacade.addOralHealthState(
+                oralHealthState: oralHealthStates,
+                physicalState: physicalState
+        )
+
         if let value = physicalStateFormState.mobilityState {
             careRecipientFacade.addMobilityState(mobilityState: value, physicalState: physicalState)
         }
-        
+
         careRecipientFacade.updateMedicalRecord(careRecipient: patient)
-        
-        
     }
 }
