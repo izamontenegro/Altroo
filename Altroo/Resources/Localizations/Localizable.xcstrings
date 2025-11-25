@@ -4,6 +4,19 @@
     "(%@)" : {
 
     },
+    "%@" : {
+
+    },
+    "%@ - %@" : {
+      "localizations" : {
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "new",
+            "value" : "%1$@ - %2$@"
+          }
+        }
+      }
+    },
     "%@ • %@" : {
       "localizations" : {
         "pt-BR" : {
@@ -363,6 +376,16 @@
         }
       }
     },
+    "Carregando..." : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Loading..."
+          }
+        }
+      }
+    },
     "close" : {
       "extractionState" : "manual",
       "localizations" : {
@@ -437,6 +460,16 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Telefone com DDI"
+          }
+        }
+      }
+    },
+    "COR" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "COLOR"
           }
         }
       }
@@ -572,22 +605,19 @@
         }
       }
     },
-    "erro ao selecionar item" : {
+    "exclude" : {
+      "extractionState" : "manual",
       "localizations" : {
         "en" : {
           "stringUnit" : {
-            "state" : "translated",
-            "value" : "Error selecting item"
-          }
-        }
-      }
-    },
-    "Excluir" : {
-      "localizations" : {
-        "en" : {
-          "stringUnit" : {
-            "state" : "translated",
+            "state" : "needs_review",
             "value" : "Delete"
+          }
+        },
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Excluir"
           }
         }
       }
@@ -676,6 +706,40 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Histórico"
+          }
+        }
+      }
+    },
+    "history_empty" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "You haven't registered anything yet"
+          }
+        },
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Você ainda não registrou nada"
+          }
+        }
+      }
+    },
+    "history_nav_description" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Check all previously created records, including the date, authorship, and other details."
+          }
+        },
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Confira todos os registros realizados anteriormente com a data, autoria do registros e demais detalhes."
           }
         }
       }
@@ -1165,6 +1229,23 @@
         }
       }
     },
+    "records" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Records"
+          }
+        },
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Registros"
+          }
+        }
+      }
+    },
     "Registros" : {
       "localizations" : {
         "en" : {
@@ -1301,6 +1382,16 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Ajustes"
+          }
+        }
+      }
+    },
+    "Sincronizando..." : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Synchronizing..."
           }
         }
       }
@@ -1533,6 +1624,23 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Término"
+          }
+        }
+      }
+    },
+    "taskform_name" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Task Title"
+          }
+        },
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Título da tarefa"
           }
         }
       }
@@ -1794,16 +1902,6 @@
         }
       }
     },
-    "Você ainda não adicionou nenhum registro ou atividade." : {
-      "localizations" : {
-        "en" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "You haven't added any records or activities yet."
-          }
-        }
-      }
-    },
     "weight" : {
       "extractionState" : "manual",
       "localizations" : {
@@ -1817,6 +1915,40 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Peso"
+          }
+        }
+      }
+    },
+    "with_end" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "With end date"
+          }
+        },
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Com data final"
+          }
+        }
+      }
+    },
+    "without_end" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Without end date"
+          }
+        },
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Sem data final"
           }
         }
       }
