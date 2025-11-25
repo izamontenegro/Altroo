@@ -25,7 +25,9 @@ final class EditPersonalDataViewController: UIViewController, UITextFieldDelegat
     private let contentStackView = UIStackView()
     
     private let genderSegmentedControl = StandardSegmentedControl(items: ["F", "M"])
+    
     private let nameTextField = StandardTextfield(placeholder: "patient_name_placeholder".localized)
+    
     private let addressTextField = StandardTextfield(placeholder: "address_placeholder".localized)
     
     private let heightTextField: StandardTextfield = {
@@ -70,8 +72,8 @@ final class EditPersonalDataViewController: UIViewController, UITextFieldDelegat
     private let ageLabel = StandardLabel(
         labelText: "—",
         labelFont: .sfPro,
-        labelType: .largeTitle,
-        labelColor: .blue10,
+        labelType: .body,
+        labelColor: .black10,
         labelWeight: .regular
     )
     
@@ -86,14 +88,15 @@ final class EditPersonalDataViewController: UIViewController, UITextFieldDelegat
         content: nameTextField,
         isObligatory: true
     )
+    
     private lazy var dateOfBirthSection = FormSectionView(
         title: "birth_date".localized,
-        content: dateOfBirthPicker
+        content: dateOfBirthPicker,
+        alignmentLeading: true
     )
-    private lazy var ageSection = FormSectionView(
-        title: "age".localized,
-        content: ageLabel
-    )
+
+    private lazy var ageSection = UIStackView()
+    
     private lazy var heightSection = FormSectionView(
         title: "height".localized,
         content: heightStackView
@@ -171,9 +174,9 @@ final class EditPersonalDataViewController: UIViewController, UITextFieldDelegat
     private lazy var dateOfBirthAndAgeStackView: UIStackView = {
         let stackView = UIStackView(arrangedSubviews: [dateOfBirthSection, ageSection])
         stackView.axis = .horizontal
-        stackView.spacing = Layout.mediumSpacing
-        stackView.distribution = .fill
-        stackView.alignment = .top
+        stackView.spacing = 40
+        stackView.distribution = .fillProportionally
+        stackView.alignment = .fill
         return stackView
     }()
     
@@ -194,7 +197,6 @@ final class EditPersonalDataViewController: UIViewController, UITextFieldDelegat
         return verticalStackView
     }()
     
-    // MARK: - Init
     
     init(viewModel: EditPersonalDataViewModel) {
         self.viewModel = viewModel
@@ -220,6 +222,22 @@ final class EditPersonalDataViewController: UIViewController, UITextFieldDelegat
     private func configureUserInterface() {
         view.backgroundColor = .pureWhite
         
+        ageSection.axis = .vertical
+        ageSection.spacing = 8
+        ageSection.distribution = .fill
+        
+        let titleLabel = StandardLabel(
+            labelText: "age".localized,
+            labelFont: .sfPro,
+            labelType: .body,
+            labelColor: .black10,
+            labelWeight: .semibold
+        )
+        
+        ageSection.addArrangedSubview(titleLabel)
+        ageSection.addArrangedSubview(ageLabel)
+
+
         view.addSubview(scrollView)
         scrollView.addSubview(contentStackView)
         
@@ -227,7 +245,7 @@ final class EditPersonalDataViewController: UIViewController, UITextFieldDelegat
         saveButton.translatesAutoresizingMaskIntoConstraints = false
         
         contentStackView.axis = .vertical
-        contentStackView.spacing = 22
+        contentStackView.spacing = 12
         contentStackView.alignment = .fill
         contentStackView.translatesAutoresizingMaskIntoConstraints = false
         
@@ -237,14 +255,13 @@ final class EditPersonalDataViewController: UIViewController, UITextFieldDelegat
             dateOfBirthAndAgeStackView,
             physicalInformationStackView,
             addressSection,
-            contactSection,
-            saveButton
+            contactSection
         ].forEach {
             contentStackView.addArrangedSubview($0)
         }
         
         NSLayoutConstraint.activate([
-            scrollView.topAnchor.constraint(equalTo: view.safeAreaLayoutGuide.topAnchor),
+            scrollView.topAnchor.constraint(equalTo: view.safeAreaLayoutGuide.topAnchor, constant: 16),
             scrollView.leadingAnchor.constraint(equalTo: view.leadingAnchor),
             scrollView.trailingAnchor.constraint(equalTo: view.trailingAnchor),
             scrollView.bottomAnchor.constraint(equalTo: view.bottomAnchor),
@@ -271,6 +288,13 @@ final class EditPersonalDataViewController: UIViewController, UITextFieldDelegat
             )
         ])
         
+        view.addSubview(saveButton)
+        
+        NSLayoutConstraint.activate([
+            saveButton.bottomAnchor.constraint(equalTo: view.safeAreaLayoutGuide.bottomAnchor, constant: -20),
+            saveButton.centerXAnchor.constraint(equalTo: view.centerXAnchor)
+        ])
+        
         dateOfBirthPicker.addTarget(self, action: #selector(updateAgeLabel), for: .valueChanged)
         
         let tapGesture = UITapGestureRecognizer(target: self, action: #selector(dismissKeyboard))
@@ -287,9 +311,7 @@ final class EditPersonalDataViewController: UIViewController, UITextFieldDelegat
         ]
         allTextFields.forEach { $0.delegate = self }
     }
-    
-    // MARK: - Carregar estado inicial
-    
+        
     private func loadExistingInformation() {
         viewModel.loadInitialPersonalData()
         applyFormStateToUI()
@@ -298,11 +320,9 @@ final class EditPersonalDataViewController: UIViewController, UITextFieldDelegat
     private func applyFormStateToUI() {
         let formState = viewModel.personalDataFormState
         
-        // Nome / endereço
         nameTextField.text = formState.name
         addressTextField.text = formState.address
         
-        // Peso / altura
         if let weight = formState.weight {
             weightTextField.text = numberFormatter.string(from: NSNumber(value: weight))
         } else {
@@ -315,7 +335,6 @@ final class EditPersonalDataViewController: UIViewController, UITextFieldDelegat
             heightTextField.text = ""
         }
         
-        // Gênero
         if formState.gender == "F" {
             genderSegmentedControl.selectedSegmentIndex = 0
         } else if formState.gender == "M" {
@@ -324,7 +343,6 @@ final class EditPersonalDataViewController: UIViewController, UITextFieldDelegat
             genderSegmentedControl.selectedSegmentIndex = UISegmentedControl.noSegment
         }
         
-        // Data de nascimento + idade
         if let dob = formState.dateOfBirth {
             dateOfBirthPicker.setDate(dob, animated: false)
             ageLabel.updateLabelText(formState.ageText)
@@ -332,7 +350,6 @@ final class EditPersonalDataViewController: UIViewController, UITextFieldDelegat
             ageLabel.updateLabelText("—")
         }
         
-        // Contato de emergência
         if let contact = formState.emergencyContact {
             contactNameTextField.text = contact.name
             contactPhoneTextField.text = contact.phone
@@ -407,8 +424,6 @@ final class EditPersonalDataViewController: UIViewController, UITextFieldDelegat
         view.endEditing(true)
     }
     
-    // MARK: - Relationship menu
-    
     private func createRelationshipMenu(selected: String) -> UIMenu {
         let actions: [UIAction] = RelationshipOptionsEnum.allCases.map { option in
             let isSelected = (option.displayText == selected)
@@ -422,9 +437,7 @@ final class EditPersonalDataViewController: UIViewController, UITextFieldDelegat
         }
         return UIMenu(options: .singleSelection, children: actions)
     }
-    
-    // MARK: - Validação / Erros
-    
+        
     private func applyFieldErrors() {
         let errors = viewModel.fieldErrors
         
@@ -461,21 +474,17 @@ final class EditPersonalDataViewController: UIViewController, UITextFieldDelegat
     
     // MARK: - Public helpers
     
-    /// Valida, aplica erros na UI e, se tudo ok, persiste.
     @discardableResult
     @objc func validateAndPersist() -> Bool {
         let isValid = viewModel.validatePersonalData()
         applyFieldErrors()
         if isValid {
             viewModel.persistPersonalData()
-            print("oiii")
             dismiss(animated: true)
         }
         return isValid
     }
-    
-    // MARK: - UITextFieldDelegate
-    
+        
     func textFieldShouldReturn(_ textField: UITextField) -> Bool {
         textField.resignFirstResponder()
         return true

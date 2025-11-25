@@ -9,6 +9,7 @@ import UIKit
 final class EditHealthProblemsViewController: UIViewController {
 
     let viewModel: EditHealthProblemsViewModel
+    
     weak var delegate: EditMedicalRecordViewControllerDelegate?
 
     private let scrollView = UIScrollView()
@@ -37,7 +38,7 @@ final class EditHealthProblemsViewController: UIViewController {
     }()
 
     private lazy var observationView: ObservationView = {
-        let view = ObservationView(placeholder: "Mais informações")
+        let view = ObservationView(placeholder: "Adicione outras ocorrências passadas (exemplo: queda, fraturas)")
         view.translatesAutoresizingMaskIntoConstraints = false
         return view
     }()
@@ -95,7 +96,7 @@ final class EditHealthProblemsViewController: UIViewController {
         ])
         stack.axis = .vertical
         stack.alignment = .fill
-        stack.spacing = 22
+        stack.spacing = 16
         stack.translatesAutoresizingMaskIntoConstraints = false
         return stack
     }()
@@ -104,7 +105,7 @@ final class EditHealthProblemsViewController: UIViewController {
         let stack = UIStackView(arrangedSubviews: [header, formStack])
         stack.axis = .vertical
         stack.alignment = .fill
-        stack.spacing = 15
+        stack.spacing = 16
         stack.translatesAutoresizingMaskIntoConstraints = false
         return stack
     }()
@@ -167,52 +168,40 @@ final class EditHealthProblemsViewController: UIViewController {
             scrollView.topAnchor.constraint(equalTo: view.safeAreaLayoutGuide.topAnchor),
             scrollView.leadingAnchor.constraint(equalTo: view.leadingAnchor),
             scrollView.trailingAnchor.constraint(equalTo: view.trailingAnchor),
-            scrollView.bottomAnchor.constraint(equalTo: view.bottomAnchor)
+            scrollView.bottomAnchor.constraint(equalTo: view.safeAreaLayoutGuide.bottomAnchor, constant: -90)
         ])
 
-
         scrollView.addSubview(contentView)
-        
-        let saveButton = configureConfirmationButton()
-        saveButton.translatesAutoresizingMaskIntoConstraints = false
-
-       
-        
         contentView.translatesAutoresizingMaskIntoConstraints = false
         contentView.layoutMargins = UIEdgeInsets(top: 15, left: 16, bottom: 20, right: 16)
 
-
         contentView.addSubview(contentStack)
-        contentView.addSubview(saveButton)
 
+        let saveButton = configureConfirmationButton()
+        view.addSubview(saveButton)
+
+        
         NSLayoutConstraint.activate([
-            saveButton.topAnchor.constraint(equalTo: contentView.bottomAnchor, constant: 24),
-            saveButton.leadingAnchor.constraint(equalTo: scrollView.contentLayoutGuide.leadingAnchor, constant: 16),
-            saveButton.trailingAnchor.constraint(equalTo: scrollView.contentLayoutGuide.trailingAnchor, constant: -16),
-            saveButton.heightAnchor.constraint(equalToConstant: 50),
-            saveButton.bottomAnchor.constraint(equalTo: scrollView.contentLayoutGuide.bottomAnchor, constant: -40)
+            saveButton.bottomAnchor.constraint(equalTo: view.safeAreaLayoutGuide.bottomAnchor, constant: -20),
+            saveButton.centerXAnchor.constraint(equalTo: view.centerXAnchor),
+            saveButton.bottomAnchor.constraint(equalTo: view.safeAreaLayoutGuide.bottomAnchor, constant: -20),
         ])
 
         NSLayoutConstraint.activate([
             contentView.topAnchor.constraint(equalTo: scrollView.contentLayoutGuide.topAnchor),
             contentView.leadingAnchor.constraint(equalTo: scrollView.contentLayoutGuide.leadingAnchor),
             contentView.trailingAnchor.constraint(equalTo: scrollView.contentLayoutGuide.trailingAnchor),
-
-            contentView.bottomAnchor.constraint(equalTo: saveButton.topAnchor, constant: -24),
+            contentView.bottomAnchor.constraint(equalTo: scrollView.contentLayoutGuide.bottomAnchor),
 
             contentView.widthAnchor.constraint(equalTo: scrollView.frameLayoutGuide.widthAnchor)
         ])
-        
+
         NSLayoutConstraint.activate([
             contentStack.topAnchor.constraint(equalTo: contentView.layoutMarginsGuide.topAnchor),
             contentStack.leadingAnchor.constraint(equalTo: contentView.layoutMarginsGuide.leadingAnchor),
             contentStack.trailingAnchor.constraint(equalTo: contentView.layoutMarginsGuide.trailingAnchor),
             contentStack.bottomAnchor.constraint(equalTo: contentView.layoutMarginsGuide.bottomAnchor)
         ])
-
-        let tapGesture = UITapGestureRecognizer(target: self, action: #selector(dismissKeyboard))
-        tapGesture.cancelsTouchesInView = false
-        view.addGestureRecognizer(tapGesture)
     }
 
     private func bindUI() {
@@ -279,10 +268,13 @@ final class EditHealthProblemsViewController: UIViewController {
     }
 
     @objc func persistAllFromView() {
+        viewModel.addSurgeryFromState()
         viewModel.updateObservationText(observationView.textView.text)
         viewModel.persistObservation()
         viewModel.persistAllergies()
         viewModel.persistDiseaseFormState()
+        
+        dismiss(animated: true)
     }
 
     private func reloadSurgeriesList() {
@@ -308,28 +300,39 @@ final class EditHealthProblemsViewController: UIViewController {
 
     private func makeSurgeryRow(for surgery: Surgery) -> UIView {
         let name = surgery.name ?? "—"
-        let dateString = DateFormatterHelper.birthDateFormatter(from: surgery.date ?? Date())
-        let infoView = MedicalRecordInfoItemView(
-            infotitle: name,
-            primaryText: dateString,
-            secondaryText: ""
-        )
+        let dateString = DateFormatterHelper.fullDateFormaterr(from: surgery.date ?? Date())
+        let nameLabel = StandardLabel(labelText: name, labelFont: .sfPro, labelType: .body, labelColor: .black10, labelWeight: .regular)
+        
+        let dateLabel = StandardLabel(labelText: dateString, labelFont: .sfPro, labelType: .subHeadline, labelColor: .black20, labelWeight: .regular)
+        
+        let vStack = UIStackView()
+        vStack.axis = .vertical
+        vStack.spacing = 0
+        vStack.alignment = .leading
+        
+        vStack.addArrangedSubview(nameLabel)
+        vStack.addArrangedSubview(dateLabel)
 
         let deleteButton = UIButton(type: .system)
-        deleteButton.setImage(UIImage(systemName: "trash"), for: .normal)
-        deleteButton.tintColor = UIColor(resource: .red40)
-        deleteButton.contentEdgeInsets = UIEdgeInsets(top: 6, left: 6, bottom: 6, right: 6)
+        deleteButton.setImage(UIImage(systemName: "minus.circle.fill"), for: .normal)
+        deleteButton.tintColor = UIColor(resource: .red20)
         deleteButton.translatesAutoresizingMaskIntoConstraints = false
+        
+        NSLayoutConstraint.activate([
+            deleteButton.widthAnchor.constraint(equalToConstant: 16),
+            deleteButton.heightAnchor.constraint(equalToConstant: 16)
+
+        ])
 
         objc_setAssociatedObject(deleteButton, &AssociatedKeys.surgeryKey, surgery, .OBJC_ASSOCIATION_RETAIN_NONATOMIC)
         deleteButton.addTarget(self, action: #selector(deleteSurgeryTapped(_:)), for: .touchUpInside)
 
-        let row = UIStackView(arrangedSubviews: [infoView, deleteButton])
+        let row = UIStackView(arrangedSubviews: [vStack, deleteButton])
         row.axis = .horizontal
         row.alignment = .center
         row.spacing = 12
 
-        infoView.setContentHuggingPriority(.defaultLow, for: .horizontal)
+        vStack.setContentHuggingPriority(.defaultLow, for: .horizontal)
         deleteButton.setContentHuggingPriority(.required, for: .horizontal)
 
         return row

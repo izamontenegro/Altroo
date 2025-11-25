@@ -20,10 +20,13 @@ final class FormSectionView: UIStackView {
         labelWeight: .regular
     )
     
-    init(title: String, content: UIView, isObligatory: Bool = false, isSubsection: Bool = false) {
+    init(title: String, content: UIView, isObligatory: Bool = false, isSubsection: Bool = false, alignmentLeading: Bool? = nil) {
         self.content = content
         super.init(frame: .zero)
         axis = .vertical
+        if alignmentLeading != nil {
+            alignment = .leading
+        }
         spacing = 8
         translatesAutoresizingMaskIntoConstraints = false
         

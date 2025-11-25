@@ -45,7 +45,7 @@ final class EditMedicalRecordCoordinator: Coordinator {
             navigation.present(nav, animated: true)
             
         case .healthProblems:
-            let vc = factory.makeEditPersonalDataViewController(delegate: self)
+            let vc = factory.makeEditHealthProblemsViewController(delegate: self)
             let nav = UINavigationController(rootViewController: vc)
             nav.modalPresentationStyle = .pageSheet
 
@@ -61,7 +61,7 @@ final class EditMedicalRecordCoordinator: Coordinator {
             navigation.present(nav, animated: true)
             
         case .physicalState:
-            let vc = factory.makeEditPersonalDataViewController(delegate: self)
+            let vc = factory.makeEditPhysicalStateViewController(delegate: self)
             let nav = UINavigationController(rootViewController: vc)
             nav.modalPresentationStyle = .pageSheet
 
@@ -77,7 +77,7 @@ final class EditMedicalRecordCoordinator: Coordinator {
             navigation.present(nav, animated: true)
             
         case .mentalState:
-            let vc = factory.makeEditPersonalDataViewController(delegate: self)
+            let vc = factory.makeEditMentalStateViewController(delegate: self)
             let nav = UINavigationController(rootViewController: vc)
             nav.modalPresentationStyle = .pageSheet
 
@@ -93,7 +93,7 @@ final class EditMedicalRecordCoordinator: Coordinator {
             navigation.present(nav, animated: true)
             
         case .personalCare:
-            let vc = factory.makeEditPersonalDataViewController(delegate: self)
+            let vc = factory.makeEditPersonalCareViewController(delegate: self)
             let nav = UINavigationController(rootViewController: vc)
             nav.modalPresentationStyle = .pageSheet
 
