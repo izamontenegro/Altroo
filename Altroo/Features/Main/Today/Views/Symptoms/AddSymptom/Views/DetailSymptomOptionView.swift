@@ -31,15 +31,12 @@ final class DetailSymptomOptionView: UIView {
         let stackView = UIStackView(arrangedSubviews: [])
         stackView.axis = .vertical
         stackView.distribution = .fill
-//        stackView.alignment = .leading
         stackView.spacing = 16
         
         stackView.translatesAutoresizingMaskIntoConstraints = false
         return stackView
     }()
     
-    
-
     init(viewModel: AddSymptomViewModel) {
         self.viewModel = viewModel
         super.init(frame: .zero)
@@ -84,6 +81,8 @@ final class DetailSymptomOptionView: UIView {
             contentStack.topAnchor.constraint(equalTo: safeAreaLayoutGuide.topAnchor),
             contentStack.leadingAnchor.constraint(equalTo: safeAreaLayoutGuide.leadingAnchor),
             contentStack.trailingAnchor.constraint(equalTo: safeAreaLayoutGuide.trailingAnchor),
+            contentStack.bottomAnchor.constraint(equalTo: safeAreaLayoutGuide.bottomAnchor),
+
         ])
         
         let tapGesture = UITapGestureRecognizer(target: self, action: #selector(dismissKeyboard))

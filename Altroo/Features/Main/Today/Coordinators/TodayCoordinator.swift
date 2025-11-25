@@ -51,8 +51,6 @@ final class TodayCoordinator: Coordinator {
             return vc
             
         case .recordUrine:
-            
-            
             let vc = factory.makeUrineRecordViewController() as! UrineRecordViewController
             vc.delegate = self
             return vc
@@ -195,10 +193,9 @@ final class TodayCoordinator: Coordinator {
 }
 
 extension TodayCoordinator: TodayViewControllerDelegate {
-    
     func goTo(_ destination: TodayDestination) {
         switch destination {
-        case .recordHydration, .recordUrine, .recordStool, .recordFeeding, .addNewTask:
+        case .recordHydration, .recordUrine, .recordStool, .recordFeeding:
             guard let rootVC = makeViewController(for: destination) else { return }
             
             let nav = UINavigationController(rootViewController: rootVC)
@@ -210,6 +207,18 @@ extension TodayCoordinator: TodayViewControllerDelegate {
                         return context.maximumDetentValue * 0.9
                     }
                 ]
+                sheet.prefersGrabberVisible = true
+            }
+            
+            navigation.present(nav, animated: true)
+            
+        case .addSymptom, .addNewTask:
+            guard let rootVC = makeViewController(for: destination) else { return }
+            
+            let nav = UINavigationController(rootViewController: rootVC)
+            nav.modalPresentationStyle = .pageSheet
+            if let sheet = nav.sheetPresentationController {
+                sheet.detents = [.large()]
                 sheet.prefersGrabberVisible = true
             }
             
@@ -273,7 +282,7 @@ enum TodayDestination {
         switch self {
         case .recordHydration, .recordStool, .recordUrine, .recordFeeding,
                 .recordHeartRate, .recordGlycemia, .recordBloodPressure, .recordTemperature, .recordSaturation,
-                .addNewTask:
+                .addNewTask, .addSymptom:
             return true
         default:
             return false

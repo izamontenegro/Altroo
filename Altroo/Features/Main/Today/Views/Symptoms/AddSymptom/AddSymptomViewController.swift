@@ -24,6 +24,18 @@ class AddSymptomViewController: UIViewController {
         return scrollView
     }()
     
+    lazy var stackView: UIStackView = {
+        let stack = UIStackView()
+        stack.axis = .vertical
+        stack.spacing = 16
+        stack.translatesAutoresizingMaskIntoConstraints = false
+        return stack
+    }()
+    
+    private var contentPlaceholder: UIView {
+        return stackView.arrangedSubviews[1]
+    }
+    
     private var currentContentView: (Int, UIView)?
     private lazy var chooseOptionView: (Int, UIView) = (1, ChooseSymptomOptionView(viewModel: viewModel))
     private lazy var detailOptionView: (Int, UIView) = (2, DetailSymptomOptionView(viewModel: viewModel))
@@ -45,6 +57,7 @@ class AddSymptomViewController: UIViewController {
         makeContent()
         showContent(chooseOptionView)
         bindViewModel()
+        configureNavBar()
     }
     
     
@@ -57,36 +70,23 @@ class AddSymptomViewController: UIViewController {
             .store(in: &cancellables)
     }
     
-//    func bindViewModel() {
-//        //name textfield
-//        NotificationCenter.default.publisher(for: UITextField.textDidChangeNotification, object: nameTexfield)
-//            .compactMap { ($0.object as? UITextField)?.text }
-//            .assign(to: \.name, on: viewModel)
-//            .store(in: &cancellables)
-//        
-//        //note textfield
-//        NotificationCenter.default.publisher(for: UITextField.textDidChangeNotification, object: noteTexfield)
-//            .compactMap { ($0.object as? UITextField)?.text }
-//            .assign(to: \.note, on: viewModel)
-//            .store(in: &cancellables)
-//        
-//        //validation
-//        viewModel.$fieldErrors
-//            .receive(on: RunLoop.main)
-//            .sink { [weak self] errors in
-//                self?.nameSection.setError(errors["name"])
-//                self?.dateSection.setError(errors["date"])
-//            }
-//            .store(in: &cancellables)
-//        
-//    }
-
-//    private func setupActions() {
-//          confirmButton.addTarget(self, action: #selector(didFinishCreating), for: .touchUpInside)
-//          datePicker.addTarget(self, action: #selector(dateChanged), for: .valueChanged)
-//          timePicker.addTarget(self, action: #selector(timeChanged), for: .valueChanged)
-//      }
+    private func configureNavBar() {
+        let closeButton = UIBarButtonItem(title: "Fechar", style: .done, target: self, action: #selector(closeTapped))
+        closeButton.tintColor = .blue20
+        navigationItem.rightBarButtonItem = closeButton
+        
+        let appearance = UINavigationBarAppearance()
+        appearance.configureWithOpaqueBackground()
+        navigationItem.scrollEdgeAppearance = appearance
+    }
     
+    @objc func closeTapped() {
+        dismiss(animated: true)
+    }
+    
+    @objc func backTapped() {
+        showContent(chooseOptionView)
+    }
     
     func makeContent() {
         view.addSubview(scrollView)
@@ -99,13 +99,13 @@ class AddSymptomViewController: UIViewController {
             scrollView.leadingAnchor.constraint(equalTo: view.layoutMarginsGuide.leadingAnchor),
             scrollView.trailingAnchor.constraint(equalTo: view.layoutMarginsGuide.trailingAnchor),
             
-            titleSection.topAnchor.constraint(equalTo: scrollView.topAnchor),
+            titleSection.topAnchor.constraint(equalTo: scrollView.topAnchor, constant: 16),
             titleSection.leadingAnchor.constraint(equalTo: scrollView.leadingAnchor),
             titleSection.trailingAnchor.constraint(equalTo: scrollView.trailingAnchor),
             titleSection.widthAnchor.constraint(equalTo: scrollView.widthAnchor),
             
-            confirmButton.bottomAnchor.constraint(equalTo: scrollView.bottomAnchor),
             confirmButton.centerXAnchor.constraint(equalTo: scrollView.centerXAnchor),
+            confirmButton.bottomAnchor.constraint(equalTo: scrollView.bottomAnchor, constant: -32)
         ])
         
         confirmButton.addTarget(self, action: #selector(tapConfirmButton), for: .touchUpInside)
@@ -113,6 +113,7 @@ class AddSymptomViewController: UIViewController {
     }
     
     func showContent(_ view: (Int, UIView)) {
+        currentContentView?.1.removeFromSuperview()
         currentContentView = view
         view.1.removeFromSuperview()
         scrollView.addSubview(view.1)
@@ -123,7 +124,7 @@ class AddSymptomViewController: UIViewController {
             view.1.trailingAnchor.constraint(equalTo: scrollView.trailingAnchor),
             view.1.widthAnchor.constraint(equalTo: scrollView.widthAnchor),
             
-            confirmButton.topAnchor.constraint(equalTo: view.1.bottomAnchor, constant: 24)
+            view.1.bottomAnchor.constraint(equalTo: confirmButton.topAnchor, constant: -24)
         ])
     }
     
@@ -142,6 +143,7 @@ class AddSymptomViewController: UIViewController {
         if let selectedSymptom = viewModel.selectedSymptom {
             viewModel.name = selectedSymptom.displayText
         }
+        addBackButton()
         showContent(detailOptionView)
     }
     
@@ -149,7 +151,17 @@ class AddSymptomViewController: UIViewController {
         guard viewModel.validateSymptom() else { return }
         
         viewModel.createSymptom()
-        coordinator?.goToRoot()
+        dismiss(animated: true)
+    }
+    
+    func addBackButton() {
+        let backButton = UIButton(type: .system)
+        backButton.setTitle("Voltar", for: .normal)
+        backButton.setImage(UIImage(systemName: "chevron.left"), for: .normal)
+        backButton.tintColor = .blue20
+        backButton.addTarget(self, action: #selector(backTapped), for: .touchUpInside)
+        backButton.sizeToFit()
+        navigationItem.leftBarButtonItem = UIBarButtonItem(customView: backButton)
     }
     
     private func updateConfirmationButtonState(enabled: Bool) {
@@ -159,8 +171,3 @@ class AddSymptomViewController: UIViewController {
         }
     }
 }
-
-
-//#Preview {
-//    AddSymptomViewController(viewModel: AddSymptomViewModel(careRecipientFacade: Car))
-//}
