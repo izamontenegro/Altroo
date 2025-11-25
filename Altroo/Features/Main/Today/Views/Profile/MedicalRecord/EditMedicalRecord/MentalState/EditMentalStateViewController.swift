@@ -4,7 +4,6 @@
 //
 //  Created by Izadora de Oliveira Albuquerque Montenegro on 30/10/25.
 //
-
 import UIKit
 
 final class EditMentalStateViewController: UIViewController {
@@ -22,19 +21,6 @@ final class EditMentalStateViewController: UIViewController {
         return headerView
     }()
 
-    private lazy var emotionalChipsView: WrappingCapsulesView = {
-        let titles = EmotionalStateEnum.allCases.map { $0.displayText }
-        let view = WrappingCapsulesView(titles: titles) { [weak self] selected in
-            guard let self else { return }
-            if let selected,
-               let value = EmotionalStateEnum.allCases.first(where: { $0.displayText == selected }) {
-                self.viewModel.updateEmotionalState(value)
-            } else {
-                self.viewModel.updateEmotionalState(nil)
-            }
-        }
-        return view
-    }()
 
     private lazy var emotionalSectionTitleLabel = StandardLabel(
         labelText: "Estado Emocional",
@@ -52,54 +38,122 @@ final class EditMentalStateViewController: UIViewController {
         labelWeight: .semibold
     )
 
-    private lazy var orientationColumn = CheckColumnView(
-        options: [
-            OrientationEnum.oriented,
-            OrientationEnum.disorientedInTime,
-            OrientationEnum.disorientedInSpace,
-            OrientationEnum.disorientedInPersons
-        ],
-        titleProvider: { $0.displayText },
-        onSelect: { [weak self] option in
-            self?.viewModel.updateOrientationState(option)
+    private lazy var emotionalColumn: UIStackView = {
+        let stack = UIStackView()
+        stack.axis = .vertical
+        stack.spacing = 12
+        stack.alignment = .leading
+
+        let options = EmotionalStateEnum.allCases
+
+        let firstRow = Array(options.prefix(3))
+        let secondRow = Array(options.suffix(from: 3))
+
+        let row1 = UIStackView()
+        row1.axis = .horizontal
+        row1.spacing = 12
+        row1.alignment = .leading
+        row1.distribution = .fill
+
+        firstRow.forEach { option in
+            let button = CheckOptionButton(title: option.displayText)
+            button.associatedData = option
+            button.isSelected = false
+            button.addTarget(self, action: #selector(didTapEmotional(_:)), for: .touchUpInside)
+            row1.addArrangedSubview(button)
         }
-    )
+
+        let row2 = UIStackView()
+        row2.axis = .horizontal
+        row2.spacing = 12
+        row2.alignment = .leading
+        row2.distribution = .fill
+
+        secondRow.forEach { option in
+            let button = CheckOptionButton(title: option.displayText)
+            button.associatedData = option
+            button.isSelected = false
+            button.addTarget(self, action: #selector(didTapEmotional(_:)), for: .touchUpInside)
+            row2.addArrangedSubview(button)
+        }
+
+        stack.addArrangedSubview(row1)
+        stack.addArrangedSubview(row2)
+
+        return stack
+    }()
+
+    private lazy var orientationColumn: UIStackView = {
+        let stack = UIStackView()
+        stack.axis = .vertical
+        stack.spacing = 16
+        stack.alignment = .leading
+        stack.distribution = .fill
+
+        let options: [OrientationEnum] = [
+            .oriented,
+            .disorientedInTime,
+            .disorientedInSpace,
+            .disorientedInPersons
+        ]
+
+        options.forEach { option in
+            let button = CheckOptionButton(title: option.displayText)
+            button.associatedData = option
+            button.isSelected = false
+
+            button.setContentHuggingPriority(.required, for: .horizontal)
+            button.setContentCompressionResistancePriority(.required, for: .horizontal)
+
+            button.addTarget(self, action: #selector(didTapOrientation(_:)), for: .touchUpInside)
+
+            stack.addArrangedSubview(button)
+        }
+
+        return stack
+    }()
+
 
     private lazy var memoryPopupButton: PopupMenuButton = {
         let button = PopupMenuButton(title: MemoryEnum.intact.displayText)
         button.backgroundColor = .blue40
+        button.widthAnchor.constraint(equalToConstant: 170).isActive = true
         button.translatesAutoresizingMaskIntoConstraints = false
-        button.widthAnchor.constraint(equalToConstant: 175).isActive = true
         return button
     }()
 
     private lazy var memorySection = FormSectionView(title: "Memória", content: memoryPopupButton)
 
+
     private lazy var formStack: UIStackView = {
         let emotionalContainer = UIStackView(arrangedSubviews: [
-            emotionalSectionTitleLabel, emotionalChipsView
+            emotionalSectionTitleLabel,
+            emotionalColumn
         ])
         emotionalContainer.axis = .vertical
         emotionalContainer.spacing = 12
+        emotionalContainer.alignment = .leading
 
         let orientationContainer = UIStackView(arrangedSubviews: [
-            orientationTitleLabel, orientationColumn
+            orientationTitleLabel,
+            orientationColumn
         ])
         orientationContainer.axis = .vertical
         orientationContainer.spacing = 12
+        orientationContainer.alignment = .leading
 
         let stack = UIStackView(arrangedSubviews: [
             emotionalContainer,
             orientationContainer,
             memorySection
         ])
+        stack.alignment = .leading
         stack.axis = .vertical
         stack.spacing = 22
         stack.translatesAutoresizingMaskIntoConstraints = false
         return stack
     }()
 
-    // MARK: - INIT
     
     init(viewModel: EditMentalStateViewModel) {
         self.viewModel = viewModel
@@ -110,6 +164,8 @@ final class EditMentalStateViewController: UIViewController {
         fatalError("init(coder:) not implemented")
     }
 
+    // MARK: - Lifecycle
+
     override func viewDidLoad() {
         super.viewDidLoad()
         setupUI()
@@ -118,11 +174,17 @@ final class EditMentalStateViewController: UIViewController {
         loadInitialState()
     }
 
+    // MARK: - UI Setup
+
     private func setupUI() {
         view.backgroundColor = .pureWhite
-
+        
+        let saveButton = configureConfirmationButton()
+        saveButton.translatesAutoresizingMaskIntoConstraints = false
+        
         view.addSubview(headerView)
         view.addSubview(formStack)
+        view.addSubview(saveButton)
 
         NSLayoutConstraint.activate([
             headerView.topAnchor.constraint(equalTo: view.safeAreaLayoutGuide.topAnchor, constant: 15),
@@ -132,7 +194,10 @@ final class EditMentalStateViewController: UIViewController {
             formStack.topAnchor.constraint(equalTo: headerView.bottomAnchor, constant: 15),
             formStack.leadingAnchor.constraint(equalTo: view.leadingAnchor, constant: 16),
             formStack.trailingAnchor.constraint(equalTo: view.trailingAnchor, constant: -16),
-            formStack.bottomAnchor.constraint(lessThanOrEqualTo: view.bottomAnchor, constant: -20)
+            formStack.bottomAnchor.constraint(lessThanOrEqualTo: saveButton.topAnchor, constant: -20),
+            
+            saveButton.bottomAnchor.constraint(equalTo: view.safeAreaLayoutGuide.bottomAnchor),
+            saveButton.centerXAnchor.constraint(equalTo: view.centerXAnchor)
         ])
     }
 
@@ -140,18 +205,26 @@ final class EditMentalStateViewController: UIViewController {
         viewModel.loadInitialMentalState()
         let state = viewModel.mentalStateFormState
 
-        emotionalChipsView.updateSelection(with: state.emotionalState?.displayText)
-
-        if let orientation = state.orientationState {
-            orientationColumn.updateSelection(for: orientation)
-        } else {
-            orientationColumn.clearSelection()
+        emotionalColumn.arrangedSubviews.forEach { view in
+            if let btn = view as? CheckOptionButton,
+               let option = btn.associatedData as? EmotionalStateEnum {
+                btn.isSelected = (option == state.emotionalState)
+            }
         }
 
+        orientationColumn.arrangedSubviews.forEach { view in
+            if let btn = view as? CheckOptionButton,
+               let option = btn.associatedData as? OrientationEnum {
+                btn.isSelected = (option == state.orientationState)
+            }
+        }
+        
         if let memory = state.memoryState {
             memoryPopupButton.setTitle(memory.displayText, for: .normal)
         }
     }
+
+    // MARK: - Menus
 
     private func configureMemoryMenu() {
         memoryPopupButton.menu = UIMenu(children:
@@ -165,21 +238,68 @@ final class EditMentalStateViewController: UIViewController {
         memoryPopupButton.showsMenuAsPrimaryAction = true
     }
 
-    func persistAllFromView() {
-        viewModel.persistMentalState()
+    @objc private func didTapEmotional(_ sender: CheckOptionButton) {
+        guard let option = sender.associatedData as? EmotionalStateEnum else { return }
+
+        let wasSelected = sender.isSelected
+
+        emotionalColumn.arrangedSubviews.forEach { view in
+            (view as? CheckOptionButton)?.isSelected = false
+        }
+
+        if wasSelected {
+            viewModel.updateEmotionalState(nil)
+        } else {
+            sender.isSelected = true
+            viewModel.updateEmotionalState(option)
+        }
     }
-    
+
+    @objc private func didTapOrientation(_ sender: CheckOptionButton) {
+        guard let option = sender.associatedData as? OrientationEnum else { return }
+
+        let wasSelected = sender.isSelected
+
+        orientationColumn.arrangedSubviews.forEach { view in
+            (view as? CheckOptionButton)?.isSelected = false
+        }
+
+        if wasSelected {
+            viewModel.updateOrientationState(nil)
+        } else {
+            sender.isSelected = true
+            viewModel.updateOrientationState(option)
+        }
+    }
+
+    @objc func persistAllFromView() {
+        viewModel.persistMentalState()
+        dismiss(animated: true)
+    }
+
+    private func configureConfirmationButton() -> StandardConfirmationButton {
+        let button = StandardConfirmationButton(title: "Salvar")
+        button.addTarget(self, action: #selector(persistAllFromView), for: .touchUpInside)
+        return button
+    }
+
+    // MARK: - NavBar
+
     private func configureNavBar() {
         navigationItem.title = "Editar".localized
         
-        let closeButton = UIBarButtonItem(title: "close".localized, style: .done, target: self, action: #selector(closeTapped))
+        let closeButton = UIBarButtonItem(
+            title: "close".localized,
+            style: .done,
+            target: self,
+            action: #selector(closeTapped)
+        )
         closeButton.tintColor = .blue10
         navigationItem.leftBarButtonItem = closeButton
         
         let appearance = UINavigationBarAppearance()
         appearance.configureWithOpaqueBackground()
         navigationItem.scrollEdgeAppearance = appearance
-        
     }
     
     @objc func closeTapped() {
