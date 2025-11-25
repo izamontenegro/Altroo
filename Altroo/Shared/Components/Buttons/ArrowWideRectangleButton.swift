@@ -60,6 +60,6 @@ class ArrowWideRectangleButton: WideRectangleButton {
     }
 }
 
-#Preview {
-    ArrowWideRectangleButton(title: "default")
-}
+//#Preview {
+//    ArrowWideRectangleButton(title: "default")
+//}

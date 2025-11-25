@@ -48,6 +48,6 @@ class WideRectangleButton: PrimaryStyleButton {
     }
 }
 
-#Preview {
-    WideRectangleButton(title: "O dia todo")
-}
+//#Preview {
+//    WideRectangleButton(title: "O dia todo")
+//}

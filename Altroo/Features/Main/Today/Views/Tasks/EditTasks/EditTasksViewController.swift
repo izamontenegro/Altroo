@@ -4,14 +4,15 @@
 //
 //  Created by Raissa Parente on 16/10/25.
 //
+
 import UIKit
 import Combine
 
 class EditTaskViewController: TaskFormViewController {
+    
     weak var coordinator: TodayCoordinator?
     var viewModel: EditTaskViewModel
     private var cancellables = Set<AnyCancellable>()
-
     
     init(viewModel: EditTaskViewModel) {
         self.viewModel = viewModel
@@ -168,14 +169,14 @@ class EditTaskViewController: TaskFormViewController {
             let index = viewModel.times.count
             viewModel.addTime(from: newPicker.date)
         }
-
+        
     }
     
     @objc func timeChanged(_ sender: UIDatePicker) {
         let index = sender.tag
         
         if index < viewModel.times.count {
-           viewModel.addTime(from: sender.date, at: index)
+            viewModel.addTime(from: sender.date, at: index)
         }
     }
     

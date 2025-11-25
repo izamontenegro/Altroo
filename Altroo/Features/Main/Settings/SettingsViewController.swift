@@ -82,6 +82,6 @@ class SettingsViewController: GradientHeader {
     @objc func didTapDevelopersButton() { delegate?.goToDevelopers() }
 }
 
-#Preview {
-    SettingsViewController()
-}
+//#Preview {
+//    SettingsViewController()
+//}

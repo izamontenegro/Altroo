@@ -4,10 +4,12 @@
 //
 //  Created by Raissa Parente on 16/10/25.
 //
+
 import Combine
 import Foundation
 
 class EditTaskViewModel {
+    
     var task: RoutineTask
     var taskService: RoutineActivitiesFacade
     var currentCareRecipient: CareRecipient?
@@ -32,24 +34,24 @@ class EditTaskViewModel {
             continuousOptions[1]
         }
     }
-        
+    
     private let validator = FormValidator()
     
     init(task: RoutineTask, taskService: RoutineActivitiesFacade, userService: UserServiceProtocol) {
         self.task = task
         self.taskService = taskService
         self.userService = userService
-
+        
         fetchCareRecipient()
         updateFields()
     }
     
     func addTime(from date: Date, at index: Int? = nil) {
-            let calendar = Calendar.current
-            let comp = DateComponents(
-                hour: calendar.component(.hour, from: date),
-                minute: calendar.component(.minute, from: date)
-            )
+        let calendar = Calendar.current
+        let comp = DateComponents(
+            hour: calendar.component(.hour, from: date),
+            minute: calendar.component(.minute, from: date)
+        )
         
         if let index {
             times[index] = comp
@@ -67,14 +69,14 @@ class EditTaskViewModel {
         isContinuous = task.endDate == nil ? true : false
         repeatingDays = task.weekdays
     }
-
+    
     func fetchCareRecipient() {
         currentCareRecipient = userService.fetchCurrentPatient()
     }
     
     func updateTask() -> Bool {
         guard validator.isEmpty(name, error: &nameError) else { return false }
-                
+        
         taskService.editTemplateRoutineTask(task: task, name: name, allTimes: times, daysOfTheWeek: repeatingDays, startDate: startDate, endDate: endDate, reminder: false, note: note)
         
         return true
@@ -84,5 +86,4 @@ class EditTaskViewModel {
         guard let currentCareRecipient else { return }
         taskService.deleteRoutineTask(routineTask: task, from: currentCareRecipient)
     }
-    
 }

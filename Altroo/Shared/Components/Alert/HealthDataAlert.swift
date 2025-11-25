@@ -107,6 +107,6 @@ struct HealthDataAlertView: View {
     }
 }
  
-#Preview {
-    HealthDataAlertView()
-}
+//#Preview {
+//    HealthDataAlertView()
+//}

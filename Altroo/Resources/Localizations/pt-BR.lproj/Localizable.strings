@@ -6,6 +6,34 @@
   
 */
 
+// MARK: - Generals
+"delete" = "Deletar";
+"edit" = "Editar";
+"name" = "Nome";
+"weight" = "Peso";
+"birth_date" = "Data de Nascimento";
+"age" = "Idade";
+"height" = "Altura";
+"gender" = "Sexo";
+"address" = "Endereço";
+"time" = "Horário";
+"save" = "Salvar";
+"date" = "Data";
+"back" = "Voltar";
+"cancel" = "Cancelar";
+"see_all" = "Ver Tudo";
+"today" = "Hoje";
+"report" = "Relatório";
+"records" = "Registros";
+"settings" = "Ajustes";
+"close" = "Fechar";
+"add" = "Adicionar";
+"observations" = "Observações";
+"observation" = "Observação";
+"start" = "Começar";
+"next" = "Próximo";
+"skip" = "Pular";
+
 // MARK: - ONBOARDING
 "onboarding1_title" = "Sem mais bagunça";
 "onboarding1_description" = "Gerencie necessidades básicas, medicamentos, tarefas, ocorrências, tudo em um só lugar";
@@ -60,34 +88,6 @@
 // MARK: - Intercurrences
 "add_intercurrence" = "Adicionar Intercorrência";
 "name_intercurrence" = "Nome da intercorrência";
-
-// MARK: - Generals
-"delete" = "Deletar";
-"edit" = "Editar";
-"name" = "Nome";
-"weight" = "Peso";
-"birth_date" = "Data de Nascimento";
-"age" = "Idade";
-"height" = "Altura";
-"gender" = "Sexo";
-"address" = "Endereço";
-"time" = "Horário";
-"save" = "Salvar";
-"date" = "Data";
-"back" = "Voltar";
-"cancel" = "Cancelar";
-"see_all" = "Ver Tudo";
-"today" = "Hoje";
-"report" = "Relatório";
-"records" = "Registros";
-"settings" = "Ajustes";
-"close" = "Fechar";
-"add" = "Adicionar";
-"observations" = "Observações";
-"observation" = "Observação";
-"start" = "Começar";
-"next" = "Próximo";
-"skip" = "Pular";
 
 // MARK: - AllPatientsFlow
 "assisted" = "Assistidos";
