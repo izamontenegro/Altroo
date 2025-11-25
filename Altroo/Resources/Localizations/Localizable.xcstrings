@@ -4,19 +4,6 @@
     "(%@)" : {
 
     },
-    "%@" : {
-
-    },
-    "%@ - %@" : {
-      "localizations" : {
-        "pt-BR" : {
-          "stringUnit" : {
-            "state" : "new",
-            "value" : "%1$@ - %2$@"
-          }
-        }
-      }
-    },
     "%@ • %@" : {
       "localizations" : {
         "pt-BR" : {
@@ -51,10 +38,6 @@
 
     },
     "%lld registros" : {
-
-    },
-    "acceptance" : {
-      "extractionState" : "manual",
       "localizations" : {
         "en" : {
           "stringUnit" : {
@@ -73,20 +56,6 @@
           }
         }
       }
-    },
-            "value" : "Acceptance"
-          }
-        },
-        "pt-BR" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Aceitação"
-          }
-        }
-      }
-    },
-    "Aceitação: %@" : {
-
     },
     "add" : {
       "extractionState" : "manual",
@@ -165,23 +134,6 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Registrar Tarefa"
-          }
-        }
-      }
-    },
-    "added" : {
-      "extractionState" : "manual",
-      "localizations" : {
-        "en" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Added"
-          }
-        },
-        "pt-BR" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Adicionados"
           }
         }
       }
@@ -314,7 +266,6 @@
           }
         }
       }
-
     },
     "assisted" : {
       "comment" : "MARK: - AllPatientsFlow",
@@ -360,7 +311,6 @@
           }
         }
       }
-
     },
     "back" : {
       "extractionState" : "manual",
@@ -413,26 +363,6 @@
         }
       }
     },
-    "Carregando..." : {
-
-    },
-    "category" : {
-      "extractionState" : "manual",
-      "localizations" : {
-        "en" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Category"
-          }
-        },
-        "pt-BR" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Categoria"
-          }
-        }
-      }
-    },
     "close" : {
       "extractionState" : "manual",
       "localizations" : {
@@ -451,22 +381,11 @@
       }
     },
     "Coloração:" : {
-
-    },
-    "coloring" : {
-      "extractionState" : "manual",
       "localizations" : {
         "en" : {
           "stringUnit" : {
             "state" : "translated",
             "value" : "Coloring:"
-            "value" : "Coloring"
-          }
-        },
-        "pt-BR" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Coloração"
           }
         }
       }
@@ -521,9 +440,6 @@
           }
         }
       }
-    },
-    "COR" : {
-
     },
     "date" : {
       "extractionState" : "manual",
@@ -638,7 +554,6 @@
           }
         }
       }
-
     },
     "emergency_contact" : {
       "extractionState" : "manual",
@@ -658,8 +573,6 @@
       }
     },
     "erro ao selecionar item" : {
-    "error_selected_item" : {
-      "extractionState" : "manual",
       "localizations" : {
         "en" : {
           "stringUnit" : {
@@ -670,19 +583,6 @@
       }
     },
     "Excluir" : {
-            "value" : "Error selecting item."
-          }
-        },
-        "pt-BR" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Erro ao selecionar item."
-          }
-        }
-      }
-    },
-    "exclude" : {
-      "extractionState" : "manual",
       "localizations" : {
         "en" : {
           "stringUnit" : {
@@ -701,18 +601,6 @@
           }
         }
       }
-    },
-        },
-        "pt-BR" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Excluir"
-          }
-        }
-      }
-    },
-    "Exportado: " : {
-
     },
     "feeding" : {
       "extractionState" : "manual",
@@ -749,10 +637,6 @@
       }
     },
     "Gerando tela personalizada" : {
-
-    },
-    "height" : {
-      "extractionState" : "manual",
       "localizations" : {
         "en" : {
           "stringUnit" : {
@@ -763,6 +647,11 @@
       }
     },
     "height" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
             "value" : "Height"
           }
         },
@@ -780,51 +669,13 @@
         "en" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Height"
             "value" : "History"
-          }
-        }
-      }
-    },
-    "history_empty" : {
-      "extractionState" : "manual",
-      "localizations" : {
-        "en" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "You haven't registered any activity yet."
-          }
-        },
-        "pt-BR" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Altura"
-          }
-        }
-      }
-    },
-    "history" : {
-            "value" : "Você ainda não registrou nenhuma atividade."
-          }
-        }
-      }
-    },
-    "history_nav_description" : {
-      "comment" : "MARK: - History",
-      "extractionState" : "manual",
-      "localizations" : {
-        "en" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "History"
-            "value" : "Check out all previously recorded entries with the date, author of the entry, and other details"
           }
         },
         "pt-BR" : {
           "stringUnit" : {
             "state" : "translated",
             "value" : "Histórico"
-            "value" : "Confira todos os registros realizados anteriormente com a data, autoria do registros e demais detalhes"
           }
         }
       }
@@ -1009,7 +860,6 @@
           }
         }
       }
-
     },
     "next" : {
       "extractionState" : "manual",
@@ -1046,8 +896,6 @@
       }
     },
     "O relatório gerado pelo Altroo é totalmente baseado nos registros feitos pelo usuário no aplicativo. Caso alguma informação não apareça, significa que ela não foi registrada." : {
-    "no_observations" : {
-      "extractionState" : "manual",
       "localizations" : {
         "en" : {
           "stringUnit" : {
@@ -1056,20 +904,6 @@
           }
         }
       }
-    },
-            "value" : "No observations."
-          }
-        },
-        "pt-BR" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Sem observações."
-          }
-        }
-      }
-    },
-    "O relatório gerado pelo Altroo é totalmente baseado nos registros feitos pelo usuário no aplicativo. Caso alguma informação não apareça, significa que ela não foi registrada." : {
-
     },
     "observation" : {
       "extractionState" : "manual",
@@ -1288,19 +1122,12 @@
       }
     },
     "permissions" : {
-
-    },
-    "Política de Privacidade e Proteção" : {
-
-    },
-    "profile_toolbar_title" : {
       "extractionState" : "manual",
       "localizations" : {
         "en" : {
           "stringUnit" : {
             "state" : "translated",
             "value" : "Permissions"
-            "value" : "Taking care of:"
           }
         },
         "pt-BR" : {
@@ -1322,37 +1149,18 @@
       }
     },
     "profile_toolbar_title" : {
-            "value" : "Cuidando de:"
-          }
-        }
-      }
-    },
-    "records" : {
-      "extractionState" : "manual",
-      "localizations" : {
-        "pt-BR" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Registros"
-          }
-        }
-      }
-    },
-    "registered_by" : {
       "extractionState" : "manual",
       "localizations" : {
         "en" : {
           "stringUnit" : {
             "state" : "translated",
             "value" : "Taking care of:"
-            "value" : "Registered by"
           }
         },
         "pt-BR" : {
           "stringUnit" : {
             "state" : "translated",
             "value" : "Cuidando de:"
-            "value" : "Registrada por"
           }
         }
       }
@@ -1366,7 +1174,6 @@
           }
         }
       }
-
     },
     "relationship" : {
       "extractionState" : "manual",
@@ -1394,7 +1201,6 @@
           }
         }
       }
-
     },
     "report" : {
       "extractionState" : "manual",
@@ -1498,9 +1304,6 @@
           }
         }
       }
-    },
-    "Sincronizando..." : {
-
     },
     "skip" : {
       "extractionState" : "manual",
@@ -1660,11 +1463,10 @@
         "en" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Your privacy\nis our priority"
+            "value" : "Your privacy is our priority."
           }
         }
       }
-
     },
     "task" : {
       "comment" : "forms",
@@ -1853,23 +1655,6 @@
         }
       }
     },
-    "title" : {
-      "extractionState" : "manual",
-      "localizations" : {
-        "en" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Title"
-          }
-        },
-        "pt-BR" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Título"
-          }
-        }
-      }
-    },
     "today" : {
       "extractionState" : "manual",
       "localizations" : {
@@ -1993,14 +1778,12 @@
       }
     },
     "urine" : {
-    "type" : {
       "extractionState" : "manual",
       "localizations" : {
         "en" : {
           "stringUnit" : {
             "state" : "translated",
             "value" : "Urine"
-            "value" : "Type"
           }
         },
         "pt-BR" : {
@@ -2012,25 +1795,11 @@
       }
     },
     "Você ainda não adicionou nenhum registro ou atividade." : {
-            "value" : "Tipo"
-          }
-        }
-      }
-    },
-    "urine" : {
-      "extractionState" : "manual",
       "localizations" : {
         "en" : {
           "stringUnit" : {
             "state" : "translated",
             "value" : "You haven't added any records or activities yet."
-            "value" : "Urine"
-          }
-        },
-        "pt-BR" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Urina"
           }
         }
       }
@@ -2054,5 +1823,4 @@
     }
   },
   "version" : "1.0"
-}
 }
