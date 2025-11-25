@@ -8,6 +8,7 @@
 import UIKit
 import CloudKit
 import CoreData
+import SwiftUI
 
 class SceneDelegate: UIResponder, UIWindowSceneDelegate {
     
@@ -18,7 +19,7 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
     private var waitingForSharedSync = false
     private var sharedPollingTask: Task<Void, Never>?
     private var initialSharedCount = 0
-    private var loadingVC: LoadingReceiveViewController?
+    private var loadingVC: UIViewController?
     private var loadingStartTime: Date?
 
     // MARK: - UI Helpers
@@ -26,9 +27,15 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
         Task { @MainActor in
             guard let window = window else { return }
 
-            let loading = LoadingReceiveViewController()
+            let loadingView = LoadingReceivePatientView(
+                logo: Image("loading_receive"),
+                isSyncing: waitingForSharedSync
+            )
+
+            let loading = UIHostingController(rootView: loadingView)
             loading.modalPresentationStyle = .overFullScreen
             loading.modalTransitionStyle = .crossDissolve
+            loading.view.backgroundColor = .clear
 
             window.rootViewController?.present(loading, animated: true)
 
@@ -36,6 +43,7 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
             loadingStartTime = Date()
         }
     }
+
     
     func hideLoadingScreen() {
         Task { @MainActor in
