@@ -213,10 +213,12 @@ final class EditMentalStateViewController: UIViewController {
         }
 
         orientationColumn.arrangedSubviews.forEach { view in
-            if let btn = view as? CheckOptionButton,
-               let option = btn.associatedData as? OrientationEnum {
-                btn.isSelected = (option == state.orientationState)
-            }
+            guard
+                let button = view as? CheckOptionButton,
+                let option = button.associatedData as? OrientationEnum
+            else { return }
+
+            button.isSelected = state.orientationState.contains(option)
         }
         
         if let memory = state.memoryState {
@@ -258,18 +260,18 @@ final class EditMentalStateViewController: UIViewController {
     @objc private func didTapOrientation(_ sender: CheckOptionButton) {
         guard let option = sender.associatedData as? OrientationEnum else { return }
 
-        let wasSelected = sender.isSelected
+        sender.isSelected.toggle()
 
-        orientationColumn.arrangedSubviews.forEach { view in
-            (view as? CheckOptionButton)?.isSelected = false
+        let selectedOptions: [OrientationEnum] = orientationColumn.arrangedSubviews.compactMap { view in
+            guard
+                let btn = view as? CheckOptionButton,
+                let opt = btn.associatedData as? OrientationEnum,
+                btn.isSelected
+            else { return nil }
+            return opt
         }
 
-        if wasSelected {
-            viewModel.updateOrientationState(nil)
-        } else {
-            sender.isSelected = true
-            viewModel.updateOrientationState(option)
-        }
+        viewModel.updateOrientationState(selectedOptions)
     }
 
     @objc func persistAllFromView() {
