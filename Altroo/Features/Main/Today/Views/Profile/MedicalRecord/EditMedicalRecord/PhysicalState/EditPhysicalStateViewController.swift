@@ -11,17 +11,17 @@ final class EditPhysicalStateViewController: UIViewController {
     let viewModel: EditPhysicalStateViewModel
     weak var delegate: EditMedicalRecordViewControllerDelegate?
 
-    // MARK: - UI
-
     private lazy var visionPopupButton: PopupMenuButton = {
         let button = PopupMenuButton(title: VisionEnum.noChanges.displayText)
         button.backgroundColor = .blue40
+        button.widthAnchor.constraint(equalToConstant: 180).isActive = true
         return button
     }()
 
     private lazy var hearingPopupButton: PopupMenuButton = {
         let button = PopupMenuButton(title: HearingEnum.withoutDeficit.displayText)
         button.backgroundColor = .blue40
+        button.widthAnchor.constraint(equalToConstant: 160).isActive = true
         return button
     }()
 
@@ -30,6 +30,7 @@ final class EditPhysicalStateViewController: UIViewController {
         button.backgroundColor = .blue40
         button.setContentHuggingPriority(.required, for: .horizontal)
         button.setContentCompressionResistancePriority(.required, for: .horizontal)
+        button.widthAnchor.constraint(equalToConstant: 180).isActive = true
         return button
     }()
 
@@ -72,14 +73,17 @@ final class EditPhysicalStateViewController: UIViewController {
     private lazy var oralHealthColumn: UIStackView = {
         let stack = UIStackView()
         stack.axis = .vertical
-        stack.spacing = 8
-        stack.alignment = .fill
+        stack.spacing = 16
+        stack.alignment = .leading
         stack.distribution = .fill
 
         OralHealthEnum.allCases.forEach { option in
             let button = CheckOptionButton(title: option.displayText)
             button.associatedData = option
             button.isSelected = false
+
+            button.setContentHuggingPriority(.required, for: .horizontal)
+            button.setContentCompressionResistancePriority(.required, for: .horizontal)
 
             button.addTarget(self, action: #selector(didTapOralHealth(_:)), for: .touchUpInside)
 
@@ -93,8 +97,8 @@ final class EditPhysicalStateViewController: UIViewController {
         let stack = UIStackView(arrangedSubviews: [visionSection, hearingSection])
         stack.axis = .horizontal
         stack.spacing = 22
-        stack.alignment = .fill
-        stack.distribution = .fillEqually
+        stack.alignment = .leading
+        stack.distribution = .fillProportionally
         return stack
     }()
 
@@ -109,7 +113,7 @@ final class EditPhysicalStateViewController: UIViewController {
     private lazy var formStack: UIStackView = {
         let oralHealthContainer = UIStackView(arrangedSubviews: [oralHealthTitleLabel, oralHealthColumn])
         oralHealthContainer.axis = .vertical
-        oralHealthContainer.alignment = .fill
+        oralHealthContainer.alignment = .leading
         oralHealthContainer.spacing = 12
 
         let stack = UIStackView(arrangedSubviews: [
@@ -118,7 +122,7 @@ final class EditPhysicalStateViewController: UIViewController {
             oralHealthContainer
         ])
         stack.axis = .vertical
-        stack.alignment = .fill
+        stack.alignment = .leading
         stack.spacing = 16
         stack.translatesAutoresizingMaskIntoConstraints = false
         return stack
@@ -151,6 +155,11 @@ final class EditPhysicalStateViewController: UIViewController {
         view.backgroundColor = .pureWhite
         view.addSubview(headerView)
         view.addSubview(formStack)
+        
+        let saveButton = configureConfirmationButton()
+        saveButton.translatesAutoresizingMaskIntoConstraints = false
+        
+        view.addSubview(saveButton)
 
         NSLayoutConstraint.activate([
             headerView.topAnchor.constraint(equalTo: view.safeAreaLayoutGuide.topAnchor, constant: 16),
@@ -160,7 +169,10 @@ final class EditPhysicalStateViewController: UIViewController {
             formStack.topAnchor.constraint(equalTo: headerView.bottomAnchor, constant: 15),
             formStack.leadingAnchor.constraint(equalTo: view.leadingAnchor, constant: 16),
             formStack.trailingAnchor.constraint(equalTo: view.trailingAnchor, constant: -16),
-            formStack.bottomAnchor.constraint(lessThanOrEqualTo: view.bottomAnchor, constant: -20)
+            formStack.bottomAnchor.constraint(lessThanOrEqualTo: view.bottomAnchor, constant: -20),
+            
+            saveButton.bottomAnchor.constraint(equalTo: view.safeAreaLayoutGuide.bottomAnchor),
+            saveButton.centerXAnchor.constraint(equalTo: view.centerXAnchor)
         ])
     }
 
@@ -248,8 +260,12 @@ final class EditPhysicalStateViewController: UIViewController {
 
         viewModel.updateOralHealthState(option)
     }
+    
+    @objc
     func persistAllFromView() {
         viewModel.persistPhysicalState()
+        
+        dismiss(animated: true)
     }
     
     private func configureNavBar() {
@@ -264,6 +280,14 @@ final class EditPhysicalStateViewController: UIViewController {
         navigationItem.scrollEdgeAppearance = appearance
         
     }
+    
+    private func configureConfirmationButton() -> StandardConfirmationButton {
+        let button = StandardConfirmationButton(title: "Salvar")
+        button.addTarget(self, action: #selector(persistAllFromView), for: .touchUpInside)
+        button.translatesAutoresizingMaskIntoConstraints = false
+        return button
+    }
+
     
     @objc func closeTapped() {
         dismiss(animated: true)

@@ -43,15 +43,13 @@ final class PopupMenuButton: PrimaryStyleButton {
     private func setupButton() {
         backgroundColor = .blue40
         
-        //text
         setTitle(title, for: .normal)
         setTitleColor(.white, for: .normal)
         titleLabel?.font = UIFont.systemFont(ofSize: 17, weight: .regular)
         
-        // icon
         if let icon = icon?.withRenderingMode(.alwaysTemplate) {
             setImage(icon, for: .normal)
-            tintColor = .pureWhite // change the icon color here
+            tintColor = .pureWhite
         }
         
         if let icon = icon {
