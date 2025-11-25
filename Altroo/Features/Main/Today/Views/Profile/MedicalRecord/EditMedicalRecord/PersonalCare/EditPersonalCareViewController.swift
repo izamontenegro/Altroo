@@ -125,8 +125,18 @@ final class EditPersonalCareViewController: UIViewController, UITextFieldDelegat
     private func setupUI() {
         view.backgroundColor = .pureWhite
 
+        let saveButton = configureConfirmationButton()
+        saveButton.translatesAutoresizingMaskIntoConstraints = false
+        
         view.addSubview(header)
         view.addSubview(formStack)
+        
+        view.addSubview(saveButton)
+        
+        NSLayoutConstraint.activate([
+            saveButton.bottomAnchor.constraint(equalTo: view.safeAreaLayoutGuide.bottomAnchor, constant: -20),
+            saveButton.centerXAnchor.constraint(equalTo: view.centerXAnchor)
+        ])
 
         NSLayoutConstraint.activate([
             header.topAnchor.constraint(equalTo: view.safeAreaLayoutGuide.topAnchor, constant: 15),
@@ -219,9 +229,11 @@ final class EditPersonalCareViewController: UIViewController, UITextFieldDelegat
         return true
     }
 
-    func persistAllFromView() {
+    @objc func persistAllFromView() {
         viewModel.updateEquipmentsText(equipmentsTextField.text ?? "")
         viewModel.persistPersonalCareFormState()
+        
+        dismiss(animated: true)
     }
     
     private func configureNavBar() {
@@ -235,6 +247,13 @@ final class EditPersonalCareViewController: UIViewController, UITextFieldDelegat
         appearance.configureWithOpaqueBackground()
         navigationItem.scrollEdgeAppearance = appearance
         
+    }
+    
+    private func configureConfirmationButton() -> StandardConfirmationButton {
+        let button = StandardConfirmationButton(title: "Salvar")
+        button.addTarget(self, action: #selector(persistAllFromView), for: .touchUpInside)
+        button.translatesAutoresizingMaskIntoConstraints = false
+        return button
     }
     
     @objc func closeTapped() {
