@@ -14,7 +14,6 @@ protocol UrineServiceProtocol {
         period: PeriodEnum,
         date: Date,
         color: UrineColorsEnum?,
-        characteristics: [UrineCharacteristicsEnum],
         observation: String?, author: String,
         to careRecipient: CareRecipient
     ) -> UrineRecord?
@@ -24,7 +23,6 @@ protocol UrineServiceProtocol {
         period: PeriodEnum?,
         date: Date?,
         color: UrineColorsEnum?,
-        characteristics: [UrineCharacteristicsEnum]?,
         observation: String?
     )
 
@@ -43,7 +41,6 @@ final class UrineService: UrineServiceProtocol {
         period: PeriodEnum,
         date: Date,
         color: UrineColorsEnum?,
-        characteristics: [UrineCharacteristicsEnum],
         observation: String?, author: String,
         to careRecipient: CareRecipient
     ) -> UrineRecord? {
@@ -54,7 +51,6 @@ final class UrineService: UrineServiceProtocol {
         record.colorType = color
         record.date = date
         record.period = period.rawValue
-        record.urineCharacteristics = encode(characteristics)
         record.urineObservation = observation
         record.author = author
         
@@ -71,13 +67,11 @@ final class UrineService: UrineServiceProtocol {
         period: PeriodEnum? = nil,
         date: Date? = nil,
         color: UrineColorsEnum? = nil,
-        characteristics: [UrineCharacteristicsEnum]? = nil,
         observation: String? = nil
     ) {
         if let period { record.period = period.rawValue }
         if let date { record.date = date }
         if let color { record.colorType = color }
-        if let characteristics { record.urineCharacteristics = encode(characteristics) }
         if let observation { record.urineObservation = observation }
     }
     
@@ -108,19 +102,5 @@ final class UrineService: UrineServiceProtocol {
             print("Error fetching urine records: \(error.localizedDescription)")
             return []
         }
-    }
-}
-
-// MARK: - Encoding helpers
-private extension UrineService {
-    func encode(_ list: [UrineCharacteristicsEnum]) -> String {
-        list.map(\.rawValue).joined(separator: ",")
-    }
-
-    func decode(_ string: String?) -> [UrineCharacteristicsEnum] {
-        guard let string, !string.isEmpty else { return [] }
-        return string
-            .split(separator: ",")
-            .compactMap { UrineCharacteristicsEnum(rawValue: String($0)) }
     }
 }

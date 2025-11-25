@@ -9,18 +9,17 @@ import SwiftUI
 import UIKit
 
 struct HistoryView: View {
+    
     @ObservedObject var viewModel: HistoryViewModel
     @State var showSheet: Bool = false
     
     var body: some View {
-        ScrollView {
-            VStack(alignment: .leading, spacing: 12) {
-                if(viewModel.sections.isEmpty) {
-                    Text("Você ainda não adicionou nenhum registro ou atividade.")
-                        .font(.headline)
-                        .foregroundStyle(.black30)
-                        .padding(.leading)
-                } else {
+        if(viewModel.sections.isEmpty) {
+            EmptyStateHistoryView()
+            
+        } else {
+            ScrollView {
+                VStack(alignment: .leading, spacing: 12) {
                     LazyVStack(spacing: 8) {
                         ForEach($viewModel.sections) { $section in
                             HistorySectionView(section: $section) { item in
@@ -28,22 +27,23 @@ struct HistoryView: View {
                                 showSheet = true
                             }
                         }
+                        
                         Spacer()
                     }
                 }
+                .padding(.top, 8)
             }
-            .padding(.top, 8)
+            .background(Color.blue80.ignoresSafeArea())
+            .onAppear { viewModel.reloadHistory() }
+            .navigationBarTitleDisplayMode(.inline)
+            .sheet(isPresented: $showSheet, content: {
+                if let item = viewModel.selectedItem {
+                    HistoryDetailSheet(viewModel: viewModel, item: item)
+                        .presentationDetents([.fraction(0.7)])
+                } else {
+                    Text("error_selected_item".localized)
+                }
+            })
         }
-        .background(Color.blue80.ignoresSafeArea())
-        .onAppear { viewModel.reloadHistory() }
-        .navigationBarTitleDisplayMode(.inline)
-        .sheet(isPresented: $showSheet, content: {
-            if let item = viewModel.selectedItem {
-                HistoryDetailSheet(viewModel: viewModel, item: item)
-                    .presentationDetents([.medium])
-            } else {
-                Text("erro ao selecionar item")
-            }
-        })
     }
 }

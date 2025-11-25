@@ -53,7 +53,7 @@ final class PopupMenuButton: PrimaryStyleButton {
     }
     
     private func setupButton() {
-        backgroundColor = color
+        backgroundColor = .blue40
         
         //text
         setTitle(title, for: .normal)

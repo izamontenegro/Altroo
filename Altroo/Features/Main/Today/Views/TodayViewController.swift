@@ -14,13 +14,13 @@ protocol TodayViewControllerDelegate: AnyObject {
     func goToSymptomDetail(with symptom: Symptom)
     func goToPrivacyPolicy()
     func goToLegalNotice()
+    func openTaskDetail(with task: TaskInstance)
 }
 
 class TodayViewController: UIViewController {
     
     var viewModel: TodayViewModel
     weak var delegate: TodayViewControllerDelegate?
-    var onTaskSelected: ((TaskInstance) -> Void)?
     var symptomsCard: SymptomsCard
     var feedingRecords: [FeedingRecord] = []
     
@@ -55,7 +55,7 @@ class TodayViewController: UIViewController {
         return stackView
     }()
     
-    init(delegate: TodayViewControllerDelegate? = nil, viewModel: TodayViewModel, onTaskSelected: ((TaskInstance) -> Void)? = nil) {
+    init(delegate: TodayViewControllerDelegate? = nil, viewModel: TodayViewModel) {
         self.delegate = delegate
         self.viewModel = viewModel
         self.symptomsCard = SymptomsCard(symptoms: viewModel.todaySymptoms)
@@ -63,7 +63,6 @@ class TodayViewController: UIViewController {
         super.init(nibName: nil, bundle: nil)
         
         self.symptomsCard.delegate = self
-        self.onTaskSelected = onTaskSelected
     }
     
     override func viewDidLoad() {
@@ -107,8 +106,8 @@ class TodayViewController: UIViewController {
         super.viewWillAppear(animated)
         navigationController?.setNavigationBarHidden(true, animated: false)
         showTabBar(true)
-        
         fetchData()
+        showHealthAlertIfNeeded()
     }
     
     private func fetchData() {
@@ -144,34 +143,24 @@ class TodayViewController: UIViewController {
         let tasks = viewModel.periodTasks
         
         if tasks.isEmpty {
-            let container = UIView()
-            container.backgroundColor = .pureWhite
-            container.layer.cornerRadius = 12
-            container.translatesAutoresizingMaskIntoConstraints = false
-            container.heightAnchor.constraint(equalToConstant: 80).isActive = true
+            let emptyCard = EmptyCardView(text: "")
+            //"today_empty_tasks".localized
+            let normalText = "Nenhuma tarefa cadastrada para o turno da "
+            let normalString = NSMutableAttributedString(string:normalText)
+
+            let boldText = PeriodEnum.current.name
+            let attrs = [NSAttributedString.Key.font : UIFont.boldSystemFont(ofSize: 16)]
+            let boldString = NSMutableAttributedString(string:boldText, attributes:attrs)
+
+            normalString.append(boldString)
             
-            let emptyLabel = StandardLabel(
-                labelText: "today_empty_tasks".localized,
-                labelFont: .sfPro,
-                labelType: .callOut,
-                labelColor: .black30
-            )
-            emptyLabel.textAlignment = .center
-            emptyLabel.translatesAutoresizingMaskIntoConstraints = false
-            
-            container.addSubview(emptyLabel)
-            NSLayoutConstraint.activate([
-                emptyLabel.centerXAnchor.constraint(equalTo: container.centerXAnchor),
-                emptyLabel.centerYAnchor.constraint(equalTo: container.centerYAnchor),
-                emptyLabel.leadingAnchor.constraint(greaterThanOrEqualTo: container.leadingAnchor, constant: 8),
-                emptyLabel.trailingAnchor.constraint(lessThanOrEqualTo: container.trailingAnchor, constant: -8)
-            ])
-            
-            cardStack.addArrangedSubview(container)
+            emptyCard.label.attributedText = normalString
+            cardStack.addArrangedSubview(emptyCard)
         } else {
             for task in tasks {
                 let card = TaskCard(task: task)
                 card.delegate = self
+                card.navigationDelegate = self
                 card.translatesAutoresizingMaskIntoConstraints = false
                 cardStack.addArrangedSubview(card)
                 
@@ -307,40 +296,47 @@ class TodayViewController: UIViewController {
     }
     
     private func showHealthDataAlert() {
-        let dim = UIView(frame: view.bounds)
+        guard let tabBarVC = self.tabBarController else { return }
+
+        let dim = UIView(frame: tabBarVC.view.bounds)
         dim.backgroundColor = UIColor.black.withAlphaComponent(0.5)
         dim.alpha = 0
+        dim.tag = 998
         dimmingView = dim
-        view.addSubview(dim)
+        tabBarVC.view.addSubview(dim)
 
         let alertVC = UIHostingController(
             rootView: HealthDataAlertView(
                 onClose: { [weak self] in self?.closeHealthAlert() },
                 onPrivacyPolicy: { [weak self] in
+                    self?.dismissHealthAlertUI()
                     self?.delegate?.goToPrivacyPolicy()
                 },
                 onLegalNotice: { [weak self] in
+                    self?.dismissHealthAlertUI()
                     self?.delegate?.goToLegalNotice()
                 }
             )
         )
+        
         alertVC.view.backgroundColor = .clear
-
         let alert = alertVC.view!
+        
         alert.translatesAutoresizingMaskIntoConstraints = false
+        alert.tag = 999
         alert.layer.shadowColor = UIColor.black.cgColor
         alert.layer.shadowOpacity = 0.3
         alert.layer.shadowRadius = 10
         alert.layer.shadowOffset = .zero
         alert.alpha = 0
 
-        self.addChild(alertVC)
-        view.addSubview(alert)
-        alertVC.didMove(toParent: self)
+        tabBarVC.addChild(alertVC)
+        tabBarVC.view.addSubview(alert)
+        alertVC.didMove(toParent: tabBarVC)
 
         NSLayoutConstraint.activate([
-            alert.centerXAnchor.constraint(equalTo: view.centerXAnchor),
-            alert.centerYAnchor.constraint(equalTo: view.centerYAnchor),
+            alert.centerXAnchor.constraint(equalTo: tabBarVC.view.centerXAnchor),
+            alert.centerYAnchor.constraint(equalTo: tabBarVC.view.centerYAnchor)
         ])
 
         UIView.animate(withDuration: 0.3) {
@@ -348,19 +344,38 @@ class TodayViewController: UIViewController {
             alert.alpha = 1
         }
     }
-    
+
     @objc private func closeHealthAlert() {
         UserDefaults.standard.healthAlertSeen = true
-        
-        UIView.animate(withDuration: 0.3, animations: {
-            self.dimmingView?.alpha = 0
-            self.view.subviews.last?.alpha = 0
-        }, completion: { _ in
-            self.dimmingView?.removeFromSuperview()
-            self.view.subviews.last?.removeFromSuperview()
-        })
+        dismissHealthAlertUI()
     }
     
+    private func dismissHealthAlertUI() {
+        guard let tabBarVC = self.tabBarController else { return }
+
+        tabBarVC.view.subviews
+            .filter { $0.tag == 999 }
+            .forEach { view in
+                UIView.animate(withDuration: 0.2, animations: {
+                    view.alpha = 0
+                }, completion: { _ in
+                    view.removeFromSuperview()
+                })
+            }
+
+        tabBarVC.view.subviews
+            .filter { $0.tag == 998 }
+            .forEach { dim in
+                UIView.animate(withDuration: 0.2, animations: {
+                    dim.alpha = 0
+                }, completion: { _ in
+                    dim.removeFromSuperview()
+                })
+            }
+
+        self.dimmingView = nil
+    }
+
     @objc private func handleRefresh() {
         fetchData()
     }

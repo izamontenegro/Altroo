@@ -9,13 +9,15 @@ import SwiftUI
 import UIKit
 
 struct HistorySectionView: View {
+    
     @Binding var section: HistoryDaySection
+    
     let onOpen: (ReportItem) -> Void
     
     var body: some View {
         VStack(spacing: 0) {
-            HistorySectionHeader(day: section.day, isExpanded: $section.isExpanded)
-
+            HistorySectionHeader(isExpanded: $section.isExpanded, day: section.day)
+            
             if section.isExpanded {
                 VStack(spacing: 0) {
                     ForEach(section.items.indices, id: \.self) { idx in

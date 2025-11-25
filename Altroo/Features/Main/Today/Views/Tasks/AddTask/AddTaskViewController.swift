@@ -21,7 +21,6 @@ class AddTaskViewController: TaskFormViewController {
         self.viewModel = viewModel
         super.init(nibName: nil, bundle: nil)
         hidesBottomBarWhenPushed = true
-        
     }
     
     @MainActor required init?(coder: NSCoder) {
@@ -33,15 +32,28 @@ class AddTaskViewController: TaskFormViewController {
         
         view.backgroundColor = .pureWhite
         
-        setupContent()
-        configure(title: "add_task".localized, subtitle: "task_subtitle".localized, confirmButtonText: "add".localized)
+        configure(title: "add_task".localized, subtitle: "task_subtitle".localized, confirmButtonText: "add".localized, continuousButtonTitle: viewModel.continuousButtonTitle)
+        rebuildContinuousButton()
         bindViewModel()
-        setupContinuousButton()
         setupRepeatingDays()
         setupTimes()
+        configureNavBar()
         
         confirmButton.addTarget(self, action: #selector(didFinishCreating), for: .touchUpInside)
+    }
+    
+    private func configureNavBar() {
+        let closeButton = UIBarButtonItem(title: "close".localized, style: .done, target: self, action: #selector(closeTapped))
+        closeButton.tintColor = .blue20
+        navigationItem.leftBarButtonItem = closeButton
         
+        let appearance = UINavigationBarAppearance()
+        appearance.configureWithOpaqueBackground()
+        navigationItem.scrollEdgeAppearance = appearance
+    }
+    
+    @objc func closeTapped() {
+        dismiss(animated: true)
     }
     
     func bindViewModel() {
@@ -63,11 +75,8 @@ class AddTaskViewController: TaskFormViewController {
             .sink { [weak self] isContinuous in
                 guard let self else { return }
                 
-                if isContinuous {
-                    removeEndDate()
-                } else {
-                    addEndDate()
-                }
+                viewModel.endDate = isContinuous ? nil : .now
+                reloadDurationSection(startDate: viewModel.startDate, endDate: viewModel.endDate)
             }
             .store(in: &cancellables)
         
@@ -82,15 +91,8 @@ class AddTaskViewController: TaskFormViewController {
     }
     
     //MARK: - LOCAL SETUP
-    func setupContinuousButton() {
-        let button = PopupMenuButton(title: viewModel.continuousButtonTitle)
-        insertContinuousPicker(button, showEndDate: !viewModel.isContinuous)
-        continuousButton.showsMenuAsPrimaryAction = true
-        continuousButton.changesSelectionAsPrimaryAction = true
-        
-        rebuildContinuousButton()
-    }
     
+    //DATE
     func rebuildContinuousButton() {
         let actions: [UIAction] = viewModel.continuousOptions.map { option in
             let isSelected = (option == viewModel.continuousOptions[0]) == viewModel.isContinuous
@@ -115,25 +117,71 @@ class AddTaskViewController: TaskFormViewController {
         }
     }
     
+    
+    //MARK: -TIME
     func setupTimes() {
         addTimeAction()
         addTimeButton.addTarget(self, action: #selector(addTimeButtonTapped(_:)), for: .touchUpInside)
     }
     
-    func addTimeAction(date: Date = .now) {
-        let newPicker = UIDatePicker.make(mode: .time)
-        newPicker.date = date
-        newPicker.tag = hourPickers.count
-        newPicker.addTarget(self, action: #selector(timeChanged(_:)), for: .valueChanged)
-        
-        if let _ = hourStack.arrangedSubviews.last as? PrimaryStyleButton {
-            hourStack.insertArrangedSubview(newPicker, at: hourStack.arrangedSubviews.count - 1)
-        } else {
-            hourStack.addArrangedSubview(newPicker)
+    func addTimeAction() {
+        viewModel.addTime(from: .now)
+        rebuildTimeViews()
+    }
+    
+    func rebuildTimeViews() {
+        //reset everything
+        addTimeViews.removeAll()
+        for view in timePickersFlowView.subviews {
+            view.removeFromSuperview()
         }
-        
-        hourPickers.append(newPicker)
-        viewModel.addTime(from: date)
+        addTimeButton.removeFromSuperview()
+
+        let count = viewModel.times.count
+
+        //create all timepickers
+        for (index, time) in viewModel.times.enumerated() {
+            let picker = UIDatePicker.make(mode: .time)
+            if let date = Calendar.current.date(from: time) {
+                picker.date = date
+            }
+            picker.tag = index
+            picker.addTarget(self, action: #selector(timeChanged(_:)), for: .valueChanged)
+            addTimeViews.append(picker)
+        }
+
+        if count == 1 {
+            // only one timepicker - inline add button
+            addTimeViews.append(addTimeButton)
+            
+            if hourStack.arrangedSubviews.contains(addTimeButton) {
+                       hourStack.removeArrangedSubview(addTimeButton)
+                       addTimeButton.removeFromSuperview()
+           }
+            
+            deleteTimeButton.removeFromSuperview()
+
+        } else {
+            //more than one timepicker - inline minus button/downline add button
+            addTimeViews.append(deleteTimeButton)
+
+
+            if !hourStack.arrangedSubviews.contains(addTimeButton) {
+               hourStack.addArrangedSubview(addTimeButton)
+            }
+        }
+
+        timePickersFlowView.reload(with: addTimeViews)
+    }
+
+    func removeAddTimeButton() {
+        addTimeViews.removeLast()
+        addTimeButton.removeFromSuperview()
+    }
+    
+    func removeDeleteTimeButton() {
+        addTimeViews.removeLast()
+        deleteTimeButton.removeFromSuperview()
     }
     
     
@@ -150,6 +198,13 @@ class AddTaskViewController: TaskFormViewController {
         viewModel.endDate = picker.date
     }
     
+    @objc override func didDeleteLastTime() {
+        guard viewModel.times.count > 1 else { return }
+        
+        viewModel.times.removeLast()  //remove actual date
+        rebuildTimeViews()
+    }
+    
     @objc func timeChanged(_ sender: UIDatePicker) {
         let index = sender.tag
         guard index < viewModel.times.count else { return }
@@ -157,7 +212,6 @@ class AddTaskViewController: TaskFormViewController {
     }
     
     @objc func didFinishCreating() {
-        
         guard viewModel.validateTask() else { return }
         
         viewModel.createTask()

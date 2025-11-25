@@ -201,7 +201,6 @@
         <attribute name="date" optional="YES" attributeType="Date" usesScalarValueType="NO"/>
         <attribute name="id" optional="YES" attributeType="UUID" usesScalarValueType="NO"/>
         <attribute name="period" optional="YES" attributeType="String"/>
-        <attribute name="urineCharacteristics" optional="YES" attributeType="String"/>
         <attribute name="urineObservation" optional="YES" attributeType="String"/>
         <relationship name="basicNeeds" optional="YES" maxCount="1" deletionRule="Nullify" destinationEntity="BasicNeeds" inverseName="urine" inverseEntity="BasicNeeds"/>
     </entity>
