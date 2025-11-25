@@ -103,7 +103,7 @@ final class MedicalRecordViewController: GradientNavBarViewController {
         let containerView = UIView()
         containerView.backgroundColor = .clear
         let titleLabel = StandardLabel(
-            labelText: "Ficha Médica",
+            labelText: "medical_record".localized,
             labelFont: .sfPro,
             labelType: .title2,
             labelColor: .black10,
@@ -205,7 +205,7 @@ final class MedicalRecordViewController: GradientNavBarViewController {
             alertStackView.trailingAnchor.constraint(equalTo: alertBoxView.trailingAnchor, constant: -8)
         ])
         let editButton = LargeFilledButton(
-            title: "Editar Ficha Médica",
+            title: "edit_medical_record".localized,
             icon: UIImage(systemName: "square.and.pencil")
         )
         wrapperStackView.addArrangedSubview(alertBoxView)

@@ -47,6 +47,7 @@ final class FormTitleSection: UIStackView {
         configureStepRow()
         
         addArrangedSubview(stepRow)
+
         addArrangedSubview(titleLabel)
         setCustomSpacing(0, after: titleLabel)
         addArrangedSubview(descriptionLabel)

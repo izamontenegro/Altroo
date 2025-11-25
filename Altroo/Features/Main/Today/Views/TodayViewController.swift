@@ -7,7 +7,6 @@
 
 import UIKit
 import Combine
-import SwiftUI
 
 protocol TodayViewControllerDelegate: AnyObject {
     func goTo(_ destination: TodayDestination)
@@ -19,15 +18,10 @@ class TodayViewController: UIViewController {
     weak var delegate: TodayViewControllerDelegate?
     var symptomsCard: SymptomsCard
     var feedingRecords: [FeedingRecord] = []
+    var dimmingView: UIView?
     
-    private var dimmingView: UIView?
     private var cancellables = Set<AnyCancellable>()
-
     private var profileToolbar: ProfileToolbarContainer?
-    
-    required init?(coder: NSCoder) {
-        fatalError("init(coder:) has not been implemented")
-    }
     
     let scrollView: UIScrollView = {
         let scrollView = UIScrollView()
@@ -61,6 +55,10 @@ class TodayViewController: UIViewController {
         self.symptomsCard.delegate = self
     }
     
+    required init?(coder: NSCoder) {
+        fatalError("init(coder:) has not been implemented")
+    }
+    
     override func viewDidLoad() {
         super.viewDidLoad()
         view.backgroundColor = .blue80
@@ -72,6 +70,7 @@ class TodayViewController: UIViewController {
         self.profileToolbar = toolbar
 
         scrollView.refreshControl = refreshControl
+        refreshControl.bounds = refreshControl.bounds.offsetBy(dx: 0, dy: -20)
         
         view.addSubview(scrollView)
         scrollView.addSubview(vStack)
@@ -102,8 +101,8 @@ class TodayViewController: UIViewController {
         super.viewWillAppear(animated)
         navigationController?.setNavigationBarHidden(true, animated: false)
         showTabBar(true)
-        
         fetchData()
+        showHealthAlertIfNeeded()
     }
     
     private func fetchData() {
@@ -127,47 +126,6 @@ class TodayViewController: UIViewController {
         if !UserDefaults.standard.healthAlertSeen {
             showHealthDataAlert()
         }
-    }
-
-    func makeCardByPeriod() -> UIView {
-        let cardStack = UIStackView()
-        cardStack.axis = .vertical
-        cardStack.spacing = 16
-        cardStack.alignment = .fill
-        cardStack.translatesAutoresizingMaskIntoConstraints = false
-        
-        let tasks = viewModel.periodTasks
-        
-        if tasks.isEmpty {
-            let emptyCard = EmptyCardView(text: "")
-            //"today_empty_tasks".localized
-            let normalText = "Nenhuma tarefa cadastrada para o turno da "
-            let normalString = NSMutableAttributedString(string:normalText)
-
-            let boldText = PeriodEnum.current.name
-            let attrs = [NSAttributedString.Key.font : UIFont.boldSystemFont(ofSize: 16)]
-            let boldString = NSMutableAttributedString(string:boldText, attributes:attrs)
-
-            normalString.append(boldString)
-            
-            emptyCard.label.attributedText = normalString
-            cardStack.addArrangedSubview(emptyCard)
-        } else {
-            for task in tasks {
-                let card = TaskCard(task: task)
-                card.delegate = self
-                card.navigationDelegate = self
-                card.translatesAutoresizingMaskIntoConstraints = false
-                cardStack.addArrangedSubview(card)
-                
-                NSLayoutConstraint.activate([
-                    card.leadingAnchor.constraint(equalTo: cardStack.leadingAnchor),
-                    card.trailingAnchor.constraint(equalTo: cardStack.trailingAnchor)
-                ])
-            }
-        }
-        
-        return cardStack
     }
     
     private func setupBindings() {
@@ -218,135 +176,7 @@ class TodayViewController: UIViewController {
             ])
         }
     }
-    
-    private func addSections() {
-        var configs = TodaySectionManager.shared.load()
         
-        if configs.isEmpty || configs.first(where: { $0.type == .basicNeeds })?.subitems == nil {
-            let defaultSubitems = [
-                SubitemConfig(title: "feeding".localized, isVisible: true),
-                SubitemConfig(title: "hydration".localized, isVisible: true),
-                SubitemConfig(title: "stool".localized, isVisible: true),
-                SubitemConfig(title: "urine".localized, isVisible: true)
-            ]
-            let basicNeedsConfig = TodaySectionConfig(
-                type: .basicNeeds,
-                isVisible: true,
-                order: 0,
-                subitems: defaultSubitems
-            )
-            let tasksConfig = TodaySectionConfig(
-                type: .tasks,
-                isVisible: true,
-                order: 1,
-                subitems: nil
-            )
-            let intercurrencesConfig = TodaySectionConfig(
-                type: .intercurrences,
-                isVisible: true,
-                order: 2,
-                subitems: nil
-            )
-            configs = [basicNeedsConfig, tasksConfig, intercurrencesConfig]
-            TodaySectionManager.shared.save(configs)
-        }
-        
-        vStack.arrangedSubviews.forEach {
-            vStack.removeArrangedSubview($0)
-            $0.removeFromSuperview()
-        }
-        
-        for config in configs.sorted(by: { $0.order < $1.order }) {
-            guard config.isVisible else { continue }
-            
-            switch config.type {
-            case .basicNeeds:
-                let section = BasicNeedsSectionBuilder(
-                    viewModel: viewModel,
-                    delegate: delegate,
-                    feedingRecords: feedingRecords
-                ).build(from: config)
-                
-                vStack.addArrangedSubview(StandardLabel(
-                    labelText: "today_section_basic_needs".localized,
-                    labelFont: .sfPro,
-                    labelType: .title2,
-                    labelColor: .black10,
-                    labelWeight: .semibold
-                ))
-                vStack.addArrangedSubview(section)
-                
-            case .tasks:
-                let taskHeader = TaskHeader()
-                taskHeader.delegate = self
-                vStack.addArrangedSubview(taskHeader)
-                vStack.addArrangedSubview(makeCardByPeriod())
-                
-            case .intercurrences:
-                let symptomHeader = IntercurrenceHeader()
-                symptomHeader.delegate = self
-                vStack.addArrangedSubview(symptomHeader)
-                vStack.addArrangedSubview(symptomsCard)
-            }
-        }
-    }
-    
-    private func showHealthDataAlert() {
-        let dim = UIView(frame: view.bounds)
-        dim.backgroundColor = UIColor.black.withAlphaComponent(0.5)
-        dim.alpha = 0
-        dimmingView = dim
-        view.addSubview(dim)
 
-        let alertVC = UIHostingController(
-            rootView: HealthDataAlertView(
-                onClose: { [weak self] in self?.closeHealthAlert() },
-                onPrivacyPolicy: { [weak self] in
-                    self?.delegate?.goTo(.privacyPolicy)
-                },
-                onLegalNotice: { [weak self] in
-                    self?.delegate?.goTo(.legalNotice)
-                }
-            )
-        )
-        alertVC.view.backgroundColor = .clear
-
-        let alert = alertVC.view!
-        alert.translatesAutoresizingMaskIntoConstraints = false
-        alert.layer.shadowColor = UIColor.black.cgColor
-        alert.layer.shadowOpacity = 0.3
-        alert.layer.shadowRadius = 10
-        alert.layer.shadowOffset = .zero
-        alert.alpha = 0
-
-        self.addChild(alertVC)
-        view.addSubview(alert)
-        alertVC.didMove(toParent: self)
-
-        NSLayoutConstraint.activate([
-            alert.centerXAnchor.constraint(equalTo: view.centerXAnchor),
-            alert.centerYAnchor.constraint(equalTo: view.centerYAnchor),
-        ])
-
-        UIView.animate(withDuration: 0.3) {
-            dim.alpha = 1
-            alert.alpha = 1
-        }
-    }
-    
-    @objc private func closeHealthAlert() {
-        UserDefaults.standard.healthAlertSeen = true
-        
-        UIView.animate(withDuration: 0.3, animations: {
-            self.dimmingView?.alpha = 0
-            self.view.subviews.last?.alpha = 0
-        }, completion: { _ in
-            self.dimmingView?.removeFromSuperview()
-            self.view.subviews.last?.removeFromSuperview()
-        })
-    }
-    
-    @objc private func handleRefresh() {
-        fetchData()
-    }
+    @objc private func handleRefresh() { fetchData() }
 }

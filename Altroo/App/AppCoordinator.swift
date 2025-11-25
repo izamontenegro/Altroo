@@ -9,7 +9,6 @@ import UIKit
 import CoreData
 
 final class AppCoordinator: Coordinator {
-    
     var childCoordinators: [Coordinator] = []
     weak var parentCoordinator: AppCoordinator?
     var navigation: UINavigationController
@@ -19,6 +18,7 @@ final class AppCoordinator: Coordinator {
     private var userService: UserServiceProtocol
     
     var receivedPatientViaShare: Bool = false
+    var sharedReceivedPatient: CareRecipient?
     
     init(rootNavigation: UINavigationController) {
         self.navigation = rootNavigation
@@ -30,53 +30,30 @@ final class AppCoordinator: Coordinator {
     
     @MainActor
     func start() async {
-        var loadingVC: LoadingReceivedPatient?
-
-        if receivedPatientViaShare {
-            loadingVC = LoadingReceivedPatient()
-            navigation.present(loadingVC!, animated: false)
-
-            await waitForSharedPatientSync(timeout: 5)
-            
-            let fetchRequest = NSFetchRequest<CareRecipient>(entityName: "CareRecipient")
-            if let sharedPatients = try? CoreDataStack.shared.context.fetch(fetchRequest),
-               let newPatient = sharedPatients.last {
-                userService.setCurrentPatient(newPatient)
-                userService.addPatient(newPatient)
-                loadingVC?.dismiss(animated: false)
-                return
-            }
-            
-            loadingVC?.dismiss(animated: false)
+        
+        // TODO: review if remove current patient
+        if receivedPatientViaShare && userService.fetchCurrentPatient() != nil { userService.removeCurrentPatient()
         }
-
+        
         if !UserDefaults.standard.onboardingCompleted {
             if userService.fetchUser() == nil {
-                _ = userService.createUser(name: "", category: "Cuidador")
+                _ = userService.createUser(name: "", category: "caregiver".localized)
             }
-            showOnboardingFlow()
+            showOnboardingFlow(receivedPatientViaShare: receivedPatientViaShare)
         } else if userService.fetchCurrentPatient() == nil {
-            showAllPatientsFlow()
+            showAllPatientsFlow(receivedPatientViaShare: receivedPatientViaShare)
         } else {
             showMainFlow()
         }
     }
-    
-    @MainActor
-    private func waitForSharedPatientSync(timeout: Int) async {
-        for _ in 1...timeout {
-            try? await Task.sleep(nanoseconds: 1_000_000_000)
-        }
-        return
-    }
 
-    private func showOnboardingFlow() {
+    private func showOnboardingFlow(receivedPatientViaShare: Bool = false) {
         let onboardingCoordinator = OnboardingCoordinator(navigation: navigation,
                                                           factory: factory)
         onboardingCoordinator.onFinish = { [weak self, weak onboardingCoordinator] in
             guard let self, let onboardingCoordinator else { return }
             self.remove(child: onboardingCoordinator)
-            self.showAllPatientsFlow()
+            self.showAllPatientsFlow(receivedPatientViaShare: receivedPatientViaShare)
         }
         add(child: onboardingCoordinator)
         onboardingCoordinator.start()
@@ -97,7 +74,7 @@ final class AppCoordinator: Coordinator {
         mainCoordinator.start()
     }
     
-    private func showAllPatientsFlow() {
+    private func showAllPatientsFlow(receivedPatientViaShare: Bool = false) {
         let associatePatientCoordinator = AssociatePatientCoordinator(navigation: navigation,
                                                                       factory: factory)
         associatePatientCoordinator.onFinish = { [weak self, weak associatePatientCoordinator] in
@@ -106,7 +83,13 @@ final class AppCoordinator: Coordinator {
             self.showMainFlow()
         }
         add(child: associatePatientCoordinator)
-        associatePatientCoordinator.start()
+        
+        if receivedPatientViaShare {
+            guard let patient = sharedReceivedPatient else { return }
+            associatePatientCoordinator.receivePatient(patient)
+        } else {
+            associatePatientCoordinator.start()
+        }
     }
     
     @MainActor
@@ -131,5 +114,11 @@ final class AppCoordinator: Coordinator {
                 self.navigation.view.alpha = 1
             })
         }
+    }
+}
+
+extension AppCoordinator: ShiftFormsViewControllerDelegate {
+    func shiftFormsDidFinish() {
+        
     }
 }

@@ -26,7 +26,7 @@ class AllTasksViewController: GradientNavBarViewController {
     private let addTaskButton: CapsuleWithCircleView = {
         let label = CapsuleWithCircleView(
             capsuleColor: .teal80,
-            text: "Nova Tarefa",
+            text: "new_task".localized,
             textColor: .teal20,
             nameIcon: "plus",
             nameIconColor: .pureWhite,
@@ -37,7 +37,7 @@ class AllTasksViewController: GradientNavBarViewController {
     
     private lazy var segmentedControl: StandardSegmentedControl = {
         let sc = StandardSegmentedControl(
-            items: ["Em atraso", "Hoje", "A seguir"],
+            items: ["late".localized, "today".localized, "to_do".localized],
             height: 35,
             backgroundColor: UIColor(resource: .pureWhite),
             selectedColor: UIColor(resource: .blue30),

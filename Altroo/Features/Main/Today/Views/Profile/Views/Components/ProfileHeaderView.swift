@@ -90,7 +90,7 @@ private extension ProfileHeader {
         )
         nameLabel.translatesAutoresizingMaskIntoConstraints = false
 
-        let birthTitle = StandardLabel(labelText: "Nascimento", labelFont: .sfPro, labelType: .subHeadline, labelColor: .black20, labelWeight: .semibold)
+        let birthTitle = StandardLabel(labelText: "birth".localized, labelFont: .sfPro, labelType: .subHeadline, labelColor: .black20, labelWeight: .semibold)
         let birthValue = StandardLabel(labelText: birthText, labelFont: .sfPro, labelType: .subHeadline, labelColor: .black20, labelWeight: .regular)
         let birthRow = horizontalRow([birthTitle, birthValue])
 

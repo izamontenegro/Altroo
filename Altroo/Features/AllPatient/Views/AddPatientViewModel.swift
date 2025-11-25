@@ -28,7 +28,9 @@ final class AddPatientViewModel: ObservableObject {
     // TODO: REALLY UPDATE THE USERNAME HERE
     @Published var userName: String = ""
     @Published var userNameError: String?
-    @Published var selectedUserRelationship: String = "Cuidador"
+    @Published var userPhone: String = ""
+    @Published var userPhoneError: String?
+    @Published var selectedUserRelationship: String = "caregiver".localized
     @Published var selectedContactRelationship: String = "Filha/Filho"
 
     @Published var isAllDay = true
@@ -99,6 +101,8 @@ final class AddPatientViewModel: ObservableObject {
         }
         
         guard let newPatient else { return }
+        newPatient.creationDate = Date()
+        newPatient.sharedUUID = UUID().uuidString
         userService.addPatient(newPatient)
         userService.setCurrentPatient(newPatient)
         
@@ -110,7 +114,13 @@ final class AddPatientViewModel: ObservableObject {
     }
     
     func finalizeUser(startDate: Date, endDate: Date) {
-        userService.setName(userName)
+        if userService.fetchUser()?.name == "" {
+            userService.setName(userName)
+            if !userPhone.isEmpty {
+                userService.setPhone(userPhone)
+            }
+        }
+        
         userService.setCategory(selectedUserRelationship)
         
         if isAllDay {
@@ -119,6 +129,14 @@ final class AddPatientViewModel: ObservableObject {
             let shift = PeriodEnum.shifts(for: startDate, end: endDate)
             userService.setShift(shift)
         }
+    }
+    
+    func finalizeNewCaregiver(to patient: CareRecipient) {
+        userService.addPatient(patient)
+        userService.setCurrentPatient(patient)
+        
+        guard let user = userService.fetchUser() else { return }
+        careRecipientFacade.addCaregiver(patient, for: user)
     }
 }
 
@@ -158,7 +176,16 @@ extension AddPatientViewModel {
     }
     
     func validateUser() -> Bool {
+        
+        if userService.fetchUser()?.name != "" { return true }
         guard validator.isEmpty(userName, error: &userNameError) else { return false }
+        
+        if !userPhone.isEmpty {
+            guard validator.invalidPhoneFormat(value: userPhone, minValue: 10, maxValue: 11, error: &userPhoneError) else {
+                return false
+            }
+        }
+        
         return true
     }
     

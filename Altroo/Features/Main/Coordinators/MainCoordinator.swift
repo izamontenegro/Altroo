@@ -78,7 +78,7 @@ final class MainCoordinator: Coordinator {
             navigation: histNav, factory: factory
         )
         add(child: histCoord); histCoord.start()
-        histNav.tabBarItem = UITabBarItem(title: "history".localized, image: UIImage(systemName: "folder.fill"), tag: 2)
+        histNav.tabBarItem = UITabBarItem(title: "records".localized, image: UIImage(systemName: "folder.fill"), tag: 2)
         
         // MARK: - SETTINGS
         let settingsNav = UINavigationController()

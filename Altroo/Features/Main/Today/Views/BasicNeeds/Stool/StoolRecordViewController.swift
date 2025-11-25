@@ -79,7 +79,7 @@ final class StoolRecordViewController: UIViewController {
         scrollView.addSubview(content)
 
         let viewTitle = StandardHeaderView(
-            title: "Registrar fezes",
+            title: "record_stool".localized,
             subtitle: "Registre uma evacuação e as características das fezes do assistido."
         )
 
