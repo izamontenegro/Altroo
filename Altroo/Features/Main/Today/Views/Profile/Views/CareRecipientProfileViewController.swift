@@ -39,14 +39,13 @@ final class CareRecipientProfileViewController: GradientNavBarViewController {
         goToEdit = false
         viewModel.buildData()
     }
-
+    
     override func viewDidLoad() {
         super.viewDidLoad()
         viewModel.buildData()
         setupProfileHeader()
         bindViewModel()
     }
-    
     
     private func setupProfileHeader() {
         view.backgroundColor = .pureWhite
@@ -63,13 +62,16 @@ final class CareRecipientProfileViewController: GradientNavBarViewController {
             )
             empty.translatesAutoresizingMaskIntoConstraints = false
             view.addSubview(empty)
+            
             NSLayoutConstraint.activate([
                 empty.centerXAnchor.constraint(equalTo: view.centerXAnchor),
                 empty.centerYAnchor.constraint(equalTo: view.centerYAnchor)
             ])
+            
             return
         }
         
+        // MARK: - Assisted Card
         let header = ProfileHeader(careRecipient: person, percent: viewModel.completionPercent)
         header.translatesAutoresizingMaskIntoConstraints = false
         view.addSubview(header)
@@ -104,27 +106,27 @@ final class CareRecipientProfileViewController: GradientNavBarViewController {
         inviteButton.enablePressEffect()
         inviteButton.onTap = { [weak self] in
             guard let self = self else { return }
-
+            
             let spinner = UIActivityIndicatorView(style: .medium)
             spinner.translatesAutoresizingMaskIntoConstraints = false
             spinner.startAnimating()
-
+            
             let wrapper = UIView()
             wrapper.translatesAutoresizingMaskIntoConstraints = false
             wrapper.addSubview(spinner)
-
+            
             NSLayoutConstraint.activate([
                 spinner.centerXAnchor.constraint(equalTo: wrapper.centerXAnchor, constant: -20),
                 spinner.centerYAnchor.constraint(equalTo: wrapper.centerYAnchor)
             ])
-
+            
             if let stack = inviteButton.superview as? UIStackView,
                let index = stack.arrangedSubviews.firstIndex(of: inviteButton) {
                 inviteButton.isHidden = true
                 stack.insertArrangedSubview(wrapper, at: index)
             }
             self.didTapShareCareRecipientButton()
-
+            
             DispatchQueue.main.asyncAfter(deadline: .now() + 1) {
                 wrapper.removeFromSuperview()
                 inviteButton.isHidden = false
@@ -162,19 +164,19 @@ final class CareRecipientProfileViewController: GradientNavBarViewController {
                 permission: .readWrite,
                 isOwner: true
             )
-
+            
             card.translatesAutoresizingMaskIntoConstraints = false
             card.heightAnchor.constraint(equalToConstant: 54).isActive = true
             cardsStack.addArrangedSubview(card)
         } else {
             for item in uniqueCaregivers {
-                guard let careRecipient = viewModel.userService.fetchCurrentPatient() else { continue }                
+                guard let careRecipient = viewModel.userService.fetchCurrentPatient() else { continue }
                 let participants = viewModel.coreDataService.fetchParticipants(for: careRecipient) ?? []
                 guard let participant = participants.first(where: {
                     viewModel.coreDataService.matches($0, with: item, in: careRecipient)
                 }) else { continue }
-
-
+                
+                
                 let card = CaregiverProfileCardView(
                     coreDataService: viewModel.coreDataService,
                     participant: participant,
@@ -184,7 +186,7 @@ final class CareRecipientProfileViewController: GradientNavBarViewController {
                     permission: participant.permission,
                     isOwner: viewModel.coreDataService.isOwner(object: careRecipient)
                 )
-
+                
                 card.translatesAutoresizingMaskIntoConstraints = false
                 card.heightAnchor.constraint(equalToConstant: 54).isActive = true
                 cardsStack.addArrangedSubview(card)
@@ -295,7 +297,7 @@ final class CareRecipientProfileViewController: GradientNavBarViewController {
             self?.setupProfileHeader()
         }
         .store(in: &cancellables)
-
+        
         viewModel.$caregivers
             .receive(on: RunLoop.main)
             .sink { [weak self] _ in
