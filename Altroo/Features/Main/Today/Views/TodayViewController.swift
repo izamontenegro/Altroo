@@ -11,10 +11,6 @@ import SwiftUI
 
 protocol TodayViewControllerDelegate: AnyObject {
     func goTo(_ destination: TodayDestination)
-    func goToSymptomDetail(with symptom: Symptom)
-    func goToPrivacyPolicy()
-    func goToLegalNotice()
-    func openTaskDetail(with task: TaskInstance)
 }
 
 class TodayViewController: UIViewController {
@@ -306,10 +302,10 @@ class TodayViewController: UIViewController {
             rootView: HealthDataAlertView(
                 onClose: { [weak self] in self?.closeHealthAlert() },
                 onPrivacyPolicy: { [weak self] in
-                    self?.delegate?.goToPrivacyPolicy()
+                    self?.delegate?.goTo(.privacyPolicy)
                 },
                 onLegalNotice: { [weak self] in
-                    self?.delegate?.goToLegalNotice()
+                    self?.delegate?.goTo(.legalNotice)
                 }
             )
         )

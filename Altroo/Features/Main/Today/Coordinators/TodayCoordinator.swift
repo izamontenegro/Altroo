@@ -122,7 +122,7 @@ final class TodayCoordinator: Coordinator {
             return vc
             
         case .editSymptom(let symptom):
-            let vc = factory.makeEditSymptom(from: symptom) as! EditSymptomViewController
+            let vc = factory.makeEditSymptom(from: symptom) as! AddSymptomViewController
             vc.coordinator = self
             return vc
             

@@ -8,9 +8,16 @@
 import UIKit
 import Combine
 
+enum Mode {
+    case create
+    case edit(existing: Symptom)
+}
+
 class AddSymptomViewController: UIViewController {
+    let mode: Mode
     var viewModel: AddSymptomViewModel
     var coordinator: Coordinator?
+    
     private var cancellables = Set<AnyCancellable>()
     
     private lazy var titleSection = FormTitleSection(title: "Adicionar Intercorrência", description: "Selecione uma das opções listadas de intercorrências ou crie uma nova.", totalSteps: 2, currentStep: currentContentView?.0 ?? 1)
@@ -40,8 +47,10 @@ class AddSymptomViewController: UIViewController {
     private lazy var chooseOptionView: (Int, UIView) = (1, ChooseSymptomOptionView(viewModel: viewModel))
     private lazy var detailOptionView: (Int, UIView) = (2, DetailSymptomOptionView(viewModel: viewModel))
 
-    init(viewModel: AddSymptomViewModel) {
+    init(viewModel: AddSymptomViewModel, mode: Mode) {
         self.viewModel = viewModel
+        self.mode = mode
+
         super.init(nibName: nil, bundle: nil)
     }
     
@@ -60,7 +69,6 @@ class AddSymptomViewController: UIViewController {
         configureNavBar()
     }
     
-    
     func bindViewModel() {
         Publishers.CombineLatest(viewModel.$selectedSymptom, viewModel.$name)
             .sink { [weak self] selected, name in
@@ -71,13 +79,25 @@ class AddSymptomViewController: UIViewController {
     }
     
     private func configureNavBar() {
-        let closeButton = UIBarButtonItem(title: "Fechar", style: .done, target: self, action: #selector(closeTapped))
-        closeButton.tintColor = .blue20
-        navigationItem.rightBarButtonItem = closeButton
+        switch mode {
+        case .create:
+            let closeButton = UIBarButtonItem(title: "Fechar", style: .done, target: self, action: #selector(closeTapped))
+            closeButton.tintColor = .blue20
+            navigationItem.rightBarButtonItem = closeButton
+        case .edit(let existing):
+            let deleteButton = UIBarButtonItem(title: "Deletar", style: .done, target: self, action: #selector(deleteTapped))
+            deleteButton.tintColor = .red20
+            navigationItem.rightBarButtonItem = deleteButton
+        }
+
         
         let appearance = UINavigationBarAppearance()
         appearance.configureWithOpaqueBackground()
         navigationItem.scrollEdgeAppearance = appearance
+    }
+    
+    @objc func deleteTapped() {
+        viewModel.deleteSymptom()
     }
     
     @objc func closeTapped() {
@@ -126,7 +146,10 @@ class AddSymptomViewController: UIViewController {
             
             view.1.bottomAnchor.constraint(equalTo: confirmButton.topAnchor, constant: -24)
         ])
+        
+        updateTitleSection()
     }
+    
     
     @objc func tapConfirmButton() {
         switch currentContentView?.0 {
@@ -170,4 +193,25 @@ class AddSymptomViewController: UIViewController {
             self.confirmButton.backgroundColor = enabled ? .teal20 : .white50
         }
     }
+    
+    func updateTitleSection() {
+        let page = currentContentView?.0 ?? 1
+
+        switch mode {
+        case .create:
+            let title = "Adicionar Intercorrência"
+            let desc = page == 1
+                ? "Selecione uma das opções listadas de intercorrências ou crie uma nova."
+                : "Descreva a intercorrência que aconteceu com o paciente acompanhado."
+            titleSection.updateContent(title: title, description: desc, currentStep: page)
+
+        case .edit:
+            let title = "Editar Intercorrência"
+            let desc = page == 1
+                ? "Selecione uma das opções listadas de intercorrências ou crie uma nova."
+                : "Descreva a intercorrência que aconteceu com o paciente acompanhado."
+            titleSection.updateContent(title: title, description: desc, currentStep: page)
+        }
+    }
+
 }
