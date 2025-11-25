@@ -59,7 +59,6 @@ final class EditPhysicalStateViewModel {
     
     func updateOralHealthStates(_ values: [OralHealthEnum]) {
         physicalStateFormState.oralHealthStates = values
-        print(physicalStateFormState.oralHealthStates.count)
     }
 
     func updateMobilityState(_ value: MobilityEnum?) {

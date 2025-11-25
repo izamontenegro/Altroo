@@ -166,11 +166,17 @@ final class MedicalRecordViewModel {
         currentMentalState?.emotionalState
             .flatMap { EmotionalStateEnum(rawValue: $0)?.displayText } ?? "Sem registro"
     }
-
+    
     func getOrientationStateText() -> String {
-        currentMentalState?.orientationState
-            .flatMap { OrientationEnum(rawValue: $0)?.displayText } ?? "Sem registro"
+        guard
+            let rawValues = currentMentalState?.orientationState,
+            !rawValues.isEmpty
+        else { return "Sem registro" }
+
+        let items = rawValues.compactMap { OrientationEnum(rawValue: $0)?.displayText }
+        return items.isEmpty ? "Sem registro" : items.joined(separator: ", ")
     }
+    
 
     func getMemoryStateText() -> String {
         currentMentalState?.memoryState
@@ -251,7 +257,7 @@ final class MedicalRecordViewModel {
         checkString(mentalState?.cognitionState)
         checkString(mentalState?.emotionalState)
         checkString(mentalState?.memoryState)
-        checkString(mentalState?.orientationState)
+        checkToManySet(Set(mentalState?.orientationState ?? [] ))
         
         let physicalState = careRecipient.physicalState
         checkString(physicalState?.mobilityState)

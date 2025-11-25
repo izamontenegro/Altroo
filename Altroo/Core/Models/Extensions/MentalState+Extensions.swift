@@ -29,13 +29,13 @@ extension MentalState {
         }
     }
 
-    var orientation: OrientationEnum? {
+    var orientation: [OrientationEnum] {
         get {
-            guard let rawValue = self.orientationState else { return nil }
-            return OrientationEnum(rawValue: rawValue)
+            guard let rawValues = self.orientationState else { return [] }
+            return rawValues.compactMap { OrientationEnum(rawValue: $0) }
         }
         set {
-            self.orientationState = newValue?.rawValue
+            self.orientationState = newValue.map { $0.rawValue }
         }
     }
 
