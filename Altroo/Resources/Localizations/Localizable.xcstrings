@@ -678,7 +678,7 @@
       "localizations" : {
         "en" : {
           "stringUnit" : {
-            "state" : "needs_review",
+            "state" : "translated",
             "value" : "Edit Medical Record"
           }
         },
@@ -1939,14 +1939,14 @@
       "localizations" : {
         "en" : {
           "stringUnit" : {
-            "state" : "translated",
-            "value" : "Click on Invite Caregiver"
+            "state" : "needs_review",
+            "value" : "Click on “Invite Caregiver”"
           }
         },
         "pt-BR" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Clique em Convidar Cuidador"
+            "value" : "Clique em “Convidar Cuidador”"
           }
         }
       }
@@ -2274,13 +2274,13 @@
         "en" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "No tasks registered for the shift of"
+            "value" : "No tasks registered for the shift of "
           }
         },
         "pt-BR" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Nenhuma tarefa cadastrada para o turno da"
+            "value" : "Nenhuma tarefa cadastrada para o turno da "
           }
         }
       }

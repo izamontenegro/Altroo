@@ -268,6 +268,20 @@ class PatientFormsViewController: UIViewController {
         tapGesture.cancelsTouchesInView = false
         view.addGestureRecognizer(tapGesture)
     }
+    
+    private func configureNavBar() {
+        let closeButton = UIBarButtonItem(title: "close".localized, style: .done, target: self, action: #selector(didTapClose))
+        closeButton.tintColor = .blue30
+        navigationItem.leftBarButtonItem = closeButton
+
+        let appearance = UINavigationBarAppearance()
+        appearance.configureWithOpaqueBackground()
+        navigationItem.scrollEdgeAppearance = appearance
+    }
+    
+    @objc private func didTapClose() {
+        dismiss(animated: true, completion: nil)
+    }
 
     @objc
     private func dismissKeyboard() {

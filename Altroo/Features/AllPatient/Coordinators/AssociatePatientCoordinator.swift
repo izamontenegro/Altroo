@@ -55,8 +55,9 @@ final class AssociatePatientCoordinator: Coordinator {
         case .tutorialAdd:
             // Go to the tutorial on adding a patient.
             let vc = factory.makeTutorialAddSheet()
+            let nav = UINavigationController(rootViewController: vc)
             presentSheet(
-                vc,
+                nav,
                 from: navigation, percentage: 0.9
             )
             
