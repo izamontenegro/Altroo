@@ -9,7 +9,6 @@ import UIKit
 
 // MARK: - DefaultAppFactory
 final class DefaultAppFactory: AppFactory {
-
     
     private let dependencies: AppDependencies
     private let addPatientViewModel: AddPatientViewModel
@@ -63,8 +62,8 @@ extension DefaultAppFactory {
         return vc
     }
     
-    func makeShiftFormViewController(delegate: ShiftFormsViewControllerDelegate) -> UIViewController {
-        let vc = ShiftFormViewController(viewModel: addPatientViewModel)
+    func makeShiftFormViewController(delegate: ShiftFormsViewControllerDelegate, receivedPatientViaShare: Bool, patient: CareRecipient?) -> UIViewController {
+        let vc = ShiftFormViewController(viewModel: addPatientViewModel, receivedPatientViaShare: receivedPatientViaShare, patient: patient)
         vc.delegate = delegate
         return vc
     }
@@ -120,7 +119,7 @@ extension DefaultAppFactory {
 
 // MARK: - SymptomFactory
 extension DefaultAppFactory {
-    
+
     func makeAddSymptomViewController() -> UIViewController {
         let vm = AddSymptomViewModel(careRecipientFacade: dependencies.careRecipientFacade,
                                      userService: dependencies.userService,
@@ -274,12 +273,12 @@ extension DefaultAppFactory {
 
 // MARK: - TaskFactory
 extension DefaultAppFactory {
-    func makeAllTasksViewController(onTaskSelected: ((TaskInstance) -> Void)? = nil) -> UIViewController {
+    func makeAllTasksViewController() -> UIViewController {
         let vm = AllTasksViewModel(taskService: dependencies.routineActivitiesFacade,
                                    userService: dependencies.userService,
                                    coreDataService: dependencies.coreDataService,
                                    historyService: dependencies.historyService)
-        let vc = AllTasksViewController(viewModel: vm, onTaskSelected: onTaskSelected)
+        let vc = AllTasksViewController(viewModel: vm)
         return vc
     }
     func makeAddTaskViewController() -> UIViewController {
@@ -295,8 +294,10 @@ extension DefaultAppFactory {
         let vc = EditTaskViewController(viewModel: vm)
         return vc
     }
-    func makeTaskDetailViewController(task: TaskInstance) -> UIViewController {
-        let vc = TaskDetailViewController(task: task)
+    func makeTaskDetailViewController(mode: TaskDetailMode) -> UIViewController {
+        let vm = TaskDetailViewModel(taskService: dependencies.routineActivitiesFacade,
+                                     userService: dependencies.userService)
+        let vc = TaskDetailViewController(mode: mode, viewModel: vm)
         return vc
     }
 }

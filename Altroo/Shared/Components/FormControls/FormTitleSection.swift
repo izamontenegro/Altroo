@@ -38,7 +38,10 @@ final class FormTitleSection: UIStackView {
         descriptionLabel.numberOfLines = 0
         descriptionLabel.lineBreakMode = .byWordWrapping
         
-        addArrangedSubview(makeStepRow())
+        if totalSteps > 0 {
+            addArrangedSubview(makeStepRow())
+        }
+
         addArrangedSubview(titleLabel)
         setCustomSpacing(0, after: titleLabel)
         addArrangedSubview(descriptionLabel)

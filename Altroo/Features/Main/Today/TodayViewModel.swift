@@ -84,11 +84,10 @@ class TodayViewModel {
             guard let start = task.template?.startDate else { return false }
             let end = task.template?.endDate
             
-            let isTodayInInterval = start <= today && (end == nil || end! >= today)
-            let isTodayWeekday = task.template?.weekdays.contains(todayWeekday ?? .monday) ?? false
+            let isTodayInInterval = Calendar.current.isDateInToday(task.time ?? .distantPast)
             let isCurrentPeriod = task.period == currentPeriod
             
-            return isTodayInInterval && isTodayWeekday && isCurrentPeriod
+            return isTodayInInterval && isCurrentPeriod
         }
         .sorted(by: { $0.time ?? .distantPast < $1.time ?? .distantPast })
     }

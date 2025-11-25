@@ -28,15 +28,22 @@ class FormValidator {
         }
     }
     
-    //TODO
-    func invalidPhoneFormat(value: Int, minValue: Int, maxValue: Int, error: inout String?) -> Bool {
-        if value > maxValue || value < minValue {
+    func invalidPhoneFormat(value: String, minValue: Int, maxValue: Int, error: inout String?) -> Bool {
+        let trimmedValue = value.replacingOccurrences(of: " ", with: "")
+        let isNumeric = !trimmedValue.isEmpty && trimmedValue.allSatisfy { $0.isNumber }
+
+        guard isNumeric else {
             error = "invalid_value".localized
             return false
-        } else {
-            error = nil
-            return true
         }
+        
+        if trimmedValue.count < minValue || trimmedValue.count > maxValue {
+            error = "invalid_value".localized
+            return false
+        }
+        
+        error = nil
+        return true
     }
     
     func checkFutureDate(_ date: Date, error: inout String?) -> Bool {

@@ -11,9 +11,9 @@ extension TodayViewController: SymptomsCardDelegate {
     }
 }
 
-extension TodayViewController: TaskCardDelegate {
+extension TodayViewController: TaskCardDelegate, TaskCardNavigationDelegate {
     func taskCardDidSelect(_ task: TaskInstance) {
-        onTaskSelected?(task)
+        delegate?.openTaskDetail(with: task)
     }
     
     func taskCardDidMarkAsDone(_ task: TaskInstance) {

@@ -14,23 +14,31 @@ final class CareRecipientProfileViewModel {
     var userService: UserServiceProtocol
     var coreDataService: CoreDataService
     
+    @Published private(set) var currentCareRecipient: CareRecipient?
+    @Published private(set) var caregivers: [ParticipantsAccess] = []
     @Published private(set) var completionPercent: CGFloat = 8.0
+    
+    private var cancellables = Set<AnyCancellable>()
     
     init(userService: UserServiceProtocol, coreDataService: CoreDataService) {
         self.userService = userService
         self.coreDataService = coreDataService
+        
+        self.currentCareRecipient = userService.fetchCurrentPatient()
+        self.caregivers = caregiversFor(recipient: currentCareRecipient)
+        self.completionPercent = calcCompletion(for: currentCareRecipient)
+        
+        setupCloudKitObservers()
     }
     
     func buildData() {
-        completionPercent = calcCompletion()
-    }
-    
-    func currentCareRecipient() -> CareRecipient? {
-        userService.fetchCurrentPatient()
+        loadCurrentRecipient()
+        loadCaregivers()
+        completionPercent = calcCompletion(for: currentCareRecipient)
     }
     
     func finishCare() {
-        guard let recipient = currentCareRecipient() else { return }
+        guard let recipient = currentCareRecipient else { return }
         
         if coreDataService.isOwner(object: recipient) {
             coreDataService.deleteCareRecipient(recipient)
@@ -51,25 +59,22 @@ final class CareRecipientProfileViewModel {
 //                }
 //            }
         }
+        
+        buildData()
     }
     
-    func caregiversForCurrentRecipient() -> [ParticipantsAccess] {
-        guard let recipient = currentCareRecipient() else { return [] }
-        let participants = coreDataService.participantsWithCategory(for: recipient)
-        return participants
+    func caregiversFor(recipient: CareRecipient?) -> [ParticipantsAccess] {
+        guard let recipient else { return [] }
+        return coreDataService.participantsWithCategory(for: recipient)
     }
     
     func currentShare() -> CKShare? {
-        guard let recipient = currentCareRecipient() else { return nil }
+        guard let recipient = currentCareRecipient else { return nil }
         return coreDataService.getShare(recipient)
     }
     
-    private func calcCompletion() -> CGFloat {
-        guard let person = currentCareRecipient() else {
-            completionPercent = 0
-            return 0.0
-        }
-        let recipient = person
+    private func calcCompletion(for recipient: CareRecipient?) -> CGFloat {
+        guard let recipient else { return 0.0 }
         var total = 0, filled = 0
         func checkString(_ v: String?) { total += 1; if let x = v, !x.trimmingCharacters(in: .whitespaces).isEmpty { filled += 1 } }
         func checkDate(_ v: Date?) { total += 1; if v != nil { filled += 1 } }
@@ -106,7 +111,31 @@ final class CareRecipientProfileViewModel {
     }
     
     func getCurrentCareRecipientName() -> String {
-        let name = userService.fetchCurrentPatient()?.personalData?.name ?? ""
-        return name
+        currentCareRecipient?.personalData?.name ?? ""
+    }
+    
+    func loadCurrentRecipient() {
+        currentCareRecipient = userService.fetchCurrentPatient()
+    }
+
+    func loadCaregivers() {
+        guard let r = currentCareRecipient else {
+            caregivers = []
+            return
+        }
+        caregivers = coreDataService.participantsWithCategory(for: r)
+    }
+    
+    private func setupCloudKitObservers() {
+        NotificationCenter.default.publisher(for: .didFinishCloudKitSync)
+            .merge(with:
+                NotificationCenter.default.publisher(for: .sharedStoreDidSync),
+                NotificationCenter.default.publisher(for: .privateStoreDidSync)
+            )
+            .sink { [weak self] _ in
+                guard let self = self else { return }
+                self.buildData()
+            }
+            .store(in: &cancellables)
     }
 }

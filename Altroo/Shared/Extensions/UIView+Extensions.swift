@@ -91,6 +91,16 @@ extension UIView {
         generator.prepare()
         generator.impactOccurred()
     }
+    
+    func pinToEdges(of other: UIView) {
+        translatesAutoresizingMaskIntoConstraints = false
+        NSLayoutConstraint.activate([
+            topAnchor.constraint(equalTo: other.topAnchor),
+            bottomAnchor.constraint(equalTo: other.bottomAnchor),
+            leadingAnchor.constraint(equalTo: other.leadingAnchor),
+            trailingAnchor.constraint(equalTo: other.trailingAnchor)
+        ])
+    }
 }
 
 private class PressEffectGestureDelegate: NSObject, UIGestureRecognizerDelegate {

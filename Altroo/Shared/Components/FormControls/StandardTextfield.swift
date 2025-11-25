@@ -54,7 +54,7 @@ class StandardTextfield: UITextField {
     }
     
     override var intrinsicContentSize: CGSize {
-            CGSize(width: UIView.noIntrinsicMetric, height: 38)
+        CGSize(width: UIView.noIntrinsicMetric, height: 38)
     }
 }
 

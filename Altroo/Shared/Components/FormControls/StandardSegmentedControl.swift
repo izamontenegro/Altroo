@@ -10,10 +10,10 @@ import UIKit
 class StandardSegmentedControl: UISegmentedControl {
     private var itemsList: [String]
     
-     var selectedColor: UIColor
-     var backgroundColorNormal: UIColor
-     var selectedFontColor: UIColor
-     var unselectedFontColor: UIColor
+    var selectedColor: UIColor
+    var backgroundColorNormal: UIColor
+    var selectedFontColor: UIColor
+    var unselectedFontColor: UIColor
     private var cornerRadius: CGFloat
     
     init(items: [String],
@@ -44,7 +44,7 @@ class StandardSegmentedControl: UISegmentedControl {
         self.init(
             items: items,
             height: 35,
-            backgroundColor: .white70,
+            backgroundColor: .pureWhite,
             selectedColor: .blue30,
             selectedFontColor: .pureWhite,
             unselectedFontColor: .black30,
@@ -55,7 +55,8 @@ class StandardSegmentedControl: UISegmentedControl {
     private func setupStyle(height: CGFloat) {
         selectedSegmentIndex = 0
         
-        backgroundColor = backgroundColorNormal
+        backgroundColor = .pureWhite
+        isOpaque = false
         selectedSegmentTintColor = selectedColor
         
         let normalTextAttributes: [NSAttributedString.Key: Any] = [
@@ -101,7 +102,22 @@ private struct SegmentedControlPreviewWrapper: UIViewRepresentable {
     }
 }
 
-//#Preview {
-//    SegmentedControlPreviewWrapper()
-//        .padding()
-//}
+extension UISegmentedControl {
+    func applyWhiteBackgroundColor() {
+        // for remove bottom shadow of selected element
+        self.selectedSegmentTintColor = selectedSegmentTintColor?.withAlphaComponent(0.99)
+        if #available(iOS 13.0, *) {
+            //just to be sure it is full loaded
+            DispatchQueue.main.asyncAfter(deadline: .now() + 0.1) { [weak self] in
+                guard let self = self else {
+                    return
+                }
+                for i in 0 ..< (self.numberOfSegments)  {
+                    let backgroundSegmentView = self.subviews[i]
+                    //it is not enogh changing the background color. It has some kind of shadow layer
+                    backgroundSegmentView.isHidden = true
+                }
+            }
+        }
+    }
+}

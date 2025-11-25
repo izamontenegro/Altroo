@@ -17,14 +17,14 @@ class AddTaskViewModel {
     @Published var times: [DateComponents] = []
     @Published var repeatingDays: [Locale.Weekday] = []
     @Published var startDate: Date = .now
-    @Published var endDate: Date = .now
+    @Published var endDate: Date?
     @Published var note: String = ""
     
     private let validator = FormValidator()
     @Published private(set) var fieldErrors: [String: String] = [:]
 
     @Published var isContinuous: Bool = true
-    let continuousOptions = ["Contínuo", "Data Final"]
+    let continuousOptions = ["without_end".localized, "with_end".localized]
     var continuousButtonTitle: String {
         if isContinuous {
             continuousOptions[0]
@@ -58,7 +58,10 @@ class AddTaskViewModel {
         var newErrors: [String: String] = [:]
 
         _ = validator.isEmpty(name, error: &newErrors["name"])
-        _ = validator.invalidDateRange(startDate: startDate, endDate: endDate, error: &newErrors["date"])
+        
+        if let endDate {
+            _ = validator.invalidDateRange(startDate: startDate, endDate: endDate, error: &newErrors["date"])
+        }
         
         fieldErrors = newErrors
         return newErrors.isEmpty

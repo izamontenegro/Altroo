@@ -12,6 +12,18 @@ final class PopupMenuButton: PrimaryStyleButton {
     var title: String
     let icon = UIImage(systemName: "chevron.up.chevron.down")
     
+    var customWidth: CGFloat? {
+        didSet { invalidateIntrinsicContentSize() }
+    }
+
+    override var intrinsicContentSize: CGSize {
+        var size = super.intrinsicContentSize
+        if let customWidth = customWidth {
+            size.width = customWidth
+        }
+        return size
+    }
+    
     init(title: String) {
         self.title = title
         super.init()
@@ -41,7 +53,7 @@ final class PopupMenuButton: PrimaryStyleButton {
     }
     
     private func setupButton() {
-        backgroundColor = color
+        backgroundColor = .blue40
         
         //text
         setTitle(title, for: .normal)

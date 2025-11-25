@@ -68,6 +68,12 @@ class UserServiceSession: UserServiceProtocol {
         save()
     }
     
+    func setPhone(_ phone: String) {
+        guard let user = fetchUser() else { return }
+        user.phone = phone
+        save()
+    }
+    
     func setCurrentPatient(_ patient: CareRecipient) {
         currentPatient = patient
         if let user = fetchUser(), let id = patient.id {
@@ -163,6 +169,39 @@ class UserServiceSession: UserServiceProtocol {
             .split(separator: ",")
             .compactMap { PeriodEnum(rawValue: String($0)) }
     }
+    
+    func fetchSharedPatients() -> [CareRecipient] {
+        let context = CoreDataStack.shared.context
+        let request: NSFetchRequest<CareRecipient> = CareRecipient.fetchRequest()
+        
+        request.affectedStores = [CoreDataStack.shared.sharedPersistentStore]
+
+        do {
+            let result = try context.fetch(request)
+
+            print("---- PACIENTES NO SHARED STORE ----")
+            if result.isEmpty {
+                print("Nenhum paciente encontrado no shared store.")
+            } else {
+                result.forEach { patient in
+                    print("""
+                    ------------------------------
+                    ID: \(patient.id?.uuidString ?? "nil")
+                    Nome: \(patient.personalData?.name ?? "Sem nome")
+                    Data de Nascimento: \(patient.personalData?.dateOfBirth ?? Date.distantPast)
+                    ------------------------------
+                    """)
+                }
+            }
+            print("-----------------------------------")
+
+            return result
+        } catch {
+            print("Erro ao buscar pacientes do shared store: \(error)")
+            return []
+        }
+    }
+
     
     // MARK: - Helpers
     private func save() {

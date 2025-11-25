@@ -8,7 +8,7 @@
 import UIKit
 import Combine
 
-class TaskFormViewController: GradientNavBarViewController {
+class TaskFormViewController: UIViewController {
     private var keyboardHandler: KeyboardHandler?
 
     let titleLabel = StandardHeaderView(title: "", subtitle: "")
@@ -17,16 +17,22 @@ class TaskFormViewController: GradientNavBarViewController {
     let deleteButton = OutlineButton(title: "delete".localized, color: .red20)
     private var confirmBottomConstraint: NSLayoutConstraint?
 
-    let nameTexfield = StandardTextfield(placeholder: "Nome")
-    let noteTexfield = ObservationView(placeholder: "Detalhes da sua tarefa")
-
-    var hourPickers: [UIDatePicker] = []
-    let addTimeButton = PrimaryStyleButton(title: "taskform_new_time".localized)
-    let startDatePicker: UIDatePicker = UIDatePicker.make(mode: .date)
-    let endDatePicker: UIDatePicker = UIDatePicker.make(mode: .date)
+    let nameTexfield = StandardTextfield(placeholder: "taskform_name".localized)
+    let noteTexfield = ObservationView(placeholder: "observations".localized)
     
-    let hourStack: UIStackView = {
-        let stackView = UIStackView()
+    //TIME
+    lazy var deleteTimeButton: MinusButton = {
+        let btn = MinusButton()
+        btn.widthAnchor.constraint(equalToConstant: 18).isActive = true
+        btn.addTarget(self, action: #selector(didDeleteLastTime), for: .touchUpInside)
+        return btn
+    }()
+    
+    let addTimeButton = OutlineWithIconButton(title: "taskform_new_time".localized, iconName: "plus.circle.fill")
+    var addTimeViews: [UIView] = []
+    lazy var timePickersFlowView = FlowLayoutView(views: addTimeViews, maxWidth: view.bounds.width - 32)
+    lazy var hourStack: UIStackView = {
+        let stackView = UIStackView(arrangedSubviews: [timePickersFlowView])
         stackView.axis = .vertical
         stackView.alignment = .leading
         stackView.distribution = .fill
@@ -34,23 +40,39 @@ class TaskFormViewController: GradientNavBarViewController {
         stackView.translatesAutoresizingMaskIntoConstraints = false
         return stackView
     }()
-
-    let dateStack: UIStackView = {
-        let stackView = UIStackView()
+    
+    
+    //DATE
+    let startDatePicker: UIDatePicker = UIDatePicker.make(mode: .date)
+    let endDatePicker: UIDatePicker = UIDatePicker.make(mode: .date)
+    private lazy var dateRow: UIStackView = {
+        let stackView = UIStackView(arrangedSubviews: [startSection, endSection])
         stackView.axis = .horizontal
-        stackView.alignment = .fill
-        stackView.distribution = .equalSpacing
+        stackView.distribution = .fillProportionally
         stackView.spacing = 8
         stackView.translatesAutoresizingMaskIntoConstraints = false
         return stackView
     }()
     
-    //sections
+    let dateContent: UIStackView = {
+        let stackView = UIStackView()
+        stackView.axis = .vertical
+        stackView.alignment = .leading
+        stackView.distribution = .fillProportionally
+        stackView.spacing = 8
+        stackView.translatesAutoresizingMaskIntoConstraints = false
+        return stackView
+    }()
     lazy var nameSection = FormSectionView(title: "name".localized, content: nameTexfield)
     private lazy var hourSection = FormSectionView(title: String(localized: "time"), content: hourStack)
+        
     private lazy var repeatSection = FormSectionView(title: "taskform_repeat".localized, content: weekdayRow)
-    lazy var startSection = FormSectionView(title: "taskform_start".localized, content: startDatePicker)
-    var endDateSection: UIView!
+    lazy var dateSection = FormSectionView(title: "taskform_duration".localized, content: dateContent)
+        
+    lazy var startSection = FormSectionView(title: "taskform_start".localized, content: startDatePicker, isSubsection: true)
+        //"taskform_end".localized
+    lazy var endSection = FormSectionView(title: "taskform_end".localized, content: endDatePicker, isSubsection: true)
+
     var continuousButton: PopupMenuButton!
     private lazy var noteSection = FormSectionView(title: "observations".localized, content: noteTexfield)
 
@@ -60,7 +82,7 @@ class TaskFormViewController: GradientNavBarViewController {
             nameSection,
             hourSection,
             repeatSection,
-            dateStack,
+            dateSection,
             noteSection,
             confirmButton,
             deleteButton
@@ -76,7 +98,7 @@ class TaskFormViewController: GradientNavBarViewController {
 
     var weekdayRow: RepeatDaysRow = RepeatDaysRow()
     
-    private let scrollView = UIScrollView.make(direction: .vertical)
+    let scrollView = UIScrollView.make(direction: .vertical)
         
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -108,71 +130,57 @@ class TaskFormViewController: GradientNavBarViewController {
         let tapGesture = UITapGestureRecognizer(target: self, action: #selector(dismissKeyboard))
         tapGesture.cancelsTouchesInView = false
         view.addGestureRecognizer(tapGesture)
+        
+        startDatePicker.addTarget(self, action: #selector(startDateChanged(_:)), for: .valueChanged)
+        endDatePicker.addTarget(self, action: #selector(endDateChanged(_:)), for: .valueChanged)
     }
 
-    func configure(title: String, subtitle: String, confirmButtonText: String, showDelete: Bool = false) {
+    func configure(title: String, subtitle: String, confirmButtonText: String, showDelete: Bool = false, continuousButtonTitle: String) {
         titleLabel.update(title: title, subtitle: subtitle)
         
         confirmButton.updateTitle(confirmButtonText)
         
-        if showDelete {
-//            deleteButton.updateColor(.red10)
-            view.addSubview(deleteButton)
-            NSLayoutConstraint.activate([
-                deleteButton.centerXAnchor.constraint(equalTo: view.centerXAnchor),
-                deleteButton.bottomAnchor.constraint(equalTo: view.safeAreaLayoutGuide.bottomAnchor, constant: -Layout.mediumSpacing)
-            ])
-            confirmBottomConstraint = confirmButton.bottomAnchor.constraint(equalTo: deleteButton.topAnchor, constant: -Layout.mediumSpacing)
-            confirmBottomConstraint?.isActive = true
-        } else {
-            deleteButton.removeFromSuperview()
-            confirmBottomConstraint = confirmButton.bottomAnchor.constraint(equalTo: view.safeAreaLayoutGuide.bottomAnchor, constant: -Layout.bigButtonBottomPadding)
-            confirmBottomConstraint?.isActive = true
-        }
+        deleteButton.isHidden = !showDelete
+        
+        setupContinuousButton(with: continuousButtonTitle)
     }
+    
+    func setupContinuousButton(with title: String) {
+        continuousButton = PopupMenuButton(title: title)
+        continuousButton.showsMenuAsPrimaryAction = true
+        continuousButton.changesSelectionAsPrimaryAction = true
+    }
+    
+    func reloadDurationSection(startDate: Date?, endDate: Date?) {
+        //reset everything
+        dateContent.clearContent()
+        
+        startDatePicker.date = startDate ?? .now
+        
+            endSection.updateContent(continuousButton)
+        if let endDate {
+            endDatePicker.date = endDate
+            endSection.updateContent(endDatePicker)
 
-    func setupContent() {
-            hourStack.addArrangedSubview(addTimeButton)
-
-            //duration
-            startDatePicker.addTarget(self, action: #selector(startDateChanged(_:)), for: .valueChanged)
-            endDatePicker.addTarget(self, action: #selector(endDateChanged(_:)), for: .valueChanged)
-        endDateSection = FormSectionView(title: "taskform_end".localized, content: endDatePicker)
+            dateContent.addArrangedSubview(dateRow)
+            dateContent.addArrangedSubview(continuousButton)
+        } else {
+            endSection.updateContent(continuousButton)
             
-            dateStack.addArrangedSubview(startSection)
-        }
-    
-    private func updateEndDateVisibility(_ isContinuous: Bool) {
-        if isContinuous {
-            endDateSection.removeFromSuperview()
-        } else {
-            dateStack.insertArrangedSubview(endDateSection, at: 1)
+            dateContent.addArrangedSubview(dateRow)
         }
     }
     
-    func insertContinuousPicker(_ button: PopupMenuButton, showEndDate: Bool) {
-        continuousButton = button
-        let durationSection = FormSectionView(title: "taskform_duration".localized, content: continuousButton)
-         dateStack.addArrangedSubview(durationSection)
-         if showEndDate {
-             dateStack.insertArrangedSubview(endDateSection, at: 1)
-         }
-     }
-
-    func addEndDate() {
-        dateStack.insertArrangedSubview(endDateSection, at: 1)
-    }
-    
-    func removeEndDate() {
-        endDateSection.removeFromSuperview()
-    }
-
     @objc func startDateChanged(_ picker: UIDatePicker) {}
     @objc func endDateChanged(_ picker: UIDatePicker) {}
     
     @objc private func dismissKeyboard() {
         view.endEditing(true)
     }
+   
+    @objc func didDeleteLastTime() {}
+
+    
 }
 
 extension TaskFormViewController: UITextFieldDelegate {

@@ -39,7 +39,7 @@ protocol AssociatePatientFactory {
     func makeLoading() -> UIViewController
     func makePatientFormViewController(delegate: AssociatePatientViewControllerDelegate) -> UIViewController
     func makeComorbiditiesFormViewController(delegate: AssociatePatientViewControllerDelegate) -> UIViewController
-    func makeShiftFormViewController(delegate: ShiftFormsViewControllerDelegate) -> UIViewController
+    func makeShiftFormViewController(delegate: ShiftFormsViewControllerDelegate, receivedPatientViaShare: Bool, patient: CareRecipient?) -> UIViewController
 }
 
 // MARK: - MAIN FLOW
@@ -102,10 +102,10 @@ protocol BasicNeedsFactory {
 
 // MARK: - ROUTINE ACTIVITIES FLOW
 protocol RoutineActivitiesFactory {
-    func makeAllTasksViewController(onTaskSelected: ((TaskInstance) -> Void)?) -> UIViewController
+    func makeAllTasksViewController() -> UIViewController
     func makeAddTaskViewController() -> UIViewController
     func makeEditTaskViewController(task: RoutineTask) -> UIViewController
-    func makeTaskDetailViewController(task: TaskInstance) -> UIViewController
+    func makeTaskDetailViewController(mode: TaskDetailMode) -> UIViewController
 }
 
 // MARK: - MEASUREMENT FLOW
