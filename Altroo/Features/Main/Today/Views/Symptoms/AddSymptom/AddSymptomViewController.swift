@@ -98,6 +98,7 @@ class AddSymptomViewController: UIViewController {
     
     @objc func deleteTapped() {
         viewModel.deleteSymptom()
+        dismiss(animated: true)
     }
     
     @objc func closeTapped() {
@@ -213,5 +214,4 @@ class AddSymptomViewController: UIViewController {
             titleSection.updateContent(title: title, description: desc, currentStep: page)
         }
     }
-
 }
