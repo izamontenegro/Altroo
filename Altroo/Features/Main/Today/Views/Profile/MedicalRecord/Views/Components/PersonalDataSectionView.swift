@@ -69,7 +69,6 @@ final class PersonalDataSectionView: UIView {
         bodyStackView.spacing = 12
         bodyStackView.translatesAutoresizingMaskIntoConstraints = false
 
-        // Nome
         let nameRow: InformationRow = ("Nome", name)
         let nameSubsection = MedicalRecordSubsectionView(
             row: nameRow,
@@ -78,8 +77,7 @@ final class PersonalDataSectionView: UIView {
             copyTarget: nil,
             copyAction: nil
         )
-
-        // Data de Nascimento | Peso | Altura
+        
         let birthRow: InformationRow = ("Data de Nascimento", birthDate)
         let weightRow: InformationRow = ("Peso", weight)
         let heightRow: InformationRow = ("Altura", height)
@@ -98,6 +96,7 @@ final class PersonalDataSectionView: UIView {
             copyTarget: nil,
             copyAction: nil
         )
+        
         let heightSubsection = MedicalRecordSubsectionView(
             row: heightRow,
             surgeryDisplayItems: [],
@@ -108,11 +107,10 @@ final class PersonalDataSectionView: UIView {
 
         let topHStack = UIStackView(arrangedSubviews: [birthSubsection, weightSubsection, heightSubsection])
         topHStack.axis = .horizontal
-        topHStack.spacing = 30
-        topHStack.distribution = .fillEqually
+        topHStack.distribution = .fillProportionally
+        topHStack.alignment = .top
         topHStack.translatesAutoresizingMaskIntoConstraints = false
 
-        // Endereço
         let addressText = address.trimmingCharacters(in: .whitespacesAndNewlines)
         let addressRow: InformationRow = ("Endereço", addressText.isEmpty ? "Sem registro" : addressText)
         let addressSubsection = MedicalRecordSubsectionView(
@@ -123,7 +121,6 @@ final class PersonalDataSectionView: UIView {
             copyAction: nil
         )
 
-        // Contato de Emergência (texto simples)
         let contactText = emergencyContact.trimmingCharacters(in: .whitespacesAndNewlines)
         let contactRow: InformationRow = ("Contato de Emergência", contactText.isEmpty ? "Sem registro" : contactText)
         let contactSubsection = MedicalRecordSubsectionView(
