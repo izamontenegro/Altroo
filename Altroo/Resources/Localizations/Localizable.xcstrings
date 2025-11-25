@@ -673,6 +673,23 @@
         }
       }
     },
+    "edit_medical_record" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Edit Medical Record"
+          }
+        },
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Editar Ficha Médica"
+          }
+        }
+      }
+    },
     "edit_section_subtitle" : {
       "extractionState" : "manual",
       "localizations" : {
@@ -1508,6 +1525,74 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Cuidando de:"
+          }
+        }
+      }
+    },
+    "record_hydration" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Register Hydration"
+          }
+        },
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Registrar Hidratação"
+          }
+        }
+      }
+    },
+    "record_meal" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Register meal"
+          }
+        },
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Registrar alimentação"
+          }
+        }
+      }
+    },
+    "record_stool" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Register stool"
+          }
+        },
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Registrar fezes"
+          }
+        }
+      }
+    },
+    "record_urine" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Register urine"
+          }
+        },
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Registrar urina"
           }
         }
       }

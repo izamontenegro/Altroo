@@ -76,7 +76,7 @@ final class MealRecordViewController: UIViewController {
         scrollView.addSubview(contentStackView)
 
         let headerView = StandardHeaderView(
-            title: "Registrar alimentação",
+            title: "record_meal".localized,
             subtitle: "Registre uma refeição e o nível de aceitação do assistido com a comida."
         )
         
