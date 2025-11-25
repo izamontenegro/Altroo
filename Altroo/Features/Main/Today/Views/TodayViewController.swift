@@ -74,6 +74,7 @@ class TodayViewController: UIViewController {
         self.profileToolbar = toolbar
 
         scrollView.refreshControl = refreshControl
+        refreshControl.bounds = refreshControl.bounds.offsetBy(dx: 0, dy: -20)
         
         view.addSubview(scrollView)
         scrollView.addSubview(vStack)
@@ -130,47 +131,6 @@ class TodayViewController: UIViewController {
             showHealthDataAlert()
         }
     }
-
-    private func makeCardByPeriod() -> UIView {
-        let cardStack = UIStackView()
-        cardStack.axis = .vertical
-        cardStack.spacing = 16
-        cardStack.alignment = .fill
-        cardStack.translatesAutoresizingMaskIntoConstraints = false
-        
-        let tasks = viewModel.periodTasks
-        
-        if tasks.isEmpty {
-            let emptyCard = EmptyCardView(text: "")
-            //"today_empty_tasks".localized
-            let normalText = "Nenhuma tarefa cadastrada para o turno da "
-            let normalString = NSMutableAttributedString(string:normalText)
-
-            let boldText = PeriodEnum.current.name
-            let attrs = [NSAttributedString.Key.font : UIFont.boldSystemFont(ofSize: 16)]
-            let boldString = NSMutableAttributedString(string:boldText, attributes:attrs)
-
-            normalString.append(boldString)
-            
-            emptyCard.label.attributedText = normalString
-            cardStack.addArrangedSubview(emptyCard)
-        } else {
-            for task in tasks {
-                let card = TaskCard(task: task)
-                card.delegate = self
-                card.navigationDelegate = self
-                card.translatesAutoresizingMaskIntoConstraints = false
-                cardStack.addArrangedSubview(card)
-                
-                NSLayoutConstraint.activate([
-                    card.leadingAnchor.constraint(equalTo: cardStack.leadingAnchor),
-                    card.trailingAnchor.constraint(equalTo: cardStack.trailingAnchor)
-                ])
-            }
-        }
-        
-        return cardStack
-    }
     
     private func setupBindings() {
         viewModel.$currentCareRecipient
@@ -221,7 +181,5 @@ class TodayViewController: UIViewController {
         }
     }
         
-    @objc private func handleRefresh() {
-        fetchData()
-    }
+    @objc private func handleRefresh() { fetchData() }
 }
