@@ -34,8 +34,8 @@ class SettingsViewController: GradientHeader {
     
     override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
+        navigationController?.setNavigationBarHidden(true, animated: false)
         showTabBar(true)
-        navigationController?.navigationBar.isHidden = true
     }
     
     // MARK: - Subviews

@@ -88,7 +88,7 @@ extension PatientsCoordinator: AssociatePatientViewControllerDelegate {
     func goToMainFlow() { show(.mainFlow) }
     func goToPatientForms() { show(.patientForms) }
     func goToComorbiditiesForms() {  }
-    func goToShiftForms() {  }
+    func goToShiftForms(receivedPatientViaShare: Bool = false, patient: CareRecipient? = nil) {  }
     func goToTutorialAddSheet() { show(.tutorialAdd) }
     func goToLoading() { show(.loading) }
 }

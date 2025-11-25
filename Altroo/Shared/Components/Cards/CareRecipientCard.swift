@@ -81,7 +81,7 @@ class CareRecipientCard: UIView {
         
         if currentCareRecipient {
             let seeMoreLabel = StandardLabel(
-                labelText: "Ver mais",
+                labelText: "see_more".localized,
                 labelFont: .sfPro,
                 labelType: .subHeadline,
                 labelColor: .black10,

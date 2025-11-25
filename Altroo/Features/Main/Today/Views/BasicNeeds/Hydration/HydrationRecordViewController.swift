@@ -74,7 +74,7 @@ final class HydrationRecordViewController: UIViewController {
     // MARK: - Layout
     private func setupLayout() {
         let header = StandardHeaderView(
-            title: "Registrar Hidratação",
+            title: "record_hydration".localized,
             subtitle: "Registre a quantidade ingerida de líquidos"
         )
         let amountSection = makeAmountSection()

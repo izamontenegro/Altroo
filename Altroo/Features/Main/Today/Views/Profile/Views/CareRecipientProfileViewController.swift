@@ -7,6 +7,7 @@
 
 import UIKit
 import CloudKit
+import Combine
 
 protocol ProfileViewControllerDelegate: AnyObject {
     func openShareCareRecipientSheet(_ careRecipient: CareRecipient)
@@ -18,6 +19,8 @@ final class CareRecipientProfileViewController: GradientNavBarViewController {
     weak var delegate: ProfileViewControllerDelegate?
     let viewModel: CareRecipientProfileViewModel
     var goToEdit: Bool = false
+    
+    private var cancellables = Set<AnyCancellable>()
     
     // MARK: - Lifecycle
     init(viewModel: CareRecipientProfileViewModel) {
@@ -41,6 +44,7 @@ final class CareRecipientProfileViewController: GradientNavBarViewController {
         super.viewDidLoad()
         viewModel.buildData()
         setupProfileHeader()
+        bindViewModel()
     }
     
     
@@ -49,7 +53,7 @@ final class CareRecipientProfileViewController: GradientNavBarViewController {
         
         view.subviews.forEach { $0.removeFromSuperview() }
         
-        guard let person = viewModel.currentCareRecipient() else {
+        guard let person = viewModel.currentCareRecipient else {
             let empty = StandardLabel(
                 labelText: "Nenhum assistido selecionado",
                 labelFont: .sfPro,
@@ -85,22 +89,45 @@ final class CareRecipientProfileViewController: GradientNavBarViewController {
     }
     
     private func setupCaregiversSection(below header: UIView) {
-        let caregivers = viewModel.caregiversForCurrentRecipient()
+        let caregivers = viewModel.caregiversFor(recipient: viewModel.currentCareRecipient)
         let uniqueCaregivers = caregivers.unique { $0.name }
         
         let titleLabel = StandardLabel(
-            labelText: "Permissões",
+            labelText: "permissions".localized,
             labelFont: .sfPro,
             labelType: .title2,
             labelColor: .black10,
             labelWeight: .semibold
         )
         
-        let inviteButton = CapsuleIconView(iconName: "paperplane", text: "Convidar cuidador")
+        let inviteButton = CapsuleIconView(iconName: "paperplane", text: "invite_caregiver".localized)
         inviteButton.enablePressEffect()
         inviteButton.onTap = { [weak self] in
-            DispatchQueue.main.asyncAfter(deadline: .now() + 0.1) {
-                self?.didTapShareCareRecipientButton()
+            guard let self = self else { return }
+
+            let spinner = UIActivityIndicatorView(style: .medium)
+            spinner.translatesAutoresizingMaskIntoConstraints = false
+            spinner.startAnimating()
+
+            let wrapper = UIView()
+            wrapper.translatesAutoresizingMaskIntoConstraints = false
+            wrapper.addSubview(spinner)
+
+            NSLayoutConstraint.activate([
+                spinner.centerXAnchor.constraint(equalTo: wrapper.centerXAnchor, constant: -20),
+                spinner.centerYAnchor.constraint(equalTo: wrapper.centerYAnchor)
+            ])
+
+            if let stack = inviteButton.superview as? UIStackView,
+               let index = stack.arrangedSubviews.firstIndex(of: inviteButton) {
+                inviteButton.isHidden = true
+                stack.insertArrangedSubview(wrapper, at: index)
+            }
+            self.didTapShareCareRecipientButton()
+
+            DispatchQueue.main.asyncAfter(deadline: .now() + 1) {
+                wrapper.removeFromSuperview()
+                inviteButton.isHidden = false
             }
         }
         
@@ -130,8 +157,8 @@ final class CareRecipientProfileViewController: GradientNavBarViewController {
         if uniqueCaregivers.count <= 1 {
             let card = CaregiverProfileCardView(
                 coreDataService: viewModel.coreDataService,
-                name: "Você",
-                category: viewModel.userService.fetchUser()?.category ?? "Cuidador",
+                name: "you".localized,
+                category: viewModel.userService.fetchUser()?.category ?? "caregiver".localized,
                 permission: .readWrite,
                 isOwner: true
             )
@@ -175,7 +202,7 @@ final class CareRecipientProfileViewController: GradientNavBarViewController {
     
     private func setupBottomButtons(below lastView: UIView) {
         let endButton = makeOutlineButton(
-            title: "Encerrar Acompanhamento",
+            title: "end_follow_up".localized,
             action: #selector(didTapEndCareButton)
         )
         endButton.enablePressAnimation()
@@ -258,6 +285,25 @@ final class CareRecipientProfileViewController: GradientNavBarViewController {
         return button
     }
     
+    private func bindViewModel() {
+        Publishers.CombineLatest(
+            viewModel.$currentCareRecipient,
+            viewModel.$completionPercent
+        )
+        .receive(on: RunLoop.main)
+        .sink { [weak self] _, _ in
+            self?.setupProfileHeader()
+        }
+        .store(in: &cancellables)
+
+        viewModel.$caregivers
+            .receive(on: RunLoop.main)
+            .sink { [weak self] _ in
+                self?.setupProfileHeader()
+            }
+            .store(in: &cancellables)
+    }
+    
     private func addTap(to view: UIView, action: Selector) {
         view.isUserInteractionEnabled = true
         view.addGestureRecognizer(UITapGestureRecognizer(target: self, action: action))
@@ -269,7 +315,7 @@ final class CareRecipientProfileViewController: GradientNavBarViewController {
     }
     
     @objc private func didTapShareCareRecipientButton() {
-        guard let careRecipient = viewModel.currentCareRecipient() else { return }
+        guard let careRecipient = viewModel.currentCareRecipient else { return }
         delegate?.openShareCareRecipientSheet(careRecipient)
     }
     
