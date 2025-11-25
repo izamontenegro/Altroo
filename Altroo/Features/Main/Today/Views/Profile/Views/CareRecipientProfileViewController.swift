@@ -99,8 +99,31 @@ final class CareRecipientProfileViewController: GradientNavBarViewController {
         let inviteButton = CapsuleIconView(iconName: "paperplane", text: "invite_caregiver".localized)
         inviteButton.enablePressEffect()
         inviteButton.onTap = { [weak self] in
-            DispatchQueue.main.asyncAfter(deadline: .now() + 0.1) {
-                self?.didTapShareCareRecipientButton()
+            guard let self = self else { return }
+
+            let spinner = UIActivityIndicatorView(style: .medium)
+            spinner.translatesAutoresizingMaskIntoConstraints = false
+            spinner.startAnimating()
+
+            let wrapper = UIView()
+            wrapper.translatesAutoresizingMaskIntoConstraints = false
+            wrapper.addSubview(spinner)
+
+            NSLayoutConstraint.activate([
+                spinner.centerXAnchor.constraint(equalTo: wrapper.centerXAnchor, constant: -20),
+                spinner.centerYAnchor.constraint(equalTo: wrapper.centerYAnchor)
+            ])
+
+            if let stack = inviteButton.superview as? UIStackView,
+               let index = stack.arrangedSubviews.firstIndex(of: inviteButton) {
+                inviteButton.isHidden = true
+                stack.insertArrangedSubview(wrapper, at: index)
+            }
+            self.didTapShareCareRecipientButton()
+
+            DispatchQueue.main.asyncAfter(deadline: .now() + 1) {
+                wrapper.removeFromSuperview()
+                inviteButton.isHidden = false
             }
         }
         
