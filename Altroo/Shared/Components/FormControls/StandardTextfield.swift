@@ -15,7 +15,12 @@ class StandardTextfield: UITextField {
     
     init(placeholder: String = "") {
         super.init(frame: .zero)
-        self.placeholder = placeholder
+        self.attributedPlaceholder = NSAttributedString(
+            string: placeholder,
+            attributes: [
+                .foregroundColor: UIColor(resource: .black40)
+            ]
+        )
         setupView()
     }
     
@@ -34,6 +39,7 @@ class StandardTextfield: UITextField {
     override func placeholderRect(forBounds bounds: CGRect) -> CGRect {
         return bounds.inset(by: UIEdgeInsets(top: 0, left: 8, bottom: 0, right: 8))
     }
+    
     
     private func setupView() {
 

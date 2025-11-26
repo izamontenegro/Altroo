@@ -5,8 +5,7 @@
 //  Created by Izadora de Oliveira Albuquerque Montenegro on 31/10/25.
 //
 
-import Combine
-import CloudKit
+import Foundation
 import CoreData
 
 struct PersonalCareFormState: Equatable {
@@ -17,7 +16,22 @@ struct PersonalCareFormState: Equatable {
     var equipmentsText: String = ""
 }
 
-extension EditMedicalRecordViewModel {
+final class EditPersonalCareViewModel {
+
+    private let userService: UserServiceProtocol
+    private let careRecipientFacade: CareRecipientFacade
+
+    var personalCareFormState = PersonalCareFormState()
+
+    init(userService: UserServiceProtocol, careRecipientFacade: CareRecipientFacade) {
+        self.userService = userService
+        self.careRecipientFacade = careRecipientFacade
+    }
+
+    func currentPatient() -> CareRecipient? {
+        userService.fetchCurrentPatient()
+    }
+
     func loadInitialPersonalCareFormState() {
         guard let patient = currentPatient(),
               let personalCare = patient.personalCare else {
@@ -83,5 +97,8 @@ extension EditMedicalRecordViewModel {
 
         personalCare.equipmentState = personalCareFormState.equipmentsText
         careRecipientFacade.persistenceService.save()
+        careRecipientFacade.updateMedicalRecord(careRecipient: patient)
+
+        NotificationCenter.default.post(name: .medicalRecordDidChange, object: nil)
     }
 }

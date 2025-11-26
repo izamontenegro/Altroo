@@ -41,12 +41,6 @@ class UserServiceSession: UserServiceProtocol {
         return fetchCareRecipient(id: id)
     }
     
-    func fetchUser() -> User? {
-        let request = User.fetchRequest()
-        request.fetchLimit = 1
-        return try? context.fetch(request).first
-    }
-    
     func createUser(name: String, category: String) -> User {
         let user = User(context: context)
         user.id = UUID()
@@ -54,6 +48,12 @@ class UserServiceSession: UserServiceProtocol {
         user.category = category
         try? context.save()
         return user
+    }
+    
+    func fetchUser() -> User? {
+        let request = User.fetchRequest()
+        request.fetchLimit = 1
+        return try? context.fetch(request).first
     }
     
     func setName(_ name: String) {

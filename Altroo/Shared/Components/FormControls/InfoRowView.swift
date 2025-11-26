@@ -28,6 +28,7 @@ class InfoRowView: UIView {
     }
     
     func setupUI() {
+        self.backgroundColor = .blue80
         self.backgroundColor = isLate ? .red80 : .blue80
         self.layer.cornerRadius = 8
         self.translatesAutoresizingMaskIntoConstraints = false
@@ -36,8 +37,12 @@ class InfoRowView: UIView {
                                        labelFont: .sfPro,
                                        labelType: .callOut,
                                        labelColor: isLate ? .red20 : .black40)
-        
-        let infoLabel = StandardLabel(labelText: info, labelFont: .sfPro, labelType: .callOut, labelColor: .black10, labelWeight: .medium)
+
+        let infoLabel = StandardLabel(labelText: info,
+                                      labelFont: .sfPro,
+                                      labelType: .callOut,
+                                      labelColor: .black10,
+                                      labelWeight: .medium)
         
         infoLabel.numberOfLines = 0
         
@@ -49,7 +54,7 @@ class InfoRowView: UIView {
             titleLabel.bottomAnchor.constraint(lessThanOrEqualTo: self.bottomAnchor, constant: -8),
             titleLabel.leadingAnchor.constraint(equalTo: self.leadingAnchor, constant: 16),
             
-            infoLabel.topAnchor.constraint(equalTo: self.topAnchor,  constant: 8),
+            infoLabel.topAnchor.constraint(equalTo: self.topAnchor, constant: 8),
             infoLabel.bottomAnchor.constraint(equalTo: self.bottomAnchor, constant: -8),
             infoLabel.trailingAnchor.constraint(equalTo: self.trailingAnchor, constant: -16),
             infoLabel.leadingAnchor.constraint(greaterThanOrEqualTo: titleLabel.trailingAnchor)
@@ -64,9 +69,9 @@ class InfoRowView: UIView {
                                           labelType: .callOut,
                                           labelColor: .red20,
                                           labelWeight: .medium)
-            
+
             addSubview(lateLabel)
-            
+
             NSLayoutConstraint.activate([
                 lateLabel.topAnchor.constraint(equalTo: self.topAnchor,  constant: 6),
                 lateLabel.bottomAnchor.constraint(lessThanOrEqualTo: self.bottomAnchor, constant: -6),

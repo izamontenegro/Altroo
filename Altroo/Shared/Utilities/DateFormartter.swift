@@ -92,4 +92,12 @@ final class DateFormatterHelper {
         let age = Calendar.current.dateComponents([.year], from: date, to: Date()).year ?? 0
         return "\(dateString) (\(age) anos)"
     }
+    
+    static func fullDateFormaterr(from date: Date?) -> String {
+        guard let date else { return "Data não informada" }
+        let df = DateFormatter()
+        df.dateFormat = "dd/MM/yyyy"
+        let dateString = df.string(from: date)
+        return "\(dateString)"
+    }
 }

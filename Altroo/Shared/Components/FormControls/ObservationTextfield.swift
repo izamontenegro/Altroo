@@ -17,7 +17,7 @@ final class ObservationView: UIView, UITextViewDelegate {
     private let placeholderLabel: UILabel = {
         let label = UILabel()
         label.font = UIFont.systemFont(ofSize: 16)
-        label.textColor = UIColor(resource: .black30)
+        label.textColor = UIColor(resource: .black40)
         label.numberOfLines = 0
         label.translatesAutoresizingMaskIntoConstraints = false
         return label
@@ -52,6 +52,8 @@ final class ObservationView: UIView, UITextViewDelegate {
     @MainActor required init?(coder: NSCoder) {
         super.init(coder: coder)
         placeholderLabel.text = "Digite algo..."
+        textView.font = UIFont.systemFont(ofSize: 16)
+        textView.textColor = UIColor(resource: .black10)
         setupLayout()
         textView.delegate = self
     }
