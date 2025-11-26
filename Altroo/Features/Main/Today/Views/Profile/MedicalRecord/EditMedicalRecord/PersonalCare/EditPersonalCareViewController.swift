@@ -155,26 +155,26 @@ final class EditPersonalCareViewController: UIViewController, UITextFieldDelegat
 
         let state = viewModel.personalCareFormState
 
-        if let v = state.bathState {
-            bathPopupMenuButton.setTitle(v.displayText, for: .normal)
+        if let value = state.bathState {
+            bathPopupMenuButton.setTitle(value.displayText, for: .normal)
         } else {
             bathPopupMenuButton.setTitle(BathEnum.withAssistance.displayText, for: .normal)
         }
 
-        if let v = state.hygieneState {
-            hygienePopupMenuButton.setTitle(v.displayText, for: .normal)
+        if let value = state.hygieneState {
+            hygienePopupMenuButton.setTitle(value.displayText, for: .normal)
         } else {
             hygienePopupMenuButton.setTitle(HygieneEnum.withoutAssistance.displayText, for: .normal)
         }
 
-        if let v = state.excretionState {
-            excretionPopupMenuButton.setTitle(v.displayText, for: .normal)
+        if let value = state.excretionState {
+            excretionPopupMenuButton.setTitle(value.displayText, for: .normal)
         } else {
             excretionPopupMenuButton.setTitle(ExcretionEnum.normal.displayText, for: .normal)
         }
 
-        if let v = state.feedingState {
-            feedingPopupMenuButton.setTitle(v.displayText, for: .normal)
+        if let value = state.feedingState {
+            feedingPopupMenuButton.setTitle(value.displayText, for: .normal)
         } else {
             feedingPopupMenuButton.setTitle(FeedingEnum.soft.displayText, for: .normal)
         }
