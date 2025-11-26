@@ -52,10 +52,10 @@ final class PatientsCoordinator: Coordinator {
             
         case .tutorialAdd:
             let vc = factory.makeTutorialAddSheet()
+            let nav = UINavigationController(rootViewController: vc)
             presentSheet(
-                vc,
-                from: navigation,
-                percentage: 0.9
+                nav,
+                from: navigation, percentage: 0.9
             )
             
         case .loading:

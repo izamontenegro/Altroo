@@ -99,11 +99,11 @@ class ShiftFormViewController: UIViewController {
         return picker
     }()
     
-    private lazy var startSection = FormSectionView(title: "Hora inicial", content: startTimePicker, isSubsection: true)
-    private lazy var endSection = FormSectionView(title: "Hora final", content: endTimePicker, isSubsection: true)
-    private lazy var allDaySection = FormSectionView(title: "Dia inteiro", content: allDaySwitch, isSubsection: true)
+    private lazy var startSection = FormSectionView(title: "initial_time".localized, content: startTimePicker, isSubsection: true)
+    private lazy var endSection = FormSectionView(title: "end_time".localized, content: endTimePicker, isSubsection: true)
+    private lazy var allDaySection = FormSectionView(title: "all_day".localized, content: allDaySwitch, isSubsection: true)
     
-    private lazy var timeSection = FormSectionView(title: "Em qual período deseja receber notificações de \(viewModel.name.isEmpty ? "assistido" : viewModel.name.abbreviatedName)?", content: timeStack)
+    private lazy var timeSection = FormSectionView(title: "\("notifications_question".localized) \(viewModel.name.isEmpty ? "assistido".localized : viewModel.name.abbreviatedName)?", content: timeStack)
     private lazy var timeStack: UIStackView = {
         let stack = UIStackView(arrangedSubviews: [allDaySection])
         stack.axis = .horizontal
@@ -113,7 +113,7 @@ class ShiftFormViewController: UIViewController {
     }()
     
     //Relationship
-    private lazy var relationshipSection = FormSectionView(title: "Qual a sua relação com \(viewModel.name.isEmpty ? "assistido" : viewModel.name.abbreviatedName)?", content: relationshipButton, isObligatory: true, isCustomWidth: true)
+    private lazy var relationshipSection = FormSectionView(title: "\("relationship_question".localized) \(viewModel.name.isEmpty ? "assistido".localized : viewModel.name.abbreviatedName)?", content: relationshipButton, isObligatory: true, isCustomWidth: true)
     private lazy var relationshipButton: PopupMenuButton = {
         let button = PopupMenuButton(title: viewModel.selectedUserRelationship)
         button.showsMenuAsPrimaryAction = true
@@ -135,11 +135,7 @@ class ShiftFormViewController: UIViewController {
         return button
     }()
     
-    // Days of the week
-    private lazy var selectDaysSection = FormSectionView(title: "Quais dias da semana você estará cuidando de \(viewModel.name.isEmpty ? "assistido" : viewModel.name.abbreviatedName)?", content: relationshipButton, isObligatory: true)
-//    private lazy var daysSection = "wait"
-
-    private let doneButton = StandardConfirmationButton(title: "Adicionar")
+    private let doneButton = StandardConfirmationButton(title: "add".localized)
     
     private lazy var formStack: UIStackView = {
         
@@ -164,7 +160,7 @@ class ShiftFormViewController: UIViewController {
     }()
     
     private func configureNavBar() {
-        navigationItem.title = "Adicionar Paciente"
+        navigationItem.title = "add_assisted".localized
         
         if receivedPatientViaShare && viewModel.fetchUser()?.name != "" {
             let closeButton = UIBarButtonItem(title: "cancel".localized, style: .done, target: self, action: #selector(closeTapped))

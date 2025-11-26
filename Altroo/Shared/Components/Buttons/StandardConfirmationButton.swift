@@ -30,7 +30,7 @@ final class StandardConfirmationButton: PrimaryStyleButton {
     }
     
     override var intrinsicContentSize: CGSize {
-        return CGSize(width: 230, height: 46)
+        return CGSize(width: 205, height: 46)
     }
     
     override func layoutSubviews() {
@@ -51,20 +51,13 @@ final class StandardConfirmationButton: PrimaryStyleButton {
         ])
         
         layer.cornerRadius = 22
-//        contentEdgeInsets = UIEdgeInsets(top: 8, left: 64,
-//                                         bottom: 8, right: 64)
         translatesAutoresizingMaskIntoConstraints = false
         
         setContentHuggingPriority(.required, for: .horizontal)
         setContentCompressionResistancePriority(.required, for: .horizontal)
     }
     
-    
     func updateTitle(_ title: String) {
         titleLabelCustom.updateLabelText(title)
     }
 }
-//
-//#Preview {
-//    StandardConfirmationButton(title: "Adicionar")
-//}

@@ -61,13 +61,13 @@ enum RelationshipOptionsEnum: String, CaseIterable {
     var displayText: String {
         switch self {
         case .caregiver: return "caregiver".localized
-        case .parent: return "Mãe/Pai"
-        case .child: return "Filha/Filho"
-        case .grandchild: return "Neta/Neto"
-        case .greatGrandchild: return "Bisneta/Bisneto"
-        case .family: return "Familiar"
-        case .friend: return "Amigo"
-        case .other: return "Outro"
+        case .parent: return "parent".localized
+        case .child: return "child".localized
+        case .grandchild: return "grandchild".localized
+        case .greatGrandchild: return "greatGrandchild".localized
+        case .family: return "family".localized
+        case .friend: return "friend".localized
+        case .other: return "other".localized
         }
     }
 }

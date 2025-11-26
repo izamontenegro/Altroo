@@ -9,7 +9,6 @@
 /* Begin PBXBuildFile section */
 		B61A785E2E818D7A00BC204C /* Gemfile in Resources */ = {isa = PBXBuildFile; fileRef = B61A785D2E818D7A00BC204C /* Gemfile */; };
 		B61A78732E81C5B600BC204C /* .ruby-version in Resources */ = {isa = PBXBuildFile; fileRef = B61A78722E81C5B600BC204C /* .ruby-version */; };
-		B6B8A2512ED72B0400AD4EB6 /* Lottie in Frameworks */ = {isa = PBXBuildFile; productRef = B6B8A2502ED72B0400AD4EB6 /* Lottie */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -63,7 +62,6 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				B6B8A2512ED72B0400AD4EB6 /* Lottie in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -144,7 +142,6 @@
 			);
 			name = Altroo;
 			packageProductDependencies = (
-				B6B8A2502ED72B0400AD4EB6 /* Lottie */,
 			);
 			productName = Altroo;
 			productReference = 367EC48F2E7CB1AA008B22D1 /* Altroo.app */;
@@ -203,7 +200,6 @@
 			mainGroup = 367EC4862E7CB1AA008B22D1;
 			minimizedProjectReferenceProxies = 1;
 			packageReferences = (
-				B6B8A24F2ED72B0400AD4EB6 /* XCRemoteSwiftPackageReference "lottie-ios" */,
 			);
 			preferredProjectObjectVersion = 77;
 			productRefGroup = 367EC4902E7CB1AA008B22D1 /* Products */;
@@ -269,7 +265,7 @@
 				CODE_SIGN_ENTITLEMENTS = Altroo/AltrooDebug.entitlements;
 				CODE_SIGN_STYLE = Automatic;
 				CURRENT_PROJECT_VERSION = 1;
-				DEVELOPMENT_TEAM = R45K4498NN;
+				DEVELOPMENT_TEAM = ZFH4AF7HSL;
 				GENERATE_INFOPLIST_FILE = YES;
 				INFOPLIST_FILE = Altroo/Resources/Info.plist;
 				INFOPLIST_KEY_CFBundleDisplayName = Altroo;
@@ -287,7 +283,7 @@
 					"@executable_path/Frameworks",
 				);
 				MARKETING_VERSION = 1.2.0;
-				PRODUCT_BUNDLE_IDENTIFIER = IzadoraMontenegro.Altroo;
+				PRODUCT_BUNDLE_IDENTIFIER = com.LayzaCarneiro.Altroo;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SWIFT_EMIT_LOC_STRINGS = YES;
 				SWIFT_VERSION = 5.0;
@@ -303,7 +299,7 @@
 				CODE_SIGN_ENTITLEMENTS = Altroo/Altroo.entitlements;
 				CODE_SIGN_STYLE = Automatic;
 				CURRENT_PROJECT_VERSION = 1;
-				DEVELOPMENT_TEAM = R45K4498NN;
+				DEVELOPMENT_TEAM = ZFH4AF7HSL;
 				GENERATE_INFOPLIST_FILE = YES;
 				INFOPLIST_FILE = Altroo/Resources/Info.plist;
 				INFOPLIST_KEY_CFBundleDisplayName = Altroo;
@@ -321,7 +317,7 @@
 					"@executable_path/Frameworks",
 				);
 				MARKETING_VERSION = 1.2.0;
-				PRODUCT_BUNDLE_IDENTIFIER = IzadoraMontenegro.Altroo;
+				PRODUCT_BUNDLE_IDENTIFIER = com.LayzaCarneiro.Altroo;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SWIFT_EMIT_LOC_STRINGS = YES;
 				SWIFT_VERSION = 5.0;
@@ -519,25 +515,6 @@
 			defaultConfigurationName = Release;
 		};
 /* End XCConfigurationList section */
-
-/* Begin XCRemoteSwiftPackageReference section */
-		B6B8A24F2ED72B0400AD4EB6 /* XCRemoteSwiftPackageReference "lottie-ios" */ = {
-			isa = XCRemoteSwiftPackageReference;
-			repositoryURL = "https://github.com/airbnb/lottie-ios";
-			requirement = {
-				kind = upToNextMajorVersion;
-				minimumVersion = 4.5.2;
-			};
-		};
-/* End XCRemoteSwiftPackageReference section */
-
-/* Begin XCSwiftPackageProductDependency section */
-		B6B8A2502ED72B0400AD4EB6 /* Lottie */ = {
-			isa = XCSwiftPackageProductDependency;
-			package = B6B8A24F2ED72B0400AD4EB6 /* XCRemoteSwiftPackageReference "lottie-ios" */;
-			productName = Lottie;
-		};
-/* End XCSwiftPackageProductDependency section */
 	};
 	rootObject = 367EC4872E7CB1AA008B22D1 /* Project object */;
 }

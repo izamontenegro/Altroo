@@ -8,15 +8,6 @@
 import UIKit
 
 class TutorialAddSheet: UIViewController {
-
-    private lazy var closeButton: UIBarButtonItem = {
-        return UIBarButtonItem(
-            title: "close".localized,
-            style: .plain,
-            target: self,
-            action: #selector(didTapClose)
-        )
-    }()
     private lazy var stackView: UIStackView = {
         let stack = UIStackView()
         stack.axis = .vertical
@@ -30,17 +21,8 @@ class TutorialAddSheet: UIViewController {
         super.viewDidLoad()
 
         view.backgroundColor = .pureWhite
-        setupNavigationBar()
+        configureNavBar()
         setupContent()
-    }
-    
-    private func setupNavigationBar() {
-        navigationItem.title = ""
-        navigationItem.leftBarButtonItem = closeButton
-    }
-    
-    @objc private func didTapClose() {
-        dismiss(animated: true, completion: nil)
     }
     
     private func makeIconView(text: String) -> PulseIcon {
@@ -97,42 +79,66 @@ class TutorialAddSheet: UIViewController {
     }
     
     private func makeLine(title: String, description: String, iconText: String) -> UIStackView {
-            let titleLabel = StandardLabel(
-                labelText: title,
-                labelFont: .sfPro,
-                labelType: .title3,
-                labelColor: .teal10,
-                labelWeight: .medium
-            )
-            titleLabel.numberOfLines = 0
+        let titleLabel = StandardLabel(
+            labelText: title,
+            labelFont: .sfPro,
+            labelType: .title3,
+            labelColor: .teal10,
+            labelWeight: .medium
+        )
+        titleLabel.numberOfLines = 0
 
-            let descriptionLabel = StandardLabel(
-                labelText: description,
-                labelFont: .sfPro,
-                labelType: .body,
-                labelColor: .black10,
-                labelWeight: .regular
-            )
-            descriptionLabel.numberOfLines = 0
+        let descriptionLabel = StandardLabel(
+            labelText: description,
+            labelFont: .sfPro,
+            labelType: .body,
+            labelColor: .black10,
+            labelWeight: .regular
+        )
+        descriptionLabel.numberOfLines = 0
 
-            let textStack = UIStackView(arrangedSubviews: [titleLabel, descriptionLabel])
-            textStack.axis = .vertical
-            textStack.spacing = 0
-            textStack.alignment = .leading
-            textStack.setContentHuggingPriority(.defaultLow, for: .horizontal)
+        let textStack = UIStackView(arrangedSubviews: [titleLabel, descriptionLabel])
+        textStack.axis = .vertical
+        textStack.spacing = 0
+        textStack.alignment = .leading
+        textStack.setContentHuggingPriority(.defaultLow, for: .horizontal)
 
-            let iconView = makeIconView(text: iconText)
-            iconView.setContentHuggingPriority(.required, for: .horizontal)
+        let iconView = makeIconView(text: iconText)
+        iconView.setContentHuggingPriority(.required, for: .horizontal)
 
-            let lineStack = UIStackView(arrangedSubviews: [iconView, textStack])
-            lineStack.axis = .horizontal
-            lineStack.spacing = 16
-            lineStack.alignment = .center
-            lineStack.translatesAutoresizingMaskIntoConstraints = false
-            lineStack.distribution = .fill
+        let lineStack = UIStackView(arrangedSubviews: [iconView, textStack])
+        lineStack.axis = .horizontal
+        lineStack.spacing = 16
+        lineStack.alignment = .center
+        lineStack.translatesAutoresizingMaskIntoConstraints = false
+        lineStack.distribution = .fill
 
-            return lineStack
-        }
+        return lineStack
+    }
+    
+    private func configureNavBar() {
+        let closeButton = UIBarButtonItem(
+            title: "close".localized,
+            style: .plain,
+            target: self,
+            action: #selector(didTapClose)
+        )
+        navigationItem.leftBarButtonItem = closeButton
+
+        let appearance = UINavigationBarAppearance()
+        appearance.configureWithOpaqueBackground()
+        appearance.buttonAppearance.normal.titleTextAttributes = [
+            .foregroundColor: UIColor.blue30,
+            .font: UIFont.systemFont(ofSize: 17, weight: .regular)
+        ]
+        
+        navigationItem.standardAppearance = appearance
+        navigationItem.scrollEdgeAppearance = appearance
+    }
+    
+    @objc private func didTapClose() {
+        dismiss(animated: true, completion: nil)
+    }
 
 }
 

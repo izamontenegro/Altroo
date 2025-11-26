@@ -9,15 +9,22 @@ import UIKit
 class FormValidator {
     //FIXME: NOVO TEXTO
     func isEmpty(_ text: String, error: inout String?) -> Bool {
-        if text.isEmpty {
+        let trimmed = text.trimmingCharacters(in: .whitespacesAndNewlines)
+        guard !trimmed.isEmpty else {
             error = "required_section".localized
             return false
-        } else {
-            error = nil
-            return true
         }
+
+        let containsLetter = trimmed.range(of: "[A-Za-zÀ-ÿ]", options: .regularExpression) != nil
+        guard containsLetter else {
+            error = "required_section".localized
+            return false
+        }
+
+        error = nil
+        return true
     }
-    
+
     func invalidValue(value: Int, minValue: Int, maxValue: Int, error: inout String?) -> Bool {
         if value > maxValue || value < minValue {
             error = "invalid_value".localized

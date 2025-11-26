@@ -20,7 +20,7 @@ class BedriddenButton: UIButton {
     private var checkIconView: UIImageView!
     
     private lazy var label = StandardLabel(
-        labelText: (bedriddenState == .movement ? "Acamado Com Movimento" :"Acamado Sem Movimento"),
+        labelText: (bedriddenState == .needsHelp ? "Necessita de Auxílio" : "Restrito ao Leito (acamado)"),
         labelFont: .sfPro,
         labelType: .callOut,
         labelColor: .blue30,
@@ -36,7 +36,7 @@ class BedriddenButton: UIButton {
     }
     
     convenience override init(frame: CGRect) {
-        self.init(frame: frame, bedriddenState: .movement)
+        self.init(frame: frame, bedriddenState: .needsHelp)
     }
     
     required init?(coder: NSCoder) {
@@ -58,7 +58,6 @@ class BedriddenButton: UIButton {
             self.backgroundColor = selected ? UIColor(resource: .blue40) : UIColor(resource: .white70)
             let tint = selected ? UIColor(resource: .pureWhite) : UIColor(resource: .blue30)
             self.label.textColor = tint
-            self.checkIconView.tintColor = tint
             self.circleIcon.color = selected ? UIColor(resource: .pureWhite) : .blue30
             self.circleIcon.iconColor = selected ? .blue40 : .white70
         }
@@ -97,22 +96,13 @@ class BedriddenButton: UIButton {
     
     // MARK: - UI Construction
     private func makeContent() -> UIStackView {
-        checkIconView = UIImageView(image: UIImage(systemName: bedriddenState.iconCheck))
-        checkIconView.tintColor = UIColor(resource: .blue30)
-        checkIconView.contentMode = .scaleAspectFit
-        checkIconView.translatesAutoresizingMaskIntoConstraints = false
-        
-        NSLayoutConstraint.activate([
-            checkIconView.heightAnchor.constraint(equalToConstant: 27),
-            checkIconView.widthAnchor.constraint(equalToConstant: 27)
-        ])
         
         label.textAlignment = .center
         label.numberOfLines = 0
         label.lineBreakMode = .byWordWrapping
         label.widthAnchor.constraint(equalToConstant: 140).isActive = true
         
-        let stack = UIStackView(arrangedSubviews: [circleIcon, checkIconView, label])
+        let stack = UIStackView(arrangedSubviews: [circleIcon, label])
         stack.axis = .vertical
         stack.alignment = .center
         stack.spacing = 8

@@ -349,6 +349,23 @@
         }
       }
     },
+    "all_day" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "All day"
+          }
+        },
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Dia inteiro"
+          }
+        }
+      }
+    },
     "alergy" : {
       "extractionState" : "stale",
       "localizations" : {
@@ -424,6 +441,23 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Acompanhe os assistidos cadastrados no aplicativo ou adicione um novo."
+          }
+        }
+      }
+    },
+    "assistido" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "assisted"
+          }
+        },
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "assistido"
           }
         }
       }
@@ -543,6 +577,12 @@
     "ChangesPolicyText" : {
       "extractionState" : "manual",
       "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "This Privacy Policy may be updated periodically to reflect improvements to the application or legal changes. Altroo will notify users of significant changes through the application itself. The date of the last update will always be available at the beginning of this document."
+          }
+        },
         "pt-BR" : {
           "stringUnit" : {
             "state" : "translated",
@@ -554,10 +594,33 @@
     "ChangesPolicyTitle" : {
       "extractionState" : "manual",
       "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Changes to this Policy"
+          }
+        },
         "pt-BR" : {
           "stringUnit" : {
             "state" : "translated",
             "value" : "Alterações nesta Política"
+          }
+        }
+      }
+    },
+    "child" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Child"
+          }
+        },
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Filha/Filho"
           }
         }
       }
@@ -602,6 +665,57 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Coloração"
+          }
+        }
+      }
+    },
+    "comorbidities" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Comorbidities"
+          }
+        },
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Comorbidades"
+          }
+        }
+      }
+    },
+    "comorbidities_subtitle" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Select the option that corresponds to the comorbidities of the person being cared for."
+          }
+        },
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Selecione o que corresponder às comorbidades da pessoa cuidada."
+          }
+        }
+      }
+    },
+    "conditions_question" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Does the person being assisted have any of the following conditions?"
+          }
+        },
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "O assistido tem alguma das condições abaixo?"
           }
         }
       }
@@ -677,6 +791,12 @@
     "ContactText" : {
       "extractionState" : "manual",
       "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "If you have any questions, requests, or complaints related to privacy or data processing, please contact our support team via email: 📩 altroohealthcare@gmail.com"
+          }
+        },
         "pt-BR" : {
           "stringUnit" : {
             "state" : "translated",
@@ -688,6 +808,12 @@
     "ContactTitle" : {
       "extractionState" : "manual",
       "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Contact"
+          }
+        },
         "pt-BR" : {
           "stringUnit" : {
             "state" : "translated",
@@ -709,6 +835,12 @@
     "DataRetentionText" : {
       "extractionState" : "manual",
       "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "The data is kept only for the time necessary to fulfill the purposes of the application or until the user requests its deletion. After account deletion, the information is permanently removed and cannot be recovered."
+          }
+        },
         "pt-BR" : {
           "stringUnit" : {
             "state" : "translated",
@@ -720,6 +852,12 @@
     "DataRetentionTitle" : {
       "extractionState" : "manual",
       "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Data Retention"
+          }
+        },
         "pt-BR" : {
           "stringUnit" : {
             "state" : "translated",
@@ -731,6 +869,12 @@
     "DataStorageSecurityText" : {
       "extractionState" : "manual",
       "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "The data is stored in a personal cloud, linked to the user's device account. This means that only the user has direct access to their information, ensuring individual and secure control. Altroo adopts technical security measures to protect information against unauthorized access, loss, misuse, or improper disclosure. Even with these measures, it is important to emphasize that no system is completely risk-free, and we recommend that users keep their devices protected with strong passwords."
+          }
+        },
         "pt-BR" : {
           "stringUnit" : {
             "state" : "translated",
@@ -742,6 +886,12 @@
     "DataStorageSecurityTitle" : {
       "extractionState" : "manual",
       "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Data Storage and Security"
+          }
+        },
         "pt-BR" : {
           "stringUnit" : {
             "state" : "translated",
@@ -839,6 +989,12 @@
     "devs" : {
       "extractionState" : "manual",
       "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Developers"
+          }
+        },
         "pt-BR" : {
           "stringUnit" : {
             "state" : "translated",
@@ -850,6 +1006,12 @@
     "devs_nav_description" : {
       "extractionState" : "manual",
       "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Team responsible for the creation and development of Altroo"
+          }
+        },
         "pt-BR" : {
           "stringUnit" : {
             "state" : "translated",
@@ -880,7 +1042,7 @@
       "localizations" : {
         "en" : {
           "stringUnit" : {
-            "state" : "needs_review",
+            "state" : "translated",
             "value" : "Edit Medical Record"
           }
         },
@@ -988,6 +1150,23 @@
         }
       }
     },
+    "end_time" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "End time"
+          }
+        },
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Hora final"
+          }
+        }
+      }
+    },
     "exclude" : {
       "extractionState" : "manual",
       "localizations" : {
@@ -1011,6 +1190,23 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Exported:"
+          }
+        }
+      }
+    },
+    "family" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Family"
+          }
+        },
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Familiar"
           }
         }
       }
@@ -1066,6 +1262,23 @@
         }
       }
     },
+    "friend" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Friend"
+          }
+        },
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Amigo"
+          }
+        }
+      }
+    },
     "fever" : {
       "extractionState" : "stale",
       "localizations" : {
@@ -1107,6 +1320,46 @@
             "state" : "translated",
             "value" : "Generating a custom screen"
           }
+        },
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Gerando tela personalizada"
+          }
+        }
+      }
+    },
+    "grandchild" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Grandchild"
+          }
+        },
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Neta/Neto"
+          }
+        }
+      }
+    },
+    "greatGrandchild" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "GreatGrandchild"
+          }
+        },
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Bisneta/Bisneto"
+          }
         }
       }
     },
@@ -1130,6 +1383,12 @@
     "headertext" : {
       "extractionState" : "manual",
       "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Your privacy is important to us. This Privacy Policy describes how Altroo collects, uses, stores, and protects the personal information of caregivers, those being cared for, and family members who use the app. By using Altroo, you agree to the practices described below."
+          }
+        },
         "pt-BR" : {
           "stringUnit" : {
             "state" : "translated",
@@ -1192,6 +1451,12 @@
     "history_empty_2" : {
       "extractionState" : "manual",
       "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Add a record to the 'Today' screen and track it here"
+          }
+        },
         "pt-BR" : {
           "stringUnit" : {
             "state" : "translated",
@@ -1220,6 +1485,12 @@
     "HowWeUsetheInformationText" : {
       "extractionState" : "manual",
       "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "The information is used to: • Enable the app to function and its main features; • Facilitate the sharing of care information between caregivers and family members; • Personalize the user experience and improve app performance; • Send communications related to the use of Altroo, such as reminders or update notifications. Altroo does not use your data for advertising or commercial purposes."
+          }
+        },
         "pt-BR" : {
           "stringUnit" : {
             "state" : "translated",
@@ -1231,6 +1502,12 @@
     "HowWeUsetheInformationTitle" : {
       "extractionState" : "manual",
       "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "How We Use the Information"
+          }
+        },
         "pt-BR" : {
           "stringUnit" : {
             "state" : "translated",
@@ -1277,6 +1554,12 @@
     "InformationSharingText" : {
       "extractionState" : "manual",
       "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Altroo does not share personal data with third parties without the user's consent. Information sharing occurs only between authorized caregivers and family members, within the application environment itself, for the purpose of coordinating the care of the person being assisted. No information is sold, exchanged, or used for purposes outside the app's intended use."
+          }
+        },
         "pt-BR" : {
           "stringUnit" : {
             "state" : "translated",
@@ -1288,6 +1571,12 @@
     "InformationSharingTitle" : {
       "extractionState" : "manual",
       "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Information Sharing"
+          }
+        },
         "pt-BR" : {
           "stringUnit" : {
             "state" : "translated",
@@ -1299,6 +1588,12 @@
     "InformationWeCollectText" : {
       "extractionState" : "manual",
       "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Altroo only collects the information necessary for the app to function and to provide a better care experience. This information may include: • Registration data, such as name, email, and phone numbers; • Information about the person being cared for, such as name, age, and data relevant to care; • Activity logs and notes entered manually by the caregiver; • Information about app usage, such as frequency of access and features used. Altroo does not automatically collect sensitive health data, only data that the user voluntarily chooses to register."
+          }
+        },
         "pt-BR" : {
           "stringUnit" : {
             "state" : "translated",
@@ -1310,10 +1605,33 @@
     "InformationWeCollectTitle" : {
       "extractionState" : "manual",
       "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Information We Collect"
+          }
+        },
         "pt-BR" : {
           "stringUnit" : {
             "state" : "translated",
             "value" : "Informações que Coletamos"
+          }
+        }
+      }
+    },
+    "initial_time" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Initial time"
+          }
+        },
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Hora inicial"
           }
         }
       }
@@ -1423,6 +1741,12 @@
     "legal" : {
       "extractionState" : "manual",
       "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Legal Notice"
+          }
+        },
         "pt-BR" : {
           "stringUnit" : {
             "state" : "translated",
@@ -1444,6 +1768,23 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Ficha Médica"
+          }
+        }
+      }
+    },
+    "mobility_question" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Does the person being assisted have difficulty getting around?"
+          }
+        },
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "O assistido possui dificuldades para se locomover?"
           }
         }
       }
@@ -1485,6 +1826,12 @@
     "my_profile" : {
       "extractionState" : "manual",
       "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "My Profile"
+          }
+        },
         "pt-BR" : {
           "stringUnit" : {
             "state" : "translated",
@@ -1496,6 +1843,12 @@
     "my_profile_subtitle" : {
       "extractionState" : "manual",
       "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Manage your personal information"
+          }
+        },
         "pt-BR" : {
           "stringUnit" : {
             "state" : "translated",
@@ -1667,9 +2020,32 @@
         }
       }
     },
+    "notifications_question" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "During what period would you like to receive notifications about "
+          }
+        },
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Em qual período deseja receber notificações de "
+          }
+        }
+      }
+    },
     "O relatório gerado pelo Altroo é totalmente baseado nos registros feitos pelo usuário no aplicativo. Caso alguma informação não apareça, significa que ela não foi registrada." : {
       "localizations" : {
         "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "The report generated by Altroo is entirely based on the records made by the user in the application. If any information does not appear, it means that it was not recorded."
+          }
+        },
+        "pt-BR" : {
           "stringUnit" : {
             "state" : "translated",
             "value" : "The report generated by Altroo is entirely based on the records made by the user in the application. If any information does not appear, it means that it was not recorded."
@@ -1814,6 +2190,23 @@
         }
       }
     },
+    "other" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Other"
+          }
+        },
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Outro"
+          }
+        }
+      }
+    },
     "overnight" : {
       "extractionState" : "manual",
       "localizations" : {
@@ -1844,6 +2237,23 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Criador"
+          }
+        }
+      }
+    },
+    "parent" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Parent"
+          }
+        },
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Mãe/Pai"
           }
         }
       }
@@ -1905,6 +2315,12 @@
         "en" : {
           "stringUnit" : {
             "state" : "translated",
+            "value" : "Period: "
+          }
+        },
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
             "value" : "Period:"
           }
         }
@@ -1930,6 +2346,12 @@
     "policy_date" : {
       "extractionState" : "manual",
       "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Updated on: October 29, 2025"
+          }
+        },
         "pt-BR" : {
           "stringUnit" : {
             "state" : "translated",
@@ -1941,6 +2363,12 @@
     "policy_privacy" : {
       "extractionState" : "manual",
       "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Privacy and Security Policy"
+          }
+        },
         "pt-BR" : {
           "stringUnit" : {
             "state" : "translated",
@@ -1952,6 +2380,12 @@
     "policy_text" : {
       "extractionState" : "manual",
       "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Altroo is an application developed to assist caregivers in organizing and monitoring care activities for those they care for. The application aims to facilitate communication and the recording of care routines, contributing to more efficient and collaborative monitoring. Altroo is not a medical device or service, and its use should not be interpreted as medical guidance, diagnosis, or treatment offered by its developers or owners. No information, alert, or data generated by the application should be considered clinically accurate or a substitute for professional health advice. If you have any questions about a medical condition, consult a qualified healthcare professional. If you believe that you or the person under your care may be experiencing a medical situation, seek medical attention immediately. You should never delay, ignore, or interrupt medical treatment based on information obtained from using Altroo."
+          }
+        },
         "pt-BR" : {
           "stringUnit" : {
             "state" : "translated",
@@ -1963,6 +2397,12 @@
     "PolicyAcceptanceText" : {
       "extractionState" : "manual",
       "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "By using Altroo, you declare that you are aware of and agree to the terms of this Privacy Policy. If you do not agree with any of the terms, we recommend that you stop using the application and request the deletion of your account."
+          }
+        },
         "pt-BR" : {
           "stringUnit" : {
             "state" : "translated",
@@ -1974,6 +2414,12 @@
     "PolicyAcceptanceTitle" : {
       "extractionState" : "manual",
       "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Acceptance of the Policy"
+          }
+        },
         "pt-BR" : {
           "stringUnit" : {
             "state" : "translated",
@@ -1989,12 +2435,24 @@
             "state" : "translated",
             "value" : "Privacy and Security Policy"
           }
+        },
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Privacy and Security Policy"
+          }
         }
       }
     },
     "privacy" : {
       "extractionState" : "manual",
       "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Privacy and Protection"
+          }
+        },
         "pt-BR" : {
           "stringUnit" : {
             "state" : "translated",
@@ -2023,6 +2481,12 @@
     "rating" : {
       "extractionState" : "manual",
       "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Leave a review"
+          }
+        },
         "pt-BR" : {
           "stringUnit" : {
             "state" : "translated",
@@ -2157,6 +2621,12 @@
             "state" : "translated",
             "value" : "Records"
           }
+        },
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Registros"
+          }
         }
       }
     },
@@ -2173,6 +2643,23 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Relação"
+          }
+        }
+      }
+    },
+    "relationship_question" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "What is your relationship with "
+          }
+        },
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Qual a sua relação com "
           }
         }
       }
@@ -2293,6 +2780,12 @@
     "settings_nav_description" : {
       "extractionState" : "manual",
       "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Personalize your experience, keep your data protected, and meet the team that brings the app to life."
+          }
+        },
         "pt-BR" : {
           "stringUnit" : {
             "state" : "translated",
@@ -2470,13 +2963,13 @@
         "en" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Click on Invite Caregiver"
+            "value" : "Click on “Invite Caregiver”"
           }
         },
         "pt-BR" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Clique em Convidar Cuidador"
+            "value" : "Clique em “Convidar Cuidador”"
           }
         }
       }
@@ -2803,8 +3296,8 @@
       "localizations" : {
         "en" : {
           "stringUnit" : {
-            "state" : "needs_review",
-            "value" : "No tasks registered for the shift of"
+            "state" : "translated",
+            "value" : "No tasks registered for the shift of "
           }
         },
         "pt-BR" : {
@@ -2973,6 +3466,12 @@
     "UserRightsText" : {
       "extractionState" : "manual",
       "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "The user has the right to: • Access personal information stored in the application; • Correct, update, or delete their data; • Revoke consent for the use of their information at any time; • Request the complete deletion of their account and linked data. • To exercise these rights, contact Altroo through the support channel available in the application or on the official website."
+          }
+        },
         "pt-BR" : {
           "stringUnit" : {
             "state" : "translated",
@@ -2984,6 +3483,12 @@
     "UserRightsTitle" : {
       "extractionState" : "manual",
       "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "User Rights"
+          }
+        },
         "pt-BR" : {
           "stringUnit" : {
             "state" : "translated",

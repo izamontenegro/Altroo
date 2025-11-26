@@ -150,11 +150,3 @@ private struct ComorbidityCardPreview: UIViewRepresentable {
     
     func updateUIView(_ uiView: ComorbidityButton, context: Context) { }
 }
-
-//#Preview {
-//    let card = ComorbidityButton(comorbidity: .heartFailure)
-//    
-//    return ComorbidityCardPreview(card: card)
-//        .frame(width: 115, height: 190)
-//        .padding()
-//}
