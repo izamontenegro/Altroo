@@ -22,7 +22,7 @@ struct DailyReportAppView: View {
                 )
                 Spacer()
                 ReportTimeSection(
-                    text: "Hora Inicial",
+                    text: "initial_time".localized,
                     date: $viewModel.startTime,
                     type: .time
                 )
@@ -32,7 +32,7 @@ struct DailyReportAppView: View {
                     .frame(width: 14)
                     .padding(.bottom, 10)
                 ReportTimeSection(
-                    text: "Hora Final",
+                    text: "end_time".localized,
                     date: $viewModel.endTime,
                     type: .time
                 )
