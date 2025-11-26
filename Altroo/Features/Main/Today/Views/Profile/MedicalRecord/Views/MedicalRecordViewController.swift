@@ -103,17 +103,18 @@ final class MedicalRecordViewController: GradientNavBarViewController {
         contentStackView.spacing = 16
         
         let personalSection = PersonalDataSectionView(
-            name: viewModel.getName(),
-            birthDate: viewModel.getBirthDate(),
-            weight: viewModel.getWeight(),
-            height: viewModel.getHeight(),
-            address: viewModel.getAddress(),
-            emergencyContact: viewModel.getContacts(),
-            copyTarget: self,
-            copyAction: #selector(didTapCopyPhoneButton(_:)),
-            editTarget: self,
-            editAction: #selector(didTapEditPersonalData)
-        )
+                name: viewModel.getName(),
+                birthDate: viewModel.getBirthDate(),
+                weight: viewModel.getWeight(),
+                height: viewModel.getHeight(),
+                address: viewModel.getAddress(),
+                emergencyContact: viewModel.getContactDisplayItem(),
+                copyTarget: self,
+                copyAction: #selector(didTapCopyPhoneButton(_:)),
+                editTarget: self,
+                editAction: #selector(didTapEditPersonalData)
+            )
+        
         contentStackView.addArrangedSubview(personalSection)
         
         let healthProblemsSection = HealthProblemsSectionView(

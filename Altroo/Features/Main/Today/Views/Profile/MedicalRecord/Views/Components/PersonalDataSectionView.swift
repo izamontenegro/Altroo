@@ -14,7 +14,7 @@ final class PersonalDataSectionView: UIView {
         weight: String,
         height: String,
         address: String,
-        emergencyContact: String,
+        emergencyContact: ContactDisplayItem?,
         copyTarget: AnyObject?,
         copyAction: Selector,
         editTarget: AnyObject?,
@@ -51,7 +51,7 @@ final class PersonalDataSectionView: UIView {
         weight: String,
         height: String,
         address: String,
-        emergencyContact: String,
+        emergencyContact: ContactDisplayItem?,
         copyTarget: AnyObject?,
         copyAction: Selector,
         editTarget: AnyObject?,
@@ -121,20 +121,45 @@ final class PersonalDataSectionView: UIView {
             copyAction: nil
         )
 
-        let contactText = emergencyContact.trimmingCharacters(in: .whitespacesAndNewlines)
-        let contactRow: InformationRow = ("Contato de Emergência", contactText.isEmpty ? "Sem registro" : contactText)
-        let contactSubsection = MedicalRecordSubsectionView(
-            row: contactRow,
-            surgeryDisplayItems: [],
-            contactDisplayItems: [],
-            copyTarget: copyTarget,
-            copyAction: copyAction
-        )
-
         bodyStackView.addArrangedSubview(nameSubsection)
         bodyStackView.addArrangedSubview(topHStack)
         bodyStackView.addArrangedSubview(addressSubsection)
-        bodyStackView.addArrangedSubview(contactSubsection)
+
+        if let contact = emergencyContact {
+            let contactTitleLabel = StandardLabel(
+                labelText: "Contato de Emergência",
+                labelFont: .sfPro,
+                labelType: .body,
+                labelColor: .blue20,
+                labelWeight: .regular
+            )
+
+            let contactCard = ContactCardView(
+                name: contact.name,
+                relation: contact.relationship,
+                phone: contact.phone,
+                copyTarget: copyTarget,
+                copyAction: copyAction
+            )
+            contactCard.translatesAutoresizingMaskIntoConstraints = false
+
+            let container = UIStackView(arrangedSubviews: [contactTitleLabel, contactCard])
+            container.axis = .vertical
+            container.spacing = 4
+            container.translatesAutoresizingMaskIntoConstraints = false
+
+            bodyStackView.addArrangedSubview(container)
+        } else {
+            let contactRow: InformationRow = ("Contato de Emergência", "Sem registro")
+            let contactSubsection = MedicalRecordSubsectionView(
+                row: contactRow,
+                surgeryDisplayItems: [],
+                contactDisplayItems: [],
+                copyTarget: nil,
+                copyAction: nil
+            )
+            bodyStackView.addArrangedSubview(contactSubsection)
+        }
 
         addSubview(headerView)
         addSubview(bodyStackView)

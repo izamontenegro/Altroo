@@ -77,6 +77,23 @@ final class MedicalRecordViewModel {
         let contacts = MedicalRecordFormatter.contactsList(from: personalData?.contacts as? Set<Contact>)
         return contacts
     }
+    
+    func getContactDisplayItem() -> ContactDisplayItem? {
+        guard
+            let personalData = currentPatient()?.personalData,
+            let contactsSet = personalData.contacts as? Set<Contact>,
+            let contact = contactsSet.first
+        else {
+            return nil
+        }
+        
+        return ContactDisplayItem(
+            name: contact.name ?? "Sem nome",
+            relationship: contact.relationship,
+            phone: contact.phone ?? ""
+        )
+    }
+
 
     // MARK: - HEALTH PROBLEMS
     
