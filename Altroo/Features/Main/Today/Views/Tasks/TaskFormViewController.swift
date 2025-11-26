@@ -9,6 +9,7 @@ import UIKit
 import Combine
 
 class TaskFormViewController: UIViewController {
+    
     private var keyboardHandler: KeyboardHandler?
 
     let titleLabel = StandardHeaderView(title: "", subtitle: "")
@@ -112,7 +113,7 @@ class TaskFormViewController: UIViewController {
         scrollView.addSubview(contentStack)
         
         nameTexfield.delegate = self
-        noteTexfield.textView.delegate = self
+        noteTexfield.delegate = self
         
         NSLayoutConstraint.activate([
             scrollView.topAnchor.constraint(equalTo: view.safeAreaLayoutGuide.topAnchor),
@@ -199,5 +200,13 @@ extension TaskFormViewController: UITextViewDelegate {
             return false
         }
         return true
+    }
+}
+
+extension TaskFormViewController: ObservationViewDelegate {
+    func observationView(_ view: ObservationView, didChangeText text: String) {
+        if let addTaskViewController = self as? AddTaskViewController {
+            addTaskViewController.viewModel.note = text
+        }
     }
 }
