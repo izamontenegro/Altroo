@@ -29,8 +29,6 @@ final class EditPhysicalStateViewModel {
         userService.fetchCurrentPatient()
     }
 
-    // MARK: - Load inicial
-
     func loadInitialPhysicalState() {
         guard let patient = currentPatient(),
               let physicalState = patient.physicalState else {
@@ -47,7 +45,6 @@ final class EditPhysicalStateViewModel {
         )
     }
 
-    // MARK: - Updates
 
     func updateVisionState(_ value: VisionEnum?) {
         physicalStateFormState.visionState = value
@@ -65,7 +62,6 @@ final class EditPhysicalStateViewModel {
         physicalStateFormState.mobilityState = value
     }
 
-    // MARK: - Persistência
 
     func persistPhysicalState() {
         guard let patient = currentPatient(),
