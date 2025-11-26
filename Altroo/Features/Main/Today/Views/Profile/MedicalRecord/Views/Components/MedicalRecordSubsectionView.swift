@@ -120,7 +120,6 @@ final class MedicalRecordSubsectionView: UIView {
             }
         }
         
-        // Empilha título + conteúdo
         let wrapperStack = UIStackView(arrangedSubviews: [headerStack, contentStack])
         wrapperStack.axis = .vertical
         wrapperStack.spacing = 4

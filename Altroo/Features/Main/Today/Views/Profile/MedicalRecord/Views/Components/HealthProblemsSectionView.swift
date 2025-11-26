@@ -58,7 +58,6 @@ final class HealthProblemsSectionView: UIView {
         bodyStackView.spacing = 12
         bodyStackView.translatesAutoresizingMaskIntoConstraints = false
 
-        // Doenças
         let diseasesRow: InformationRow = ("Doenças", diseasesText)
         let diseasesSubsection = MedicalRecordSubsectionView(
             row: diseasesRow,
@@ -68,7 +67,6 @@ final class HealthProblemsSectionView: UIView {
             copyAction: nil
         )
 
-        // Cirurgias
         let surgeriesRow: InformationRow = surgeryItems.isEmpty
             ? ("Cirurgias", "Sem registro")
             : ("Cirurgias", "")
@@ -80,7 +78,6 @@ final class HealthProblemsSectionView: UIView {
             copyAction: nil
         )
 
-        // Alergias
         let allergiesRow: InformationRow = ("Alergias", allergiesText)
         let allergiesSubsection = MedicalRecordSubsectionView(
             row: allergiesRow,
@@ -90,7 +87,6 @@ final class HealthProblemsSectionView: UIView {
             copyAction: nil
         )
 
-        // Observação
         let observationRow: InformationRow = ("Observação", observationText)
         let observationSubsection = MedicalRecordSubsectionView(
             row: observationRow,
