@@ -11,6 +11,8 @@ final class EditHealthProblemsViewController: UIViewController {
     let viewModel: EditHealthProblemsViewModel
     
     weak var delegate: EditMedicalRecordViewControllerDelegate?
+    private var keyboardHandler: KeyboardHandler?
+
 
     private let scrollView = UIScrollView()
     private let contentView = UIView()
@@ -134,6 +136,9 @@ final class EditHealthProblemsViewController: UIViewController {
         bindUI()
         fillInformations()
         reloadSurgeriesList()
+        
+        keyboardHandler = KeyboardHandler(viewController: self, scrollView: scrollView)
+
     }
     
     private func configureNavBar() {

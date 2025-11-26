@@ -11,6 +11,8 @@ final class EditPersonalDataViewController: UIViewController, UITextFieldDelegat
     let viewModel: EditPersonalDataViewModel
     weak var delegate: EditMedicalRecordViewControllerDelegate?
     
+    private var keyboardHandler: KeyboardHandler?
+    
     private lazy var numberFormatter: NumberFormatter = {
         let formatter = NumberFormatter()
         formatter.locale = .current
@@ -23,6 +25,7 @@ final class EditPersonalDataViewController: UIViewController, UITextFieldDelegat
     
     private let scrollView = UIScrollView.make(direction: .vertical)
     private let contentStackView = UIStackView()
+    
     
     private let genderSegmentedControl = StandardSegmentedControl(items: ["F", "M"])
     
@@ -215,6 +218,9 @@ final class EditPersonalDataViewController: UIViewController, UITextFieldDelegat
         bindInputs()
         configureNavBar()
         loadExistingInformation()
+        
+        keyboardHandler = KeyboardHandler(viewController: self, scrollView: scrollView)
+
     }
     
     // MARK: - UI
