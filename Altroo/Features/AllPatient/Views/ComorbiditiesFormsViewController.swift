@@ -24,19 +24,19 @@ class ComorbiditiesFormsViewController: UIViewController {
     private let contentStack = UIStackView()
 
     private let titleSection = FormTitleSection(
-        title: "Comorbidades",
-        description: "Selecione o que corresponder às comorbidades da pessoa cuidada.",
+        title: "comorbidities".localized,
+        description: "comorbidities_subtitle".localized,
         totalSteps: 3,
         currentStep: 2
     )
     
     private let label1 = StandardLabel(
-        labelText: "O assistido tem alguma das condições abaixo?",
+        labelText: "conditions_question".localized,
         labelFont: .sfPro, labelType: .title3, labelColor: .black10, labelWeight: .semibold
     )
     
     private let label2 = StandardLabel(
-        labelText: "O assistido possui dificuldades para se locomover?",
+        labelText: "mobility_question".localized,
         labelFont: .sfPro, labelType: .title3, labelColor: .black10, labelWeight: .semibold
     )
 

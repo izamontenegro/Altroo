@@ -31,7 +31,7 @@ final class AddPatientViewModel: ObservableObject {
     @Published var userPhone: String = ""
     @Published var userPhoneError: String?
     @Published var selectedUserRelationship: String = "caregiver".localized
-    @Published var selectedContactRelationship: String = "Filha/Filho"
+    @Published var selectedContactRelationship: String = "child".localized
 
     @Published var isAllDay = true
     
@@ -161,13 +161,18 @@ extension AddPatientViewModel {
         _ = validator.isEmpty(name, error: &newErrors["name"])
         
         if !weight.isZero {
-            _ = validator.invalidValue(value: Int(weight), minValue: 0, maxValue: 999, error: &newErrors["weight"])
+            _ = validator.invalidValue(value: Int(weight), minValue: 1, maxValue: 999, error: &newErrors["weight"])
         }
         
         if !height.isZero {
             _ = validator.invalidValue(value: Int(height), minValue: 9, maxValue: 999, error: &newErrors["height"])
         }
         
+        if let phone = contact.phone, !phone.isEmpty {
+            if !validator.invalidPhoneFormat(value: phone, minValue: 10, maxValue: 11, error: &newErrors["phone"]) {
+            }
+        }
+
         _ = validator.checkAge(13, date: dateOfBirth, error: &newErrors["age"])
 
         fieldErrors = newErrors

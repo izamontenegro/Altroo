@@ -229,6 +229,7 @@ class PatientFormsViewController: UIViewController {
               self?.weightSection.setError(errors["weight"])
               self?.heightSection.setError(errors["height"])
               self?.birthDateSection.setError(errors["age"])
+              self?.contactPhoneSection.setError(errors["phone"])
           }
           .store(in: &cancellables)
       }
@@ -293,7 +294,7 @@ class PatientFormsViewController: UIViewController {
     }
     
     private func configureNavBar() {
-        navigationItem.title = "Adicionar Assistido"
+        navigationItem.title = "add_assisted".localized
         
         let closeButton = UIBarButtonItem(
             title: "close".localized,
