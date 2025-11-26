@@ -47,9 +47,9 @@ class OnboardingContainerViewController: UIViewController {
                                                    options: nil)
         super.init(nibName: nil, bundle: nil)
         
-        let page1 = OnboardingPageViewController(imageName: "onboarding1", title: "onboarding1_title".localized, description: "onboarding1_description".localized)
-        let page2 = OnboardingPageViewController(imageName: "onboarding2", title: "onboarding2_title".localized, description: "onboarding2_description".localized)
-        let page3 = OnboardingPageViewController(imageName: "onboarding3", title: "onboarding3_title".localized, description: "onboarding3_description".localized, imageHeightMultiplier: 0.6)
+        let page1 = OnboardingPageViewController(imageName: "motion1", title: "onboarding1_title".localized, description: "onboarding1_description".localized)
+        let page2 = OnboardingPageViewController(imageName: "motion2", title: "onboarding2_title".localized, description: "onboarding2_description".localized)
+        let page3 = OnboardingPageViewController(imageName: "motion3", title: "onboarding3_title".localized, description: "onboarding3_description".localized, imageHeightMultiplier: 0.6)
 
         pages = [page1, page2, page3]
         pageController.dataSource = self
@@ -108,6 +108,8 @@ class OnboardingContainerViewController: UIViewController {
             navStack.leadingAnchor.constraint(equalTo: view.leadingAnchor, constant: 20),
             navStack.trailingAnchor.constraint(equalTo: view.trailingAnchor, constant: -20),
             pageControl.centerXAnchor.constraint(equalTo: navStack.centerXAnchor),
+            pageControl.widthAnchor.constraint(equalTo: view.widthAnchor),
+
             
             bottomStack.bottomAnchor.constraint(equalTo: view.safeAreaLayoutGuide.bottomAnchor, constant: -Layout.smallButtonBottomPadding),
             bottomStack.centerXAnchor.constraint(equalTo: view.centerXAnchor),
