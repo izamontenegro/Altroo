@@ -86,18 +86,14 @@ final class CareRecipientProfileViewModel {
         checkString(personalData?.name); checkString(personalData?.address); checkString(personalData?.gender)
         checkDate(personalData?.dateOfBirth); checkDouble(personalData?.height); checkDouble(personalData?.weight)
 
-        let healthProblems = recipient.healthProblems
-        checkString(healthProblems?.observation)
-        checkString(healthProblems?.allergies)
-
         let mentalState = recipient.mentalState
-        checkString(mentalState?.cognitionState); checkString(mentalState?.emotionalState); checkString(mentalState?.memoryState); checkString(mentalState?.orientationState)
+        checkToManySet(Set(mentalState?.emotionalState ?? [])); checkString(mentalState?.memoryState); checkToManySet(Set(mentalState?.orientationState ?? []))
 
         let physicalState = recipient.physicalState
-        checkString(physicalState?.mobilityState); checkString(physicalState?.hearingState); checkString(physicalState?.visionState); checkString(physicalState?.oralHealthState)
+        checkString(physicalState?.mobilityState); checkString(physicalState?.hearingState); checkString(physicalState?.visionState); checkToManySet(Set(physicalState?.oralHealthState ?? []))
 
         let personalCare = recipient.personalCare
-        checkString(personalCare?.bathState); checkString(personalCare?.hygieneState); checkString(personalCare?.excretionState); checkString(personalCare?.feedingState); checkString(personalCare?.equipmentState)
+        checkString(personalCare?.bathState); checkString(personalCare?.hygieneState); checkString(personalCare?.excretionState); checkString(personalCare?.feedingState);
 
         guard total > 0 else { return 0.0 }
         return CGFloat(Double(filled) / Double(total))

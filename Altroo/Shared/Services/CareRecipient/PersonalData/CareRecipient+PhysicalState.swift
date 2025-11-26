@@ -8,7 +8,7 @@
 protocol PhysicalStateProtocol {
     func addVisionState(visionState: VisionEnum, physicalState: PhysicalState)
     func addHearingState(hearingState: HearingEnum, physicalState: PhysicalState)
-    func addOralHealthState(oralHealthState: OralHealthEnum, physicalState: PhysicalState)
+    func addOralHealthState(oralHealthState: [OralHealthEnum], physicalState: PhysicalState)
     func addMobilityState(mobilityState: MobilityEnum, physicalState: PhysicalState)
 }
 
@@ -26,9 +26,14 @@ extension CareRecipientFacade: PhysicalStateProtocol {
         persistenceService.save()
     }
     
-    func addOralHealthState(oralHealthState: OralHealthEnum, physicalState: PhysicalState) {
-        physicalState.oralHealthState = oralHealthState.rawValue
+    func addOralHealthState(oralHealthState: [OralHealthEnum], physicalState: PhysicalState) {
+        if oralHealthState.isEmpty {
+            physicalState.oralHealthState = []
+        } else {
+            physicalState.oralHealthState = oralHealthState.map { $0.rawValue }
+        }
         
+
         persistenceService.save()
     }
     

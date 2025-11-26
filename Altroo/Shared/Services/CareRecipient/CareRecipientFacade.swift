@@ -55,6 +55,7 @@ extension CareRecipientFacade {
         careRecipient.waterTarget = 2000.0
         careRecipient.waterMeasure = 250.0
         careRecipient.id = UUID()
+        careRecipient.recordUpdatedAt = Date()
         
         configure(personalData, personalCare, healthProblems, mentalState, physicalState, routineActivities, basicNeeds, careRecipientEvent)
         
@@ -70,6 +71,11 @@ extension CareRecipientFacade {
         } else {
             print("Caregiver already added or invalid ID")
         }
+    }
+    
+    func updateMedicalRecord(careRecipient: CareRecipient) {
+        careRecipient.recordUpdatedAt = Date()
+        persistenceService.save()
     }
     
     func fetchCareRecipient(by id: UUID) -> CareRecipient? {

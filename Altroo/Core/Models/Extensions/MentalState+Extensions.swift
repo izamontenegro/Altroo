@@ -9,13 +9,18 @@ import CoreData
 
 extension MentalState {
 
-    var emotional: EmotionalStateEnum? {
+    var emotional: [EmotionalStateEnum]? {
+        
         get {
-            guard let rawValue = self.emotionalState else { return nil }
-            return EmotionalStateEnum(rawValue: rawValue)
+            guard let rawValues = self.emotionalState else { return nil }
+            return rawValues.compactMap { EmotionalStateEnum(rawValue: $0) }
         }
         set {
-            self.emotionalState = newValue?.rawValue
+            if let values = newValue {
+                self.emotionalState = values.map { $0.rawValue }
+            } else {
+                self.emotionalState = nil
+            }
         }
     }
 
@@ -29,13 +34,13 @@ extension MentalState {
         }
     }
 
-    var orientation: OrientationEnum? {
+    var orientation: [OrientationEnum] {
         get {
-            guard let rawValue = self.orientationState else { return nil }
-            return OrientationEnum(rawValue: rawValue)
+            guard let rawValues = self.orientationState else { return [] }
+            return rawValues.compactMap { OrientationEnum(rawValue: $0) }
         }
         set {
-            self.orientationState = newValue?.rawValue
+            self.orientationState = newValue.map { $0.rawValue }
         }
     }
 

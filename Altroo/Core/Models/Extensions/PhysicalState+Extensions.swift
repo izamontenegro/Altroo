@@ -29,13 +29,13 @@ extension PhysicalState {
         }
     }
 
-    var oralHealth: OralHealthEnum? {
+    var oralHealth: [OralHealthEnum] {
         get {
-            guard let rawValue = self.oralHealthState else { return nil }
-            return OralHealthEnum(rawValue: rawValue)
+            guard let rawValues = self.oralHealthState else { return [] }
+            return rawValues.compactMap { OralHealthEnum(rawValue: $0) }
         }
         set {
-            self.oralHealthState = newValue?.rawValue
+            self.oralHealthState = newValue.map { $0.rawValue }
         }
     }
 

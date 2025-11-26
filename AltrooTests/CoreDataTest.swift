@@ -22,6 +22,7 @@ class CareRecipientTests: XCTestCase {
     
     override func tearDown() {
         coreDataStack = nil
+        context = nil
         super.tearDown()
     }
     
@@ -69,7 +70,6 @@ class CareRecipientTests: XCTestCase {
     }
     
     func testFullCareRecipientLifecycle() throws {
-                
         let careRecipient = CareRecipient(context: context)
         let personalData = PersonalData(context: context)
         let physicalState = PhysicalState(context: context)
@@ -82,8 +82,9 @@ class CareRecipientTests: XCTestCase {
         personalData.name = "Steve Jobs"
         personalData.dateOfBirth = dateOfBirth
         
-        physicalState.oralHealth = .allTeethPresent
-        physicalState.mobility = .noAssistance
+        physicalState.visionState = VisionEnum.lowVision.rawValue
+        physicalState.mobilityState = MobilityEnum.noAssistance.rawValue
+        physicalState.oralHealthState = [OralHealthEnum.allTeethPresent.rawValue]
         
         healthProblems.allergies = "milk, gluten"
         careRecipient.personalData = personalData
@@ -104,10 +105,11 @@ class CareRecipientTests: XCTestCase {
         
         XCTAssertEqual(savedRecipient.personalData?.name, "Steve Jobs")
         XCTAssertEqual(savedRecipient.personalData?.age, 75)
-        XCTAssertEqual(savedRecipient.physicalState?.oralHealth, .allTeethPresent)
+        XCTAssertEqual(savedRecipient.physicalState?.oralHealthState?.first, OralHealthEnum.allTeethPresent.rawValue)
+        XCTAssertEqual(savedRecipient.physicalState?.mobilityState, MobilityEnum.noAssistance.rawValue)
         XCTAssertEqual(savedRecipient.healthProblems?.allergies, "milk, gluten")
                 
-        savedRecipient.physicalState?.mobility = .bedridden
+        savedRecipient.physicalState?.mobilityState = MobilityEnum.bedridden.rawValue
         
         try context.save()
         
@@ -117,7 +119,7 @@ class CareRecipientTests: XCTestCase {
             return
         }
         
-        XCTAssertEqual(updatedRecipient.physicalState?.mobility, .bedridden)
+        XCTAssertEqual(updatedRecipient.physicalState?.mobilityState, MobilityEnum.bedridden.rawValue)
         
         context.delete(updatedRecipient)
         
@@ -127,5 +129,4 @@ class CareRecipientTests: XCTestCase {
         
         XCTAssertEqual(finalRecipients.count, 0, "The CareRecipient should have been successfully deleted.")
     }
-    
 }

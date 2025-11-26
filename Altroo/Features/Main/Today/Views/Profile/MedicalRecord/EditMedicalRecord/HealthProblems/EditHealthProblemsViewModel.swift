@@ -1,12 +1,11 @@
 //
-//  EditMedicalRecordViewModel+HealthProblems.swift
+//  DiseaseFormState.swift
 //  Altroo
 //
-//  Created by Izadora de Oliveira Albuquerque Montenegro on 31/10/25.
+//  Created by Izadora de Oliveira Albuquerque Montenegro on 24/11/25.
 //
 
 import Foundation
-import Combine
 import CoreData
 
 struct DiseaseFormState: Equatable {
@@ -20,7 +19,22 @@ struct HealthProblemsFormState: Equatable {
     var surgeryDate: Date = Date()
 }
 
-extension EditMedicalRecordViewModel {
+final class EditHealthProblemsViewModel {
+
+    private let userService: UserServiceProtocol
+    private let careRecipientFacade: CareRecipientFacade
+
+    var healthFormState = HealthProblemsFormState()
+    var diseaseFormState = DiseaseFormState()
+
+    init(userService: UserServiceProtocol, careRecipientFacade: CareRecipientFacade) {
+        self.userService = userService
+        self.careRecipientFacade = careRecipientFacade
+    }
+
+    func currentPatient() -> CareRecipient? {
+        userService.fetchCurrentPatient()
+    }
 
     func loadAllInitialStates() {
         loadInitialHealthProblemsFormState()
@@ -33,9 +47,12 @@ extension EditMedicalRecordViewModel {
             healthFormState = .init()
             return
         }
-        healthFormState.allergiesText = healthProblems.allergies ?? ""
-        healthFormState.observationText = healthProblems.observation ?? ""
-        healthFormState.surgeryDate = Date()
+
+        var draft = HealthProblemsFormState()
+        draft.allergiesText = healthProblems.allergies ?? ""
+        draft.observationText = healthProblems.observation ?? ""
+        draft.surgeryDate = Date()
+        healthFormState = draft
     }
 
     func loadInitialDiseaseFormState() {
@@ -94,14 +111,18 @@ extension EditMedicalRecordViewModel {
         var seen = Set<String>()
         var uniquePreservingCasing: [String] = []
         for t in tokens {
-            let key = t.folding(options: .diacriticInsensitive, locale: .current).lowercased()
+            let key = t
+                .folding(options: .diacriticInsensitive, locale: .current)
+                .lowercased()
             if !seen.contains(key) {
                 seen.insert(key)
                 uniquePreservingCasing.append(t)
             }
         }
 
-        let sorted = uniquePreservingCasing.sorted { $0.localizedCaseInsensitiveCompare($1) == .orderedAscending }
+        let sorted = uniquePreservingCasing.sorted {
+            $0.localizedCaseInsensitiveCompare($1) == .orderedAscending
+        }
         return sorted.joined(separator: ", ")
     }
 
@@ -124,7 +145,7 @@ extension EditMedicalRecordViewModel {
               let healthProblems = patient.healthProblems else { return }
 
         let normalizedText = normalizedDiseasesText(from: diseaseFormState.diseasesText)
-        diseaseFormState.diseasesText = normalizedText
+        diseaseFormState = DiseaseFormState(diseasesText: normalizedText)
 
         let targetNames = parsedDiseases(from: normalizedText)
         let targetKeys = Set(targetNames.map { normalizeDiseaseKey($0) })
@@ -145,11 +166,17 @@ extension EditMedicalRecordViewModel {
         for name in targetNames {
             let key = normalizeDiseaseKey(name)
             if let existing = existingByKey[key] {
-                if existing.name != name { existing.name = name }
+                if existing.name != name {
+                    existing.name = name
+                }
             } else {
                 careRecipientFacade.addDisease(name: name, in: healthProblems)
             }
         }
+        
+        careRecipientFacade.updateMedicalRecord(careRecipient: patient)
+        
+        NotificationCenter.default.post(name: .medicalRecordDidChange, object: nil)
     }
 
     func removeDisease(_ disease: Disease) {
@@ -175,7 +202,11 @@ extension EditMedicalRecordViewModel {
               let healthProblems = patient.healthProblems else { return }
         let name = healthFormState.surgeryName.trimmingCharacters(in: .whitespacesAndNewlines)
         guard !name.isEmpty else { return }
-        careRecipientFacade.addSurgery(name: name, date: healthFormState.surgeryDate, to: healthProblems)
+        careRecipientFacade.addSurgery(
+            name: name,
+            date: healthFormState.surgeryDate,
+            to: healthProblems
+        )
         updateSurgeryName("")
     }
 

@@ -189,5 +189,4 @@ class TodayViewModel {
         guard let careRecipient = currentCareRecipient else { return 0 }
         return careRecipientFacade.getWaterTarget(careRecipient)
     }
-    
 }
