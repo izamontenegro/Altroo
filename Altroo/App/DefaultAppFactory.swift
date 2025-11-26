@@ -161,36 +161,36 @@ extension DefaultAppFactory {
     }
     
     func makeEditPersonalDataViewController(delegate: any EditMedicalRecordViewControllerDelegate) -> UIViewController {
-        let vm = EditMedicalRecordViewModel(userService: dependencies.userService, careRecipientFacade: dependencies.careRecipientFacade)
-        let vc = EditMedicalRecordViewController(viewModel: vm)
+        let vm = EditPersonalDataViewModel(userService: dependencies.userService, careRecipientFacade: dependencies.careRecipientFacade)
+        let vc = EditPersonalDataViewController(viewModel: vm)
         vc.delegate = delegate
         return vc
     }
     
     func makeEditHealthProblemsViewController(delegate: any EditMedicalRecordViewControllerDelegate) -> UIViewController {
-        let vm = EditMedicalRecordViewModel(userService: dependencies.userService, careRecipientFacade: dependencies.careRecipientFacade)
-        let vc = EditMedicalRecordViewController(viewModel: vm)
+        let vm = EditHealthProblemsViewModel(userService: dependencies.userService, careRecipientFacade: dependencies.careRecipientFacade)
+        let vc = EditHealthProblemsViewController(viewModel: vm)
         vc.delegate = delegate
         return vc
     }
     
     func makeEditPhysicalStateViewController(delegate: any EditMedicalRecordViewControllerDelegate) -> UIViewController {
-        let vm = EditMedicalRecordViewModel(userService: dependencies.userService, careRecipientFacade: dependencies.careRecipientFacade)
-        let vc = EditMedicalRecordViewController(viewModel: vm)
+        let vm = EditPhysicalStateViewModel(userService: dependencies.userService, careRecipientFacade: dependencies.careRecipientFacade)
+        let vc = EditPhysicalStateViewController(viewModel: vm)
         vc.delegate = delegate
         return vc
     }
     
     func makeEditMentalStateViewController(delegate: any EditMedicalRecordViewControllerDelegate) -> UIViewController {
-        let vm = EditMedicalRecordViewModel(userService: dependencies.userService, careRecipientFacade: dependencies.careRecipientFacade)
-        let vc = EditMedicalRecordViewController(viewModel: vm)
+        let vm = EditMentalStateViewModel(userService: dependencies.userService, careRecipientFacade: dependencies.careRecipientFacade)
+        let vc = EditMentalStateViewController(viewModel: vm)
         vc.delegate = delegate
         return vc
     }
     
     func makeEditPersonalCareViewController(delegate: any EditMedicalRecordViewControllerDelegate) -> UIViewController {
-        let vm = EditMedicalRecordViewModel(userService: dependencies.userService, careRecipientFacade: dependencies.careRecipientFacade)
-        let vc = EditMedicalRecordViewController(viewModel: vm)
+        let vm = EditPersonalCareViewModel(userService: dependencies.userService, careRecipientFacade: dependencies.careRecipientFacade)
+        let vc = EditPersonalCareViewController(viewModel: vm)
         vc.delegate = delegate
         return vc
     }

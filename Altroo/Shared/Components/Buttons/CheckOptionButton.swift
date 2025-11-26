@@ -18,7 +18,7 @@ class CheckOptionButton: PaddedContentIgnoringButton {
     lazy var label = StandardLabel(
         labelText: text,
         labelFont: .sfPro,
-        labelType: .footnote,
+        labelType: .callOut,
         labelColor: .blue30,
         labelWeight: .regular
     )

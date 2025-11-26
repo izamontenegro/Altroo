@@ -6,13 +6,11 @@
 //
 
 import UIKit
-import Combine
 
-final class EditPersonalCareView: UIView, UITextFieldDelegate {
-    let viewModel: EditMedicalRecordViewModel
+final class EditPersonalCareViewController: UIViewController, UITextFieldDelegate {
+
+    let viewModel: EditPersonalCareViewModel
     weak var delegate: EditMedicalRecordViewControllerDelegate?
-
-    private var subscriptions = Set<AnyCancellable>()
 
     private let header: EditSectionHeaderView = {
         let header = EditSectionHeaderView(
@@ -27,31 +25,35 @@ final class EditPersonalCareView: UIView, UITextFieldDelegate {
     private lazy var bathPopupMenuButton: PopupMenuButton = {
         let button = PopupMenuButton(title: BathEnum.withAssistance.displayText)
         button.backgroundColor = .blue40
+        button.widthAnchor.constraint(equalToConstant: 170).isActive = true
         return button
     }()
 
     private lazy var hygienePopupMenuButton: PopupMenuButton = {
         let button = PopupMenuButton(title: HygieneEnum.withoutAssistance.displayText)
         button.backgroundColor = .blue40
+        button.widthAnchor.constraint(equalToConstant: 170).isActive = true
         return button
     }()
 
     private lazy var excretionPopupMenuButton: PopupMenuButton = {
         let button = PopupMenuButton(title: ExcretionEnum.normal.displayText)
         button.backgroundColor = .blue40
+        button.widthAnchor.constraint(equalToConstant: 170).isActive = true
         return button
     }()
 
     private lazy var feedingPopupMenuButton: PopupMenuButton = {
         let button = PopupMenuButton(title: FeedingEnum.soft.displayText)
         button.backgroundColor = .blue40
+        button.widthAnchor.constraint(equalToConstant: 170).isActive = true
         return button
     }()
 
     private lazy var equipmentsTextField: StandardTextfield = {
         let textField = StandardTextfield(placeholder: "Equipamentos separados por vírgulas")
-      
         textField.returnKeyType = .done
+        textField.translatesAutoresizingMaskIntoConstraints = false
         return textField
     }()
 
@@ -63,19 +65,21 @@ final class EditPersonalCareView: UIView, UITextFieldDelegate {
 
     private lazy var firstRowStack: UIStackView = {
         let stack = UIStackView(arrangedSubviews: [bathSection, hygieneSection])
-        stack.axis = .vertical
+        stack.axis = .horizontal
         stack.spacing = 16
         stack.alignment = .top
-        stack.distribution = .fillEqually
+        stack.distribution = .fillProportionally
+        stack.translatesAutoresizingMaskIntoConstraints = false
         return stack
     }()
 
     private lazy var secondRowStack: UIStackView = {
         let stack = UIStackView(arrangedSubviews: [excretionSection, feedingSection])
-        stack.axis = .vertical
-        stack.spacing = 16
+        stack.axis = .horizontal
         stack.alignment = .top
+        stack.spacing = 16
         stack.distribution = .fillProportionally
+        stack.translatesAutoresizingMaskIntoConstraints = false
         return stack
     }()
 
@@ -98,61 +102,84 @@ final class EditPersonalCareView: UIView, UITextFieldDelegate {
         return tap
     }()
 
-    init(viewModel: EditMedicalRecordViewModel) {
+    init(viewModel: EditPersonalCareViewModel) {
         self.viewModel = viewModel
-        super.init(frame: .zero)
-        translatesAutoresizingMaskIntoConstraints = false
-        setupUI()
-        configureMenus()
-        bindViewModel()
-        viewModel.loadInitialPersonalCareFormState()
-        fillInitialEquipmentsFromModel()
-        equipmentsTextField.addTarget(self, action: #selector(equipmentsTextChanged(_:)), for: .editingChanged)
-
-       
-        equipmentsTextField.delegate = self
-
-        addGestureRecognizer(keyboardDismissTapGesture)
+        super.init(nibName: nil, bundle: nil)
     }
 
-    required init?(coder: NSCoder) { fatalError("init(coder:) has not been implemented") }
+    @MainActor required init?(coder: NSCoder) {
+        fatalError("init(coder:) has not been implemented")
+    }
+
+    override func viewDidLoad() {
+        super.viewDidLoad()
+        setupUI()
+        configureMenus()
+        configureNavBar()
+        bindInitialState()
+        equipmentsTextField.addTarget(self, action: #selector(equipmentsTextChanged(_:)), for: .editingChanged)
+        equipmentsTextField.delegate = self
+        view.addGestureRecognizer(keyboardDismissTapGesture)
+    }
 
     private func setupUI() {
-        backgroundColor = .pureWhite
+        view.backgroundColor = .pureWhite
 
-        addSubview(header)
-        addSubview(formStack)
+        let saveButton = configureConfirmationButton()
+        saveButton.translatesAutoresizingMaskIntoConstraints = false
+        
+        view.addSubview(header)
+        view.addSubview(formStack)
+        
+        view.addSubview(saveButton)
+        
+        NSLayoutConstraint.activate([
+            saveButton.bottomAnchor.constraint(equalTo: view.safeAreaLayoutGuide.bottomAnchor, constant: -20),
+            saveButton.centerXAnchor.constraint(equalTo: view.centerXAnchor)
+        ])
 
         NSLayoutConstraint.activate([
-            header.topAnchor.constraint(equalTo: safeAreaLayoutGuide.topAnchor, constant: 15),
-            header.leadingAnchor.constraint(equalTo: leadingAnchor, constant: 16),
-            header.trailingAnchor.constraint(equalTo: trailingAnchor, constant: -16),
+            header.topAnchor.constraint(equalTo: view.safeAreaLayoutGuide.topAnchor, constant: 15),
+            header.leadingAnchor.constraint(equalTo: view.leadingAnchor, constant: 16),
+            header.trailingAnchor.constraint(equalTo: view.trailingAnchor, constant: -16),
 
             formStack.topAnchor.constraint(equalTo: header.bottomAnchor, constant: 15),
-            formStack.leadingAnchor.constraint(equalTo: leadingAnchor, constant: 16),
-            formStack.trailingAnchor.constraint(equalTo: trailingAnchor, constant: -16),
-            formStack.bottomAnchor.constraint(lessThanOrEqualTo: bottomAnchor, constant: -20)
+            formStack.leadingAnchor.constraint(equalTo: view.leadingAnchor, constant: 16),
+            formStack.trailingAnchor.constraint(equalTo: view.trailingAnchor, constant: -16),
+            formStack.bottomAnchor.constraint(lessThanOrEqualTo: view.bottomAnchor, constant: -20)
         ])
     }
 
-    private func bindViewModel() {
-        viewModel.$personalCareFormState
-            .receive(on: DispatchQueue.main)
-            .sink { [weak self] state in
-                guard let self else { return }
-                if let v = state.bathState { self.bathPopupMenuButton.setTitle(v.displayText, for: .normal) }
-                if let v = state.hygieneState { self.hygienePopupMenuButton.setTitle(v.displayText, for: .normal) }
-                if let v = state.excretionState { self.excretionPopupMenuButton.setTitle(v.displayText, for: .normal) }
-                if let v = state.feedingState { self.feedingPopupMenuButton.setTitle(v.displayText, for: .normal) }
-                if self.equipmentsTextField.text != state.equipmentsText {
-                    self.equipmentsTextField.text = state.equipmentsText
-                }
-            }
-            .store(in: &subscriptions)
-    }
+    private func bindInitialState() {
+        viewModel.loadInitialPersonalCareFormState()
 
-    @objc private func equipmentsTextChanged(_ sender: UITextField) {
-        viewModel.updateEquipmentsText(sender.text ?? "")
+        let state = viewModel.personalCareFormState
+
+        if let value = state.bathState {
+            bathPopupMenuButton.setTitle(value.displayText, for: .normal)
+        } else {
+            bathPopupMenuButton.setTitle(BathEnum.withAssistance.displayText, for: .normal)
+        }
+
+        if let value = state.hygieneState {
+            hygienePopupMenuButton.setTitle(value.displayText, for: .normal)
+        } else {
+            hygienePopupMenuButton.setTitle(HygieneEnum.withoutAssistance.displayText, for: .normal)
+        }
+
+        if let value = state.excretionState {
+            excretionPopupMenuButton.setTitle(value.displayText, for: .normal)
+        } else {
+            excretionPopupMenuButton.setTitle(ExcretionEnum.normal.displayText, for: .normal)
+        }
+
+        if let value = state.feedingState {
+            feedingPopupMenuButton.setTitle(value.displayText, for: .normal)
+        } else {
+            feedingPopupMenuButton.setTitle(FeedingEnum.soft.displayText, for: .normal)
+        }
+
+        equipmentsTextField.text = state.equipmentsText
     }
 
     private func configureMenus() {
@@ -189,18 +216,47 @@ final class EditPersonalCareView: UIView, UITextFieldDelegate {
         feedingPopupMenuButton.showsMenuAsPrimaryAction = true
     }
 
-    private func fillInitialEquipmentsFromModel() {
-        guard let patient = viewModel.userService.fetchCurrentPatient(),
-              let csv = patient.personalCare?.equipmentState, !csv.isEmpty else { return }
-        equipmentsTextField.text = csv
+    @objc private func equipmentsTextChanged(_ sender: UITextField) {
+        viewModel.updateEquipmentsText(sender.text ?? "")
     }
 
     @objc private func dismissKeyboard() {
-        endEditing(true)
+        view.endEditing(true)
     }
 
     func textFieldShouldReturn(_ textField: UITextField) -> Bool {
         textField.resignFirstResponder()
         return true
+    }
+
+    @objc func persistAllFromView() {
+        viewModel.updateEquipmentsText(equipmentsTextField.text ?? "")
+        viewModel.persistPersonalCareFormState()
+        
+        dismiss(animated: true)
+    }
+    
+    private func configureNavBar() {
+        navigationItem.title = "Editar".localized
+        
+        let closeButton = UIBarButtonItem(title: "close".localized, style: .done, target: self, action: #selector(closeTapped))
+        closeButton.tintColor = .blue10
+        navigationItem.leftBarButtonItem = closeButton
+        
+        let appearance = UINavigationBarAppearance()
+        appearance.configureWithOpaqueBackground()
+        navigationItem.scrollEdgeAppearance = appearance
+        
+    }
+    
+    private func configureConfirmationButton() -> StandardConfirmationButton {
+        let button = StandardConfirmationButton(title: "Salvar")
+        button.addTarget(self, action: #selector(persistAllFromView), for: .touchUpInside)
+        button.translatesAutoresizingMaskIntoConstraints = false
+        return button
+    }
+    
+    @objc func closeTapped() {
+        dismiss(animated: true)
     }
 }

@@ -32,7 +32,6 @@ class CareRecipientFacadeTests: XCTestCase {
     override func setUp() {
         super.setUp()
         
-        // Core Data stack in-memory
         let container = NSPersistentContainer(name: "AltrooDataModel")
         let description = NSPersistentStoreDescription()
         description.type = NSInMemoryStoreType
@@ -44,14 +43,12 @@ class CareRecipientFacadeTests: XCTestCase {
         
         mentalState = MentalState(context: context)
         
-        // Mocks
         persistenceMock = CoreDataServiceMock()
         sut = CareRecipientFacade(
             basicNeedsFacade: BasicNeedsFacadeMock(),
             routineActivitiesFacade: RoutineActivitiesFacadeMock(),
             persistenceService: persistenceMock
         )
-
     }
     
     override func tearDown() {
@@ -64,9 +61,9 @@ class CareRecipientFacadeTests: XCTestCase {
 
     // MARK: - Unit Tests
     func test_addEmotionalState_updatesProperty_andCallsSave() {
-        sut.addEmotionalState(emotionalState: .calm, mentalState: mentalState)
+        sut.addEmotionalState(emotionalState: [.calm], mentalState: mentalState)
         
-        XCTAssertEqual(mentalState.emotionalState, EmotionalStateEnum.calm.rawValue)
+        XCTAssertEqual(mentalState.emotionalState?.first, EmotionalStateEnum.calm.rawValue)
         XCTAssertEqual(persistenceMock.saveCalledCount, 1)
     }
     
@@ -78,9 +75,9 @@ class CareRecipientFacadeTests: XCTestCase {
     }
     
     func test_addOrientationState_updatesProperty_andCallsSave() {
-        sut.addOrientationState(orientationState: .disorientedInTime, mentalState: mentalState)
+        sut.addOrientationState(orientationState: [.disorientedInTime], mentalState: mentalState)
         
-        XCTAssertEqual(mentalState.orientationState, OrientationEnum.disorientedInTime.rawValue)
+        XCTAssertEqual(mentalState.orientationState?.first, OrientationEnum.disorientedInTime.rawValue)
         XCTAssertEqual(persistenceMock.saveCalledCount, 1)
     }
     
@@ -92,23 +89,23 @@ class CareRecipientFacadeTests: XCTestCase {
     }
     
     func test_multipleUpdates_shouldAccumulateSaveCalls() {
-        sut.addEmotionalState(emotionalState: .anxious, mentalState: mentalState)
+        sut.addEmotionalState(emotionalState: [.anxious], mentalState: mentalState)
         sut.addMemoryState(memoryState: .intact, mentalState: mentalState)
         
-        XCTAssertEqual(mentalState.emotionalState, EmotionalStateEnum.anxious.rawValue)
+        XCTAssertEqual(mentalState.emotionalState?.first, EmotionalStateEnum.anxious.rawValue)
         XCTAssertEqual(mentalState.memoryState, MemoryEnum.intact.rawValue)
         XCTAssertEqual(persistenceMock.saveCalledCount, 2)
     }
     
     func test_updateAllMentalStates_together() {
-        sut.addEmotionalState(emotionalState: .aggressive, mentalState: mentalState)
+        sut.addEmotionalState(emotionalState: [.aggressive], mentalState: mentalState)
         sut.addMemoryState(memoryState: .impaired, mentalState: mentalState)
-        sut.addOrientationState(orientationState: .disorientedInAll, mentalState: mentalState)
+        sut.addOrientationState(orientationState: [.disorientedInAll], mentalState: mentalState)
         sut.addCognitionState(cognitionState: .lowCapacity, mentalState: mentalState)
         
-        XCTAssertEqual(mentalState.emotionalState, EmotionalStateEnum.aggressive.rawValue)
+        XCTAssertEqual(mentalState.emotionalState?.first, EmotionalStateEnum.aggressive.rawValue)
         XCTAssertEqual(mentalState.memoryState, MemoryEnum.impaired.rawValue)
-        XCTAssertEqual(mentalState.orientationState, OrientationEnum.disorientedInAll.rawValue)
+        XCTAssertEqual(mentalState.orientationState?.first, OrientationEnum.disorientedInAll.rawValue)
         XCTAssertEqual(mentalState.cognitionState, CognitionEnum.lowCapacity.rawValue)
         XCTAssertEqual(persistenceMock.saveCalledCount, 4)
     }
@@ -126,9 +123,9 @@ class CareRecipientFacadeTests: XCTestCase {
     }
     
     func test_addAllMentalStates_together_persistsToCoreData() {
-        sut.addEmotionalState(emotionalState: .lively, mentalState: mentalState)
+        sut.addEmotionalState(emotionalState: [.lively], mentalState: mentalState)
         sut.addMemoryState(memoryState: .intact, mentalState: mentalState)
-        sut.addOrientationState(orientationState: .disorientedInSpace, mentalState: mentalState)
+        sut.addOrientationState(orientationState: [.disorientedInSpace], mentalState: mentalState)
         sut.addCognitionState(cognitionState: .mediumCapacity, mentalState: mentalState)
 
         try? context.save()
@@ -136,9 +133,9 @@ class CareRecipientFacadeTests: XCTestCase {
         let fetch: NSFetchRequest<MentalState> = MentalState.fetchRequest()
         let results = try? context.fetch(fetch)
         
-        XCTAssertEqual(results?.first?.emotionalState, EmotionalStateEnum.lively.rawValue)
+        XCTAssertEqual(results?.first?.emotionalState?.first, EmotionalStateEnum.lively.rawValue)
         XCTAssertEqual(results?.first?.memoryState, MemoryEnum.intact.rawValue)
-        XCTAssertEqual(results?.first?.orientationState, OrientationEnum.disorientedInSpace.rawValue)
+        XCTAssertEqual(results?.first?.orientationState?.first, OrientationEnum.disorientedInSpace.rawValue)
         XCTAssertEqual(results?.first?.cognitionState, CognitionEnum.mediumCapacity.rawValue)
     }
 }
