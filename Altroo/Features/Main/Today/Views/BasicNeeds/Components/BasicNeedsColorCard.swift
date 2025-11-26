@@ -50,13 +50,13 @@ struct BasicNeedsColorCard: View {
     }
 }
 
-#Preview {
-    BasicNeedsColorCard(
-        colorName: .brown,
-        title: "title",
-        isSelected: true,
-        action: {
-            print("button tapped")
-        }
-    )
-}
+//#Preview {
+//    BasicNeedsColorCard(
+//        colorName: .brown,
+//        title: "title",
+//        isSelected: true,
+//        action: {
+//            print("button tapped")
+//        }
+//    )
+//}

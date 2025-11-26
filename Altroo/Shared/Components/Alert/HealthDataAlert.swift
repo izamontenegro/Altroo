@@ -84,7 +84,7 @@ struct HealthDataAlertView: View {
                 onLegalNotice()
             } label: {
                 HStack(spacing: 8) {
-                    Text("Aviso Legal")
+                    Text("legal".localized)
                         .font(Font.custom("Comfortaa", size: 16))
                         .multilineTextAlignment(.center)
                     Image(systemName: "arrow.forward")
@@ -107,6 +107,6 @@ struct HealthDataAlertView: View {
     }
 }
  
-#Preview {
-    HealthDataAlertView()
-}
+//#Preview {
+//    HealthDataAlertView()
+//}

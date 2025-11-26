@@ -19,7 +19,7 @@ class PrivacyViewController: GradientNavBarViewController {
     
     private let titleLabel: StandardLabel = {
         let label = StandardLabel(
-            labelText: "Política de Privacidade e Proteção",
+            labelText: "policy_privacy".localized,
             labelFont: .sfPro,
             labelType: .title2,
             labelColor: .black10,
@@ -30,7 +30,7 @@ class PrivacyViewController: GradientNavBarViewController {
     }()
     private let subtitleLabel: StandardLabel = {
         let label = StandardLabel(
-            labelText: "Atualizada em: 29 de Outubro de 2025",
+            labelText: "policy_date".localized,
             labelFont: .sfPro,
             labelType: .body,
             labelColor: .black30,
@@ -41,7 +41,7 @@ class PrivacyViewController: GradientNavBarViewController {
     }()
     private let headertext: StandardLabel = {
         let label = StandardLabel(
-            labelText: "A sua privacidade é importante para nós. Esta Política de Privacidade descreve como o Altroo coleta, utiliza, armazena e protege as informações pessoais de cuidadores, assistidos e familiares que utilizam o aplicativo. Ao usar o Altroo, você concorda com as práticas descritas a seguir.",
+            labelText: "headertext".localized,
             labelFont: .sfPro,
             labelType: .body,
             labelColor: .black0,
@@ -63,7 +63,7 @@ class PrivacyViewController: GradientNavBarViewController {
     // MARK: - 1. Aceitação da Política
     private let PolicyAcceptanceTitle: StandardLabel = {
         let label = StandardLabel(
-            labelText: "Aceitação da Política",
+            labelText: "PolicyAcceptanceTitle".localized,
             labelFont: .sfPro,
             labelType: .title3,
             labelColor: .blue20,
@@ -74,7 +74,7 @@ class PrivacyViewController: GradientNavBarViewController {
     }()
     private let PolicyAcceptanceText: StandardLabel = {
         let label = StandardLabel(
-            labelText: "Ao utilizar o Altroo, você declara estar ciente e de acordo com os termos desta Política de Privacidade. \n\nSe não concordar com algum dos termos, recomendamos interromper o uso do aplicativo e solicitar a exclusão de sua conta.",
+            labelText: "PolicyAcceptanceText".localized,
             labelFont: .sfPro,
             labelType: .body,
             labelColor: .black0,
@@ -95,7 +95,7 @@ class PrivacyViewController: GradientNavBarViewController {
     // MARK: - 2. Informações que Coletamos
     private let InformationWeCollectTitle: StandardLabel = {
         let label = StandardLabel(
-            labelText: "Informações que Coletamos",
+            labelText: "InformationWeCollectTitle".localized,
             labelFont: .sfPro,
             labelType: .title3,
             labelColor: .blue20,
@@ -106,7 +106,7 @@ class PrivacyViewController: GradientNavBarViewController {
     }()
     private let InformationWeCollectText: StandardLabel = {
         let label = StandardLabel(
-            labelText: "O Altroo coleta apenas as informações necessárias para o funcionamento do aplicativo e para proporcionar uma melhor experiência de cuidado. \n\nEssas informações podem incluir: \n• Dados de cadastro, como nome, e-mail e telefones; \n• Informações sobre o assistido, como nome, idade e dados relevantes para o cuidado; \n• Registros de atividades e anotações inseridas manualmente pelo cuidador; \n• Informações sobre o uso do aplicativo, como frequência de acesso e funcionalidades utilizadas. \n\nO Altroo não coleta dados sensíveis de saúde automaticamente, apenas aqueles que o usuário decide registrar de forma voluntária.",
+            labelText: "InformationWeCollectText".localized,
             labelFont: .sfPro,
             labelType: .body,
             labelColor: .black0,
@@ -127,7 +127,7 @@ class PrivacyViewController: GradientNavBarViewController {
     // MARK: - 3. Como Utilizamos as Informações
     private let HowWeUsetheInformationTitle: StandardLabel = {
         let label = StandardLabel(
-            labelText: "Como Utilizamos as Informações",
+            labelText: "HowWeUsetheInformationTitle".localized,
             labelFont: .sfPro,
             labelType: .title3,
             labelColor: .blue20,
@@ -138,7 +138,7 @@ class PrivacyViewController: GradientNavBarViewController {
     }()
     private let HowWeUsetheInformationText: StandardLabel = {
         let label = StandardLabel(
-            labelText: "As informações são utilizadas para:\n• Permitir o funcionamento do aplicativo e suas principais funcionalidades;\n• Facilitar o compartilhamento de informações de cuidado entre cuidadores e familiares;\n• Personalizar a experiência do usuário e aprimorar o desempenho do app;\n• Enviar comunicações relacionadas ao uso do Altroo, como lembretes ou notificações de atualização. \n\nO Altroo não utiliza seus dados para fins publicitários ou comerciais.",
+            labelText: "HowWeUsetheInformationText".localized,
             labelFont: .sfPro,
             labelType: .body,
             labelColor: .black0,
@@ -159,7 +159,7 @@ class PrivacyViewController: GradientNavBarViewController {
     // MARK: - 4. Armazenamento e Segurança dos Dados
     private let DataStorageSecurityTitle: StandardLabel = {
         let label = StandardLabel(
-            labelText: "Armazenamento e Segurança dos Dados",
+            labelText: "DataStorageSecurityTitle".localized,
             labelFont: .sfPro,
             labelType: .title3,
             labelColor: .blue20,
@@ -170,7 +170,7 @@ class PrivacyViewController: GradientNavBarViewController {
     }()
     private let DataStorageSecurityText: StandardLabel = {
         let label = StandardLabel(
-            labelText: "Os dados são armazenados em nuvem pessoal, atrelada à conta do dispositivo do usuário. \n\nIsso significa que apenas o próprio usuário tem acesso direto às suas informações, garantindo um controle individual e seguro. \n\nO Altroo adota medidas técnicas de segurança para proteger as informações contra acessos não autorizados, perda, uso indevido ou divulgação indevida. \n\nMesmo com essas medidas, é importante ressaltar que nenhum sistema é totalmente livre de riscos, e recomendamos que o usuário mantenha seus dispositivos protegidos com senhas seguras.",
+            labelText: "DataStorageSecurityText".localized,
             labelFont: .sfPro,
             labelType: .body,
             labelColor: .black0,
@@ -191,7 +191,7 @@ class PrivacyViewController: GradientNavBarViewController {
     // MARK: - 5. Compartilhamento de Informações
     private let InformationSharingTitle: StandardLabel = {
         let label = StandardLabel(
-            labelText: "Compartilhamento de Informações",
+            labelText: "InformationSharingTitle".localized,
             labelFont: .sfPro,
             labelType: .title3,
             labelColor: .blue20,
@@ -202,7 +202,7 @@ class PrivacyViewController: GradientNavBarViewController {
     }()
     private let InformationSharingText: StandardLabel = {
         let label = StandardLabel(
-            labelText: "O Altroo não compartilha dados pessoais com terceiros sem o consentimento do usuário. \n\nO compartilhamento de informações ocorre apenas entre cuidadores e familiares autorizados, dentro do próprio ambiente do aplicativo, com o objetivo de coordenar o cuidado do assistido. \n\nNenhuma informação é vendida, trocada ou utilizada para fins externos ao propósito do app.",
+            labelText: "InformationSharingText".localized,
             labelFont: .sfPro,
             labelType: .body,
             labelColor: .black0,
@@ -223,7 +223,7 @@ class PrivacyViewController: GradientNavBarViewController {
     // MARK: - 6. Direitos dos Usuários
     private let UserRightsTitle: StandardLabel = {
         let label = StandardLabel(
-            labelText: "Direitos dos Usuários",
+            labelText: "UserRightsTitle".localized,
             labelFont: .sfPro,
             labelType: .title3,
             labelColor: .blue20,
@@ -234,7 +234,7 @@ class PrivacyViewController: GradientNavBarViewController {
     }()
     private let UserRightsText: StandardLabel = {
         let label = StandardLabel(
-            labelText: "O usuário tem o direito de:\n• Acessar as informações pessoais armazenadas no aplicativo;\n• Corrigir, atualizar ou excluir seus dados;\n• Revogar o consentimento para o uso de suas informações a qualquer momento;\n• Solicitar a exclusão completa de sua conta e dos dados vinculados.\n• Para exercer esses direitos, entre em contato pelo canal de suporte do Altroo disponível no aplicativo ou no site oficial.",
+            labelText: "UserRightsText".localized,
             labelFont: .sfPro,
             labelType: .body,
             labelColor: .black0,
@@ -255,7 +255,7 @@ class PrivacyViewController: GradientNavBarViewController {
     // MARK: - 7. Retenção de Dados
     private let DataRetentionTitle: StandardLabel = {
         let label = StandardLabel(
-            labelText: "Retenção de Dados",
+            labelText: "DataRetentionTitle".localized,
             labelFont: .sfPro,
             labelType: .title3,
             labelColor: .blue20,
@@ -266,7 +266,7 @@ class PrivacyViewController: GradientNavBarViewController {
     }()
     private let DataRetentionText: StandardLabel = {
         let label = StandardLabel(
-            labelText: "Os dados são mantidos apenas pelo tempo necessário para cumprir as finalidades do aplicativo ou até que o usuário solicite sua exclusão. \n\nApós a exclusão da conta, as informações são removidas de forma definitiva e não ficam disponíveis para recuperação.",
+            labelText: "DataRetentionText".localized,
             labelFont: .sfPro,
             labelType: .body,
             labelColor: .black0,
@@ -287,7 +287,7 @@ class PrivacyViewController: GradientNavBarViewController {
     // MARK: - 8. Alterações nesta Política
     private let ChangesPolicyTitle: StandardLabel = {
         let label = StandardLabel(
-            labelText: "Alterações nesta Política",
+            labelText: "ChangesPolicyTitle".localized,
             labelFont: .sfPro,
             labelType: .title3,
             labelColor: .blue20,
@@ -298,7 +298,7 @@ class PrivacyViewController: GradientNavBarViewController {
     }()
     private let ChangesPolicyText: StandardLabel = {
         let label = StandardLabel(
-            labelText: "Esta Política de Privacidade pode ser atualizada periodicamente para refletir melhorias no aplicativo ou mudanças legais. \n\nO Altroo notificará os usuários sobre alterações significativas por meio do próprio aplicativo. A data da última atualização estará sempre disponível no início deste documento.",
+            labelText: "ChangesPolicyText".localized,
             labelFont: .sfPro,
             labelType: .body,
             labelColor: .black0,
@@ -319,7 +319,7 @@ class PrivacyViewController: GradientNavBarViewController {
     // MARK: - 9. Contato
     private let ContactTitle: StandardLabel = {
         let label = StandardLabel(
-            labelText: "Contato",
+            labelText: "ContactTitle".localized,
             labelFont: .sfPro,
             labelType: .title3,
             labelColor: .blue20,
@@ -330,7 +330,7 @@ class PrivacyViewController: GradientNavBarViewController {
     }()
     private let ContactText: StandardLabel = {
         let label = StandardLabel(
-            labelText: "Em caso de dúvidas, solicitações ou reclamações relacionadas à privacidade ou ao tratamento de dados, entre em contato com nossa equipe de suporte através do e-mail:\n\n📩 altroohealthcare@gmail.com",
+            labelText: "ContactText".localized,
             labelFont: .sfPro,
             labelType: .body,
             labelColor: .black0,

@@ -13,7 +13,9 @@ class MyProfileViewModel {
     private var userService: UserServiceProtocol
     private var cancellables = Set<AnyCancellable>()
     
-    @Published private(set) var caregiverUser: User?
+    @Published private(set) var caregiverUser: User? = nil
+    
+    @Published private(set) var caregiverPhone: String = ""
     @Published private(set) var caregiverName: String = "Desconhecido"
 
     init(userService: UserServiceProtocol) {
@@ -31,5 +33,16 @@ class MyProfileViewModel {
     func refreshData() {
         caregiverUser = userService.fetchUser()
         caregiverName = caregiverUser?.name ?? "Desconhecido"
+        caregiverPhone = caregiverUser?.phone ?? "Sem contato"
+    }
+    
+    func updateName(_ newName: String) {
+        caregiverName = newName
+        userService.setName(newName)
+    }
+    
+    func updatePhone(_ newPhone: String) {
+        caregiverPhone = newPhone
+        userService.setPhone(newPhone)
     }
 }

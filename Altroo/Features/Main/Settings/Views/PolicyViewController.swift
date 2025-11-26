@@ -19,7 +19,7 @@ class PolicyViewController: GradientNavBarViewController {
     
     let titleLabel: StandardLabel = {
         let label = StandardLabel(
-            labelText: "Aviso Legal",
+            labelText: "legal".localized,
             labelFont: .sfPro,
             labelType: .title2,
             labelColor: .black10,
@@ -29,7 +29,7 @@ class PolicyViewController: GradientNavBarViewController {
     }()
     let policyText: StandardLabel = {
         let label = StandardLabel(
-            labelText: "O Altroo é um aplicativo desenvolvido para auxiliar cuidadores na organização e no acompanhamento das atividades de cuidado com seus assistidos. \n\nO aplicativo tem como objetivo facilitar a comunicação e o registro das rotinas de cuidado, contribuindo para um acompanhamento mais eficiente e colaborativo. \n\nO Altroo não é um dispositivo ou serviço médico, e seu uso não deve ser interpretado como orientação, diagnóstico ou tratamento médico oferecido por seus desenvolvedores ou proprietários. \n\nNenhuma informação, alerta ou dado gerado pelo aplicativo deve ser considerado clinicamente preciso ou substituto de aconselhamento profissional de saúde. \n\nSe você tiver qualquer dúvida sobre uma condição médica, consulte um profissional de saúde qualificado. \n\nSe acreditar que você ou a pessoa sob seus cuidados possa estar enfrentando uma situação médica, procure atendimento médico imediatamente. \n\nVocê nunca deve atrasar, ignorar ou interromper um tratamento médico com base em informações obtidas pelo uso do Altroo.",
+            labelText: "policy_text".localized,
             labelFont: .sfPro,
             labelType: .body,
             labelColor: .black0,
