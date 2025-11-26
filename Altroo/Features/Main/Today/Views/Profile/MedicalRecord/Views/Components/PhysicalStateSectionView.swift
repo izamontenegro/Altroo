@@ -57,7 +57,6 @@ final class PhysicalStateSectionView: UIView {
         bodyStackView.spacing = 12
         bodyStackView.translatesAutoresizingMaskIntoConstraints = false
 
-        // Coluna esquerda: Visão + Locomoção
         let visionRow: InformationRow = ("Visão", vision)
         let visionSubsection = MedicalRecordSubsectionView(
             row: visionRow,

@@ -60,7 +60,6 @@ final class PersonalCareSectionView: UIView {
         bodyStackView.spacing = 12
         bodyStackView.translatesAutoresizingMaskIntoConstraints = false
 
-        // Coluna esquerda: Banho + Excreção
         let bathRow: InformationRow = ("Banho", bath)
         let bathSubsection = MedicalRecordSubsectionView(
             row: bathRow,
@@ -84,7 +83,6 @@ final class PersonalCareSectionView: UIView {
         leftColumn.spacing = 12
         leftColumn.translatesAutoresizingMaskIntoConstraints = false
 
-        // Coluna direita: Higiene Pessoal + Alimentação
         let hygieneRow: InformationRow = ("Higiene Pessoal", hygiene)
         let hygieneSubsection = MedicalRecordSubsectionView(
             row: hygieneRow,
@@ -114,7 +112,6 @@ final class PersonalCareSectionView: UIView {
         topColumns.distribution = .fillEqually
         topColumns.translatesAutoresizingMaskIntoConstraints = false
 
-        // Equipamentos
         let equipmentRow: InformationRow = ("Equipamentos", equipment)
         let equipmentSubsection = MedicalRecordSubsectionView(
             row: equipmentRow,
