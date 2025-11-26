@@ -30,7 +30,7 @@ class TaskFormViewController: UIViewController {
     
     let addTimeButton = OutlineWithIconButton(title: "taskform_new_time".localized, iconName: "plus.circle.fill")
     var addTimeViews: [UIView] = []
-    lazy var timePickersFlowView = FlowLayoutView(views: addTimeViews, maxWidth: view.bounds.width - 32)
+    lazy var timePickersFlowView = FlowLayoutView(views: addTimeViews)
     lazy var hourStack: UIStackView = {
         let stackView = UIStackView(arrangedSubviews: [timePickersFlowView])
         stackView.axis = .vertical

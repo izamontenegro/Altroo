@@ -11,15 +11,16 @@ class AddSymptomViewModel {
     let careRecipientFacade: CareRecipientFacade
     let userService: UserServiceProtocol
     let coreDataService: CoreDataService
-    let historyService: HistoryService
+    
+    let mode: Mode
     
     var currentCareRecipient: CareRecipient?
     
     @Published var name: String = ""
     @Published var time: Date = .now
     @Published var date: Date = .now
-
     @Published var note: String = ""
+    @Published var selectedSymptom: SymptomExample?
     
     @Published private(set) var fieldErrors: [String: String] = [:]
     private let validator = FormValidator()
@@ -35,13 +36,26 @@ class AddSymptomViewModel {
         return newDate
     }
     
-    init(careRecipientFacade: CareRecipientFacade, userService: UserServiceProtocol, coreDataService: CoreDataService, historyService: HistoryService) {
+    init(careRecipientFacade: CareRecipientFacade, userService: UserServiceProtocol, coreDataService: CoreDataService, mode: Mode) {
         self.careRecipientFacade = careRecipientFacade
         self.userService = userService
         self.coreDataService = coreDataService
-        self.historyService = historyService
+        self.mode = mode
         
         fetchCareRecipient()
+        
+        if case .edit(let existing) = mode {
+            if let example = SymptomExample.allCases.first(where: { $0.displayText == existing.name }) {
+                    self.selectedSymptom = example
+                    self.name = example.displayText
+                } else {
+                    self.selectedSymptom = nil
+                    self.name = existing.name ?? ""
+                }
+            self.note = existing.symptomDescription ?? ""
+            self.date = existing.date ?? .now
+            self.time = existing.date ?? .now
+        }
     }
     
     func fetchCareRecipient() {
@@ -61,11 +75,23 @@ class AddSymptomViewModel {
     
     func createSymptom()  {
         guard let careRecipient = currentCareRecipient else { return }
-       
-        let author = coreDataService.currentPerformerName(for: careRecipient)
         
-        careRecipientFacade.addSymptom(name: name, symptomDescription: note, date: fullDate, author: author, in: careRecipient)
-        
-        historyService.addHistoryItem(title: "Registrou \(name)", author: author, date: Date(), type: .symptom, to: careRecipient)
+        switch mode {
+        case .create:
+            let author = coreDataService.currentPerformerName(for: careRecipient)
+            careRecipientFacade.addSymptom(name: name, symptomDescription: note, date: fullDate, author: author, in: careRecipient)
+            
+        case .edit(let existing):
+            careRecipientFacade.editSymptom(symptom: existing, name: name, symptomDescription: note, date: fullDate)
+        }
+    }
+    
+    func deleteSymptom() {
+        switch mode {
+        case .create:
+            break
+        case .edit(let existing):
+            careRecipientFacade.deleteSymptom(symptomRecord: existing, from: currentCareRecipient!)
+        }
     }
 }
