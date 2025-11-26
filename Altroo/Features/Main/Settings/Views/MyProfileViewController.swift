@@ -19,10 +19,10 @@ class MyProfileViewController: GradientNavBarViewController {
 
     // MARK: Container that acts as a "button" (receives touches)
     private let actionControl: UIControl = {
-        let ctl = UIControl()
-        ctl.translatesAutoresizingMaskIntoConstraints = false
-        ctl.isUserInteractionEnabled = true
-        return ctl
+        let control = UIControl()
+        control.translatesAutoresizingMaskIntoConstraints = false
+        control.isUserInteractionEnabled = true
+        return control
     }()
     // MARK: Current capsule view (actionControl subview)
     private var currentCapsule: CapsuleWithCircleView?
@@ -55,15 +55,15 @@ class MyProfileViewController: GradientNavBarViewController {
         )
     }()
     private let subtitleLabel: StandardLabel = {
-        let lbl = StandardLabel(
+        let label = StandardLabel(
             labelText: "my_profile_subtitle".localized,
             labelFont: .sfPro,
             labelType: .body,
             labelColor: .black30,
             labelWeight: .regular
         )
-        lbl.numberOfLines = 0
-        return lbl
+        label.numberOfLines = 0
+        return label
     }()
 
     lazy var vStack: UIStackView = {
@@ -186,33 +186,33 @@ class MyProfileViewController: GradientNavBarViewController {
         if isEditingProfile {
             let name = StandardLabel(labelText: "name".localized, labelFont: .sfPro, labelType: .body,
                                      labelColor: .black10, labelWeight: .medium)
-            let tf = StandardTextfield(placeholder: viewModel.caregiverName)
-            tf.text = viewModel.caregiverName
-            tf.translatesAutoresizingMaskIntoConstraints = false
-            nameEditField = tf
+            let textfield = StandardTextfield(placeholder: viewModel.caregiverName)
+            textfield.text = viewModel.caregiverName
+            textfield.translatesAutoresizingMaskIntoConstraints = false
+            nameEditField = textfield
             
             let phone = StandardLabel(labelText: "Contato", labelFont: .sfPro, labelType: .body,
                                      labelColor: .black10, labelWeight: .medium)
-            let phonetf = StandardTextfield(placeholder: viewModel.caregiverPhone)
-            phonetf.text = viewModel.caregiverPhone
-            phonetf.translatesAutoresizingMaskIntoConstraints = false
-            phoneEditField = phonetf
+            let phonetextfield = StandardTextfield(placeholder: viewModel.caregiverPhone)
+            phonetextfield.text = viewModel.caregiverPhone
+            phonetextfield.translatesAutoresizingMaskIntoConstraints = false
+            phoneEditField = phonetextfield
             
             vStack.addArrangedSubview(name)
-            vStack.addArrangedSubview(tf)
+            vStack.addArrangedSubview(textfield)
             vStack.addArrangedSubview(phone)
-            vStack.addArrangedSubview(phonetf)
+            vStack.addArrangedSubview(phonetextfield)
             
             NSLayoutConstraint.activate([
                 name.topAnchor.constraint(equalTo: vStack.topAnchor),
                 name.leadingAnchor.constraint(equalTo: vStack.leadingAnchor),
-                tf.topAnchor.constraint(equalTo: name.bottomAnchor, constant: 8),
-                tf.leadingAnchor.constraint(equalTo: vStack.leadingAnchor),
+                textfield.topAnchor.constraint(equalTo: name.bottomAnchor, constant: 8),
+                textfield.leadingAnchor.constraint(equalTo: vStack.leadingAnchor),
                 
-                phone.topAnchor.constraint(equalTo: tf.bottomAnchor, constant: 16),
+                phone.topAnchor.constraint(equalTo: textfield.bottomAnchor, constant: 16),
                 phone.leadingAnchor.constraint(equalTo: vStack.leadingAnchor),
-                phonetf.topAnchor.constraint(equalTo: phone.bottomAnchor, constant: 8),
-                phonetf.leadingAnchor.constraint(equalTo: vStack.leadingAnchor)
+                phonetextfield.topAnchor.constraint(equalTo: phone.bottomAnchor, constant: 8),
+                phonetextfield.leadingAnchor.constraint(equalTo: vStack.leadingAnchor)
             ])
             
         } else {
