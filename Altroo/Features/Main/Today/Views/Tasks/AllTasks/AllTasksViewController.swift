@@ -167,7 +167,7 @@ class AllTasksViewController: GradientNavBarViewController {
 extension AllTasksViewController {
     func bindToCardDelegateActions() {
         todayView.onSelectTask = { [weak self] task in
-            self?.coordinator?.openTaskDetail(for: task)
+            self?.coordinator?.goTo(.taskDetail(task))
         }
         
         todayView.onMarkDone = { [weak self] task in
@@ -175,7 +175,7 @@ extension AllTasksViewController {
         }
         
         lateView.onSelectTask = { [weak self] task in
-            self?.coordinator?.openTaskDetail(for: task)
+            self?.coordinator?.goTo(.taskDetail(task))
         }
         
         lateView.onMarkDone = { [weak self] task in
@@ -183,7 +183,7 @@ extension AllTasksViewController {
         }
         
         upcomingView.onSelectTask = { [weak self] task in
-            self?.coordinator?.openTaskTemplateDetail(for: task)
+            self?.coordinator?.goTo(.templateDetail(task))
         }
     }
 }

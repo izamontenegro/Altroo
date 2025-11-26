@@ -105,6 +105,23 @@
         }
       }
     },
+    "abdominal_pain" : {
+      "extractionState" : "stale",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Abdominal pain"
+          }
+        },
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Dor abdominal"
+          }
+        }
+      }
+    },
     "acceptance" : {
       "extractionState" : "manual",
       "localizations" : {
@@ -345,6 +362,23 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Dia inteiro"
+          }
+        }
+      }
+    },
+    "alergy" : {
+      "extractionState" : "stale",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Allergic reaction"
+          }
+        },
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Reação Alérgica"
           }
         }
       }
@@ -737,6 +771,23 @@
         }
       }
     },
+    "convulsion" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Convulsion"
+          }
+        },
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Convulsão"
+                      }
+        }
+      }
+    },
     "ContactText" : {
       "extractionState" : "manual",
       "localizations" : {
@@ -881,6 +932,57 @@
             "state" : "translated",
             "value" : "Deletar"
           }
+        }
+      }
+    },
+    "desorientation" : {
+      "extractionState" : "stale",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Disorientation"
+          }
+        },
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Desorientação"
+          }
+        }
+      }
+    },
+    "diarrhea" : {
+      "extractionState" : "stale",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Diarrhea"
+          }
+        },
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Diarreia"
+          }
+        }
+      }
+    },
+    "dizziness" : {
+      "extractionState" : "stale",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Dizziness"
+          }
+        },
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Tontura"
+                      }
         }
       }
     },
@@ -1109,6 +1211,40 @@
         }
       }
     },
+    "fainting" : {
+      "extractionState" : "stale",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Fainting"
+          }
+        },
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Desmaio"
+          }
+        }
+      }
+    },
+    "fall" : {
+      "extractionState" : "stale",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Fall"
+          }
+        },
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Queda"
+          }
+        }
+      }
+    },
     "feeding" : {
       "extractionState" : "manual",
       "localizations" : {
@@ -1139,6 +1275,23 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Amigo"
+          }
+        }
+      }
+    },
+    "fever" : {
+      "extractionState" : "stale",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Fever"
+          }
+        },
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Febre"
           }
         }
       }
@@ -1207,6 +1360,23 @@
             "state" : "translated",
             "value" : "Bisneta/Bisneto"
           }
+        }
+      }
+    },
+    "headache" : {
+      "extractionState" : "stale",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Headache"
+          }
+        },
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Dor de cabeça"
+                      }
         }
       }
     },
@@ -1619,6 +1789,23 @@
         }
       }
     },
+    "mood_changes" : {
+      "extractionState" : "stale",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Mood changes"
+          }
+        },
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Mudança de humor"
+          }
+        }
+      }
+    },
     "morning" : {
       "extractionState" : "manual",
       "localizations" : {
@@ -1710,6 +1897,23 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "There are no records"
+          }
+        }
+      }
+    },
+    "nausea" : {
+      "extractionState" : "stale",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Nausea"
+          }
+        },
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Náusea"
           }
         }
       }
@@ -2607,6 +2811,23 @@
         }
       }
     },
+    "shaking" : {
+      "extractionState" : "stale",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Shaking"
+          }
+        },
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Tremores"
+          }
+        }
+      }
+    },
     "Sincronizando..." : {
       "localizations" : {
         "en" : {
@@ -3122,6 +3343,23 @@
         }
       }
     },
+    "trauma" : {
+      "extractionState" : "stale",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Trauma"
+          }
+        },
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Trauma"
+          }
+        }
+      }
+    },
     "tutorial_subtitle" : {
       "comment" : "tutorial",
       "extractionState" : "manual",
@@ -3188,6 +3426,40 @@
             "state" : "translated",
             "value" : "Urina"
           }
+        }
+      }
+    },
+    "vertigo" : {
+      "extractionState" : "stale",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Vertigo"
+          }
+        },
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Vertigem"
+          }
+        }
+      }
+    },
+    "vomit" : {
+      "extractionState" : "stale",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Vomit"
+          }
+        },
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Vômito"
+                      }
         }
       }
     },
@@ -3272,6 +3544,23 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Sem data final"
+          }
+        }
+      }
+    },
+    "wound" : {
+      "extractionState" : "stale",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Wound"
+          }
+        },
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Ferimento"
           }
         }
       }

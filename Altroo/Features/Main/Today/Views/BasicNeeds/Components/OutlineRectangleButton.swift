@@ -8,7 +8,8 @@ import UIKit
 
 final class OutlineRectangleButton: UIButton {
     
-    private let label: StandardLabel
+    let label: StandardLabel
+    var associatedData: Any?
     
     private let selectedBackground = UIColor.blue40
     private let unselectedBackground = UIColor.clear
@@ -16,9 +17,8 @@ final class OutlineRectangleButton: UIButton {
     private let selectedTextColor = UIColor.pureWhite
     private let unselectedTextColor = UIColor.blue40
     
-    
-      private let horizontalPadding: CGFloat = 24
-      private let verticalPadding: CGFloat = 8
+      private let horizontalPadding: CGFloat = 10
+      private let verticalPadding: CGFloat = 4
     
     init(title: String) {
         self.label = StandardLabel(
@@ -59,8 +59,8 @@ final class OutlineRectangleButton: UIButton {
         NSLayoutConstraint.activate([
             label.topAnchor.constraint(equalTo: topAnchor, constant: 4),
             label.bottomAnchor.constraint(equalTo: bottomAnchor, constant: -4),
-            label.leadingAnchor.constraint(equalTo: leadingAnchor, constant: 16),
-            label.trailingAnchor.constraint(equalTo: trailingAnchor, constant: -16)
+            label.leadingAnchor.constraint(equalTo: leadingAnchor, constant: 10),
+            label.trailingAnchor.constraint(equalTo: trailingAnchor, constant: -10)
         ])
         
         updateAppearance()

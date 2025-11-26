@@ -92,13 +92,13 @@ extension UIView {
         generator.impactOccurred()
     }
     
-    func pinToEdges(of other: UIView) {
+    func pinToEdges(of other: UIView, withConstant: CGFloat = 0) {
         translatesAutoresizingMaskIntoConstraints = false
         NSLayoutConstraint.activate([
-            topAnchor.constraint(equalTo: other.topAnchor),
-            bottomAnchor.constraint(equalTo: other.bottomAnchor),
-            leadingAnchor.constraint(equalTo: other.leadingAnchor),
-            trailingAnchor.constraint(equalTo: other.trailingAnchor)
+            topAnchor.constraint(equalTo: other.topAnchor, constant: withConstant),
+            bottomAnchor.constraint(equalTo: other.bottomAnchor, constant: -withConstant),
+            leadingAnchor.constraint(equalTo: other.leadingAnchor, constant: withConstant),
+            trailingAnchor.constraint(equalTo: other.trailingAnchor, constant: -withConstant)
         ])
     }
 }

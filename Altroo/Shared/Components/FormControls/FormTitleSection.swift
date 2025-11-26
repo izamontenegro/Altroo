@@ -7,19 +7,18 @@
 import UIKit
 
 final class FormTitleSection: UIStackView {
-    let currentStep: Int?
-    let totalSteps: Int?
+    var currentStep: Int?
+    var totalSteps: Int?
+    
+    private let titleLabel: StandardLabel
+    private let descriptionLabel: StandardLabel
+    private let stepRow: UIStackView
     
     init(title: String, description: String, totalSteps: Int, currentStep: Int) {
         self.currentStep = currentStep
         self.totalSteps = totalSteps
-        super.init(frame: .zero)
-        alignment = .leading
-        axis = .vertical
-        spacing = Layout.verySmallSpacing
-        translatesAutoresizingMaskIntoConstraints = false
-
-        let titleLabel = StandardLabel(
+        
+        self.titleLabel = StandardLabel(
             labelText: title,
             labelFont: .sfPro,
             labelType: .title2,
@@ -27,44 +26,57 @@ final class FormTitleSection: UIStackView {
             labelWeight: .semibold
         )
         
-        let descriptionLabel = StandardLabel(
+        self.descriptionLabel = StandardLabel(
             labelText: description,
             labelFont: .sfPro,
             labelType: .body,
             labelColor: .black30,
             labelWeight: .regular
         )
-        
         descriptionLabel.numberOfLines = 0
         descriptionLabel.lineBreakMode = .byWordWrapping
         
-        if totalSteps > 0 {
-            addArrangedSubview(makeStepRow())
-        }
+        self.stepRow = UIStackView()
+        
+        super.init(frame: .zero)
+        alignment = .leading
+        axis = .vertical
+        spacing = Layout.verySmallSpacing
+        translatesAutoresizingMaskIntoConstraints = false
+        
+        configureStepRow()
+        
+        addArrangedSubview(stepRow)
 
         addArrangedSubview(titleLabel)
         setCustomSpacing(0, after: titleLabel)
         addArrangedSubview(descriptionLabel)
     }
-
+    
     required init(coder: NSCoder) { fatalError("init(coder:) has not been implemented") }
     
-    private func makeStepRow() -> UIStackView {
+    func updateContent(title: String, description: String, currentStep: Int) {
+        titleLabel.text = title
+        descriptionLabel.text = description
+        self.currentStep = currentStep
+        configureStepRow()
+    }
+    
+    private func configureStepRow() {
+        stepRow.arrangedSubviews.forEach { $0.removeFromSuperview() }
         
-        let hstack = UIStackView()
-        hstack.axis = .horizontal
-        hstack.distribution = .fill
-        hstack.alignment = .center
-        hstack.spacing = 6
+        stepRow.axis = .horizontal
+        stepRow.distribution = .fill
+        stepRow.alignment = .center
+        stepRow.spacing = 6
         
-        guard let totalSteps, let currentStep else { return hstack }
-
+        guard let totalSteps, let currentStep else { return  }
+        
         for step in 1...totalSteps {
             let circle = makeCircle(for: step, isActive: step == currentStep)
-            hstack.addArrangedSubview(circle)
+            stepRow.addArrangedSubview(circle)
         }
         
-        return hstack
     }
     
     private func makeCircle(for step: Int, isActive: Bool) -> UIView {

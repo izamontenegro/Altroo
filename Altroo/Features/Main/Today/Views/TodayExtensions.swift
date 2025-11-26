@@ -7,13 +7,13 @@
 
 extension TodayViewController: SymptomsCardDelegate {
     func tappedSymptom(_ symptom: Symptom, on card: SymptomsCard) {
-        delegate?.goToSymptomDetail(with: symptom)
+        delegate?.goTo(.symptomDetail(symptom))
     }
 }
 
 extension TodayViewController: TaskCardDelegate, TaskCardNavigationDelegate {
     func taskCardDidSelect(_ task: TaskInstance) {
-        delegate?.openTaskDetail(with: task)
+        delegate?.goTo(.taskDetail(task))
     }
     
     func taskCardDidMarkAsDone(_ task: TaskInstance) {

@@ -136,7 +136,7 @@ class TaskDetailViewController: UIViewController {
             tags.append(tag)
         }
         
-        let row = FlowLayoutView(views: tags, maxWidth: view.bounds.width)
+        let row = FlowLayoutView(views: tags)
         return row
     }
     
@@ -147,7 +147,7 @@ class TaskDetailViewController: UIViewController {
             tags.append(tag)
         }
         
-        let row = FlowLayoutView(views: tags, maxWidth: view.bounds.width)
+        let row = FlowLayoutView(views: tags)
         return row
     }
     

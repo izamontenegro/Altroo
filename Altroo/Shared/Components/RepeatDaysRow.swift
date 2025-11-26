@@ -41,7 +41,7 @@ final class RepeatDaysRow: UIStackView {
             return button
         }
         
-        let wrap = FlowLayoutView(views: buttons, maxWidth: maxWidth)
+        let wrap = FlowLayoutView(views: buttons)
         wrap.translatesAutoresizingMaskIntoConstraints = false
         
         addSubview(wrap)
