@@ -198,7 +198,7 @@ extension TodayCoordinator: TodayViewControllerDelegate {
     
     func goTo(_ destination: TodayDestination) {
         switch destination {
-        case .recordHydration, .recordUrine, .recordStool, .recordFeeding, .addNewTask:
+        case .recordHydration, .recordUrine, .recordStool, .recordFeeding:
             guard let rootVC = makeViewController(for: destination) else { return }
             
             let nav = UINavigationController(rootViewController: rootVC)
@@ -208,6 +208,23 @@ extension TodayCoordinator: TodayViewControllerDelegate {
                 sheet.detents = [
                     .custom(identifier: .init("almostFull")) { context in
                         return context.maximumDetentValue * 0.9
+                    }
+                ]
+                sheet.prefersGrabberVisible = true
+            }
+            
+            navigation.present(nav, animated: true)
+            
+        case .addNewTask:
+            guard let rootVC = makeViewController(for: destination) else { return }
+            
+            let nav = UINavigationController(rootViewController: rootVC)
+            nav.modalPresentationStyle = .pageSheet
+            
+            if let sheet = nav.sheetPresentationController {
+                sheet.detents = [
+                    .custom(identifier: .init("almostFull")) { context in
+                        return context.maximumDetentValue * 0.99
                     }
                 ]
                 sheet.prefersGrabberVisible = true
