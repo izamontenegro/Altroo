@@ -172,7 +172,7 @@ final class MedicalRecordViewController: GradientNavBarViewController {
         let containerView = UIView()
         containerView.backgroundColor = .clear
         let titleLabel = StandardLabel(
-            labelText: "Ficha do Assistido",
+            labelText: "medical_record".localized,
             labelFont: .sfPro,
             labelType: .title2,
             labelColor: .black10,

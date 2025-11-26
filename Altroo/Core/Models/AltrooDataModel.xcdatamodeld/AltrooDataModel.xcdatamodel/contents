@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
-<model type="com.apple.IDECoreDataModeler.DataModel" documentVersion="1.0" lastSavedToolsVersion="23788.4" systemVersion="25A5351b" minimumToolsVersion="Automatic" sourceLanguage="Swift" userDefinedModelVersionIdentifier="">
+<model type="com.apple.IDECoreDataModeler.DataModel" documentVersion="1.0" lastSavedToolsVersion="23605" systemVersion="24A335" minimumToolsVersion="Automatic" sourceLanguage="Swift" userDefinedModelVersionIdentifier="">
     <entity name="BasicNeeds" representedClassName="BasicNeeds" syncable="YES" codeGenerationType="class">
         <relationship name="careRecipient" optional="YES" maxCount="1" deletionRule="Nullify" destinationEntity="CareRecipient" inverseName="basicNeeds" inverseEntity="CareRecipient"/>
         <relationship name="feeding" optional="YES" toMany="YES" deletionRule="Nullify" destinationEntity="FeedingRecord" inverseName="basicNeeds" inverseEntity="FeedingRecord"/>
@@ -9,8 +9,11 @@
     </entity>
     <entity name="CareRecipient" representedClassName="CareRecipient" syncable="YES" codeGenerationType="class">
         <attribute name="activeUsersID" optional="YES" attributeType="Transformable" customClassName="[UUID]"/>
+        <attribute name="ckMetadata" optional="YES" attributeType="Binary" allowsExternalBinaryDataStorage="YES"/>
+        <attribute name="creationDate" attributeType="Date" defaultDateTimeInterval="785624400" usesScalarValueType="NO"/>
         <attribute name="id" optional="YES" attributeType="UUID" usesScalarValueType="NO"/>
         <attribute name="recordUpdatedAt" optional="YES" attributeType="Date" usesScalarValueType="NO"/>
+        <attribute name="sharedUUID" optional="YES" attributeType="String"/>
         <attribute name="usersID" optional="YES" attributeType="Transformable" customClassName="[UUID]"/>
         <attribute name="waterMeasure" optional="YES" attributeType="Double" usesScalarValueType="YES"/>
         <attribute name="waterTarget" optional="YES" attributeType="Double" usesScalarValueType="YES"/>

@@ -14,12 +14,34 @@ protocol ShiftFormsViewControllerDelegate: AnyObject {
 
 class ShiftFormViewController: UIViewController {
     private var cancellables = Set<AnyCancellable>()
-
     weak var delegate: ShiftFormsViewControllerDelegate?
-    private let viewModel: AddPatientViewModel
     
-    init(viewModel: AddPatientViewModel) {
+    private let viewModel: AddPatientViewModel
+    private let receivedPatientViaShare: Bool
+    private let patient: CareRecipient?
+    
+    private lazy var titleSection: FormTitleSection = {
+        FormTitleSection(
+            title: "Sobre você",
+            description: "Preencha os campos a seguir quanto a seus dados pessoais e em relação ao assistido.",
+            totalSteps: receivedPatientViaShare ? 0 : 3,
+            currentStep: receivedPatientViaShare ? 0 : 3
+        )
+    }()
+    
+    private lazy var newCaregiverTitleSection: FormTitleSection = {
+        FormTitleSection(
+            title: "Novo Cuidador",
+            description: "Preencha as informações a seguir para começar os cuidados com \(viewModel.name.isEmpty ? "assistido" : viewModel.name.abbreviatedName).",
+            totalSteps: receivedPatientViaShare ? 0 : 3,
+            currentStep: receivedPatientViaShare ? 0 : 3
+        )
+    }()
+    
+    init(viewModel: AddPatientViewModel, receivedPatientViaShare: Bool, patient: CareRecipient? = nil) {
         self.viewModel = viewModel
+        self.receivedPatientViaShare = receivedPatientViaShare
+        self.patient = patient
         super.init(nibName: nil, bundle: nil)
     }
     
@@ -27,10 +49,11 @@ class ShiftFormViewController: UIViewController {
         fatalError("init(coder:) has not been implemented")
     }
     
-    private let titleSection = FormTitleSection(title: "Sobre você", description: "Preencha os campos a seguir quanto a seus dados pessoais e em relação ao assistido.", totalSteps: 3, currentStep: 3)
-    
     private lazy var nameSection = FormSectionView(title: "name".localized, content: nameTextField, isObligatory: true)
-    private lazy var nameTextField = StandardTextfield(placeholder: "Nome do cuidador")
+    private lazy var nameTextField = StandardTextfield(placeholder: "Seu nome")
+    
+    private lazy var contactSection = FormSectionView(title: "Telefone", content: contactField, isObligatory: false, isCustomWidth: true)
+    private lazy var contactField = StandardTextfield(placeholder: "Seu telefone")
 
     //Time
     private lazy var allDaySwitch: UISwitch = {
@@ -80,7 +103,7 @@ class ShiftFormViewController: UIViewController {
     private lazy var endSection = FormSectionView(title: "Hora final", content: endTimePicker, isSubsection: true)
     private lazy var allDaySection = FormSectionView(title: "Dia inteiro", content: allDaySwitch, isSubsection: true)
     
-    private lazy var timeSection = FormSectionView(title: "Em qual período deseja receber notificações do assistido?", content: timeStack)
+    private lazy var timeSection = FormSectionView(title: "Em qual período deseja receber notificações de \(viewModel.name.isEmpty ? "assistido" : viewModel.name.abbreviatedName)?", content: timeStack)
     private lazy var timeStack: UIStackView = {
         let stack = UIStackView(arrangedSubviews: [allDaySection])
         stack.axis = .horizontal
@@ -90,8 +113,7 @@ class ShiftFormViewController: UIViewController {
     }()
     
     //Relationship
-    private lazy var relationshipSection = FormSectionView(title: "Qual a sua relação com o assistido?",
-                                                           content: relationshipButton, isObligatory: true)
+    private lazy var relationshipSection = FormSectionView(title: "Qual a sua relação com \(viewModel.name.isEmpty ? "assistido" : viewModel.name.abbreviatedName)?", content: relationshipButton, isObligatory: true, isCustomWidth: true)
     private lazy var relationshipButton: PopupMenuButton = {
         let button = PopupMenuButton(title: viewModel.selectedUserRelationship)
         button.showsMenuAsPrimaryAction = true
@@ -112,13 +134,25 @@ class ShiftFormViewController: UIViewController {
         
         return button
     }()
-
-    private let doneButton = StandardConfirmationButton(title: "Concluir")
     
-    private lazy var formStack: UIStackView = {        
-        var sections: [UIView] = [titleSection, timeSection, relationshipSection]
+    // Days of the week
+    private lazy var selectDaysSection = FormSectionView(title: "Quais dias da semana você estará cuidando de \(viewModel.name.isEmpty ? "assistido" : viewModel.name.abbreviatedName)?", content: relationshipButton, isObligatory: true)
+//    private lazy var daysSection = "wait"
+
+    private let doneButton = StandardConfirmationButton(title: "Adicionar")
+    
+    private lazy var formStack: UIStackView = {
+        
+        var sections: [UIView] = []
+        
+        if receivedPatientViaShare && viewModel.fetchUser()?.name != "" {
+            sections = [newCaregiverTitleSection, relationshipSection, timeSection]
+        } else {
+            sections = [titleSection, relationshipSection, timeSection]
+        }
         
         if viewModel.fetchUser()?.name == "" {
+            sections.insert(contactSection, at: 1)
             sections.insert(nameSection, at: 1)
         }
 
@@ -128,11 +162,32 @@ class ShiftFormViewController: UIViewController {
         stack.translatesAutoresizingMaskIntoConstraints = false
         return stack
     }()
+    
+    private func configureNavBar() {
+        navigationItem.title = "Adicionar Paciente"
+        
+        if receivedPatientViaShare && viewModel.fetchUser()?.name != "" {
+            let closeButton = UIBarButtonItem(title: "cancel".localized, style: .done, target: self, action: #selector(closeTapped))
+            closeButton.tintColor = .red30
+            navigationItem.rightBarButtonItem = closeButton
+        } else if receivedPatientViaShare && viewModel.fetchUser()?.name == "" {
+            let closeButton = UIBarButtonItem(title: "close".localized, style: .done, target: self, action: #selector(closeTapped))
+            closeButton.tintColor = .blue30
+            navigationItem.leftBarButtonItem = closeButton
+        }
+
+        let appearance = UINavigationBarAppearance()
+        appearance.configureWithOpaqueBackground()
+        navigationItem.scrollEdgeAppearance = appearance
+    }
 
     override func viewDidLoad() {
         super.viewDidLoad()
         view.backgroundColor = .pureWhite
-        
+        contactField.widthAnchor.constraint(equalTo: contactSection.widthAnchor, multiplier: 0.55).isActive = true
+        relationshipButton.widthAnchor.constraint(equalTo: relationshipSection.widthAnchor, multiplier: 0.45).isActive = true
+
+        configureNavBar()
         bindViewModel()
         
         view.addSubview(formStack)
@@ -161,6 +216,11 @@ class ShiftFormViewController: UIViewController {
             .assign(to: \.userName, on: viewModel)
             .store(in: &cancellables)
         
+        NotificationCenter.default.publisher(for: UITextField.textDidChangeNotification, object: contactField)
+            .compactMap { ($0.object as? UITextField)?.text }
+            .assign(to: \.userPhone, on: viewModel)
+            .store(in: &cancellables)
+        
         viewModel.$selectedUserRelationship
                .receive(on: RunLoop.main)
                .sink { [weak self] newValue in
@@ -172,6 +232,13 @@ class ShiftFormViewController: UIViewController {
             .receive(on: RunLoop.main)
             .sink { [weak self] error in
                 self?.nameSection.setError(error)
+            }
+            .store(in: &cancellables)
+        
+        viewModel.$userPhoneError
+            .receive(on: RunLoop.main)
+            .sink { [weak self] error in
+                self?.contactSection.setError(error)
             }
             .store(in: &cancellables)
         
@@ -204,18 +271,24 @@ class ShiftFormViewController: UIViewController {
     
     @objc
     func didTapDoneButton() {
-        if viewModel.fetchUser() != nil {
-            nameTextField.text = viewModel.fetchUser()?.name
-        } else {
-            guard viewModel.validateUser() else { return }
-        }
-
+        guard viewModel.validateUser() else { return }
+        
         viewModel.finalizeUser(startDate: startTimePicker.date, endDate: endTimePicker.date)
-        viewModel.finalizeCareRecipient()
+        
+        if receivedPatientViaShare {
+            guard let patient = patient else { return }
+            viewModel.finalizeNewCaregiver(to: patient)
+        } else {
+            viewModel.finalizeCareRecipient()
+        }
         
         NotificationCenter.default.post(name: .didFinishCloudKitSync, object: nil)
 
         delegate?.shiftFormsDidFinish()
+    }
+    
+    @objc func closeTapped() {
+        dismiss(animated: true)
     }
 }
 
@@ -225,9 +298,3 @@ extension ShiftFormViewController: UITextFieldDelegate {
         return true
     }
 }
-
-//#Preview {
-//    let mockService = UserServiceSession(context: AppDependencies().coreDataService.stack.context)
-//
-//    ShiftFormViewController(viewModel: AddPatientViewModel(careRecipientFacade: CareRecipientFacade(basicNeedsFacade: BasicNeedsFacadeMock(), routineActivitiesFacade: RoutineActivitiesFacadeMock(), persistenceService: CoreDataServiceMock()), userService: mockService))
-//}

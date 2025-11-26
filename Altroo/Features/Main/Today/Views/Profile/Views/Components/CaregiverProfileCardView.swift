@@ -132,7 +132,7 @@ class CaregiverProfileCardView: UIView {
         button.backgroundColor = .clear
 
         let titleLabel = StandardLabel(
-            labelText: (participant?.role == .owner || name == "Você") ? "Criador" : permissionLabel(permission),
+            labelText: (participant?.role == .owner || name == "you".localized) ? "owner".localized : permissionLabel(permission),
             labelFont: .sfPro,
             labelType: .subHeadline,
             labelColor: .blue10,
@@ -144,7 +144,7 @@ class CaregiverProfileCardView: UIView {
         chevron.translatesAutoresizingMaskIntoConstraints = false
         chevron.tintColor = .blue10
         chevron.preferredSymbolConfiguration = .init(pointSize: 14, weight: .semibold)
-        chevron.isHidden = (!isOwner) || (participant?.role == .owner) || (name == "Você")
+        chevron.isHidden = (!isOwner) || (participant?.role == .owner) || (name == "you".localized)
         
         let stack = UIStackView(arrangedSubviews: [titleLabel, chevron])
         stack.axis = .horizontal

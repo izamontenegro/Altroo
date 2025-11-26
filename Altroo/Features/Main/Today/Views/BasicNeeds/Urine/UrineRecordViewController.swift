@@ -56,7 +56,7 @@ final class UrineRecordViewController: UIViewController {
         scrollView.addSubview(content)
 
         let viewTitle = StandardHeaderView(
-            title: "Registrar urina",
+            title: "record_urine".localized,
             subtitle: "Registre uma micção e as características da urina do assistido."
         )
 

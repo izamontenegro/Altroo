@@ -11,7 +11,7 @@ import Combine
 protocol AssociatePatientViewControllerDelegate: AnyObject {
     func goToPatientForms()
     func goToComorbiditiesForms()
-    func goToShiftForms()
+    func goToShiftForms(receivedPatientViaShare: Bool, patient: CareRecipient?)
     func goToTutorialAddSheet()
     func goToMainFlow()
 }
@@ -67,6 +67,13 @@ class AssociatePatientViewController: GradientHeader {
         return button
     }()
     
+    private lazy var refreshControl: UIRefreshControl = {
+        let refreshControl = UIRefreshControl()
+        refreshControl.tintColor = .black30
+        refreshControl.addTarget(self, action: #selector(handleRefresh), for: .valueChanged)
+        return refreshControl
+    }()
+    
     private let scrollView: UIScrollView = {
         let scroll = UIScrollView()
         scroll.translatesAutoresizingMaskIntoConstraints = false
@@ -107,6 +114,9 @@ class AssociatePatientViewController: GradientHeader {
 
         super.viewDidLoad()
         view.backgroundColor = .blue80
+        
+        scrollView.refreshControl = refreshControl
+        refreshControl.bounds = refreshControl.bounds.offsetBy(dx: 0, dy: -20)
 
         setupLayout()
         updateView()
@@ -213,7 +223,17 @@ class AssociatePatientViewController: GradientHeader {
             .store(in: &cancellables)
     }
     
+    private func fetchData() {
+        updateView()
+        
+        if refreshControl.isRefreshing {
+            refreshControl.endRefreshing()
+        }
+    }
+    
     @objc func didTapAddNewPatientButton() { delegate?.goToPatientForms() }
     
     @objc func didTapAddExistingPatientButton() { delegate?.goToTutorialAddSheet() }
+    
+    @objc private func handleRefresh() { fetchData() }
 }

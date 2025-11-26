@@ -60,7 +60,7 @@ enum RelationshipOptionsEnum: String, CaseIterable {
     
     var displayText: String {
         switch self {
-        case .caregiver: return "Cuidador"
+        case .caregiver: return "caregiver".localized
         case .parent: return "Mãe/Pai"
         case .child: return "Filha/Filho"
         case .grandchild: return "Neta/Neto"

@@ -13,6 +13,7 @@ protocol UserServiceProtocol {
     func createUser(name: String, category: String) -> User
     func setName(_ name: String)
     func setCategory(_ category: String)
+    func setPhone(_ phone: String)
     func setCurrentPatient(_ patient: CareRecipient)
     func addPatient(_ patient: CareRecipient)
     func removePatient(_ patient: CareRecipient)
@@ -21,6 +22,7 @@ protocol UserServiceProtocol {
     func removeCurrentPatient()
     func setShift(_ shifts: [PeriodEnum])
     func getShift() -> [PeriodEnum]
+    func fetchSharedPatients() -> [CareRecipient]
     
     var cloudKitDidChangePublisher: AnyPublisher<Void, Never> { get }
     var currentPatientPublisher: AnyPublisher<CareRecipient?, Never> { get }
