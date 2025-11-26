@@ -130,19 +130,21 @@ class PatientFormsViewController: UIViewController {
     private lazy var genderSection = FormSectionView(title: "gender".localized, content: genderSegmentedControl)
     private lazy var addressSection = FormSectionView(title: "address".localized, content: addressTextField)
 
-    private lazy var contactSection = FormSectionView(title: "emergency_contact".localized, content: contactStack)
-    private lazy var contactNameSection = FormSectionView(title: "name".localized, content: contactNameTextField, isSubsection: true)
-    private lazy var contactPhoneSection = FormSectionView(title: "contact_phone".localized, content: contactPhoneTextField, isSubsection: true)
-    private lazy var contactRelationshipSection = FormSectionView(title: "relationship".localized, content: relationshipButton, isSubsection: true)
-
+    private lazy var contactSection = FormSectionView(title: "emergency_contact".localized, content: contactStack, isSubsection: true)
+    private lazy var contactNameSection = FormSectionView(title: "name".localized, content: contactNameTextField)
+    private lazy var contactPhoneSection = FormSectionView(title: "contact_phone".localized, content: contactPhoneTextField)
+    private lazy var contactRelationshipSection = FormSectionView(title: "relationship".localized, content: relationshipButton)
+    
     private lazy var ageLabel: StandardLabel = {
         let label = StandardLabel(
-            labelText: "age_default".localized,
+            labelText: "",
             labelFont: .sfPro,
             labelType: .body,
             labelColor: .black10,
             labelWeight: .regular
         )
+
+        label.attributedText = makeAgeAttributedText(for: 0)
         return label
     }()
     
@@ -214,6 +216,7 @@ class PatientFormsViewController: UIViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
         setupUI()
+        configureNavBar()
         bindViewModel()
         keyboardHandler = KeyboardHandler(viewController: self)
     }
@@ -248,6 +251,26 @@ class PatientFormsViewController: UIViewController {
             tf.delegate = self
         }
         
+        if formStack.arrangedSubviews.contains(nextStepButton) {
+            formStack.removeArrangedSubview(nextStepButton)
+            nextStepButton.removeFromSuperview()
+        }
+        
+        let buttonWrapper = UIView()
+        buttonWrapper.translatesAutoresizingMaskIntoConstraints = false
+        buttonWrapper.addSubview(nextStepButton)
+        nextStepButton.translatesAutoresizingMaskIntoConstraints = false
+        
+        NSLayoutConstraint.activate([
+            nextStepButton.centerXAnchor.constraint(equalTo: buttonWrapper.centerXAnchor),
+            nextStepButton.topAnchor.constraint(equalTo: buttonWrapper.topAnchor),
+            nextStepButton.bottomAnchor.constraint(equalTo: buttonWrapper.bottomAnchor),
+            nextStepButton.widthAnchor.constraint(equalToConstant: 205),
+            nextStepButton.heightAnchor.constraint(equalToConstant: 46)
+        ])
+
+        formStack.addArrangedSubview(buttonWrapper)
+        
         NSLayoutConstraint.activate([
             scrollView.topAnchor.constraint(equalTo: view.safeAreaLayoutGuide.topAnchor),
             scrollView.leadingAnchor.constraint(equalTo: view.leadingAnchor),
@@ -270,15 +293,33 @@ class PatientFormsViewController: UIViewController {
     }
     
     private func configureNavBar() {
-        let closeButton = UIBarButtonItem(title: "close".localized, style: .done, target: self, action: #selector(didTapClose))
-        closeButton.tintColor = .blue30
+        navigationItem.title = "Adicionar Assistido"
+        
+        let closeButton = UIBarButtonItem(
+            title: "close".localized,
+            style: .plain,
+            target: self,
+            action: #selector(didTapClose)
+        )
         navigationItem.leftBarButtonItem = closeButton
 
         let appearance = UINavigationBarAppearance()
         appearance.configureWithOpaqueBackground()
+        
+        appearance.titleTextAttributes = [
+            .foregroundColor: UIColor.black10,
+            .font: UIFont.systemFont(ofSize: 17, weight: .medium)
+        ]
+        
+        appearance.buttonAppearance.normal.titleTextAttributes = [
+            .foregroundColor: UIColor.blue30,
+            .font: UIFont.systemFont(ofSize: 17, weight: .regular)
+        ]
+        
+        navigationItem.standardAppearance = appearance
         navigationItem.scrollEdgeAppearance = appearance
     }
-    
+
     @objc private func didTapClose() {
         dismiss(animated: true, completion: nil)
     }
@@ -318,11 +359,31 @@ class PatientFormsViewController: UIViewController {
         
         delegate?.goToComorbiditiesForms()
     }
+    
+    private func makeAgeAttributedText(for age: Int) -> NSAttributedString {
+        let fullText = String(format: "age_format".localized, age)
+        let attributed = NSMutableAttributedString(string: fullText)
+
+        if let numberRange = fullText.range(of: "\(age)") {
+            let nsRange = NSRange(numberRange, in: fullText)
+            let baseFont = UIFont.systemFont(ofSize: 20, weight: .regular)
+            let roundedFont: UIFont
+            if let descriptor = baseFont.fontDescriptor.withDesign(.rounded) {
+                roundedFont = UIFont(descriptor: descriptor, size: 20)
+            } else {
+                roundedFont = baseFont
+            }
+
+            attributed.addAttribute(.font, value: roundedFont, range: nsRange)
+        }
+
+        return attributed
+    }
 
     @objc
     private func updateAgeLabel() {
         let age = Calendar.current.dateComponents([.year], from: datePicker.date, to: Date()).year ?? 0
-        ageLabel.updateLabelText(String(format: "age_format".localized, age))
+        ageLabel.attributedText = makeAgeAttributedText(for: age)
     }
 }
 
@@ -332,13 +393,3 @@ extension PatientFormsViewController: UITextFieldDelegate {
         return true
     }
 }
-
-//class BasicNeedsFacadeMock: BasicNeedsFacadeProtocol {}
-//class RoutineActivitiesFacadeMock: RoutineActivitiesFacadeProtocol {}
-//class CoreDataServiceMock: CoreDataService {}
-//
-//#Preview {
-//    let mockService = UserServiceSession(context: AppDependencies().coreDataService.stack.context)
-//
-//    PatientFormsViewController(viewModel: AddPatientViewModel(careRecipientFacade: CareRecipientFacade(basicNeedsFacade: BasicNeedsFacadeMock(), routineActivitiesFacade: RoutineActivitiesFacadeMock(), persistenceService: CoreDataServiceMock()), userService: mockService))
-//}

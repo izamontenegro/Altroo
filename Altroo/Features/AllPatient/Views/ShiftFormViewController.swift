@@ -136,8 +136,27 @@ class ShiftFormViewController: UIViewController {
     }()
     
     // Days of the week
-    private lazy var selectDaysSection = FormSectionView(title: "Quais dias da semana você estará cuidando de \(viewModel.name.isEmpty ? "assistido" : viewModel.name.abbreviatedName)?", content: relationshipButton, isObligatory: true)
-//    private lazy var daysSection = "wait"
+    private let days: [String] = [
+        "Seg", "Ter", "Qua", "Qui", "Sex", "Sáb", "Dom"
+    ]
+//
+//    private lazy var dayButtons: [SelectableDayButton] = {
+//        days.map { SelectableDayButton(title: $0) }
+//    }()
+//
+//    private lazy var daysStack: UIStackView = {
+//        let stack = UIStackView(arrangedSubviews: dayButtons)
+//        stack.axis = .horizontal
+//        stack.spacing = 8
+//        stack.distribution = .fillEqually
+//        return stack
+//    }()
+
+//    private lazy var daysSection = FormSectionView(
+//        title: "Quais dias da semana você estará cuidando de \(viewModel.name.isEmpty ? "assistido" : viewModel.name.abbreviatedName)?",
+//        content: daysStack,
+//        isObligatory: true
+//    )
 
     private let doneButton = StandardConfirmationButton(title: "Adicionar")
     

@@ -47,7 +47,7 @@ class StandardSegmentedControl: UISegmentedControl {
             backgroundColor: .pureWhite,
             selectedColor: .blue30,
             selectedFontColor: .pureWhite,
-            unselectedFontColor: .black30,
+            unselectedFontColor: .blue10,
             cornerRadius: 8
         )
     }

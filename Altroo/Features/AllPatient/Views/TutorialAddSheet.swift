@@ -117,12 +117,22 @@ class TutorialAddSheet: UIViewController {
     }
     
     private func configureNavBar() {
-        let closeButton = UIBarButtonItem(title: "close".localized, style: .done, target: self, action: #selector(didTapClose))
-        closeButton.tintColor = .blue30
+        let closeButton = UIBarButtonItem(
+            title: "close".localized,
+            style: .plain,
+            target: self,
+            action: #selector(didTapClose)
+        )
         navigationItem.leftBarButtonItem = closeButton
 
         let appearance = UINavigationBarAppearance()
         appearance.configureWithOpaqueBackground()
+        appearance.buttonAppearance.normal.titleTextAttributes = [
+            .foregroundColor: UIColor.blue30,
+            .font: UIFont.systemFont(ofSize: 17, weight: .regular)
+        ]
+        
+        navigationItem.standardAppearance = appearance
         navigationItem.scrollEdgeAppearance = appearance
     }
     

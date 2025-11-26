@@ -72,7 +72,18 @@ final class FormTitleSection: UIStackView {
         circle.widthAnchor.constraint(equalToConstant: 26).isActive = true
         circle.heightAnchor.constraint(equalToConstant: 26).isActive = true
         circle.translatesAutoresizingMaskIntoConstraints = true
-        circle.fillColor = isActive ? .blue30 : .blue30.withAlphaComponent(0.3)
+        
+        guard let currentStep else { return circle }
+        let fillColor: UIColor
+        if step == currentStep {
+            fillColor = .blue20
+        } else if step < currentStep {
+            fillColor = .blue50
+        } else {
+            fillColor = .black40
+        }
+        circle.fillColor = fillColor
+
         let number = StandardLabel(
             labelText: "\(step)",
             labelFont: .sfPro,
