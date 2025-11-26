@@ -5,14 +5,6 @@
 //  Created by Izadora de Oliveira Albuquerque Montenegro on 23/11/25.
 //
 
-
-//
-//  MedicalRecordInformationView.swift
-//  Altroo
-//
-//  Created by Izadora de Oliveira Albuquerque Montenegro on 12/10/25.
-//
-
 import UIKit
 
 final class MedicalRecordInfoItemView: UIView {

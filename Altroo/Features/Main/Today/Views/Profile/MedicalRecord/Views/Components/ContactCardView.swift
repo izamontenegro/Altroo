@@ -8,6 +8,7 @@
 import UIKit
 
 final class ContactCardView: UIView {
+    
     private let nameAndRelationLabel: StandardLabel
     private let phoneLabel: StandardLabel
     let copyButton: UIButton

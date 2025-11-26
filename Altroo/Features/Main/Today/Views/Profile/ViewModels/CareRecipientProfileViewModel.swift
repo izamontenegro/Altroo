@@ -73,6 +73,31 @@ final class CareRecipientProfileViewModel {
         return coreDataService.getShare(recipient)
     }
     
+    private func currentPatient() -> CareRecipient? {
+        userService.fetchCurrentPatient()
+    }
+    
+    func getUpdatedAt() -> String {
+        guard let person = currentPatient() else { return "" }
+        return DateFormatterHelper.fullDateFormaterr(from: person.recordUpdatedAt)
+    }
+    
+    func getContactDisplayItem() -> ContactDisplayItem? {
+        guard
+            let personalData = currentPatient()?.personalData,
+            let contactsSet = personalData.contacts as? Set<Contact>,
+            let contact = contactsSet.first
+        else {
+            return nil
+        }
+        
+        return ContactDisplayItem(
+            name: contact.name ?? "Sem nome",
+            relationship: contact.relationship,
+            phone: contact.phone ?? ""
+        )
+    }
+    
     private func calcCompletion(for recipient: CareRecipient?) -> CGFloat {
         guard let recipient else { return 0.0 }
         var total = 0, filled = 0
