@@ -128,7 +128,6 @@ final class MedicalRecordProgressView: UIView {
         checkArray(healthProblems?.allergies)
 
         let mentalState = careRecipient.mentalState
-        check(mentalState?.cognitionState)
         checkToManySet(Set(mentalState?.emotionalState ?? []))
         check(mentalState?.memoryState)
         checkToManySet(Set(mentalState?.orientationState ?? []))

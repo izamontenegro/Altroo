@@ -87,20 +87,21 @@ final class MedicalRecordViewController: GradientNavBarViewController {
         view.viewWithTag(contentStackViewTag) as? UIStackView
     }
 
-    // MARK: - Conteúdo
-
     private func reloadContent() {
         guard let contentStackView = resolveContentStackView() else { return }
         contentStackView.arrangedSubviews.forEach { $0.removeFromSuperview() }
         
         let headerView = makeHeaderSection(percent: viewModel.completionPercentage)
-        let alertView = makeCompletionAlertAndButton()
+        contentStackView.addArrangedSubview(headerView)
+
+        if viewModel.completionPercentage < 1.0 {
+            let alertView = makeCompletionAlertAndButton()
+            contentStackView.addArrangedSubview(alertView)
+        }
         
         contentStackView.addArrangedSubview(headerView)
-        contentStackView.addArrangedSubview(alertView)
         contentStackView.spacing = 16
         
-        // 1. Dados Pessoais
         let personalSection = PersonalDataSectionView(
             name: viewModel.getName(),
             birthDate: viewModel.getBirthDate(),
@@ -115,7 +116,6 @@ final class MedicalRecordViewController: GradientNavBarViewController {
         )
         contentStackView.addArrangedSubview(personalSection)
         
-        // 2. Problemas de Saúde
         let healthProblemsSection = HealthProblemsSectionView(
             diseasesText: viewModel.getDiseasesText(),
             surgeryItems: viewModel.getSurgeriesItems(),
@@ -126,7 +126,6 @@ final class MedicalRecordViewController: GradientNavBarViewController {
         )
         contentStackView.addArrangedSubview(healthProblemsSection)
         
-        // 3. Estado Físico
         let physicalSection = PhysicalStateSectionView(
             vision: viewModel.getVisionText(),
             hearing: viewModel.getHearingText(),
@@ -137,7 +136,6 @@ final class MedicalRecordViewController: GradientNavBarViewController {
         )
         contentStackView.addArrangedSubview(physicalSection)
         
-        // 4. Estado Mental
         let mentalSection = MentalStateSectionView(
             emotionalState: viewModel.getEmotionalStateText(),
             orientationState: viewModel.getOrientationStateText(),
@@ -147,7 +145,6 @@ final class MedicalRecordViewController: GradientNavBarViewController {
         )
         contentStackView.addArrangedSubview(mentalSection)
         
-        // 5. Cuidados Pessoais
         let personalCareSection = PersonalCareSectionView(
             bath: viewModel.getBathStateText(),
             hygiene: viewModel.getHygieneStateText(),
@@ -159,7 +156,6 @@ final class MedicalRecordViewController: GradientNavBarViewController {
         )
         contentStackView.addArrangedSubview(personalCareSection)
     }
-    // MARK: - Header geral + alerta (igual você já tinha)
 
     func makeHeaderSection(percent: CGFloat) -> UIView {
         let containerView = UIView()

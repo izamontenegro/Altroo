@@ -260,7 +260,6 @@ final class MedicalRecordViewModel {
         checkDouble(personalData?.weight)
         
         let mentalState = careRecipient.mentalState
-        checkString(mentalState?.cognitionState)
         checkToManySet(Set(mentalState?.emotionalState ?? []))
         checkString(mentalState?.memoryState)
         checkToManySet(Set(mentalState?.orientationState ?? [] ))

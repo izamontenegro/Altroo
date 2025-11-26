@@ -82,7 +82,7 @@ final class CareRecipientProfileViewModel {
         checkDate(personalData?.dateOfBirth); checkDouble(personalData?.height); checkDouble(personalData?.weight)
 
         let mentalState = recipient.mentalState
-        checkString(mentalState?.cognitionState); checkToManySet(Set(mentalState?.emotionalState ?? [])); checkString(mentalState?.memoryState); checkToManySet(Set(mentalState?.orientationState ?? []))
+        checkToManySet(Set(mentalState?.emotionalState ?? [])); checkString(mentalState?.memoryState); checkToManySet(Set(mentalState?.orientationState ?? []))
 
         let physicalState = recipient.physicalState
         checkString(physicalState?.mobilityState); checkString(physicalState?.hearingState); checkString(physicalState?.visionState); checkToManySet(Set(physicalState?.oralHealthState ?? []))
