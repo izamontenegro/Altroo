@@ -45,10 +45,10 @@ struct HistorySectionHeader: View {
     }
 }
 
-#Preview {
-    HistorySectionHeader(
-        isExpanded: .constant(true),
-        day: Date()
-    )
-    .padding()
-}
+//#Preview {
+//    HistorySectionHeader(
+//        isExpanded: .constant(true),
+//        day: Date()
+//    )
+//    .padding()
+//}

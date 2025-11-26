@@ -394,16 +394,6 @@
         }
       }
     },
-    "Aviso Legal" : {
-      "localizations" : {
-        "en" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Legal Notice"
-          }
-        }
-      }
-    },
     "back" : {
       "extractionState" : "manual",
       "localizations" : {
@@ -522,7 +512,7 @@
         "pt-BR" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Esta Política de Privacidade pode ser atualizada periodicamente para refletir melhorias no aplicativo ou mudanças legais. \\n\\nO Altroo notificará os usuários sobre alterações significativas por meio do próprio aplicativo. A data da última atualização estará sempre disponível no início deste documento."
+            "value" : "Esta Política de Privacidade pode ser atualizada periodicamente para refletir melhorias no aplicativo ou mudanças legais. O Altroo notificará os usuários sobre alterações significativas por meio do próprio aplicativo. A data da última atualização estará sempre disponível no início deste documento."
           }
         }
       }
@@ -639,7 +629,7 @@
         "pt-BR" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Em caso de dúvidas, solicitações ou reclamações relacionadas à privacidade ou ao tratamento de dados, entre em contato com nossa equipe de suporte através do e-mail:\\n\\n📩 altroohealthcare@gmail.com"
+            "value" : "Em caso de dúvidas, solicitações ou reclamações relacionadas à privacidade ou ao tratamento de dados, entre em contato com nossa equipe de suporte através do e-mail:📩 altroohealthcare@gmail.com"
           }
         }
       }
@@ -671,7 +661,7 @@
         "pt-BR" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Os dados são mantidos apenas pelo tempo necessário para cumprir as finalidades do aplicativo ou até que o usuário solicite sua exclusão. \\n\\nApós a exclusão da conta, as informações são removidas de forma definitiva e não ficam disponíveis para recuperação."
+            "value" : "Os dados são mantidos apenas pelo tempo necessário para cumprir as finalidades do aplicativo ou até que o usuário solicite sua exclusão. Após a exclusão da conta, as informações são removidas de forma definitiva e não ficam disponíveis para recuperação."
           }
         }
       }
@@ -693,7 +683,7 @@
         "pt-BR" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Os dados são armazenados em nuvem pessoal, atrelada à conta do dispositivo do usuário. \\n\\nIsso significa que apenas o próprio usuário tem acesso direto às suas informações, garantindo um controle individual e seguro. \\n\\nO Altroo adota medidas técnicas de segurança para proteger as informações contra acessos não autorizados, perda, uso indevido ou divulgação indevida. \\n\\nMesmo com essas medidas, é importante ressaltar que nenhum sistema é totalmente livre de riscos, e recomendamos que o usuário mantenha seus dispositivos protegidos com senhas seguras."
+            "value" : "Os dados são armazenados em nuvem pessoal, atrelada à conta do dispositivo do usuário. Isso significa que apenas o próprio usuário tem acesso direto às suas informações, garantindo um controle individual e seguro. O Altroo adota medidas técnicas de segurança para proteger as informações contra acessos não autorizados, perda, uso indevido ou divulgação indevida. Mesmo com essas medidas, é importante ressaltar que nenhum sistema é totalmente livre de riscos, e recomendamos que o usuário mantenha seus dispositivos protegidos com senhas seguras."
           }
         }
       }
@@ -1029,6 +1019,17 @@
         }
       }
     },
+    "history_empty_2" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Adicione um registro na tela 'Hoje’ e o acompanhe por aqui"
+          }
+        }
+      }
+    },
     "history_nav_description" : {
       "extractionState" : "manual",
       "localizations" : {
@@ -1052,7 +1053,7 @@
         "pt-BR" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "As informações são utilizadas para:\\n• Permitir o funcionamento do aplicativo e suas principais funcionalidades;\\n• Facilitar o compartilhamento de informações de cuidado entre cuidadores e familiares;\\n• Personalizar a experiência do usuário e aprimorar o desempenho do app;\\n• Enviar comunicações relacionadas ao uso do Altroo, como lembretes ou notificações de atualização. \\n\\nO Altroo não utiliza seus dados para fins publicitários ou comerciais."
+            "value" : "As informações são utilizadas para: • Permitir o funcionamento do aplicativo e suas principais funcionalidades; • Facilitar o compartilhamento de informações de cuidado entre cuidadores e familiares; • Personalizar a experiência do usuário e aprimorar o desempenho do app; • Enviar comunicações relacionadas ao uso do Altroo, como lembretes ou notificações de atualização. O Altroo não utiliza seus dados para fins publicitários ou comerciais."
           }
         }
       }
@@ -1109,7 +1110,7 @@
         "pt-BR" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "O Altroo não compartilha dados pessoais com terceiros sem o consentimento do usuário. \\n\\nO compartilhamento de informações ocorre apenas entre cuidadores e familiares autorizados, dentro do próprio ambiente do aplicativo, com o objetivo de coordenar o cuidado do assistido. \\n\\nNenhuma informação é vendida, trocada ou utilizada para fins externos ao propósito do app."
+            "value" : "O Altroo não compartilha dados pessoais com terceiros sem o consentimento do usuário. O compartilhamento de informações ocorre apenas entre cuidadores e familiares autorizados, dentro do próprio ambiente do aplicativo, com o objetivo de coordenar o cuidado do assistido. Nenhuma informação é vendida, trocada ou utilizada para fins externos ao propósito do app."
           }
         }
       }
@@ -1131,7 +1132,7 @@
         "pt-BR" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "O Altroo coleta apenas as informações necessárias para o funcionamento do aplicativo e para proporcionar uma melhor experiência de cuidado. \\n\\nEssas informações podem incluir: \\n• Dados de cadastro, como nome, e-mail e telefones; \\n• Informações sobre o assistido, como nome, idade e dados relevantes para o cuidado; \\n• Registros de atividades e anotações inseridas manualmente pelo cuidador; \\n• Informações sobre o uso do aplicativo, como frequência de acesso e funcionalidades utilizadas. \\n\\nO Altroo não coleta dados sensíveis de saúde automaticamente, apenas aqueles que o usuário decide registrar de forma voluntária."
+            "value" : "O Altroo coleta apenas as informações necessárias para o funcionamento do aplicativo e para proporcionar uma melhor experiência de cuidado. Essas informações podem incluir: • Dados de cadastro, como nome, e-mail e telefones; • Informações sobre o assistido, como nome, idade e dados relevantes para o cuidado; • Registros de atividades e anotações inseridas manualmente pelo cuidador; • Informações sobre o uso do aplicativo, como frequência de acesso e funcionalidades utilizadas. O Altroo não coleta dados sensíveis de saúde automaticamente, apenas aqueles que o usuário decide registrar de forma voluntária."
           }
         }
       }
@@ -1750,7 +1751,7 @@
         "pt-BR" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "O Altroo é um aplicativo desenvolvido para auxiliar cuidadores na organização e no acompanhamento das atividades de cuidado com seus assistidos. \\n\\nO aplicativo tem como objetivo facilitar a comunicação e o registro das rotinas de cuidado, contribuindo para um acompanhamento mais eficiente e colaborativo. \\n\\nO Altroo não é um dispositivo ou serviço médico, e seu uso não deve ser interpretado como orientação, diagnóstico ou tratamento médico oferecido por seus desenvolvedores ou proprietários. \\n\\nNenhuma informação, alerta ou dado gerado pelo aplicativo deve ser considerado clinicamente preciso ou substituto de aconselhamento profissional de saúde. \\n\\nSe você tiver qualquer dúvida sobre uma condição médica, consulte um profissional de saúde qualificado. \\n\\nSe acreditar que você ou a pessoa sob seus cuidados possa estar enfrentando uma situação médica, procure atendimento médico imediatamente. \\n\\nVocê nunca deve atrasar, ignorar ou interromper um tratamento médico com base em informações obtidas pelo uso do Altroo."
+            "value" : "O Altroo é um aplicativo desenvolvido para auxiliar cuidadores na organização e no acompanhamento das atividades de cuidado com seus assistidos. O aplicativo tem como objetivo facilitar a comunicação e o registro das rotinas de cuidado, contribuindo para um acompanhamento mais eficiente e colaborativo. O Altroo não é um dispositivo ou serviço médico, e seu uso não deve ser interpretado como orientação, diagnóstico ou tratamento médico oferecido por seus desenvolvedores ou proprietários. Nenhuma informação, alerta ou dado gerado pelo aplicativo deve ser considerado clinicamente preciso ou substituto de aconselhamento profissional de saúde. Se você tiver qualquer dúvida sobre uma condição médica, consulte um profissional de saúde qualificado. Se acreditar que você ou a pessoa sob seus cuidados possa estar enfrentando uma situação médica, procure atendimento médico imediatamente. Você nunca deve atrasar, ignorar ou interromper um tratamento médico com base em informações obtidas pelo uso do Altroo."
           }
         }
       }
@@ -1761,7 +1762,7 @@
         "pt-BR" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Ao utilizar o Altroo, você declara estar ciente e de acordo com os termos desta Política de Privacidade. \\n\\nSe não concordar com algum dos termos, recomendamos interromper o uso do aplicativo e solicitar a exclusão de sua conta."
+            "value" : "Ao utilizar o Altroo, você declara estar ciente e de acordo com os termos desta Política de Privacidade. Se não concordar com algum dos termos, recomendamos interromper o uso do aplicativo e solicitar a exclusão de sua conta."
           }
         }
       }
@@ -2581,14 +2582,14 @@
       "localizations" : {
         "en" : {
           "stringUnit" : {
-            "state" : "translated",
+            "state" : "needs_review",
             "value" : "No tasks registered for the shift of"
           }
         },
         "pt-BR" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Nenhuma tarefa cadastrada para o turno da"
+            "value" : "Nenhuma tarefa cadastrada para o turno da "
           }
         }
       }
@@ -2703,7 +2704,7 @@
         "pt-BR" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "O usuário tem o direito de:\\n• Acessar as informações pessoais armazenadas no aplicativo;\\n• Corrigir, atualizar ou excluir seus dados;\\n• Revogar o consentimento para o uso de suas informações a qualquer momento;\\n• Solicitar a exclusão completa de sua conta e dos dados vinculados.\\n• Para exercer esses direitos, entre em contato pelo canal de suporte do Altroo disponível no aplicativo ou no site oficial."
+            "value" : "O usuário tem o direito de: • Acessar as informações pessoais armazenadas no aplicativo; • Corrigir, atualizar ou excluir seus dados; • Revogar o consentimento para o uso de suas informações a qualquer momento; • Solicitar a exclusão completa de sua conta e dos dados vinculados. • Para exercer esses direitos, entre em contato pelo canal de suporte do Altroo disponível no aplicativo ou no site oficial."
           }
         }
       }

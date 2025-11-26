@@ -15,6 +15,7 @@ class MyProfileViewController: GradientNavBarViewController {
 
     private var isEditingProfile: Bool = false
     private var nameEditField: StandardTextfield?
+    private var phoneEditField: StandardTextfield?
 
     // MARK: Container that acts as a "button" (receives touches)
     private let actionControl: UIControl = {
@@ -125,6 +126,7 @@ class MyProfileViewController: GradientNavBarViewController {
 
         DispatchQueue.main.async { [weak self] in
             self?.nameEditField?.becomeFirstResponder()
+            self?.phoneEditField?.becomeFirstResponder()
         }
     }
 
@@ -132,15 +134,19 @@ class MyProfileViewController: GradientNavBarViewController {
         guard let newName = nameEditField?.text?.trimmingCharacters(in: .whitespacesAndNewlines), !newName.isEmpty else {
             return
         }
+        guard let newPhone = phoneEditField?.text?.trimmingCharacters(in: .whitespacesAndNewlines), !newPhone.isEmpty else {
+            return
+        }
         // MARK: Updates the viewModel
         viewModel.updateName(newName)
+        viewModel.updatePhone(newPhone)
 
         isEditingProfile = false
         updateActionCapsule()
         updateView()
     }
 
-    // MARK: - Recreate capsule view (sem depender de `update()` no capsule)
+    // MARK: - Recreate capsule view
     private func updateActionCapsule() {
         currentCapsule?.removeFromSuperview()
         currentCapsule = nil
@@ -185,20 +191,45 @@ class MyProfileViewController: GradientNavBarViewController {
             tf.translatesAutoresizingMaskIntoConstraints = false
             nameEditField = tf
             
+            let phone = StandardLabel(labelText: "Contato", labelFont: .sfPro, labelType: .body,
+                                     labelColor: .black10, labelWeight: .medium)
+            let phonetf = StandardTextfield(placeholder: viewModel.caregiverPhone)
+            phonetf.text = viewModel.caregiverPhone
+            phonetf.translatesAutoresizingMaskIntoConstraints = false
+            phoneEditField = phonetf
+            
             vStack.addArrangedSubview(name)
             vStack.addArrangedSubview(tf)
+            vStack.addArrangedSubview(phone)
+            vStack.addArrangedSubview(phonetf)
             
             NSLayoutConstraint.activate([
                 name.topAnchor.constraint(equalTo: vStack.topAnchor),
                 name.leadingAnchor.constraint(equalTo: vStack.leadingAnchor),
-                tf.topAnchor.constraint(equalTo: name.bottomAnchor, constant: 16),
-                tf.leadingAnchor.constraint(equalTo: vStack.leadingAnchor)
+                tf.topAnchor.constraint(equalTo: name.bottomAnchor, constant: 8),
+                tf.leadingAnchor.constraint(equalTo: vStack.leadingAnchor),
+                
+                phone.topAnchor.constraint(equalTo: tf.bottomAnchor, constant: 16),
+                phone.leadingAnchor.constraint(equalTo: vStack.leadingAnchor),
+                phonetf.topAnchor.constraint(equalTo: phone.bottomAnchor, constant: 8),
+                phonetf.leadingAnchor.constraint(equalTo: vStack.leadingAnchor)
             ])
             
         } else {
             let nameRow = InfoRowView(title: "name".localized, info: viewModel.caregiverName)
-            vStack.addArrangedSubview(nameRow)
             nameEditField = nil
+            let phoneRow = InfoRowView(title: "Contato", info: viewModel.caregiverPhone)
+            phoneEditField = nil
+            
+            vStack.addArrangedSubview(nameRow)
+            vStack.addArrangedSubview(phoneRow)
+            
+            NSLayoutConstraint.activate([
+                nameRow.topAnchor.constraint(equalTo: vStack.topAnchor),
+                nameRow.leadingAnchor.constraint(equalTo: vStack.leadingAnchor),
+                phoneRow.topAnchor.constraint(equalTo: nameRow.bottomAnchor, constant: 16),
+                phoneRow.leadingAnchor.constraint(equalTo: vStack.leadingAnchor)
+            ])
         }
     }
 
@@ -213,5 +244,14 @@ class MyProfileViewController: GradientNavBarViewController {
                 }
             }
             .store(in: &cancellables)
+        
+        viewModel.$caregiverPhone
+            .receive(on: RunLoop.main)
+            .sink { [weak self] _ in
+                guard let self = self else { return }
+                if !self.isEditingProfile {
+                    self.updateView()
+                }
+            }
     }
 }

@@ -38,6 +38,6 @@ struct EmptyStateHistoryView: View {
     }
 }
 
-#Preview {
-    EmptyStateHistoryView()
-}
+//#Preview {
+//    EmptyStateHistoryView()
+//}

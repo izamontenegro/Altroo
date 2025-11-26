@@ -49,11 +49,11 @@ struct StandardLabelRepresentable: UIViewRepresentable {
     }
 }
 
-#Preview {
-    StandardLabelRepresentable(labelFont: StandardLabel.FontStyle.sfPro,
-                               labelType: StandardLabel.LabelType.body,
-                               labelWeight: FontWeight.bold,
-                               text: "title",
-                               color: UIColor(resource: .black10))
-    .border(.black0)
-}
+//#Preview {
+//    StandardLabelRepresentable(labelFont: StandardLabel.FontStyle.sfPro,
+//                               labelType: StandardLabel.LabelType.body,
+//                               labelWeight: FontWeight.bold,
+//                               text: "title",
+//                               color: UIColor(resource: .black10))
+//    .border(.black0)
+//}

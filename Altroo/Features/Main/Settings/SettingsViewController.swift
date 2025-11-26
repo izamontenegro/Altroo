@@ -73,6 +73,8 @@ class SettingsViewController: GradientHeader {
         privacybutton.addTarget(self, action: #selector(didTapPrivacyButton), for: .touchUpInside)
         policybutton.addTarget(self, action: #selector(didTapPolicyButton), for: .touchUpInside)
         devsbutton.addTarget(self, action: #selector(didTapDevelopersButton), for: .touchUpInside)
+        
+        ratingbutton.addTarget(self, action: #selector(didTapRatingButton), for: .touchUpInside)
     }
     
     // MARK: - BUTTON ACTION
@@ -80,6 +82,13 @@ class SettingsViewController: GradientHeader {
     @objc func didTapPrivacyButton() { delegate?.goToPrivacy() }
     @objc func didTapPolicyButton() { delegate?.goToPolicy() }
     @objc func didTapDevelopersButton() { delegate?.goToDevelopers() }
+    
+    @objc func didTapRatingButton() {
+        let urlRating = "https://apps.apple.com/br/app/altroo/id6754249731"
+        if let url = URL(string: urlRating) {
+            UIApplication.shared.open(url, options: [:], completionHandler: nil)
+        }
+    }
 }
 
 //#Preview {

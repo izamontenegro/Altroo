@@ -127,7 +127,6 @@ class IconTitleArrowButton: PrimaryStyleButton {
     }
 }
 
-
-#Preview {
-    IconTitleArrowButton(icon: "person.fill", title: "Meu Perfil")
-}
+//#Preview {
+//    IconTitleArrowButton(icon: "person.fill", title: "Meu Perfil")
+//}
