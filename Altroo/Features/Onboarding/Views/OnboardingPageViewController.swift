@@ -6,12 +6,13 @@
 //
 
 import UIKit
+import Lottie
 
 class OnboardingPageViewController: UIViewController {
     private let titleText: String
     private let descriptionText: String
     private let bottomGradientLayer = CAGradientLayer()
-    private var imageView = UIImageView()
+    private var imageView = UIView()
     private let imageHeightMultiplier: CGFloat
 
     init(imageName: String, title: String, description: String, imageHeightMultiplier: CGFloat = 0.65) {
@@ -21,13 +22,25 @@ class OnboardingPageViewController: UIViewController {
 
         super.init(nibName: nil, bundle: nil)
         
-        if let image = UIImage(named: imageName) {
-            imageView.image = image
-        }
-        
-        imageView.contentMode = .scaleAspectFit
-        imageView.clipsToBounds = true
+        let animationView = LottieAnimationView()
+        animationView.loopMode = .loop
+        animationView.contentMode = .scaleAspectFill
+        animationView.clipsToBounds = true
+        imageView = animationView
         imageView.translatesAutoresizingMaskIntoConstraints = false
+
+        
+        let url = Bundle.main.url(forResource: imageName, withExtension: "lottie")!
+        
+        DotLottieFile.loadedFrom(url: url) { result in
+            switch result {
+            case .success(let success):
+                animationView.loadAnimation(from: success)
+                animationView.play()
+            case .failure(let failure):
+                print(failure)
+            }
+        }
     }
 
     required init?(coder: NSCoder) {
@@ -45,7 +58,7 @@ class OnboardingPageViewController: UIViewController {
         view.addSubview(imageView)
 
         NSLayoutConstraint.activate([
-            imageView.topAnchor.constraint(equalTo: view.safeAreaLayoutGuide.topAnchor, constant: 20),
+            imageView.topAnchor.constraint(equalTo: view.safeAreaLayoutGuide.topAnchor, constant: 40),
             imageView.centerXAnchor.constraint(equalTo: view.centerXAnchor),
             imageView.widthAnchor.constraint(equalTo: view.widthAnchor),
             imageView.heightAnchor.constraint(equalTo: view.heightAnchor, multiplier: imageHeightMultiplier)
