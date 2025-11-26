@@ -205,10 +205,16 @@ final class EditMentalStateViewController: UIViewController {
         viewModel.loadInitialMentalState()
         let state = viewModel.mentalStateFormState
 
-        emotionalColumn.arrangedSubviews.forEach { view in
-            if let btn = view as? CheckOptionButton,
-               let option = btn.associatedData as? EmotionalStateEnum {
-                btn.isSelected = (option == state.emotionalState)
+        let selected = state.emotionalState
+
+        emotionalColumn.arrangedSubviews.forEach { row in
+            (row as? UIStackView)?.arrangedSubviews.forEach { view in
+                guard
+                    let button = view as? CheckOptionButton,
+                    let option = button.associatedData as? EmotionalStateEnum
+                else { return }
+
+                button.isSelected = selected.contains(option)
             }
         }
 
@@ -243,23 +249,25 @@ final class EditMentalStateViewController: UIViewController {
     @objc private func didTapEmotional(_ sender: CheckOptionButton) {
         guard let option = sender.associatedData as? EmotionalStateEnum else { return }
 
-        let wasSelected = sender.isSelected
+        sender.isSelected.toggle()
 
-        emotionalColumn.arrangedSubviews.forEach { view in
-            (view as? CheckOptionButton)?.isSelected = false
-        }
+        let selectedOptions: [EmotionalStateEnum] =
+            emotionalColumn.arrangedSubviews.flatMap { row in
+                (row as? UIStackView)?.arrangedSubviews.compactMap { view in
+                    guard
+                        let button = view as? CheckOptionButton,
+                        let option = button.associatedData as? EmotionalStateEnum,
+                        button.isSelected
+                    else { return nil }
+                    return option
+                } ?? []
+            }
 
-        if wasSelected {
-            viewModel.updateEmotionalState(nil)
-        } else {
-            sender.isSelected = true
-            viewModel.updateEmotionalState(option)
-        }
+        viewModel.updateEmotionalState(selectedOptions)
     }
 
     @objc private func didTapOrientation(_ sender: CheckOptionButton) {
-        guard let option = sender.associatedData as? OrientationEnum else { return }
-
+        
         sender.isSelected.toggle()
 
         let selectedOptions: [OrientationEnum] = orientationColumn.arrangedSubviews.compactMap { view in

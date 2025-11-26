@@ -113,7 +113,7 @@
     </entity>
     <entity name="MentalState" representedClassName="MentalState" syncable="YES" codeGenerationType="class">
         <attribute name="cognitionState" optional="YES" attributeType="String"/>
-        <attribute name="emotionalState" optional="YES" attributeType="String"/>
+        <attribute name="emotionalState" optional="YES" attributeType="Transformable" customClassName="[String]"/>
         <attribute name="memoryState" optional="YES" attributeType="String"/>
         <attribute name="orientationState" optional="YES" attributeType="Transformable" customClassName="[String]"/>
         <relationship name="careRecipient" optional="YES" maxCount="1" deletionRule="Nullify" destinationEntity="CareRecipient" inverseName="mentalState" inverseEntity="CareRecipient"/>

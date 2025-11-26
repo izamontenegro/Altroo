@@ -129,7 +129,7 @@ final class MedicalRecordProgressView: UIView {
 
         let mentalState = careRecipient.mentalState
         check(mentalState?.cognitionState)
-        check(mentalState?.emotionalState)
+        checkToManySet(Set(mentalState?.emotionalState ?? []))
         check(mentalState?.memoryState)
         checkToManySet(Set(mentalState?.orientationState ?? []))
 

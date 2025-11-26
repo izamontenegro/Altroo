@@ -6,7 +6,7 @@
 //
 
 protocol MentalStateProtocol {
-    func addEmotionalState(emotionalState: EmotionalStateEnum, mentalState: MentalState)
+    func addEmotionalState(emotionalState: [EmotionalStateEnum], mentalState: MentalState)
     func addMemoryState(memoryState: MemoryEnum, mentalState: MentalState)
     func addOrientationState(orientationState: [OrientationEnum], mentalState: MentalState)
     func addCognitionState(cognitionState: CognitionEnum, mentalState: MentalState)
@@ -14,8 +14,12 @@ protocol MentalStateProtocol {
 
 extension CareRecipientFacade: MentalStateProtocol {
     
-    func addEmotionalState(emotionalState: EmotionalStateEnum, mentalState: MentalState) {
-        mentalState.emotionalState = emotionalState.rawValue
+    func addEmotionalState(emotionalState: [EmotionalStateEnum], mentalState: MentalState) {
+        if emotionalState.isEmpty {
+            mentalState.emotionalState = []
+        } else {
+            mentalState.emotionalState = emotionalState.map { $0.rawValue }
+        }
         
         persistenceService.save()
     }

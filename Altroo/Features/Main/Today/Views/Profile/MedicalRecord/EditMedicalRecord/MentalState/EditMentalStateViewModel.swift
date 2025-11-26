@@ -7,7 +7,7 @@
 import Foundation
 
 struct MentalStateFormState: Equatable {
-    var emotionalState: EmotionalStateEnum? = nil
+    var emotionalState: [EmotionalStateEnum] = []
     var memoryState: MemoryEnum? = nil
     var orientationState: [OrientationEnum] = []
     var cognitionState: CognitionEnum? = nil
@@ -37,18 +37,18 @@ final class EditMentalStateViewModel {
         }
 
         mentalStateFormState = MentalStateFormState(
-            emotionalState: mentalState.emotionalState.flatMap { EmotionalStateEnum(rawValue: $0) },
+            emotionalState: mentalState.emotionalState?
+                .compactMap { EmotionalStateEnum(rawValue: $0) } ?? [],
             memoryState: mentalState.memoryState.flatMap { MemoryEnum(rawValue: $0) },
             orientationState: mentalState.orientationState?
                 .compactMap { OrientationEnum(rawValue: $0) } ?? [],
             cognitionState: mentalState.cognitionState.flatMap { CognitionEnum(rawValue: $0) }
         )
         
-        
     }
-
-    func updateEmotionalState(_ value: EmotionalStateEnum?) {
-        mentalStateFormState.emotionalState = value
+    
+    func updateEmotionalState(_ values: [EmotionalStateEnum]) {
+        mentalStateFormState.emotionalState = values
     }
 
     func updateMemoryState(_ value: MemoryEnum?) {
@@ -67,9 +67,11 @@ final class EditMentalStateViewModel {
         guard let patient = currentPatient(),
               let mentalState = patient.mentalState else { return }
 
-        if let value = mentalStateFormState.emotionalState {
-            careRecipientFacade.addEmotionalState(emotionalState: value, mentalState: mentalState)
-        }
+        let emotionalStates = mentalStateFormState.emotionalState
+        careRecipientFacade.addEmotionalState(
+            emotionalState: emotionalStates,
+            mentalState: mentalState
+        )
         if let value = mentalStateFormState.memoryState {
             careRecipientFacade.addMemoryState(memoryState: value, mentalState: mentalState)
         }
