@@ -15,6 +15,7 @@ protocol AddTaskNavigationDelegate: AnyObject {
 class AddTaskViewController: TaskFormViewController {
     var viewModel: AddTaskViewModel
     weak var coordinator: TodayCoordinator?
+    private var keyboardHandler: KeyboardHandler?
     private var cancellables = Set<AnyCancellable>()
     
     init(viewModel: AddTaskViewModel) {
@@ -38,6 +39,8 @@ class AddTaskViewController: TaskFormViewController {
         setupRepeatingDays()
         setupTimes()
         configureNavBar()
+        
+        keyboardHandler = KeyboardHandler(viewController: self, scrollView: scrollView)
         
         confirmButton.addTarget(self, action: #selector(didFinishCreating), for: .touchUpInside)
     }

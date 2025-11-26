@@ -14,6 +14,7 @@ protocol UrineRecordNavigationDelegate: AnyObject {
 
 final class UrineRecordViewController: UIViewController {
     weak var delegate: UrineRecordNavigationDelegate?
+    private var keyboardHandler: KeyboardHandler?
 
     private let viewModel: UrineRecordViewModel
     private var cancellables = Set<AnyCancellable>()
@@ -38,14 +39,19 @@ final class UrineRecordViewController: UIViewController {
         bindViewModel()
         setupTapToDismiss()
         configureNavBar()
+        
+        keyboardHandler = KeyboardHandler(viewController: self, scrollView: scrollView)
     }
     
-    // MARK: - View Layout
-    private func setupLayout() {
+    var scrollView: UIScrollView = {
         let scrollView = UIScrollView()
         scrollView.translatesAutoresizingMaskIntoConstraints = false
         scrollView.alwaysBounceVertical = true
-
+        return scrollView
+    }()
+    
+    // MARK: - View Layout
+    private func setupLayout() {
         let content = UIStackView()
         content.axis = .vertical
         content.alignment = .fill
