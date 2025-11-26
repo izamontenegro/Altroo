@@ -20,6 +20,10 @@ final class CareRecipientProfileViewController: GradientNavBarViewController {
     let viewModel: CareRecipientProfileViewModel
     var goToEdit: Bool = false
     
+    var emergencyContact: ContactDisplayItem?
+    var copyTarget: AnyObject?
+    var copyAction: Selector?
+    
     private var cancellables = Set<AnyCancellable>()
     
     // MARK: - Lifecycle
@@ -43,14 +47,65 @@ final class CareRecipientProfileViewController: GradientNavBarViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
         viewModel.buildData()
-        setupProfileHeader()
+        setupUI()
         bindViewModel()
     }
     
-    private func setupProfileHeader() {
+    // MARK: - View Layout
+    private func setupUI() {
+    
+        let scrollView = UIScrollView()
+        scrollView.translatesAutoresizingMaskIntoConstraints = false
+        scrollView.alwaysBounceVertical = true
+        
+        let content = UIStackView()
+        content.axis = .vertical
+        content.alignment = .fill
+        content.spacing = 16
+        content.translatesAutoresizingMaskIntoConstraints = false
+    
+        content.arrangedSubviews.forEach { $0.removeFromSuperview() }
+        
+        NSLayoutConstraint.activate([
+            content.topAnchor.constraint(equalTo: scrollView.contentLayoutGuide.topAnchor, constant: 24),
+            content.leadingAnchor.constraint(equalTo: scrollView.frameLayoutGuide.leadingAnchor, constant: 16),
+            content.trailingAnchor.constraint(equalTo: scrollView.frameLayoutGuide.trailingAnchor, constant: -16),
+            content.bottomAnchor.constraint(equalTo: scrollView.contentLayoutGuide.bottomAnchor, constant: -24)
+        ])
+        
+        scrollView.addSubview(content)
+        view.addSubview(scrollView)
+        
+        let headerSection = setupProfileHeader()
+        let emergencySection = setupEmergencyContactSection()
+//        let aboutYouSection = setupAboutYouSection()
+        let permissionsSection = setupCaregiversSection()
+        let button = setupBottomButtons()
+        
+        content.addArrangedSubview(headerSection)
+        content.addArrangedSubview(emergencySection)
+//        content.addArrangedSubview(aboutYouSection)
+        content.addArrangedSubview(permissionsSection)
+        content.addArrangedSubview(button)
+        
+        NSLayoutConstraint.activate([
+            scrollView.topAnchor.constraint(equalTo: view.safeAreaLayoutGuide.topAnchor),
+            scrollView.leadingAnchor.constraint(equalTo: view.leadingAnchor),
+            scrollView.trailingAnchor.constraint(equalTo: view.trailingAnchor),
+            scrollView.bottomAnchor.constraint(equalTo: view.bottomAnchor)
+//
+//            content.topAnchor.constraint(equalTo: scrollView.contentLayoutGuide.topAnchor, constant: 24),
+//            content.leadingAnchor.constraint(equalTo: scrollView.frameLayoutGuide.leadingAnchor, constant: 16),
+//            content.trailingAnchor.constraint(equalTo: scrollView.frameLayoutGuide.trailingAnchor, constant: -16),
+//            content.bottomAnchor.constraint(equalTo: scrollView.contentLayoutGuide.bottomAnchor, constant: -24)
+        ])
+    }
+    
+    // MARK: - ASSISTED CARD
+    private func setupProfileHeader() -> UIView {
         view.backgroundColor = .pureWhite
         
-        view.subviews.forEach { $0.removeFromSuperview() }
+//        view.subviews.forEach { $0.removeFromSuperview() }
         
         guard let person = viewModel.currentCareRecipient else {
             let empty = StandardLabel(
@@ -68,29 +123,98 @@ final class CareRecipientProfileViewController: GradientNavBarViewController {
                 empty.centerYAnchor.constraint(equalTo: view.centerYAnchor)
             ])
             
-            return
+            return empty
         }
         
-        // MARK: - Assisted Card
+        // MARK: - ASSISTED CARD
         let header = ProfileHeader(careRecipient: person, percent: viewModel.completionPercent)
         header.translatesAutoresizingMaskIntoConstraints = false
-        view.addSubview(header)
-        
-        NSLayoutConstraint.activate([
-            header.topAnchor.constraint(equalTo: view.safeAreaLayoutGuide.topAnchor, constant: 30),
-            header.leadingAnchor.constraint(equalTo: view.leadingAnchor, constant: 16),
-            header.trailingAnchor.constraint(equalTo: view.trailingAnchor, constant: -16)
-        ])
         
         header.isUserInteractionEnabled = true
         let tap = UITapGestureRecognizer(target: self, action: #selector(didTapHeader))
         header.addGestureRecognizer(tap)
         header.enableHighlightEffect()
         
-        setupCaregiversSection(below: header)
+        return header
     }
-    
-    private func setupCaregiversSection(below header: UIView) {
+    // MARK: - EMERGENCY CONTACT
+    private func setupEmergencyContactSection() -> UIView {
+        guard let contact = emergencyContact else {
+            return UIView()
+        }
+        
+        let contactTitleLabel = StandardLabel(
+            labelText: "Contato de Emergência",
+            labelFont: .sfPro,
+            labelType: .title2,
+            labelColor: .black10,
+            labelWeight: .semibold
+        )
+        contactTitleLabel.translatesAutoresizingMaskIntoConstraints = false
+        
+        let contactCard = ContactCardView(
+            name: contact.name,
+            relation: contact.relationship,
+            phone: contact.phone,
+            copyTarget: copyTarget,
+            copyAction: copyAction ?? #selector(UIView.didMoveToSuperview)
+        )
+        contactCard.translatesAutoresizingMaskIntoConstraints = false
+        
+        let emergencyContactView = UIStackView(arrangedSubviews: [contactTitleLabel, contactCard])
+        emergencyContactView.axis = .vertical
+        emergencyContactView.spacing = 8
+        emergencyContactView.translatesAutoresizingMaskIntoConstraints = false
+        
+        return emergencyContactView
+    }
+    // MARK: - ABOUT YOU
+//    private func setupAboutYouSection() -> UIView {
+//        let titleLabel = StandardLabel(
+//            labelText: "Sobre você",
+//            labelFont: .sfPro,
+//            labelType: .title2,
+//            labelColor: .black10,
+//            labelWeight: .semibold
+//        )
+//        let editButton = CapsuleWithCircleView(
+//            capsuleColor: .teal20, text: "edit".localized,
+//            textColor: .pureWhite, nameIcon: "pencil",
+//            nameIconColor: .teal20, circleIconColor: .pureWhite
+//        )
+//        editButton.enablePressEffect()
+//        
+//        //        let shiftRow = InfoRowView(title: "Turno", info: viewModel.)
+//        //        let relationshipRow = InfoRowView(title: "Relação", info: viewModel.)
+//        
+//        let horizontalStack = UIStackView(arrangedSubviews: [titleLabel, editButton])
+//        horizontalStack.axis = .horizontal
+//        horizontalStack.distribution = .equalSpacing
+//        horizontalStack.alignment = .leading
+//        horizontalStack.translatesAutoresizingMaskIntoConstraints = false
+//        
+////        let rowsStack = UIStackView(arrangedSubviews: [shiftRow, relationshipRow])
+////        rowsStack.axis = .vertical
+////        rowsStack.spacing = 8
+////        rowsStack.alignment = .leading
+////        rowsStack.translatesAutoresizingMaskIntoConstraints = false
+////        view.addSubview(rowsStack)
+////        
+////        let aboutYouView = UIStackView(arrangedSubviews: [horizontalStack, rowsStack])
+////        aboutYouView.axis = .vertical
+////        aboutYouView.spacing = 16
+////        aboutYouView.translatesAutoresizingMaskIntoConstraints = false
+////        view.addSubview(aboutYouView)
+//        
+////        NSLayoutConstraint.activate([
+////            aboutYouView.topAnchor.constraint(equalTo: emergencyContactView.bottomAnchor, constant: 16),
+////            aboutYouView.leadingAnchor.constraint(equalTo: view.leadingAnchor, constant: 16),
+////            aboutYouView.trailingAnchor.constraint(equalTo: view.trailingAnchor, constant: -16)
+////        ])
+//        
+//    }
+    // MARK: - PERMISSIONS
+    private func setupCaregiversSection() -> UIView {
         let caregivers = viewModel.caregiversFor(recipient: viewModel.currentCareRecipient)
         let uniqueCaregivers = caregivers.unique { $0.name }
         
@@ -101,8 +225,12 @@ final class CareRecipientProfileViewController: GradientNavBarViewController {
             labelColor: .black10,
             labelWeight: .semibold
         )
+        let inviteButton = CapsuleWithCircleView(
+            capsuleColor: .teal20, text: "invite_caregiver".localized,
+            textColor: .pureWhite, nameIcon: "paperplane",
+            nameIconColor: .teal20, circleIconColor: .pureWhite
+        )
         
-        let inviteButton = CapsuleIconView(iconName: "paperplane", text: "invite_caregiver".localized)
         inviteButton.enablePressEffect()
         inviteButton.onTap = { [weak self] in
             guard let self = self else { return }
@@ -133,28 +261,24 @@ final class CareRecipientProfileViewController: GradientNavBarViewController {
             }
         }
         
-        guard let careRecipient = viewModel.userService.fetchCurrentPatient() else { return }
+        guard let careRecipient = viewModel.userService.fetchCurrentPatient() else { return UIView()}
         let isOwner = viewModel.coreDataService.isOwner(object: careRecipient)
         inviteButton.isHidden = !(uniqueCaregivers.isEmpty || isOwner)
         
         let topStack = UIStackView(arrangedSubviews: [titleLabel, inviteButton])
         topStack.axis = .horizontal
         topStack.distribution = .equalSpacing
-        topStack.alignment = .center
         topStack.translatesAutoresizingMaskIntoConstraints = false
-        view.addSubview(topStack)
-        
-        NSLayoutConstraint.activate([
-            topStack.topAnchor.constraint(equalTo: header.bottomAnchor, constant: 24),
-            topStack.leadingAnchor.constraint(equalTo: view.leadingAnchor, constant: 16),
-            topStack.trailingAnchor.constraint(equalTo: view.trailingAnchor, constant: -16)
-        ])
         
         let cardsStack = UIStackView()
         cardsStack.axis = .vertical
         cardsStack.spacing = 8
         cardsStack.translatesAutoresizingMaskIntoConstraints = false
-        view.addSubview(cardsStack)
+        
+        let caregiverSection = UIStackView(arrangedSubviews: [topStack, cardsStack])
+        caregiverSection.axis = .vertical
+        caregiverSection.spacing = 16
+        caregiverSection.translatesAutoresizingMaskIntoConstraints = false
         
         if uniqueCaregivers.count <= 1 {
             let card = CaregiverProfileCardView(
@@ -176,7 +300,6 @@ final class CareRecipientProfileViewController: GradientNavBarViewController {
                     viewModel.coreDataService.matches($0, with: item, in: careRecipient)
                 }) else { continue }
                 
-                
                 let card = CaregiverProfileCardView(
                     coreDataService: viewModel.coreDataService,
                     participant: participant,
@@ -193,34 +316,17 @@ final class CareRecipientProfileViewController: GradientNavBarViewController {
             }
         }
         
-        NSLayoutConstraint.activate([
-            cardsStack.topAnchor.constraint(equalTo: topStack.bottomAnchor, constant: 12),
-            cardsStack.leadingAnchor.constraint(equalTo: view.leadingAnchor, constant: 16),
-            cardsStack.trailingAnchor.constraint(equalTo: view.trailingAnchor, constant: -16)
-        ])
-        
-        setupBottomButtons(below: cardsStack)
+        return caregiverSection
     }
-    
-    private func setupBottomButtons(below lastView: UIView) {
+    // MARK: - BUTTON END FOLLOW UP
+    private func setupBottomButtons() -> UIView {
         let endButton = makeOutlineButton(
             title: "end_follow_up".localized,
             action: #selector(didTapEndCareButton)
         )
         endButton.enablePressAnimation()
         
-        let buttonsStack = UIStackView(arrangedSubviews: [endButton])
-        buttonsStack.axis = .vertical
-        buttonsStack.spacing = 12
-        buttonsStack.translatesAutoresizingMaskIntoConstraints = false
-        view.addSubview(buttonsStack)
-        
-        NSLayoutConstraint.activate([
-            buttonsStack.leadingAnchor.constraint(equalTo: view.leadingAnchor, constant: 16),
-            buttonsStack.trailingAnchor.constraint(equalTo: view.trailingAnchor, constant: -16),
-            buttonsStack.topAnchor.constraint(greaterThanOrEqualTo: lastView.bottomAnchor, constant: 24),
-            buttonsStack.bottomAnchor.constraint(equalTo: view.safeAreaLayoutGuide.bottomAnchor, constant: -16)
-        ])
+        return endButton
     }
     
     private func makeFilledButton(icon: UIImage?, title: String, action: Selector) -> UIButton {
@@ -294,14 +400,14 @@ final class CareRecipientProfileViewController: GradientNavBarViewController {
         )
         .receive(on: RunLoop.main)
         .sink { [weak self] _, _ in
-            self?.setupProfileHeader()
+            self?.setupUI()
         }
         .store(in: &cancellables)
         
         viewModel.$caregivers
             .receive(on: RunLoop.main)
             .sink { [weak self] _ in
-                self?.setupProfileHeader()
+                self?.setupUI()
             }
             .store(in: &cancellables)
     }
