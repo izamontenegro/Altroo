@@ -25,11 +25,11 @@ extension TodayViewController {
                 onClose: { [weak self] in self?.closeHealthAlert() },
                 onPrivacyPolicy: { [weak self] in
                     self?.dismissHealthAlertUI()
-                    self?.delegate?.goToPrivacyPolicy()
+                    self?.delegate?.goTo(.privacyPolicy)
                 },
                 onLegalNotice: { [weak self] in
                     self?.dismissHealthAlertUI()
-                    self?.delegate?.goToLegalNotice()
+                    self?.delegate?.goTo(.legalNotice)
                 }
             )
         )

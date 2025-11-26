@@ -10,10 +10,6 @@ import Combine
 
 protocol TodayViewControllerDelegate: AnyObject {
     func goTo(_ destination: TodayDestination)
-    func goToSymptomDetail(with symptom: Symptom)
-    func goToPrivacyPolicy()
-    func goToLegalNotice()
-    func openTaskDetail(with task: TaskInstance)
 }
 
 class TodayViewController: UIViewController {
@@ -181,5 +177,6 @@ class TodayViewController: UIViewController {
         }
     }
         
+
     @objc private func handleRefresh() { fetchData() }
 }
