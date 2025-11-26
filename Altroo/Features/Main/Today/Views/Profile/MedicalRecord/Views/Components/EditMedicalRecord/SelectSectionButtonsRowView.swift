@@ -24,7 +24,6 @@ final class MedicalRecordSectionSelectorView: UIView {
         }
     }
     
-    // MARK: - Botões de seta
     private lazy var leftArrowButton: UIButton = {
         let button = UIButton(type: .system)
         let configuration = UIImage.SymbolConfiguration(pointSize: 16, weight: .semibold)
@@ -45,7 +44,6 @@ final class MedicalRecordSectionSelectorView: UIView {
         return button
     }()
     
-    // MARK: - Stack de ícones
     private lazy var iconsStackView: UIStackView = {
         let stack = UIStackView()
         stack.axis = .horizontal
@@ -56,7 +54,6 @@ final class MedicalRecordSectionSelectorView: UIView {
         return stack
     }()
     
-    // MARK: - Stack principal
     private lazy var mainStackView: UIStackView = {
         let stack = UIStackView(arrangedSubviews: [leftArrowButton, iconsStackView, rightArrowButton])
         stack.axis = .horizontal
@@ -67,7 +64,6 @@ final class MedicalRecordSectionSelectorView: UIView {
         return stack
     }()
     
-    // MARK: - Inicialização
     init(symbolNames: [String] = ["person.fill", "heart.fill", "figure.arms.open", "brain.head.profile", "hand.raised.fill"],
          initialSelectedIndex: Int = 0) {
         self.symbolNames = symbolNames
@@ -115,7 +111,6 @@ final class MedicalRecordSectionSelectorView: UIView {
         }
     }
     
-    // MARK: - Atualização visual
     private func updateSelectionAppearance() {
         for (index, button) in iconButtons.enumerated() {
             if index == selectedIndex {
@@ -128,7 +123,6 @@ final class MedicalRecordSectionSelectorView: UIView {
         }
     }
     
-    // MARK: - Ações
     @objc private func handleIconTap(_ sender: UIButton) {
         guard sender.tag != selectedIndex else { return }
         

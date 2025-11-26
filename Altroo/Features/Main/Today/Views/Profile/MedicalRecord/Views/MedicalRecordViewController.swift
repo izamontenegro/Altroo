@@ -7,6 +7,10 @@
 import UIKit
 import Combine
 
+extension Notification.Name {
+    static let medicalRecordDidChange = Notification.Name("medicalRecordDidChange")
+}
+
 protocol EditMedicalRecordViewControllerDelegate: AnyObject {
     func goToPersonalData()
     func goToMentalState()
@@ -33,6 +37,7 @@ final class MedicalRecordViewController: GradientNavBarViewController {
     }
     
     override func viewWillAppear(_ animated: Bool) {
+        super.viewWillAppear(animated)
         viewModel.reload()
     }
     
@@ -40,10 +45,17 @@ final class MedicalRecordViewController: GradientNavBarViewController {
         super.viewDidLoad()
         setupLayout()
         bindViewModel()
+        
+        NotificationCenter.default.addObserver(
+            self,
+            selector: #selector(handleMedicalRecordDidChange),
+            name: .medicalRecordDidChange,
+            object: nil
+        )
     }
 
     private func bindViewModel() {
-        viewModel.$sections
+        viewModel.$reloadToken
             .receive(on: RunLoop.main)
             .sink { [weak self] _ in
                 self?.reloadContent()
@@ -65,13 +77,14 @@ final class MedicalRecordViewController: GradientNavBarViewController {
         contentStackView.spacing = 24
         contentStackView.translatesAutoresizingMaskIntoConstraints = false
         scrollView.addSubview(contentStackView)
-
+        
         NSLayoutConstraint.activate([
             scrollView.topAnchor.constraint(equalTo: view.safeAreaLayoutGuide.topAnchor),
             scrollView.leadingAnchor.constraint(equalTo: view.leadingAnchor),
             scrollView.trailingAnchor.constraint(equalTo: view.trailingAnchor),
             scrollView.bottomAnchor.constraint(equalTo: view.bottomAnchor),
-            contentStackView.topAnchor.constraint(equalTo: scrollView.topAnchor, constant: 30),
+            
+            contentStackView.topAnchor.constraint(equalTo: scrollView.topAnchor, constant: 16),
             contentStackView.leadingAnchor.constraint(equalTo: view.leadingAnchor, constant: 16),
             contentStackView.trailingAnchor.constraint(equalTo: view.trailingAnchor, constant: -16),
             contentStackView.bottomAnchor.constraint(equalTo: scrollView.bottomAnchor, constant: -40),
@@ -88,15 +101,71 @@ final class MedicalRecordViewController: GradientNavBarViewController {
     private func reloadContent() {
         guard let contentStackView = resolveContentStackView() else { return }
         contentStackView.arrangedSubviews.forEach { $0.removeFromSuperview() }
-        contentStackView.addArrangedSubview(makeHeaderSection(percent: viewModel.completionPercentage))
-        contentStackView.addArrangedSubview(makeCompletionAlertAndButton())
-        for section in viewModel.sections {
-            contentStackView.addArrangedSubview(makeSection(
-                title: section.title,
-                rows: section.rows,
-                icon: section.iconSystemName
-            ))
+        
+        let headerView = makeHeaderSection(percent: viewModel.completionPercentage)
+        contentStackView.addArrangedSubview(headerView)
+
+        if viewModel.completionPercentage < 1.0 {
+            let alertView = makeCompletionAlertAndButton()
+            contentStackView.addArrangedSubview(alertView)
         }
+        
+        contentStackView.spacing = 16
+        
+        let personalSection = PersonalDataSectionView(
+                name: viewModel.getName(),
+                birthDate: viewModel.getBirthDate(),
+                weight: viewModel.getWeight(),
+                height: viewModel.getHeight(),
+                address: viewModel.getAddress(),
+                emergencyContact: viewModel.getContactDisplayItem(),
+                copyTarget: self,
+                copyAction: #selector(didTapCopyPhoneButton(_:)),
+                editTarget: self,
+                editAction: #selector(didTapEditPersonalData)
+            )
+        
+        contentStackView.addArrangedSubview(personalSection)
+        
+        let healthProblemsSection = HealthProblemsSectionView(
+            diseasesText: viewModel.getDiseasesText(),
+            surgeryItems: viewModel.getSurgeriesItems(),
+            allergiesText: viewModel.getAllergiesText(),
+            observationText: viewModel.getObservationText(),
+            editTarget: self,
+            editAction: #selector(didTapEditHealthProblems)
+        )
+        contentStackView.addArrangedSubview(healthProblemsSection)
+        
+        let physicalSection = PhysicalStateSectionView(
+            vision: viewModel.getVisionText(),
+            hearing: viewModel.getHearingText(),
+            mobility: viewModel.getMobilityText(),
+            oralHealth: viewModel.getOralHealthText(),
+            editTarget: self,
+            editAction: #selector(didTapEditPhysicalState)
+        )
+        contentStackView.addArrangedSubview(physicalSection)
+        
+        let mentalSection = MentalStateSectionView(
+            emotionalState: viewModel.getEmotionalStateText(),
+            orientationState: viewModel.getOrientationStateText(),
+            memoryState: viewModel.getMemoryStateText(),
+            editTarget: self,
+            editAction: #selector(didTapEditMentalState)
+        )
+        contentStackView.addArrangedSubview(mentalSection)
+        
+        let personalCareSection = PersonalCareSectionView(
+            bath: viewModel.getBathStateText(),
+            hygiene: viewModel.getHygieneStateText(),
+            excretion: viewModel.getExcretionStateText(),
+            feeding: viewModel.getFeedingStateText(),
+            equipment: viewModel.getEquipmentText(),
+            editTarget: self,
+            editAction: #selector(didTapEditPersonalCare)
+        )
+        contentStackView.addArrangedSubview(personalCareSection)
     }
 
     func makeHeaderSection(percent: CGFloat) -> UIView {
@@ -110,23 +179,26 @@ final class MedicalRecordViewController: GradientNavBarViewController {
             labelWeight: .semibold
         )
         let subtitleLabel = StandardLabel(
-            labelText: "Reúna as informações de saúde do assistido em um só lugar, de forma simples e acessível.",
+            labelText: "Este é o espaço onde ficam reunidas todas as informações de saúde do assistido, prontas para consulta.",
             labelFont: .sfPro,
             labelType: .body,
             labelColor: .black30,
             labelWeight: .regular
         )
         subtitleLabel.numberOfLines = 0
+        
         let trackView = UIView()
         trackView.translatesAutoresizingMaskIntoConstraints = false
         trackView.backgroundColor = .blue80
         trackView.layer.cornerRadius = 8
+        
         let fillView = UIView()
         fillView.translatesAutoresizingMaskIntoConstraints = false
         fillView.layer.cornerRadius = 8
         fillView.clipsToBounds = true
         fillView.backgroundColor = .blue10
         trackView.addSubview(fillView)
+        
         let percentageLabel = StandardLabel(
             labelText: "\(Int(round(percent * 100)))%",
             labelFont: .sfPro,
@@ -136,15 +208,42 @@ final class MedicalRecordViewController: GradientNavBarViewController {
         )
         percentageLabel.setContentHuggingPriority(.required, for: .horizontal)
         percentageLabel.setContentCompressionResistancePriority(.required, for: .horizontal)
+        
         let progressRowStackView = UIStackView(arrangedSubviews: [trackView, percentageLabel])
         progressRowStackView.axis = .horizontal
         progressRowStackView.alignment = .center
         progressRowStackView.spacing = 10
+        
+        let updatedLabel = StandardLabel(
+            labelText: "Última atualização em: ",
+            labelFont: .sfPro,
+            labelType: .subHeadline,
+            labelColor: .black30,
+            labelWeight: .medium
+        )
+        let updatedLabelDate = StandardLabel(
+            labelText: viewModel.getUpdatedAt(),
+            labelFont: .sfPro,
+            labelType: .subHeadline,
+            labelColor: .black30,
+            labelWeight: .regular
+        )
+        
+        let updatedStack = UIStackView()
+        updatedStack.axis = .horizontal
+        updatedStack.spacing = 0
+        updatedStack.addArrangedSubview(updatedLabel)
+        updatedStack.addArrangedSubview(updatedLabelDate)
+        updatedStack.translatesAutoresizingMaskIntoConstraints = false
+        
         let headerStackView = UIStackView(arrangedSubviews: [titleLabel, subtitleLabel, progressRowStackView])
         headerStackView.axis = .vertical
         headerStackView.spacing = 4
         headerStackView.translatesAutoresizingMaskIntoConstraints = false
+        
         containerView.addSubview(headerStackView)
+        containerView.addSubview(updatedStack)
+        
         NSLayoutConstraint.activate([
             trackView.trailingAnchor.constraint(equalTo: percentageLabel.leadingAnchor, constant: -10),
             trackView.heightAnchor.constraint(equalToConstant: 15),
@@ -153,11 +252,17 @@ final class MedicalRecordViewController: GradientNavBarViewController {
             fillView.centerYAnchor.constraint(equalTo: trackView.centerYAnchor),
             fillView.heightAnchor.constraint(equalTo: trackView.heightAnchor),
             fillView.widthAnchor.constraint(equalTo: trackView.widthAnchor, multiplier: max(0, min(1, percent))),
+            
+            updatedStack.topAnchor.constraint(equalTo: headerStackView.bottomAnchor, constant: 3),
+            
             headerStackView.topAnchor.constraint(equalTo: containerView.topAnchor),
             headerStackView.leadingAnchor.constraint(equalTo: containerView.leadingAnchor),
             headerStackView.trailingAnchor.constraint(equalTo: containerView.trailingAnchor),
-            headerStackView.bottomAnchor.constraint(equalTo: containerView.bottomAnchor)
+            headerStackView.bottomAnchor.constraint(equalTo: updatedStack.topAnchor),
+            
+            updatedStack.bottomAnchor.constraint(equalTo: containerView.bottomAnchor)
         ])
+        
         DispatchQueue.main.async {
             containerView.layoutIfNeeded()
             let gradientLayer = CAGradientLayer()
@@ -168,166 +273,50 @@ final class MedicalRecordViewController: GradientNavBarViewController {
             gradientLayer.cornerRadius = fillView.layer.cornerRadius
             fillView.layer.insertSublayer(gradientLayer, at: 0)
         }
+        
         return containerView
     }
 
     private func makeCompletionAlertAndButton() -> UIView {
-        let wrapperStackView = UIStackView()
-        wrapperStackView.axis = .vertical
-        wrapperStackView.spacing = -15
-        wrapperStackView.translatesAutoresizingMaskIntoConstraints = false
         let alertBoxView = UIView()
-        alertBoxView.backgroundColor = UIColor.teal80
-        alertBoxView.layer.cornerRadius = 5
-        let alertIconImageView = UIImageView(image: UIImage(systemName: "exclamationmark.triangle.fill"))
-        alertIconImageView.tintColor = .teal10
+        alertBoxView.backgroundColor = UIColor.red80
+        alertBoxView.layer.cornerRadius = 8
+        
+        let alertIconImageView = UIImageView(image: UIImage(systemName: "exclamationmark.triangle"))
+        alertIconImageView.tintColor = .red20
         alertIconImageView.translatesAutoresizingMaskIntoConstraints = false
-        alertIconImageView.widthAnchor.constraint(equalToConstant: 36).isActive = true
-        alertIconImageView.heightAnchor.constraint(equalToConstant: 36).isActive = true
+        alertIconImageView.widthAnchor.constraint(equalToConstant: 34).isActive = true
+        alertIconImageView.heightAnchor.constraint(equalToConstant: 34).isActive = true
+        
         let alertLabel = StandardLabel(
-            labelText: "Finalize o preenchimento para ter os dados de saúde do paciente à mão quando precisar.",
+            labelText: "Complete o preenchimento para manter as informações do assistido à mão se precisar.",
             labelFont: .sfPro,
-            labelType: .subHeadline,
-            labelColor: .teal10,
+            labelType: .callOut,
+            labelColor: .red20,
             labelWeight: .regular
         )
         alertLabel.numberOfLines = 0
+        alertLabel.textAlignment = .left
+        
         let alertStackView = UIStackView(arrangedSubviews: [alertIconImageView, alertLabel])
         alertStackView.axis = .horizontal
         alertStackView.alignment = .center
-        alertStackView.spacing = 10
+        alertStackView.spacing = 8
         alertStackView.translatesAutoresizingMaskIntoConstraints = false
+        
         alertBoxView.addSubview(alertStackView)
+        
         NSLayoutConstraint.activate([
             alertStackView.topAnchor.constraint(equalTo: alertBoxView.topAnchor, constant: 8),
-            alertStackView.bottomAnchor.constraint(equalTo: alertBoxView.bottomAnchor, constant: -23),
+            alertStackView.bottomAnchor.constraint(equalTo: alertBoxView.bottomAnchor, constant: -8),
             alertStackView.leadingAnchor.constraint(equalTo: alertBoxView.leadingAnchor, constant: 8),
             alertStackView.trailingAnchor.constraint(equalTo: alertBoxView.trailingAnchor, constant: -8)
         ])
-        let editButton = LargeFilledButton(
-            title: "edit_medical_record".localized,
-            icon: UIImage(systemName: "square.and.pencil")
-        )
-        wrapperStackView.addArrangedSubview(alertBoxView)
-        wrapperStackView.addArrangedSubview(editButton)
-        editButton.isUserInteractionEnabled = true
-        let tapGesture = UITapGestureRecognizer(target: self, action: #selector(didTapEditButton))
-        editButton.addGestureRecognizer(tapGesture)
-        editButton.enableHighlightEffect()
-        return wrapperStackView
+        
+        return alertBoxView
     }
 
-    private func makeSubsectionHeader(_ text: String) -> UIView {
-        let titleLabel = StandardLabel(
-            labelText: text,
-            labelFont: .sfPro,
-            labelType: .body,
-            labelColor: .blue20,
-            labelWeight: .regular
-        )
-        let wrapperStackView = UIStackView(arrangedSubviews: [titleLabel])
-        wrapperStackView.axis = .vertical
-        wrapperStackView.spacing = 4
-        wrapperStackView.translatesAutoresizingMaskIntoConstraints = false
-        return wrapperStackView
-    }
-
-    private func makeSection(title: String, rows: [InformationRow], icon: String) -> UIView {
-        let containerView = UIView()
-        containerView.backgroundColor = .clear
-        let headerView = makeSectionHeader(title: title, icon: icon)
-        let bodyStackView = UIStackView()
-        bodyStackView.axis = .vertical
-        bodyStackView.spacing = 10
-        bodyStackView.translatesAutoresizingMaskIntoConstraints = false
-        for row in rows {
-            if row.title == "Cirurgias", row.value.isEmpty, !viewModel.surgeryDisplayItems.isEmpty {
-                bodyStackView.addArrangedSubview(makeSubsectionHeader("Cirurgias"))
-                let groupStackView = UIStackView()
-                groupStackView.axis = .vertical
-                groupStackView.spacing = 4
-                groupStackView.translatesAutoresizingMaskIntoConstraints = false
-                for surgery in viewModel.surgeryDisplayItems {
-                    let itemView = MedicalRecordInfoItemView(
-                        infotitle: "",
-                        primaryText: surgery.primary,
-                        secondaryText: surgery.secondary
-                    )
-                    itemView.translatesAutoresizingMaskIntoConstraints = false
-                    groupStackView.addArrangedSubview(itemView)
-                }
-                bodyStackView.addArrangedSubview(groupStackView)
-                continue
-            }
-            if row.title == "emergency_contact".localized, row.value.isEmpty, !viewModel.contactDisplayItems.isEmpty {
-                bodyStackView.addArrangedSubview(makeSubsectionHeader("emergency_contact".localized))
-                let groupStackView = UIStackView()
-                groupStackView.axis = .vertical
-                groupStackView.spacing = 4
-                groupStackView.translatesAutoresizingMaskIntoConstraints = false
-                for contact in viewModel.contactDisplayItems {
-                    let cardView = ContactCardView(
-                        name: contact.name,
-                        relation: contact.relationship,
-                        phone: contact.phone,
-                        copyTarget: self,
-                        copyAction: #selector(didTapCopyPhoneButton(_:))
-                    )
-                    groupStackView.addArrangedSubview(cardView)
-                }
-                bodyStackView.addArrangedSubview(groupStackView)
-                continue
-            }
-            let itemView = MedicalRecordInfoItemView(
-                infotitle: row.title,
-                infoDescription: row.value
-            )
-            itemView.translatesAutoresizingMaskIntoConstraints = false
-            bodyStackView.addArrangedSubview(itemView)
-        }
-        containerView.addSubview(headerView)
-        containerView.addSubview(bodyStackView)
-        NSLayoutConstraint.activate([
-            headerView.topAnchor.constraint(equalTo: containerView.topAnchor),
-            headerView.leadingAnchor.constraint(equalTo: containerView.leadingAnchor),
-            headerView.trailingAnchor.constraint(equalTo: containerView.trailingAnchor),
-            headerView.heightAnchor.constraint(equalToConstant: 36),
-            bodyStackView.topAnchor.constraint(equalTo: headerView.bottomAnchor, constant: 8),
-            bodyStackView.leadingAnchor.constraint(equalTo: containerView.leadingAnchor, constant: 12),
-            bodyStackView.trailingAnchor.constraint(equalTo: containerView.trailingAnchor, constant: -12),
-            bodyStackView.bottomAnchor.constraint(equalTo: containerView.bottomAnchor, constant: -12)
-        ])
-        return containerView
-    }
-
-    private func makeSectionHeader(title: String, icon: String) -> UIView {
-        let headerView = UIView()
-        headerView.backgroundColor = UIColor.blue30
-        headerView.layer.cornerRadius = 4
-        headerView.translatesAutoresizingMaskIntoConstraints = false
-        let iconImageView = UIImageView(image: UIImage(systemName: icon))
-        iconImageView.tintColor = .pureWhite
-        iconImageView.translatesAutoresizingMaskIntoConstraints = false
-        iconImageView.widthAnchor.constraint(equalToConstant: 18).isActive = true
-        iconImageView.heightAnchor.constraint(equalToConstant: 19).isActive = true
-        let titleLabel = StandardLabel(
-            labelText: title,
-            labelFont: .sfPro,
-            labelType: .body,
-            labelColor: .pureWhite,
-            labelWeight: .semibold
-        )
-        let titleStackView = UIStackView(arrangedSubviews: [iconImageView, titleLabel])
-        titleStackView.axis = .horizontal
-        titleStackView.spacing = 8
-        titleStackView.translatesAutoresizingMaskIntoConstraints = false
-        headerView.addSubview(titleStackView)
-        NSLayoutConstraint.activate([
-            titleStackView.leadingAnchor.constraint(equalTo: headerView.leadingAnchor, constant: 12),
-            titleStackView.centerYAnchor.constraint(equalTo: headerView.centerYAnchor)
-        ])
-        return headerView
-    }
+    // MARK: - actions
 
     private func showCopiedToast(with message: String) {
         if toastLabel == nil {
@@ -372,5 +361,31 @@ final class MedicalRecordViewController: GradientNavBarViewController {
     
     @objc func didTapEditButton() {
         delegate?.goToPersonalData()
+    }
+    
+    // MARK: - Edit actions
+
+    @objc private func didTapEditPersonalData() {
+        delegate?.goToPersonalData()
+    }
+
+    @objc private func didTapEditHealthProblems() {
+        delegate?.goToHealthProblems()
+    }
+
+    @objc private func didTapEditPhysicalState() {
+        delegate?.goToPhysicalState()
+    }
+
+    @objc private func didTapEditMentalState() {
+        delegate?.goToMentalState()
+    }
+
+    @objc private func didTapEditPersonalCare() {
+        delegate?.goToPersonalCare()
+    }
+    
+    @objc private func handleMedicalRecordDidChange() {
+        viewModel.reload()
     }
 }
