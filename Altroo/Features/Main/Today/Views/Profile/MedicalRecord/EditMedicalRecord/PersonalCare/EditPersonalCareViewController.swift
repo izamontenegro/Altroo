@@ -11,6 +11,8 @@ final class EditPersonalCareViewController: UIViewController, UITextFieldDelegat
 
     let viewModel: EditPersonalCareViewModel
     weak var delegate: EditMedicalRecordViewControllerDelegate?
+    private var keyboardHandler: KeyboardHandler?
+
 
     private let header: EditSectionHeaderView = {
         let header = EditSectionHeaderView(
@@ -95,6 +97,13 @@ final class EditPersonalCareViewController: UIViewController, UITextFieldDelegat
         stack.translatesAutoresizingMaskIntoConstraints = false
         return stack
     }()
+    
+    var scrollView: UIScrollView = {
+        let scrollView = UIScrollView()
+        scrollView.translatesAutoresizingMaskIntoConstraints = false
+        scrollView.alwaysBounceVertical = true
+        return scrollView
+    }()
 
     private lazy var keyboardDismissTapGesture: UITapGestureRecognizer = {
         let tap = UITapGestureRecognizer(target: self, action: #selector(dismissKeyboard))
@@ -120,6 +129,9 @@ final class EditPersonalCareViewController: UIViewController, UITextFieldDelegat
         equipmentsTextField.addTarget(self, action: #selector(equipmentsTextChanged(_:)), for: .editingChanged)
         equipmentsTextField.delegate = self
         view.addGestureRecognizer(keyboardDismissTapGesture)
+        
+        keyboardHandler = KeyboardHandler(viewController: self, scrollView: scrollView)
+
     }
 
     private func setupUI() {
@@ -127,29 +139,37 @@ final class EditPersonalCareViewController: UIViewController, UITextFieldDelegat
 
         let saveButton = configureConfirmationButton()
         saveButton.translatesAutoresizingMaskIntoConstraints = false
-        
-        view.addSubview(header)
-        view.addSubview(formStack)
-        
+
+        view.addSubview(scrollView)
         view.addSubview(saveButton)
-        
+
         NSLayoutConstraint.activate([
             saveButton.bottomAnchor.constraint(equalTo: view.safeAreaLayoutGuide.bottomAnchor, constant: -20),
             saveButton.centerXAnchor.constraint(equalTo: view.centerXAnchor)
         ])
 
         NSLayoutConstraint.activate([
-            header.topAnchor.constraint(equalTo: view.safeAreaLayoutGuide.topAnchor, constant: 15),
-            header.leadingAnchor.constraint(equalTo: view.leadingAnchor, constant: 16),
-            header.trailingAnchor.constraint(equalTo: view.trailingAnchor, constant: -16),
+            scrollView.topAnchor.constraint(equalTo: view.safeAreaLayoutGuide.topAnchor),
+            scrollView.leadingAnchor.constraint(equalTo: view.leadingAnchor),
+            scrollView.trailingAnchor.constraint(equalTo: view.trailingAnchor),
+            scrollView.bottomAnchor.constraint(equalTo: saveButton.topAnchor, constant: -16)
+        ])
+
+        scrollView.addSubview(header)
+        scrollView.addSubview(formStack)
+
+        NSLayoutConstraint.activate([
+            header.topAnchor.constraint(equalTo: scrollView.contentLayoutGuide.topAnchor, constant: 15),
+            header.leadingAnchor.constraint(equalTo: scrollView.frameLayoutGuide.leadingAnchor, constant: 16),
+            header.trailingAnchor.constraint(equalTo: scrollView.frameLayoutGuide.trailingAnchor, constant: -16),
 
             formStack.topAnchor.constraint(equalTo: header.bottomAnchor, constant: 15),
-            formStack.leadingAnchor.constraint(equalTo: view.leadingAnchor, constant: 16),
-            formStack.trailingAnchor.constraint(equalTo: view.trailingAnchor, constant: -16),
-            formStack.bottomAnchor.constraint(lessThanOrEqualTo: view.bottomAnchor, constant: -20)
+            formStack.leadingAnchor.constraint(equalTo: scrollView.frameLayoutGuide.leadingAnchor, constant: 16),
+            formStack.trailingAnchor.constraint(equalTo: scrollView.frameLayoutGuide.trailingAnchor, constant: -16),
+            formStack.bottomAnchor.constraint(equalTo: scrollView.contentLayoutGuide.bottomAnchor, constant: -20)
         ])
     }
-
+    
     private func bindInitialState() {
         viewModel.loadInitialPersonalCareFormState()
 

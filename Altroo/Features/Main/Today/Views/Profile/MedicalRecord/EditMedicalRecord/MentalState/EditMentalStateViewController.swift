@@ -172,6 +172,8 @@ final class EditMentalStateViewController: UIViewController {
         configureMemoryMenu()
         configureNavBar()
         loadInitialState()
+        
+        
     }
 
     // MARK: - UI Setup

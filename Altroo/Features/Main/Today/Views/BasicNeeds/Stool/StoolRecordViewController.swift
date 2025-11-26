@@ -46,7 +46,7 @@ final class StoolRecordViewController: UIViewController {
         bindViewModel()
         configureNavBar()
         
-        keyboardHandler = KeyboardHandler(viewController: self)
+        keyboardHandler = KeyboardHandler(viewController: self, scrollView: scrollView)
     }
     
     private func configureNavBar() {
@@ -63,11 +63,14 @@ final class StoolRecordViewController: UIViewController {
         dismiss(animated: true)
     }
     
-    private func setupLayout() {
-
+    var scrollView: UIScrollView = {
         let scrollView = UIScrollView()
         scrollView.translatesAutoresizingMaskIntoConstraints = false
         scrollView.alwaysBounceVertical = true
+        return scrollView
+    }()
+    
+    private func setupLayout() {
 
         let content = UIStackView()
         content.axis = .vertical

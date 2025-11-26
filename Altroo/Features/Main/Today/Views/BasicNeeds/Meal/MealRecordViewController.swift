@@ -42,7 +42,7 @@ final class MealRecordViewController: UIViewController {
         setupTapToDismiss()
         configureNavBar()
         
-        keyboardHandler = KeyboardHandler(viewController: self)
+        keyboardHandler = KeyboardHandler(viewController: self, scrollView: scrollView)
     }
     
     private func configureNavBar() {
@@ -59,13 +59,17 @@ final class MealRecordViewController: UIViewController {
         dismiss(animated: true)
     }
 
-    // MARK: - Layout
-    
-    private func setupLayout() {
+    var scrollView: UIScrollView = {
         let scrollView = UIScrollView()
         scrollView.translatesAutoresizingMaskIntoConstraints = false
         scrollView.alwaysBounceVertical = true
+        return scrollView
+    }()
 
+
+    // MARK: - Layout
+    
+    private func setupLayout() {
         let contentStackView = UIStackView()
         contentStackView.axis = .vertical
         contentStackView.alignment = .fill
