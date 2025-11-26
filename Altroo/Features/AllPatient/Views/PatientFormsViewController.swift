@@ -218,7 +218,8 @@ class PatientFormsViewController: UIViewController {
         setupUI()
         configureNavBar()
         bindViewModel()
-        keyboardHandler = KeyboardHandler(viewController: self)
+        
+        keyboardHandler = KeyboardHandler(viewController: self, scrollView: scrollView)
     }
     
     private func bindViewModel() {

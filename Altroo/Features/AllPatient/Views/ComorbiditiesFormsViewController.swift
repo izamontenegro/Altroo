@@ -13,6 +13,7 @@ class ComorbiditiesFormsViewController: UIViewController {
     private let viewModel: AddPatientViewModel
     private var bedriddenStatus: BedriddenStatus = .notBedridden
     private var diseasesList: [DiseaseDraft] = []
+    private var keyboardHandler: KeyboardHandler?
 
     init(viewModel: AddPatientViewModel) {
         self.viewModel = viewModel
@@ -53,6 +54,7 @@ class ComorbiditiesFormsViewController: UIViewController {
         view.backgroundColor = .pureWhite
         setupUI()
         setupComorbidityButtons()
+        keyboardHandler = KeyboardHandler(viewController: self, scrollView: scrollView)
     }
 
     private func setupUI() {

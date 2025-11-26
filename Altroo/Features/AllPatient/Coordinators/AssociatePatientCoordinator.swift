@@ -49,7 +49,7 @@ final class AssociatePatientCoordinator: Coordinator {
             
             presentSheet(
                 child.navigation,
-                from: navigation, percentage: 0.9
+                from: navigation, percentage: 1.0
             )
             
         case .tutorialAdd:

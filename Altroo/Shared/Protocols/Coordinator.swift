@@ -36,8 +36,9 @@ extension Coordinator {
         }
         
         if let sheet = vc.sheetPresentationController {
-            sheet.detents = [detent]
+            sheet.detents = [detent, .large()]
             sheet.prefersGrabberVisible = grabber
+            sheet.selectedDetentIdentifier = .large
         }
         
         navigation.present(vc, animated: animated)
