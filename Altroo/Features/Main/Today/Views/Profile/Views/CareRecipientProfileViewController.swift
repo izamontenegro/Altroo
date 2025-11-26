@@ -63,8 +63,9 @@ final class CareRecipientProfileViewController: GradientNavBarViewController {
         content.alignment = .fill
         content.spacing = 16
         content.translatesAutoresizingMaskIntoConstraints = false
-    
-        content.arrangedSubviews.forEach { $0.removeFromSuperview() }
+            
+        scrollView.addSubview(content)
+        view.addSubview(scrollView)
         
         NSLayoutConstraint.activate([
             content.topAnchor.constraint(equalTo: scrollView.contentLayoutGuide.topAnchor, constant: 24),
@@ -72,9 +73,6 @@ final class CareRecipientProfileViewController: GradientNavBarViewController {
             content.trailingAnchor.constraint(equalTo: scrollView.frameLayoutGuide.trailingAnchor, constant: -16),
             content.bottomAnchor.constraint(equalTo: scrollView.contentLayoutGuide.bottomAnchor, constant: -24)
         ])
-        
-        scrollView.addSubview(content)
-        view.addSubview(scrollView)
         
         let headerSection = setupProfileHeader()
         let emergencySection = setupEmergencyContactSection()
@@ -130,16 +128,47 @@ final class CareRecipientProfileViewController: GradientNavBarViewController {
         let header = ProfileHeader(careRecipient: person, percent: viewModel.completionPercent)
         header.translatesAutoresizingMaskIntoConstraints = false
         
+        let updatedLabel = StandardLabel(
+            labelText: "Última atualização em: ",
+            labelFont: .sfPro,
+            labelType: .subHeadline,
+            labelColor: .black30,
+            labelWeight: .medium
+        )
+        
+        let updatedLabelDate = StandardLabel(
+            labelText: viewModel.getUpdatedAt(),
+            labelFont: .sfPro,
+            labelType: .subHeadline,
+            labelColor: .black30,
+            labelWeight: .regular
+        )
+        
+        let updatedStack = UIStackView()
+        updatedStack.axis = .horizontal
+        updatedStack.spacing = 0
+        updatedStack.addArrangedSubview(updatedLabel)
+        updatedStack.addArrangedSubview(updatedLabelDate)
+        updatedStack.translatesAutoresizingMaskIntoConstraints = false
+        
         header.isUserInteractionEnabled = true
         let tap = UITapGestureRecognizer(target: self, action: #selector(didTapHeader))
         header.addGestureRecognizer(tap)
         header.enableHighlightEffect()
         
-        return header
+        let stack = UIStackView()
+        stack.axis = .vertical
+        stack.spacing = 8
+        
+        stack.addArrangedSubview(header)
+        stack.addArrangedSubview(updatedStack)
+
+        
+        return stack
     }
     // MARK: - EMERGENCY CONTACT
     private func setupEmergencyContactSection() -> UIView {
-        guard let contact = emergencyContact else {
+        guard let contact = viewModel.getContactDisplayItem() else {
             return UIView()
         }
         
@@ -400,14 +429,14 @@ final class CareRecipientProfileViewController: GradientNavBarViewController {
         )
         .receive(on: RunLoop.main)
         .sink { [weak self] _, _ in
-            self?.setupUI()
+//            self?.setupUI()
         }
         .store(in: &cancellables)
         
         viewModel.$caregivers
             .receive(on: RunLoop.main)
             .sink { [weak self] _ in
-                self?.setupUI()
+//                self?.setupUI()
             }
             .store(in: &cancellables)
     }

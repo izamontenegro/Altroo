@@ -221,6 +221,7 @@ final class MedicalRecordViewController: GradientNavBarViewController {
             labelColor: .black30,
             labelWeight: .medium
         )
+        
         let updatedLabelDate = StandardLabel(
             labelText: viewModel.getUpdatedAt(),
             labelFont: .sfPro,
