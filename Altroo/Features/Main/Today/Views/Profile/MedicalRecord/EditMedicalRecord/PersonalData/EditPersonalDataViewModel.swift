@@ -248,6 +248,7 @@ final class EditPersonalDataViewModel {
         }
         
         careRecipientFacade.updateMedicalRecord(careRecipient: patient)
-
+        
+        NotificationCenter.default.post(name: .medicalRecordDidChange, object: nil)
     }
 }

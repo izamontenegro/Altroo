@@ -87,5 +87,6 @@ final class EditMentalStateViewModel {
         
         careRecipientFacade.updateMedicalRecord(careRecipient: patient)
 
+        NotificationCenter.default.post(name: .medicalRecordDidChange, object: nil)
     }
 }

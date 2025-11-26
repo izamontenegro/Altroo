@@ -7,6 +7,10 @@
 import UIKit
 import Combine
 
+extension Notification.Name {
+    static let medicalRecordDidChange = Notification.Name("medicalRecordDidChange")
+}
+
 protocol EditMedicalRecordViewControllerDelegate: AnyObject {
     func goToPersonalData()
     func goToMentalState()
@@ -41,6 +45,13 @@ final class MedicalRecordViewController: GradientNavBarViewController {
         super.viewDidLoad()
         setupLayout()
         bindViewModel()
+        
+        NotificationCenter.default.addObserver(
+            self,
+            selector: #selector(handleMedicalRecordDidChange),
+            name: .medicalRecordDidChange,
+            object: nil
+        )
     }
 
     private func bindViewModel() {
@@ -99,7 +110,6 @@ final class MedicalRecordViewController: GradientNavBarViewController {
             contentStackView.addArrangedSubview(alertView)
         }
         
-        contentStackView.addArrangedSubview(headerView)
         contentStackView.spacing = 16
         
         let personalSection = PersonalDataSectionView(
@@ -373,5 +383,9 @@ final class MedicalRecordViewController: GradientNavBarViewController {
 
     @objc private func didTapEditPersonalCare() {
         delegate?.goToPersonalCare()
+    }
+    
+    @objc private func handleMedicalRecordDidChange() {
+        viewModel.reload()
     }
 }

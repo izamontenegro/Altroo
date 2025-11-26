@@ -91,5 +91,7 @@ final class EditPhysicalStateViewModel {
         }
 
         careRecipientFacade.updateMedicalRecord(careRecipient: patient)
+        
+        NotificationCenter.default.post(name: .medicalRecordDidChange, object: nil)
     }
 }

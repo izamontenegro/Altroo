@@ -99,5 +99,6 @@ final class EditPersonalCareViewModel {
         careRecipientFacade.persistenceService.save()
         careRecipientFacade.updateMedicalRecord(careRecipient: patient)
 
+        NotificationCenter.default.post(name: .medicalRecordDidChange, object: nil)
     }
 }

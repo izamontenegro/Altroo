@@ -175,6 +175,8 @@ final class EditHealthProblemsViewModel {
         }
         
         careRecipientFacade.updateMedicalRecord(careRecipient: patient)
+        
+        NotificationCenter.default.post(name: .medicalRecordDidChange, object: nil)
     }
 
     func removeDisease(_ disease: Disease) {
