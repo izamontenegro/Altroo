@@ -349,23 +349,6 @@
         }
       }
     },
-    "all_day" : {
-      "extractionState" : "manual",
-      "localizations" : {
-        "en" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "All day"
-          }
-        },
-        "pt-BR" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Dia inteiro"
-          }
-        }
-      }
-    },
     "alergy" : {
       "extractionState" : "stale",
       "localizations" : {
@@ -379,6 +362,23 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Reação Alérgica"
+          }
+        }
+      }
+    },
+    "all_day" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "All day"
+          }
+        },
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Dia inteiro"
           }
         }
       }
@@ -771,23 +771,6 @@
         }
       }
     },
-    "convulsion" : {
-      "extractionState" : "manual",
-      "localizations" : {
-        "en" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Convulsion"
-          }
-        },
-        "pt-BR" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Convulsão"
-                      }
-        }
-      }
-    },
     "ContactText" : {
       "extractionState" : "manual",
       "localizations" : {
@@ -818,6 +801,23 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Contato"
+          }
+        }
+      }
+    },
+    "convulsion" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Convulsion"
+          }
+        },
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Convulsão"
           }
         }
       }
@@ -871,14 +871,14 @@
       "localizations" : {
         "en" : {
           "stringUnit" : {
-            "state" : "translated",
+            "state" : "needs_review",
             "value" : "The data is stored in a personal cloud, linked to the user's device account. This means that only the user has direct access to their information, ensuring individual and secure control. Altroo adopts technical security measures to protect information against unauthorized access, loss, misuse, or improper disclosure. Even with these measures, it is important to emphasize that no system is completely risk-free, and we recommend that users keep their devices protected with strong passwords."
           }
         },
         "pt-BR" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Os dados são armazenados em nuvem pessoal, atrelada à conta do dispositivo do usuário. Isso significa que apenas o próprio usuário tem acesso direto às suas informações, garantindo um controle individual e seguro. O Altroo adota medidas técnicas de segurança para proteger as informações contra acessos não autorizados, perda, uso indevido ou divulgação indevida. Mesmo com essas medidas, é importante ressaltar que nenhum sistema é totalmente livre de riscos, e recomendamos que o usuário mantenha seus dispositivos protegidos com senhas seguras."
+            "value" : "Os dados são armazenados em nuvem pessoal, atrelada à conta do dispositivo do usuário. Isso significa que apenas o próprio usuário tem acesso direto às suas informações, garantindo um controle individual e seguro. \nO Altroo adota medidas técnicas de segurança para proteger as informações contra acessos não autorizados, perda, uso indevido ou divulgação indevida. Mesmo com essas medidas, é importante ressaltar que nenhum sistema é totalmente livre de riscos, e recomendamos que o usuário mantenha seus dispositivos protegidos com senhas seguras."
           }
         }
       }
@@ -952,40 +952,6 @@
         }
       }
     },
-    "diarrhea" : {
-      "extractionState" : "stale",
-      "localizations" : {
-        "en" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Diarrhea"
-          }
-        },
-        "pt-BR" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Diarreia"
-          }
-        }
-      }
-    },
-    "dizziness" : {
-      "extractionState" : "stale",
-      "localizations" : {
-        "en" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Dizziness"
-          }
-        },
-        "pt-BR" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Tontura"
-                      }
-        }
-      }
-    },
     "devs" : {
       "extractionState" : "manual",
       "localizations" : {
@@ -1016,6 +982,40 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Equipe responsável pela criação e desenvolvimento do Altroo"
+          }
+        }
+      }
+    },
+    "diarrhea" : {
+      "extractionState" : "stale",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Diarrhea"
+          }
+        },
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Diarreia"
+          }
+        }
+      }
+    },
+    "dizziness" : {
+      "extractionState" : "stale",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Dizziness"
+          }
+        },
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Tontura"
           }
         }
       }
@@ -1194,23 +1194,6 @@
         }
       }
     },
-    "family" : {
-      "extractionState" : "manual",
-      "localizations" : {
-        "en" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Family"
-          }
-        },
-        "pt-BR" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Familiar"
-          }
-        }
-      }
-    },
     "fainting" : {
       "extractionState" : "stale",
       "localizations" : {
@@ -1245,6 +1228,23 @@
         }
       }
     },
+    "family" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Family"
+          }
+        },
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Familiar"
+          }
+        }
+      }
+    },
     "feeding" : {
       "extractionState" : "manual",
       "localizations" : {
@@ -1262,23 +1262,6 @@
         }
       }
     },
-    "friend" : {
-      "extractionState" : "manual",
-      "localizations" : {
-        "en" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Friend"
-          }
-        },
-        "pt-BR" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Amigo"
-          }
-        }
-      }
-    },
     "fever" : {
       "extractionState" : "stale",
       "localizations" : {
@@ -1292,6 +1275,23 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Febre"
+          }
+        }
+      }
+    },
+    "friend" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Friend"
+          }
+        },
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Amigo"
           }
         }
       }
@@ -1376,7 +1376,7 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Dor de cabeça"
-                      }
+          }
         }
       }
     },
@@ -1487,14 +1487,14 @@
       "localizations" : {
         "en" : {
           "stringUnit" : {
-            "state" : "translated",
+            "state" : "needs_review",
             "value" : "The information is used to: • Enable the app to function and its main features; • Facilitate the sharing of care information between caregivers and family members; • Personalize the user experience and improve app performance; • Send communications related to the use of Altroo, such as reminders or update notifications. Altroo does not use your data for advertising or commercial purposes."
           }
         },
         "pt-BR" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "As informações são utilizadas para: • Permitir o funcionamento do aplicativo e suas principais funcionalidades; • Facilitar o compartilhamento de informações de cuidado entre cuidadores e familiares; • Personalizar a experiência do usuário e aprimorar o desempenho do app; • Enviar comunicações relacionadas ao uso do Altroo, como lembretes ou notificações de atualização. O Altroo não utiliza seus dados para fins publicitários ou comerciais."
+            "value" : "As informações são utilizadas para: \n• Permitir o funcionamento do aplicativo e suas principais funcionalidades; \n• Facilitar o compartilhamento de informações de cuidado entre cuidadores e familiares; \n• Personalizar a experiência do usuário e aprimorar o desempenho do app; \n• Enviar comunicações relacionadas ao uso do Altroo, como lembretes ou notificações de atualização. \n\nO Altroo não utiliza seus dados para fins publicitários ou comerciais."
           }
         }
       }
@@ -1556,14 +1556,14 @@
       "localizations" : {
         "en" : {
           "stringUnit" : {
-            "state" : "translated",
+            "state" : "needs_review",
             "value" : "Altroo does not share personal data with third parties without the user's consent. Information sharing occurs only between authorized caregivers and family members, within the application environment itself, for the purpose of coordinating the care of the person being assisted. No information is sold, exchanged, or used for purposes outside the app's intended use."
           }
         },
         "pt-BR" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "O Altroo não compartilha dados pessoais com terceiros sem o consentimento do usuário. O compartilhamento de informações ocorre apenas entre cuidadores e familiares autorizados, dentro do próprio ambiente do aplicativo, com o objetivo de coordenar o cuidado do assistido. Nenhuma informação é vendida, trocada ou utilizada para fins externos ao propósito do app."
+            "value" : "O Altroo não compartilha dados pessoais com terceiros sem o consentimento do usuário. O compartilhamento de informações ocorre apenas entre cuidadores e familiares autorizados, dentro do próprio ambiente do aplicativo, com o objetivo de coordenar o cuidado do assistido. \nNenhuma informação é vendida, trocada ou utilizada para fins externos ao propósito do app."
           }
         }
       }
@@ -1590,14 +1590,14 @@
       "localizations" : {
         "en" : {
           "stringUnit" : {
-            "state" : "translated",
+            "state" : "needs_review",
             "value" : "Altroo only collects the information necessary for the app to function and to provide a better care experience. This information may include: • Registration data, such as name, email, and phone numbers; • Information about the person being cared for, such as name, age, and data relevant to care; • Activity logs and notes entered manually by the caregiver; • Information about app usage, such as frequency of access and features used. Altroo does not automatically collect sensitive health data, only data that the user voluntarily chooses to register."
           }
         },
         "pt-BR" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "O Altroo coleta apenas as informações necessárias para o funcionamento do aplicativo e para proporcionar uma melhor experiência de cuidado. Essas informações podem incluir: • Dados de cadastro, como nome, e-mail e telefones; • Informações sobre o assistido, como nome, idade e dados relevantes para o cuidado; • Registros de atividades e anotações inseridas manualmente pelo cuidador; • Informações sobre o uso do aplicativo, como frequência de acesso e funcionalidades utilizadas. O Altroo não coleta dados sensíveis de saúde automaticamente, apenas aqueles que o usuário decide registrar de forma voluntária."
+            "value" : "O Altroo coleta apenas as informações necessárias para o funcionamento do aplicativo e para proporcionar uma melhor experiência de cuidado. Essas informações podem incluir: \n• Dados de cadastro, como nome, e-mail e telefones; \n• Informações sobre o assistido, como nome, idade e dados relevantes para o cuidado; \n• Registros de atividades e anotações inseridas manualmente pelo cuidador; \n• Informações sobre o uso do aplicativo, como frequência de acesso e funcionalidades utilizadas. \n\nO Altroo não coleta dados sensíveis de saúde automaticamente, apenas aqueles que o usuário decide registrar de forma voluntária."
           }
         }
       }
@@ -2382,14 +2382,14 @@
       "localizations" : {
         "en" : {
           "stringUnit" : {
-            "state" : "translated",
+            "state" : "needs_review",
             "value" : "Altroo is an application developed to assist caregivers in organizing and monitoring care activities for those they care for. The application aims to facilitate communication and the recording of care routines, contributing to more efficient and collaborative monitoring. Altroo is not a medical device or service, and its use should not be interpreted as medical guidance, diagnosis, or treatment offered by its developers or owners. No information, alert, or data generated by the application should be considered clinically accurate or a substitute for professional health advice. If you have any questions about a medical condition, consult a qualified healthcare professional. If you believe that you or the person under your care may be experiencing a medical situation, seek medical attention immediately. You should never delay, ignore, or interrupt medical treatment based on information obtained from using Altroo."
           }
         },
         "pt-BR" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "O Altroo é um aplicativo desenvolvido para auxiliar cuidadores na organização e no acompanhamento das atividades de cuidado com seus assistidos. O aplicativo tem como objetivo facilitar a comunicação e o registro das rotinas de cuidado, contribuindo para um acompanhamento mais eficiente e colaborativo. O Altroo não é um dispositivo ou serviço médico, e seu uso não deve ser interpretado como orientação, diagnóstico ou tratamento médico oferecido por seus desenvolvedores ou proprietários. Nenhuma informação, alerta ou dado gerado pelo aplicativo deve ser considerado clinicamente preciso ou substituto de aconselhamento profissional de saúde. Se você tiver qualquer dúvida sobre uma condição médica, consulte um profissional de saúde qualificado. Se acreditar que você ou a pessoa sob seus cuidados possa estar enfrentando uma situação médica, procure atendimento médico imediatamente. Você nunca deve atrasar, ignorar ou interromper um tratamento médico com base em informações obtidas pelo uso do Altroo."
+            "value" : "O Altroo é um aplicativo desenvolvido para auxiliar cuidadores na organização e no acompanhamento das atividades de cuidado com seus assistidos. \nO aplicativo tem como objetivo facilitar a comunicação e o registro das rotinas de cuidado, contribuindo para um acompanhamento mais eficiente e colaborativo. \nO Altroo não é um dispositivo ou serviço médico, e seu uso não deve ser interpretado como orientação, diagnóstico ou tratamento médico oferecido por seus desenvolvedores ou proprietários. Nenhuma informação, alerta ou dado gerado pelo aplicativo deve ser considerado clinicamente preciso ou substituto de aconselhamento profissional de saúde. \nSe você tiver qualquer dúvida sobre uma condição médica, consulte um profissional de saúde qualificado. Se acreditar que você ou a pessoa sob seus cuidados possa estar enfrentando uma situação médica, procure atendimento médico imediatamente. Você nunca deve atrasar, ignorar ou interromper um tratamento médico com base em informações obtidas pelo uso do Altroo."
           }
         }
       }
@@ -2399,14 +2399,14 @@
       "localizations" : {
         "en" : {
           "stringUnit" : {
-            "state" : "translated",
+            "state" : "needs_review",
             "value" : "By using Altroo, you declare that you are aware of and agree to the terms of this Privacy Policy. If you do not agree with any of the terms, we recommend that you stop using the application and request the deletion of your account."
           }
         },
         "pt-BR" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Ao utilizar o Altroo, você declara estar ciente e de acordo com os termos desta Política de Privacidade. Se não concordar com algum dos termos, recomendamos interromper o uso do aplicativo e solicitar a exclusão de sua conta."
+            "value" : "Ao utilizar o Altroo, você declara estar ciente e de acordo com os termos desta Política de Privacidade. \nSe não concordar com algum dos termos, recomendamos interromper o uso do aplicativo e solicitar a exclusão de sua conta."
           }
         }
       }
@@ -2432,14 +2432,14 @@
       "localizations" : {
         "en" : {
           "stringUnit" : {
-            "state" : "translated",
+            "state" : "needs_review",
             "value" : "Privacy and Security Policy"
           }
         },
         "pt-BR" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Privacy and Security Policy"
+            "value" : "Política de Privacidade e Proteção"
           }
         }
       }
@@ -3429,6 +3429,40 @@
         }
       }
     },
+    "UserRightsText" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "The user has the right to: • Access personal information stored in the application; • Correct, update, or delete their data; • Revoke consent for the use of their information at any time; • Request the complete deletion of their account and linked data. • To exercise these rights, contact Altroo through the support channel available in the application or on the official website."
+          }
+        },
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "O usuário tem o direito de: • Acessar as informações pessoais armazenadas no aplicativo; \n• Corrigir, atualizar ou excluir seus dados; \n• Revogar o consentimento para o uso de suas informações a qualquer momento; \n• Solicitar a exclusão completa de sua conta e dos dados vinculados. \n• Para exercer esses direitos, entre em contato pelo canal de suporte do Altroo disponível no aplicativo ou no site oficial."
+          }
+        }
+      }
+    },
+    "UserRightsTitle" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "User Rights"
+          }
+        },
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Direitos dos Usuários"
+          }
+        }
+      }
+    },
     "vertigo" : {
       "extractionState" : "stale",
       "localizations" : {
@@ -3459,40 +3493,6 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Vômito"
-                      }
-        }
-      }
-    },
-    "UserRightsText" : {
-      "extractionState" : "manual",
-      "localizations" : {
-        "en" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "The user has the right to: • Access personal information stored in the application; • Correct, update, or delete their data; • Revoke consent for the use of their information at any time; • Request the complete deletion of their account and linked data. • To exercise these rights, contact Altroo through the support channel available in the application or on the official website."
-          }
-        },
-        "pt-BR" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "O usuário tem o direito de: • Acessar as informações pessoais armazenadas no aplicativo; • Corrigir, atualizar ou excluir seus dados; • Revogar o consentimento para o uso de suas informações a qualquer momento; • Solicitar a exclusão completa de sua conta e dos dados vinculados. • Para exercer esses direitos, entre em contato pelo canal de suporte do Altroo disponível no aplicativo ou no site oficial."
-          }
-        }
-      }
-    },
-    "UserRightsTitle" : {
-      "extractionState" : "manual",
-      "localizations" : {
-        "en" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "User Rights"
-          }
-        },
-        "pt-BR" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Direitos dos Usuários"
           }
         }
       }

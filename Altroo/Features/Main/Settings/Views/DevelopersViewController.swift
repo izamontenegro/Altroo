@@ -148,7 +148,7 @@ class DevelopersViewController: GradientNavBarViewController {
         case 1: return .layza
         case 2: return .marcelle
         case 3: return .clara
-        case 5: return .raissa
+        case 4: return .raissa
         default : return nil
         }
     }
