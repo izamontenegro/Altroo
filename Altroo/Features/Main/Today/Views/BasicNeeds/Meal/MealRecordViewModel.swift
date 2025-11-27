@@ -36,9 +36,7 @@ final class MealRecordViewModel {
         else { return }
         
         let author = coreDataService.currentPerformerName(for: careRecipient)
-        
-        print("oiaaaaaa \(selectedMealCategory.displayName)")
-        
+                
         // FIXME: - SOLVE THIS
         feedingService.addFeeding(
             amountEaten: selectedMealAmountEaten,
@@ -51,6 +49,7 @@ final class MealRecordViewModel {
         
         historyService.addHistoryItem(title: "Comeu \(selectedMealCategory.displayName)", author: author, date: Date(), type: .meal, to: careRecipient)
         
+        BasicNeedsEventBus.shared.publisher.send(.feedingAdded)
     }
     
     private func getCurrentCareRecipient() -> CareRecipient? {

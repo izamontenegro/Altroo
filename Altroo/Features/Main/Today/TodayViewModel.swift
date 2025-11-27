@@ -26,6 +26,7 @@ class TodayViewModel {
     @Published var todayUrineQuantity: Int = 0
     @Published var waterQuantity: Double = 0.0
     @Published var waterMeasure: Double = 0.0
+    @Published var todayFeedingRecords: [FeedingRecord] = []
     
     private var cancellables = Set<AnyCancellable>()
         
@@ -48,6 +49,24 @@ class TodayViewModel {
                 guard let self = self else { return }
                 self.currentCareRecipient = newPatient
                 self.reloadDataForCurrentPatient()
+            }
+            .store(in: &cancellables)
+        
+        BasicNeedsEventBus.shared.publisher
+            .receive(on: DispatchQueue.main)
+            .sink { [weak self] event in
+                guard let self = self else { return }
+
+                switch event {
+                case .stoolAdded:
+                    self.fetchStoolQuantity()
+                case .urineAdded:
+                    self.fetchUrineQuantity()
+                case .feedingAdded:
+                    self.fetchFeedingRecords()
+                case .hydrationAdded:
+                    self.fetchWaterQuantity()
+                }
             }
             .store(in: &cancellables)
     }
@@ -100,16 +119,17 @@ class TodayViewModel {
     
     func fetchUrineQuantity() {
         guard let currentCareRecipient = currentCareRecipient else { return }
-        
+            
         let calendar = Calendar.current
         let today = Date()
-        
+            
         let todayUrine = currentCareRecipient.basicNeeds?.urine?.filter { urineRecord in
             calendar.isDate((urineRecord as AnyObject).date ?? Date(), inSameDayAs: today)
         }
-        
-        todayUrineQuantity = todayUrine?.count ?? 0
+            
+        self.todayUrineQuantity = todayUrine?.count ?? 0
     }
+
     
     func fetchStoolQuantity() {
         guard let currentCareRecipient = currentCareRecipient else { return }
@@ -121,15 +141,15 @@ class TodayViewModel {
             calendar.isDate((stoolRecord as AnyObject).date ?? Date(), inSameDayAs: today)
         }
         
-        todayStoolQuantity = todayStool?.count ?? 0
+        self.todayStoolQuantity = todayStool?.count ?? 0
     }
     
-    func fetchFeedingRecords() -> [FeedingRecord] {
-        guard let currentCareRecipient = currentCareRecipient else { return [] }
-        
+    func fetchFeedingRecords() {
+        guard let currentCareRecipient = currentCareRecipient else { return }
+            
         let calendar = Calendar.current
         let today = Date()
-        
+            
         let todayFeedings = currentCareRecipient.basicNeeds?.feeding?
             .compactMap { $0 as? FeedingRecord }
             .filter { record in
@@ -137,8 +157,8 @@ class TodayViewModel {
                 return calendar.isDate(date, inSameDayAs: today)
             }
             .sorted { ($0.date ?? Date()) > ($1.date ?? Date()) } ?? []
-        
-        return todayFeedings
+            
+        self.todayFeedingRecords = todayFeedings
     }
     
     func fetchWaterQuantity() {
@@ -177,6 +197,8 @@ class TodayViewModel {
     
         historyService.addHistoryItem(title: "Bebeu \(careRecipientFacade.getWaterMeasure(careRecipient))ml de água", author: author, date: Date(), type: .hydration, to: careRecipient)
         
+        BasicNeedsEventBus.shared.publisher.send(.hydrationAdded)
+        
         self.fetchWaterQuantity()
     }
     
@@ -189,4 +211,16 @@ class TodayViewModel {
         guard let careRecipient = currentCareRecipient else { return 0 }
         return careRecipientFacade.getWaterTarget(careRecipient)
     }
+}
+
+enum BasicNeedsEvent {
+    case stoolAdded
+    case urineAdded
+    case feedingAdded
+    case hydrationAdded
+}
+
+class BasicNeedsEventBus {
+    static let shared = BasicNeedsEventBus()
+    let publisher = PassthroughSubject<BasicNeedsEvent, Never>()
 }
