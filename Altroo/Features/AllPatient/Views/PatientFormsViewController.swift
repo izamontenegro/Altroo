@@ -303,7 +303,7 @@ class PatientFormsViewController: UIViewController {
             target: self,
             action: #selector(didTapClose)
         )
-        navigationItem.leftBarButtonItem = closeButton
+        navigationItem.rightBarButtonItem = closeButton
 
         let appearance = UINavigationBarAppearance()
         appearance.configureWithOpaqueBackground()

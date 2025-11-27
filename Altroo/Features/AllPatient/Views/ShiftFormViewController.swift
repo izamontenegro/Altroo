@@ -170,6 +170,10 @@ class ShiftFormViewController: UIViewController {
             let closeButton = UIBarButtonItem(title: "close".localized, style: .done, target: self, action: #selector(closeTapped))
             closeButton.tintColor = .blue30
             navigationItem.leftBarButtonItem = closeButton
+        } else {
+            let closeButton = UIBarButtonItem(title: "close".localized, style: .done, target: self, action: #selector(closeTapped))
+            closeButton.tintColor = .blue30
+            navigationItem.rightBarButtonItem = closeButton
         }
 
         let appearance = UINavigationBarAppearance()

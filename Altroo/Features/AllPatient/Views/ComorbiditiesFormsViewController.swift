@@ -54,6 +54,7 @@ class ComorbiditiesFormsViewController: UIViewController {
         view.backgroundColor = .pureWhite
         setupUI()
         setupComorbidityButtons()
+        configureNavBar()
         keyboardHandler = KeyboardHandler(viewController: self, scrollView: scrollView)
     }
 
@@ -112,6 +113,34 @@ class ComorbiditiesFormsViewController: UIViewController {
 
         nextStepButton.addTarget(self, action: #selector(didTapDoneButton), for: .touchUpInside)
     }
+    
+    private func configureNavBar() {
+        navigationItem.title = "add_assisted".localized
+        
+        let closeButton = UIBarButtonItem(
+            title: "close".localized,
+            style: .plain,
+            target: self,
+            action: #selector(didTapClose)
+        )
+        navigationItem.rightBarButtonItem = closeButton
+
+        let appearance = UINavigationBarAppearance()
+        appearance.configureWithOpaqueBackground()
+        
+        appearance.titleTextAttributes = [
+            .foregroundColor: UIColor.black10,
+            .font: UIFont.systemFont(ofSize: 17, weight: .medium)
+        ]
+        
+        appearance.buttonAppearance.normal.titleTextAttributes = [
+            .foregroundColor: UIColor.blue30,
+            .font: UIFont.systemFont(ofSize: 17, weight: .regular)
+        ]
+        
+        navigationItem.standardAppearance = appearance
+        navigationItem.scrollEdgeAppearance = appearance
+    }
 
     private func setupComorbidityButtons() {
         let firstRow: [ComorbidityButton.Comorbidity] = [.circulatory, .diabetes, .cognition]
@@ -163,5 +192,9 @@ class ComorbiditiesFormsViewController: UIViewController {
     @objc func didTapDoneButton() {
         viewModel.updateHealthProblems(diseases: diseasesList, bedriddenStatus: bedriddenStatus)
         delegate?.goToShiftForms(receivedPatientViaShare: false, patient: nil)
+    }
+    
+    @objc private func didTapClose() {
+        dismiss(animated: true, completion: nil)
     }
 }

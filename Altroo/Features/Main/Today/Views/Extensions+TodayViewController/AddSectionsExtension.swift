@@ -95,7 +95,7 @@ extension TodayViewController {
             let normalString = NSMutableAttributedString(string:normalText)
 
             let boldText = PeriodEnum.current.name
-            let attrs = [NSAttributedString.Key.font : UIFont.boldSystemFont(ofSize: 16)]
+            let attrs = [NSAttributedString.Key.font : UIFont.rounded(ofSize: 16, weight: .bold)]
             let boldString = NSMutableAttributedString(string:boldText, attributes:attrs)
 
             normalString.append(boldString)
