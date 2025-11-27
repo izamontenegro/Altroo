@@ -133,7 +133,7 @@ private extension ProfileHeader {
         card.layer.cornerRadius = 8
 
         let label = StandardLabel(
-            labelText: "Ficha médica",
+            labelText: "medical_record".localized,
             labelFont: .sfPro,
             labelType: .callOut,
             labelColor: .pureWhite,

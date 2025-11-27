@@ -106,7 +106,7 @@
       }
     },
     "abdominal_pain" : {
-      "extractionState" : "stale",
+      "extractionState" : "manual",
       "localizations" : {
         "en" : {
           "stringUnit" : {
@@ -201,13 +201,36 @@
         }
       }
     },
+    "add_intercurrence_description" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Select one of the listed incident options or create a new one."
+          }
+        },
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Selecione uma das opções listadas de intercorrências ou crie uma nova."
+          }
+        }
+      }
+    },
     "add_observations" : {
       "extractionState" : "manual",
       "localizations" : {
         "en" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Enter Observations"
+            "value" : "Add Observations"
+          }
+        },
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Adicionar Observações"
           }
         }
       }
@@ -350,7 +373,7 @@
       }
     },
     "alergy" : {
-      "extractionState" : "stale",
+      "extractionState" : "manual",
       "localizations" : {
         "en" : {
           "stringUnit" : {
@@ -396,6 +419,17 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Já tenho um assistido cadastrado"
+          }
+        }
+      }
+    },
+    "Anotando os sinais importantes..." : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Noting the important signs..."
           }
         }
       }
@@ -513,6 +547,23 @@
         }
       }
     },
+    "can_edit" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Can Edit"
+          }
+        },
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Pode Editar"
+          }
+        }
+      }
+    },
     "cancel" : {
       "extractionState" : "manual",
       "localizations" : {
@@ -608,6 +659,17 @@
         }
       }
     },
+    "Checando lembretes e tarefas do dia..." : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Checking reminders and tasks for the day..."
+          }
+        }
+      }
+    },
     "child" : {
       "extractionState" : "manual",
       "localizations" : {
@@ -625,6 +687,23 @@
         }
       }
     },
+    "circulatory_diseases" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Circulatory Diseases"
+          }
+        },
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Doenças Circulatórias"
+          }
+        }
+      }
+    },
     "close" : {
       "extractionState" : "manual",
       "localizations" : {
@@ -638,6 +717,23 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Fechar"
+          }
+        }
+      }
+    },
+    "Cognitive Changes" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Cognitive Changes"
+          }
+        },
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Alterações Cognitivas"
           }
         }
       }
@@ -716,6 +812,17 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "O assistido tem alguma das condições abaixo?"
+          }
+        }
+      }
+    },
+    "Configurando lembrete para o remédio de hoje..." : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Setting a reminder for today's medication..."
           }
         }
       }
@@ -832,6 +939,23 @@
         }
       }
     },
+    "created_intercurrence_desc" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Describe the incident that occurred with the patient being monitored."
+          }
+        },
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Descreva a intercorrência que aconteceu com o paciente acompanhado."
+          }
+        }
+      }
+    },
     "DataRetentionText" : {
       "extractionState" : "manual",
       "localizations" : {
@@ -917,6 +1041,17 @@
         }
       }
     },
+    "Deixando tudo pronto para a próxima atividade..." : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Getting everything ready for the next activity..."
+          }
+        }
+      }
+    },
     "delete" : {
       "comment" : "MARK: - Generals",
       "extractionState" : "manual",
@@ -936,7 +1071,7 @@
       }
     },
     "desorientation" : {
-      "extractionState" : "stale",
+      "extractionState" : "manual",
       "localizations" : {
         "en" : {
           "stringUnit" : {
@@ -987,7 +1122,7 @@
       }
     },
     "diarrhea" : {
-      "extractionState" : "stale",
+      "extractionState" : "manual",
       "localizations" : {
         "en" : {
           "stringUnit" : {
@@ -1004,7 +1139,7 @@
       }
     },
     "dizziness" : {
-      "extractionState" : "stale",
+      "extractionState" : "manual",
       "localizations" : {
         "en" : {
           "stringUnit" : {
@@ -1195,7 +1330,7 @@
       }
     },
     "fainting" : {
-      "extractionState" : "stale",
+      "extractionState" : "manual",
       "localizations" : {
         "en" : {
           "stringUnit" : {
@@ -1212,7 +1347,7 @@
       }
     },
     "fall" : {
-      "extractionState" : "stale",
+      "extractionState" : "manual",
       "localizations" : {
         "en" : {
           "stringUnit" : {
@@ -1263,7 +1398,7 @@
       }
     },
     "fever" : {
-      "extractionState" : "stale",
+      "extractionState" : "manual",
       "localizations" : {
         "en" : {
           "stringUnit" : {
@@ -1352,7 +1487,7 @@
         "en" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "GreatGrandchild"
+            "value" : "Great Grandchild"
           }
         },
         "pt-BR" : {
@@ -1364,7 +1499,7 @@
       }
     },
     "headache" : {
-      "extractionState" : "stale",
+      "extractionState" : "manual",
       "localizations" : {
         "en" : {
           "stringUnit" : {
@@ -1487,8 +1622,8 @@
       "localizations" : {
         "en" : {
           "stringUnit" : {
-            "state" : "needs_review",
-            "value" : "The information is used to: • Enable the app to function and its main features; • Facilitate the sharing of care information between caregivers and family members; • Personalize the user experience and improve app performance; • Send communications related to the use of Altroo, such as reminders or update notifications. Altroo does not use your data for advertising or commercial purposes."
+            "state" : "translated",
+            "value" : "The information is used to:  \n• Enable the app to function and its main features;  \n• Facilitate the sharing of care information between caregivers and family members;  \n• Personalize the user experience and improve app performance;  \n• Send communications related to the use of Altroo, such as reminders or update notifications.  \n \nAltroo does not use your data for advertising or commercial purposes."
           }
         },
         "pt-BR" : {
@@ -1590,8 +1725,8 @@
       "localizations" : {
         "en" : {
           "stringUnit" : {
-            "state" : "needs_review",
-            "value" : "Altroo only collects the information necessary for the app to function and to provide a better care experience. This information may include: • Registration data, such as name, email, and phone numbers; • Information about the person being cared for, such as name, age, and data relevant to care; • Activity logs and notes entered manually by the caregiver; • Information about app usage, such as frequency of access and features used. Altroo does not automatically collect sensitive health data, only data that the user voluntarily chooses to register."
+            "state" : "translated",
+            "value" : "Altroo only collects the information necessary for the app to function and to provide a better care experience. This information may include:  \n• Registration data, such as name, email, and phone numbers;  \n• Information about the person being cared for, such as name, age, and data relevant to care;  \n• Activity logs and notes entered manually by the caregiver;  \n• Information about app usage, such as frequency of access and features used.  \nAltroo does not automatically collect sensitive health data, only data that the user voluntarily chooses to register."
           }
         },
         "pt-BR" : {
@@ -1721,6 +1856,23 @@
         }
       }
     },
+    "last_update" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Last updated: "
+          }
+        },
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Última atualização em: "
+          }
+        }
+      }
+    },
     "late" : {
       "extractionState" : "manual",
       "localizations" : {
@@ -1790,7 +1942,7 @@
       }
     },
     "mood_changes" : {
-      "extractionState" : "stale",
+      "extractionState" : "manual",
       "localizations" : {
         "en" : {
           "stringUnit" : {
@@ -1902,7 +2054,7 @@
       }
     },
     "nausea" : {
-      "extractionState" : "stale",
+      "extractionState" : "manual",
       "localizations" : {
         "en" : {
           "stringUnit" : {
@@ -1914,6 +2066,17 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Náusea"
+          }
+        }
+      }
+    },
+    "Necessita de Auxílio" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Need Assistance"
           }
         }
       }
@@ -1969,6 +2132,23 @@
         }
       }
     },
+    "no_future_task" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "No tasks scheduled for the next few days"
+          }
+        },
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Nenhuma tarefa programada para os próximos dias"
+          }
+        }
+      }
+    },
     "no_late_tasks" : {
       "extractionState" : "manual",
       "localizations" : {
@@ -2003,6 +2183,23 @@
         }
       }
     },
+    "no_register" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "No record"
+          }
+        },
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Sem registro"
+          }
+        }
+      }
+    },
     "no_tasks_this_shift" : {
       "extractionState" : "manual",
       "localizations" : {
@@ -2033,6 +2230,17 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Em qual período deseja receber notificações de "
+          }
+        }
+      }
+    },
+    "Novo Cuidador" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "New Caregiver"
           }
         }
       }
@@ -2186,6 +2394,17 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Relatórios mostram o que importa"
+          }
+        }
+      }
+    },
+    "Organizando a rotina de cuidados..." : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Organizing the care routine..."
           }
         }
       }
@@ -2382,8 +2601,8 @@
       "localizations" : {
         "en" : {
           "stringUnit" : {
-            "state" : "needs_review",
-            "value" : "Altroo is an application developed to assist caregivers in organizing and monitoring care activities for those they care for. The application aims to facilitate communication and the recording of care routines, contributing to more efficient and collaborative monitoring. Altroo is not a medical device or service, and its use should not be interpreted as medical guidance, diagnosis, or treatment offered by its developers or owners. No information, alert, or data generated by the application should be considered clinically accurate or a substitute for professional health advice. If you have any questions about a medical condition, consult a qualified healthcare professional. If you believe that you or the person under your care may be experiencing a medical situation, seek medical attention immediately. You should never delay, ignore, or interrupt medical treatment based on information obtained from using Altroo."
+            "state" : "translated",
+            "value" : "Altroo is an application developed to assist caregivers in organizing and monitoring care activities for those they care for.  \nThe application aims to facilitate communication and the recording of care routines, contributing to more efficient and collaborative monitoring.  \nAltroo is not a medical device or service, and its use should not be interpreted as medical guidance, diagnosis, or treatment offered by its developers or owners. No information, alert, or data generated by the application should be considered clinically accurate or a substitute for professional health advice. If you have any questions about a medical condition, consult a qualified healthcare professional.  \nIf you believe that you or the person under your care may be experiencing a medical situation, seek medical attention immediately. You should never delay, ignore, or interrupt medical treatment based on information obtained from using Altroo."
           }
         },
         "pt-BR" : {
@@ -2399,8 +2618,8 @@
       "localizations" : {
         "en" : {
           "stringUnit" : {
-            "state" : "needs_review",
-            "value" : "By using Altroo, you declare that you are aware of and agree to the terms of this Privacy Policy. If you do not agree with any of the terms, we recommend that you stop using the application and request the deletion of your account."
+            "state" : "translated",
+            "value" : "By using Altroo, you declare that you are aware of and agree to the terms of this Privacy Policy.  \nIf you do not agree with any of the terms, we recommend that you stop using the application and request the deletion of your account."
           }
         },
         "pt-BR" : {
@@ -2440,6 +2659,28 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Política de Privacidade e Proteção"
+          }
+        }
+      }
+    },
+    "Preencha os campos a seguir quanto a seus dados pessoais e em relação ao assistido." : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Please fill in the following fields with your personal information and information about the person being assisted."
+          }
+        }
+      }
+    },
+    "Preparando o melhor cuidado possível..." : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Preparing the best possible care..."
           }
         }
       }
@@ -2709,6 +2950,28 @@
         }
       }
     },
+    "Restrito ao Leito (acamado)" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Restricted to bed (bedridden)"
+          }
+        }
+      }
+    },
+    "Reunindo informações para facilitar seu dia..." : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Gathering information to make your day easier..."
+          }
+        }
+      }
+    },
     "save" : {
       "extractionState" : "manual",
       "localizations" : {
@@ -2756,6 +3019,28 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Ver mais"
+          }
+        }
+      }
+    },
+    "Selecione o período e veja um resumo dos seus registros, podendo exportar em PDF para compartilhar." : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Select the period and view a summary of your records, which you can export as a PDF to share."
+          }
+        }
+      }
+    },
+    "Separando os medicamentos com carinho..." : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Carefully separating the medications..."
           }
         }
       }
@@ -2811,8 +3096,30 @@
         }
       }
     },
+    "Seu nome" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Your name"
+          }
+        }
+      }
+    },
+    "Seu telefone" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Your phone"
+          }
+        }
+      }
+    },
     "shaking" : {
-      "extractionState" : "stale",
+      "extractionState" : "manual",
       "localizations" : {
         "en" : {
           "stringUnit" : {
@@ -2851,6 +3158,17 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Pular"
+          }
+        }
+      }
+    },
+    "Sobre você" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "About you"
           }
         }
       }
@@ -3344,7 +3662,7 @@
       }
     },
     "trauma" : {
-      "extractionState" : "stale",
+      "extractionState" : "manual",
       "localizations" : {
         "en" : {
           "stringUnit" : {
@@ -3434,8 +3752,8 @@
       "localizations" : {
         "en" : {
           "stringUnit" : {
-            "state" : "needs_review",
-            "value" : "The user has the right to: • Access personal information stored in the application; • Correct, update, or delete their data; • Revoke consent for the use of their information at any time; • Request the complete deletion of their account and linked data. • To exercise these rights, contact Altroo through the support channel available in the application or on the official website."
+            "state" : "translated",
+            "value" : "The user has the right to:  \n• Access personal information stored in the application;  \n• Correct, update, or delete their data;  \n• Revoke consent for the use of their information at any time;  \n• Request the complete deletion of their account and linked data.  \n• To exercise these rights, contact Altroo through the support channel available in the application or on the official website."
           }
         },
         "pt-BR" : {
@@ -3463,8 +3781,30 @@
         }
       }
     },
+    "Verificando os detalhes para você cuidar de quem ama..." : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Checking the details so you can take care of those you love..."
+          }
+        }
+      }
+    },
+    "Verificando se está tudo bem por aí..." : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Checking to make sure everything's alright over there..."
+          }
+        }
+      }
+    },
     "vertigo" : {
-      "extractionState" : "stale",
+      "extractionState" : "manual",
       "localizations" : {
         "en" : {
           "stringUnit" : {
@@ -3481,7 +3821,7 @@
       }
     },
     "vomit" : {
-      "extractionState" : "stale",
+      "extractionState" : "manual",
       "localizations" : {
         "en" : {
           "stringUnit" : {
@@ -3549,7 +3889,7 @@
       }
     },
     "wound" : {
-      "extractionState" : "stale",
+      "extractionState" : "manual",
       "localizations" : {
         "en" : {
           "stringUnit" : {

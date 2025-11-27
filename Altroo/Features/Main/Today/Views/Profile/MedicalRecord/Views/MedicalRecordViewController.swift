@@ -215,7 +215,7 @@ final class MedicalRecordViewController: GradientNavBarViewController {
         progressRowStackView.spacing = 10
         
         let updatedLabel = StandardLabel(
-            labelText: "Última atualização em: ",
+            labelText: "last_update".localized,
             labelFont: .sfPro,
             labelType: .subHeadline,
             labelColor: .black30,

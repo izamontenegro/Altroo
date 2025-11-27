@@ -20,7 +20,7 @@ class BedriddenButton: UIButton {
     private var checkIconView: UIImageView!
     
     private lazy var label = StandardLabel(
-        labelText: (bedriddenState == .needsHelp ? "Necessita de Auxílio" : "Restrito ao Leito (acamado)"),
+        labelText: (bedriddenState == .needsHelp ? "Necessita de Auxílio".localized : "Restrito ao Leito (acamado)".localized),
         labelFont: .sfPro,
         labelType: .callOut,
         labelColor: .blue30,

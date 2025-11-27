@@ -8,7 +8,6 @@
 
 /* Begin PBXBuildFile section */
 		AECF80DA2ED8C268002DF4AC /* Lottie in Frameworks */ = {isa = PBXBuildFile; productRef = AECF80D92ED8C268002DF4AC /* Lottie */; };
-		AECF80DC2ED8C268002DF4AC /* Lottie-Dynamic in Frameworks */ = {isa = PBXBuildFile; productRef = AECF80DB2ED8C268002DF4AC /* Lottie-Dynamic */; };
 		B61A785E2E818D7A00BC204C /* Gemfile in Resources */ = {isa = PBXBuildFile; fileRef = B61A785D2E818D7A00BC204C /* Gemfile */; };
 		B61A78732E81C5B600BC204C /* .ruby-version in Resources */ = {isa = PBXBuildFile; fileRef = B61A78722E81C5B600BC204C /* .ruby-version */; };
 /* End PBXBuildFile section */
@@ -65,7 +64,6 @@
 			buildActionMask = 2147483647;
 			files = (
 				AECF80DA2ED8C268002DF4AC /* Lottie in Frameworks */,
-				AECF80DC2ED8C268002DF4AC /* Lottie-Dynamic in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -155,7 +153,6 @@
 			name = Altroo;
 			packageProductDependencies = (
 				AECF80D92ED8C268002DF4AC /* Lottie */,
-				AECF80DB2ED8C268002DF4AC /* Lottie-Dynamic */,
 			);
 			productName = Altroo;
 			productReference = 367EC48F2E7CB1AA008B22D1 /* Altroo.app */;
@@ -547,11 +544,6 @@
 			isa = XCSwiftPackageProductDependency;
 			package = AECF80D82ED8C268002DF4AC /* XCRemoteSwiftPackageReference "lottie-ios" */;
 			productName = Lottie;
-		};
-		AECF80DB2ED8C268002DF4AC /* Lottie-Dynamic */ = {
-			isa = XCSwiftPackageProductDependency;
-			package = AECF80D82ED8C268002DF4AC /* XCRemoteSwiftPackageReference "lottie-ios" */;
-			productName = "Lottie-Dynamic";
 		};
 /* End XCSwiftPackageProductDependency section */
 	};
