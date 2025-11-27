@@ -22,6 +22,7 @@ struct CategoryReportSection: View {
                 Text(categoryName)
                     .font(.title3)
                     .foregroundStyle(.blue20)
+                    .fontDesign(.rounded)
             }
             Divider()
                 .overlay(.blue20)

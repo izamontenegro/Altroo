@@ -95,7 +95,7 @@ class DevelopersViewController: GradientNavBarViewController {
         
         button.backgroundColor = .teal20
         button.layer.cornerRadius = 8
-        button.titleLabel?.font = .systemFont(ofSize: 17, weight: .medium)
+        button.titleLabel?.font = .rounded(ofSize: 17, weight: .medium)
         
         button.contentHorizontalAlignment = .left
         button.titleEdgeInsets = UIEdgeInsets(top: 0, left: 45, bottom: 0, right: 0)

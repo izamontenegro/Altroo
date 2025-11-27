@@ -24,6 +24,7 @@ struct HistorySectionHeader: View {
                 Text("\(DateFormatterHelper.historyDateNumber(from: day)) - \(DateFormatterHelper.historyWeekdayShort(from: day))")
                     .font(.callout)
                     .foregroundStyle(.pureWhite)
+                    .fontDesign(.rounded)
                 
                 Spacer()
                 

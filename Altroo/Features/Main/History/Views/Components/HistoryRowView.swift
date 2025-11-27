@@ -35,6 +35,7 @@ struct HistoryRowView: View {
                             .fontWeight(.semibold)
                             .font(.callout)
                             .foregroundStyle(.blue20)
+                            .fontDesign(.rounded)
                         // MARK: Chevron
                         Image(systemName: "chevron.right")
                             .resizable()
