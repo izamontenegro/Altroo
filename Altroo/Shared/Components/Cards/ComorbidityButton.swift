@@ -128,11 +128,11 @@ class ComorbidityButton: UIButton {
         var name: String {
             switch self {
             case .circulatory:
-                return "Doenças Circulatórias"
+                return "circulatory_diseases".localized
             case .diabetes:
                 return "Diabetes"
             case .cognition:
-                return "Alterações Cognitivas"
+                return "Cognitive Changes".localized
 
             }
         }

@@ -111,9 +111,8 @@ class TodayViewController: UIViewController {
         viewModel.fetchUrineQuantity()
         viewModel.fetchAllPeriodTasks()
         viewModel.fetchWaterQuantity()
-        
-        self.feedingRecords = viewModel.fetchFeedingRecords()
-        
+        viewModel.fetchFeedingRecords()
+
         symptomsCard.updateSymptoms(viewModel.todaySymptoms)
         addSections()
         
@@ -152,6 +151,29 @@ class TodayViewController: UIViewController {
                 guard let self = self else { return }
                 self.addSections()
                 
+            }
+            .store(in: &cancellables)
+        
+        viewModel.$todayFeedingRecords
+            .receive(on: DispatchQueue.main)
+            .sink { [weak self] newFeedingList in
+                guard let self else { return }
+                self.feedingRecords = newFeedingList
+                self.addSections()
+            }
+            .store(in: &cancellables)
+
+        viewModel.$todayUrineQuantity
+            .receive(on: DispatchQueue.main)
+            .sink { [weak self] _ in
+                self?.addSections()
+            }
+            .store(in: &cancellables)
+
+        viewModel.$todayStoolQuantity
+            .receive(on: DispatchQueue.main)
+            .sink { [weak self] _ in
+                self?.addSections()
             }
             .store(in: &cancellables)
     }

@@ -22,8 +22,8 @@ class ShiftFormViewController: UIViewController {
     
     private lazy var titleSection: FormTitleSection = {
         FormTitleSection(
-            title: "Sobre você",
-            description: "Preencha os campos a seguir quanto a seus dados pessoais e em relação ao assistido.",
+            title: "Sobre você".localized,
+            description: "Preencha os campos a seguir quanto a seus dados pessoais e em relação ao assistido.".localized,
             totalSteps: receivedPatientViaShare ? 0 : 3,
             currentStep: receivedPatientViaShare ? 0 : 3
         )
@@ -31,7 +31,7 @@ class ShiftFormViewController: UIViewController {
     
     private lazy var newCaregiverTitleSection: FormTitleSection = {
         FormTitleSection(
-            title: "Novo Cuidador",
+            title: "Novo Cuidador".localized,
             description: "Preencha as informações a seguir para começar os cuidados com \(viewModel.name.isEmpty ? "assistido" : viewModel.name.abbreviatedName).",
             totalSteps: receivedPatientViaShare ? 0 : 3,
             currentStep: receivedPatientViaShare ? 0 : 3
@@ -50,10 +50,10 @@ class ShiftFormViewController: UIViewController {
     }
     
     private lazy var nameSection = FormSectionView(title: "name".localized, content: nameTextField, isObligatory: true)
-    private lazy var nameTextField = StandardTextfield(placeholder: "Seu nome")
+    private lazy var nameTextField = StandardTextfield(placeholder: "Seu nome".localized)
     
-    private lazy var contactSection = FormSectionView(title: "Telefone", content: contactField, isObligatory: false, isCustomWidth: true)
-    private lazy var contactField = StandardTextfield(placeholder: "Seu telefone")
+    private lazy var contactSection = FormSectionView(title: "contact_phone".localized, content: contactField, isObligatory: false, isCustomWidth: true)
+    private lazy var contactField = StandardTextfield(placeholder: "Seu telefone".localized)
 
     //Time
     private lazy var allDaySwitch: UISwitch = {
@@ -170,6 +170,10 @@ class ShiftFormViewController: UIViewController {
             let closeButton = UIBarButtonItem(title: "close".localized, style: .done, target: self, action: #selector(closeTapped))
             closeButton.tintColor = .blue30
             navigationItem.leftBarButtonItem = closeButton
+        } else {
+            let closeButton = UIBarButtonItem(title: "close".localized, style: .done, target: self, action: #selector(closeTapped))
+            closeButton.tintColor = .blue30
+            navigationItem.rightBarButtonItem = closeButton
         }
 
         let appearance = UINavigationBarAppearance()

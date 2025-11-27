@@ -47,7 +47,7 @@ class ReportViewController: GradientHeader {
     }
     
     override func viewDidLoad() {
-        setNavbarItems(title: "report".localized, subtitle: "Selecione o período e veja um resumo dos seus registros, podendo exportar em PDF para compartilhar.")
+        setNavbarItems(title: "report".localized, subtitle: "Selecione o período e veja um resumo dos seus registros, podendo exportar em PDF para compartilhar.".localized)
         super.viewDidLoad()
         view.backgroundColor = .blue70
         

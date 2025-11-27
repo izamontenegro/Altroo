@@ -68,7 +68,7 @@ final class HealthProblemsSectionView: UIView {
         )
 
         let surgeriesRow: InformationRow = surgeryItems.isEmpty
-            ? ("Cirurgias", "Sem registro")
+            ? ("Cirurgias", "no_register".localized)
             : ("Cirurgias", "")
         let surgeriesSubsection = MedicalRecordSubsectionView(
             row: surgeriesRow,

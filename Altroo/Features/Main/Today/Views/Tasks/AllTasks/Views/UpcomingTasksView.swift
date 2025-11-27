@@ -34,7 +34,7 @@ final class UpcomingTasksView: UIView {
         taskStack.translatesAutoresizingMaskIntoConstraints = false
         
         if viewModel.upcomingTasks.isEmpty {
-            let emptyCard = EmptyCardView(text: "Nenhuma tarefa programada para os próximos dias")
+            let emptyCard = EmptyCardView(text: "no_future_task".localized)
             taskStack.addArrangedSubview(emptyCard)
 
         } else {

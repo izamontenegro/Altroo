@@ -20,7 +20,7 @@ class AddSymptomViewController: UIViewController {
     
     private var cancellables = Set<AnyCancellable>()
     
-    private lazy var titleSection = FormTitleSection(title: "Adicionar Intercorrência", description: "Selecione uma das opções listadas de intercorrências ou crie uma nova.", totalSteps: 2, currentStep: currentContentView?.0 ?? 1)
+    private lazy var titleSection = FormTitleSection(title: "add_intercurrence".localized, description: "add_intercurrence_description".localized, totalSteps: 2, currentStep: currentContentView?.0 ?? 1)
     
     let confirmButton = StandardConfirmationButton(title: "Próximo")
     
@@ -81,11 +81,11 @@ class AddSymptomViewController: UIViewController {
     private func configureNavBar() {
         switch mode {
         case .create:
-            let closeButton = UIBarButtonItem(title: "Fechar", style: .done, target: self, action: #selector(closeTapped))
+            let closeButton = UIBarButtonItem(title: "close".localized, style: .done, target: self, action: #selector(closeTapped))
             closeButton.tintColor = .blue20
             navigationItem.rightBarButtonItem = closeButton
         case .edit(let existing):
-            let deleteButton = UIBarButtonItem(title: "Deletar", style: .done, target: self, action: #selector(deleteTapped))
+            let deleteButton = UIBarButtonItem(title: "delete".localized, style: .done, target: self, action: #selector(deleteTapped))
             deleteButton.tintColor = .red20
             navigationItem.rightBarButtonItem = deleteButton
         }
@@ -200,17 +200,17 @@ class AddSymptomViewController: UIViewController {
 
         switch mode {
         case .create:
-            let title = "Adicionar Intercorrência"
+            let title = "add_intercurrence".localized
             let desc = page == 1
-                ? "Selecione uma das opções listadas de intercorrências ou crie uma nova."
-                : "Descreva a intercorrência que aconteceu com o paciente acompanhado."
+            ? "add_intercurrence_description".localized
+            : "created_intercurrence_desc".localized
             titleSection.updateContent(title: title, description: desc, currentStep: page)
 
         case .edit:
             let title = "Editar Intercorrência"
             let desc = page == 1
-                ? "Selecione uma das opções listadas de intercorrências ou crie uma nova."
-                : "Descreva a intercorrência que aconteceu com o paciente acompanhado."
+            ? "add_intercurrence_description".localized
+            : "created_intercurrence_desc".localized
             titleSection.updateContent(title: title, description: desc, currentStep: page)
         }
     }

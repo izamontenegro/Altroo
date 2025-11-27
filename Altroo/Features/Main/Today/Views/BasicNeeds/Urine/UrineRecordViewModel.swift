@@ -45,6 +45,7 @@ final class UrineRecordViewModel {
         
         historyService.addHistoryItem(title: "Registrou urina", author: author, date: Date(), type: .urine, to: careRecipient)
         
+        BasicNeedsEventBus.shared.publisher.send(.urineAdded)
     }
     
     

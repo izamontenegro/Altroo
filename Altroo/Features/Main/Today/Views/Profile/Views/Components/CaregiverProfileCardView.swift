@@ -182,7 +182,7 @@ private extension CaregiverProfileCardView {
     func permissionLabel(_ participantPermission: CKShare.ParticipantPermission) -> String {
         switch participantPermission {
         case .readOnly:  return "Pode Visualizar"
-        case .readWrite: return "Pode Editar"
+        case .readWrite: return "can_edit".localized
         case .none:      return "Sem Acesso"
         default:         return "Pode Visualizar"
         }
@@ -229,7 +229,7 @@ private extension CaregiverProfileCardView {
         let current = permission
 
         let edit = UIAction(
-            title: "Pode Editar",
+            title: "can_edit".localized,
             image: UIImage(systemName: current == .readWrite ? "checkmark" : "")
         ) { [weak self] _ in
             self?.setPermission(.readWrite)

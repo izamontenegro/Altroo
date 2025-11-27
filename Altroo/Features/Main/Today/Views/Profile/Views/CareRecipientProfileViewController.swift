@@ -129,7 +129,7 @@ final class CareRecipientProfileViewController: GradientNavBarViewController {
         header.translatesAutoresizingMaskIntoConstraints = false
         
         let updatedLabel = StandardLabel(
-            labelText: "Última atualização em: ",
+            labelText: "last_update".localized,
             labelFont: .sfPro,
             labelType: .subHeadline,
             labelColor: .black30,

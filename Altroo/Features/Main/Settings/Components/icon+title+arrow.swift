@@ -62,7 +62,7 @@ class IconTitleArrowButton: PrimaryStyleButton {
         
         titleLabelView.text = titleText
         titleLabelView.textColor = .pureWhite
-        titleLabelView.font = .systemFont(ofSize: 17, weight: .semibold)
+        titleLabelView.font = .rounded(ofSize: 17, weight: .semibold)
         titleLabelView.isUserInteractionEnabled = false
 
         rightArrowView.tintColor = .pureWhite
@@ -77,6 +77,10 @@ class IconTitleArrowButton: PrimaryStyleButton {
     }
 }
 
-//#Preview {
-//    IconTitleArrowButton(icon: "person.fill", title: "Meu Perfil")
-//}
+extension UIFont {
+    static func rounded(ofSize size: CGFloat, weight: UIFont.Weight) -> UIFont {
+        let systemFont = UIFont.systemFont(ofSize: size, weight: weight)
+        let descriptor = systemFont.fontDescriptor.withDesign(.rounded) ?? systemFont.fontDescriptor
+        return UIFont(descriptor: descriptor, size: size)
+    }
+}

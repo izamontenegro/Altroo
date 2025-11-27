@@ -12,16 +12,16 @@ enum LoadingPhases: CaseIterable {
     
     var text: String {
         switch self {
-        case .ld1: return "Separando os medicamentos com carinho..."
-        case .ld2: return "Organizando a rotina de cuidados..."
-        case .ld3: return "Anotando os sinais importantes..."
-        case .ld4: return "Verificando se está tudo bem por aí..."
-        case .ld5: return "Preparando o melhor cuidado possível..."
-        case .ld6: return "Checando lembretes e tarefas do dia..."
-        case .ld7: return "Reunindo informações para facilitar seu dia..."
-        case .ld8: return "Configurando lembrete para o remédio de hoje..."
-        case .ld9: return "Verificando os detalhes para você cuidar de quem ama..."
-        case .ld10: return "Deixando tudo pronto para a próxima atividade..."
+        case .ld1: return "Separando os medicamentos com carinho...".localized
+        case .ld2: return "Organizando a rotina de cuidados...".localized
+        case .ld3: return "Anotando os sinais importantes...".localized
+        case .ld4: return "Verificando se está tudo bem por aí...".localized
+        case .ld5: return "Preparando o melhor cuidado possível...".localized
+        case .ld6: return "Checando lembretes e tarefas do dia...".localized
+        case .ld7: return "Reunindo informações para facilitar seu dia...".localized
+        case .ld8: return "Configurando lembrete para o remédio de hoje...".localized
+        case .ld9: return "Verificando os detalhes para você cuidar de quem ama...".localized
+        case .ld10: return "Deixando tudo pronto para a próxima atividade...".localized
         }
     }
 }

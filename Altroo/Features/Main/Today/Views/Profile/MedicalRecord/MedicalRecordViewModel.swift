@@ -49,7 +49,7 @@ final class MedicalRecordViewModel {
     
     func getName() -> String {
         let personalData = currentPatient()?.personalData
-        return personalData?.name ?? "Sem registro"
+        return personalData?.name ?? "no_register".localized
     }
     
     func getAddress() -> String {
@@ -128,18 +128,18 @@ final class MedicalRecordViewModel {
 
     func getSurgeriesText() -> String {
         let items = getSurgeriesItems()
-        guard !items.isEmpty else { return "Sem registro" }
+        guard !items.isEmpty else { return "no_register".localized }
         return items
             .map { "\($0.primary)\n\($0.secondary)" }
             .joined(separator: "\n\n")
     }
 
     func getAllergiesText() -> String {
-        currentHealthProblems?.allergies ?? "Sem registro"
+        currentHealthProblems?.allergies ?? "no_register".localized
     }
 
     func getObservationText() -> String {
-        currentHealthProblems?.observation ?? "Sem registro"
+        currentHealthProblems?.observation ?? "no_register".localized
     }
 
     // MARK: - PHYSICAL STATE
@@ -150,27 +150,27 @@ final class MedicalRecordViewModel {
 
     func getVisionText() -> String {
         currentPhysicalState?.visionState
-            .flatMap { VisionEnum(rawValue: $0)?.displayText } ?? "Sem registro"
+            .flatMap { VisionEnum(rawValue: $0)?.displayText } ?? "no_register".localized
     }
 
     func getHearingText() -> String {
         currentPhysicalState?.hearingState
-            .flatMap { HearingEnum(rawValue: $0)?.displayText } ?? "Sem registro"
+            .flatMap { HearingEnum(rawValue: $0)?.displayText } ?? "no_register".localized
     }
 
     func getMobilityText() -> String {
         currentPhysicalState?.mobilityState
-            .flatMap { MobilityEnum(rawValue: $0)?.displayText } ?? "Sem registro"
+            .flatMap { MobilityEnum(rawValue: $0)?.displayText } ?? "no_register".localized
     }
 
     func getOralHealthText() -> String {
         guard
             let rawValues = currentPhysicalState?.oralHealthState,
             !rawValues.isEmpty
-        else { return "Sem registro" }
+        else { return "no_register".localized }
 
         let items = rawValues.compactMap { OralHealthEnum(rawValue: $0)?.displayText }
-        return items.isEmpty ? "Sem registro" : items.joined(separator: ", ")
+        return items.isEmpty ? "no_register".localized : items.joined(separator: ", ")
     }
     
     // MARK: - MENTAL STATE
@@ -183,7 +183,7 @@ final class MedicalRecordViewModel {
         guard
             let rawValues = currentMentalState?.emotionalState,
             !rawValues.isEmpty
-        else { return "Sem registro" }
+        else { return "no_register".localized }
 
         let items = rawValues.compactMap { EmotionalStateEnum(rawValue: $0)?.displayText }
         return items.joined(separator: ", ")
@@ -194,16 +194,16 @@ final class MedicalRecordViewModel {
         guard
             let rawValues = currentMentalState?.orientationState,
             !rawValues.isEmpty
-        else { return "Sem registro" }
+        else { return "no_register".localized }
 
         let items = rawValues.compactMap { OrientationEnum(rawValue: $0)?.displayText }
-        return items.isEmpty ? "Sem registro" : items.joined(separator: ", ")
+        return items.isEmpty ? "no_register".localized : items.joined(separator: ", ")
     }
     
 
     func getMemoryStateText() -> String {
         currentMentalState?.memoryState
-            .flatMap { MemoryEnum(rawValue: $0)?.displayText } ?? "Sem registro"
+            .flatMap { MemoryEnum(rawValue: $0)?.displayText } ?? "no_register".localized
     }
     
     // MARK: - PERSONAL CARE
@@ -214,26 +214,26 @@ final class MedicalRecordViewModel {
 
     func getBathStateText() -> String {
         currentPersonalCare?.bathState
-            .flatMap { BathEnum(rawValue: $0)?.displayText } ?? "Sem registro"
+            .flatMap { BathEnum(rawValue: $0)?.displayText } ?? "no_register".localized
     }
 
     func getHygieneStateText() -> String {
         currentPersonalCare?.hygieneState
-            .flatMap { HygieneEnum(rawValue: $0)?.displayText } ?? "Sem registro"
+            .flatMap { HygieneEnum(rawValue: $0)?.displayText } ?? "no_register".localized
     }
 
     func getExcretionStateText() -> String {
         currentPersonalCare?.excretionState
-            .flatMap { ExcretionEnum(rawValue: $0)?.displayText } ?? "Sem registro"
+            .flatMap { ExcretionEnum(rawValue: $0)?.displayText } ?? "no_register".localized
     }
 
     func getFeedingStateText() -> String {
         currentPersonalCare?.feedingState
-            .flatMap { FeedingEnum(rawValue: $0)?.displayText } ?? "Sem registro"
+            .flatMap { FeedingEnum(rawValue: $0)?.displayText } ?? "no_register".localized
     }
 
     func getEquipmentText() -> String {
-        currentPersonalCare?.equipmentState ?? "Sem registro"
+        currentPersonalCare?.equipmentState ?? "no_register".localized
     }
     
     // MARK: - Rebuild / completion

@@ -46,7 +46,7 @@ final class MealRecordViewController: UIViewController {
     }
     
     private func configureNavBar() {
-        let closeButton = UIBarButtonItem(title: "Fechar", style: .done, target: self, action: #selector(closeTapped))
+        let closeButton = UIBarButtonItem(title: "close".localized, style: .done, target: self, action: #selector(closeTapped))
         closeButton.tintColor = .blue20
         navigationItem.leftBarButtonItem = closeButton
         

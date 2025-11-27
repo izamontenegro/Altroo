@@ -69,7 +69,7 @@ final class PersonalDataSectionView: UIView {
         bodyStackView.spacing = 12
         bodyStackView.translatesAutoresizingMaskIntoConstraints = false
 
-        let nameRow: InformationRow = ("Nome", name)
+        let nameRow: InformationRow = ("name".localized, name)
         let nameSubsection = MedicalRecordSubsectionView(
             row: nameRow,
             surgeryDisplayItems: [],
@@ -78,9 +78,9 @@ final class PersonalDataSectionView: UIView {
             copyAction: nil
         )
         
-        let birthRow: InformationRow = ("Data de Nascimento", birthDate)
-        let weightRow: InformationRow = ("Peso", weight)
-        let heightRow: InformationRow = ("Altura", height)
+        let birthRow: InformationRow = ("birth_date".localized, birthDate)
+        let weightRow: InformationRow = ("weight".localized, weight)
+        let heightRow: InformationRow = ("height".localized, height)
 
         let birthSubsection = MedicalRecordSubsectionView(
             row: birthRow,
@@ -112,7 +112,7 @@ final class PersonalDataSectionView: UIView {
         topHStack.translatesAutoresizingMaskIntoConstraints = false
 
         let addressText = address.trimmingCharacters(in: .whitespacesAndNewlines)
-        let addressRow: InformationRow = ("Endereço", addressText.isEmpty ? "Sem registro" : addressText)
+        let addressRow: InformationRow = ("address".localized, addressText.isEmpty ? "no_register".localized : addressText)
         let addressSubsection = MedicalRecordSubsectionView(
             row: addressRow,
             surgeryDisplayItems: [],
@@ -150,7 +150,7 @@ final class PersonalDataSectionView: UIView {
 
             bodyStackView.addArrangedSubview(container)
         } else {
-            let contactRow: InformationRow = ("Contato de Emergência", "Sem registro")
+            let contactRow: InformationRow = ("Contato de Emergência", "no_register".localized)
             let contactSubsection = MedicalRecordSubsectionView(
                 row: contactRow,
                 surgeryDisplayItems: [],
