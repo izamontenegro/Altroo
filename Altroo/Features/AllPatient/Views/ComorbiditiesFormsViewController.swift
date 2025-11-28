@@ -12,174 +12,189 @@ class ComorbiditiesFormsViewController: UIViewController {
     weak var delegate: AssociatePatientViewControllerDelegate?
     private let viewModel: AddPatientViewModel
     private var bedriddenStatus: BedriddenStatus = .notBedridden
-    
     private var diseasesList: [DiseaseDraft] = []
+    private var keyboardHandler: KeyboardHandler?
 
     init(viewModel: AddPatientViewModel) {
         self.viewModel = viewModel
         super.init(nibName: nil, bundle: nil)
     }
+    required init?(coder: NSCoder) { fatalError() }
     
-    required init?(coder: NSCoder) {
-        fatalError("init(coder:) has not been implemented")
-    }
+    private let scrollView = UIScrollView()
+    private let contentStack = UIStackView()
+
+    private let titleSection = FormTitleSection(
+        title: "comorbidities".localized,
+        description: "comorbidities_subtitle".localized,
+        totalSteps: 3,
+        currentStep: 2
+    )
     
     private let label1 = StandardLabel(
-        labelText: "O Assistido possui alguma das seguintes doenças?",
-        labelFont: .sfPro,
-        labelType: .title3,
-        labelColor: .black10,
-        labelWeight: .semibold
+        labelText: "conditions_question".localized,
+        labelFont: .sfPro, labelType: .title3, labelColor: .black10, labelWeight: .semibold
     )
     
     private let label2 = StandardLabel(
-        labelText: "O Assistido é acamado?",
-        labelFont: .sfPro,
-        labelType: .title3,
-        labelColor: .black10,
-        labelWeight: .semibold
+        labelText: "mobility_question".localized,
+        labelFont: .sfPro, labelType: .title3, labelColor: .black10, labelWeight: .semibold
     )
+
+    private let firstRowStack = UIStackView()
+    private let secondRowStack = UIStackView()
     
-    private let nextStepButton = StandardConfirmationButton(title: "Próximo")
-    
-    private lazy var bedriddenButton: BedriddenButton = {
-        let button = BedriddenButton(bedriddenState: .movement)
-        button.translatesAutoresizingMaskIntoConstraints = false
-        return button
-    }()
-    
-    private let firstRowStack: UIStackView = {
-        let stack = UIStackView()
-        stack.axis = .horizontal
-        stack.spacing = 15
-        stack.distribution = .fillEqually
-        stack.translatesAutoresizingMaskIntoConstraints = false
-        return stack
-    }()
-    
-    private let secondRowStack: UIStackView = {
-        let stack = UIStackView()
-        stack.axis = .horizontal
-        stack.spacing = 12
-        stack.distribution = .fillEqually
-        stack.translatesAutoresizingMaskIntoConstraints = false
-        return stack
-    }()
-    
-    private let mainStack: UIStackView = {
-        let stack = UIStackView()
-        stack.axis = .vertical
-        stack.spacing = 24
-        stack.alignment = .center
-        stack.translatesAutoresizingMaskIntoConstraints = false
-        return stack
-    }()
-    
-    private var selectedComorbidities: Set<String> = []
+    private let nextStepButton = StandardConfirmationButton(title: "next".localized)
+
+    let bedriddenMovableButton = BedriddenButton(bedriddenState: .needsHelp)
+    let bedriddenNoMovementButton = BedriddenButton(bedriddenState: .bedridden)
 
     override func viewDidLoad() {
         super.viewDidLoad()
-
         view.backgroundColor = .pureWhite
-        
+        setupUI()
         setupComorbidityButtons()
-        
-        label1.numberOfLines = 0
-        label1.lineBreakMode = .byWordWrapping
-        
-        mainStack.addArrangedSubview(label1)
-        mainStack.addArrangedSubview(firstRowStack)
-        mainStack.addArrangedSubview(label2)
-        mainStack.addArrangedSubview(secondRowStack)
-        mainStack.addArrangedSubview(nextStepButton)
-        
-        view.addSubview(mainStack)
-        
-        NSLayoutConstraint.activate([
-            mainStack.topAnchor.constraint(equalTo: view.safeAreaLayoutGuide.topAnchor, constant: 32),
-            mainStack.leadingAnchor.constraint(equalTo: view.leadingAnchor, constant: 15),
-            mainStack.trailingAnchor.constraint(equalTo: view.trailingAnchor, constant: -15),
-            label1.widthAnchor.constraint(equalTo: mainStack.widthAnchor),
-            firstRowStack.widthAnchor.constraint(equalTo: mainStack.widthAnchor),
-            label2.widthAnchor.constraint(equalTo: mainStack.widthAnchor),
-            secondRowStack.widthAnchor.constraint(equalTo: mainStack.widthAnchor),
-            nextStepButton.heightAnchor.constraint(equalToConstant: 46),
-            nextStepButton.widthAnchor.constraint(equalToConstant: 215),
+        configureNavBar()
+        keyboardHandler = KeyboardHandler(viewController: self, scrollView: scrollView)
+    }
 
-        ])
+    private func setupUI() {
+
+        label1.numberOfLines = 2
+        label1.lineBreakMode = .byWordWrapping
+        label2.numberOfLines = 2
+        label2.lineBreakMode = .byWordWrapping
         
+        bedriddenMovableButton.setContentCompressionResistancePriority(.required, for: .horizontal)
+        bedriddenMovableButton.setContentHuggingPriority(.defaultLow, for: .horizontal)
+        bedriddenNoMovementButton.setContentCompressionResistancePriority(.required, for: .horizontal)
+        bedriddenNoMovementButton.setContentHuggingPriority(.defaultLow, for: .horizontal)
+
+        scrollView.translatesAutoresizingMaskIntoConstraints = false
+        contentStack.translatesAutoresizingMaskIntoConstraints = false
+
+        contentStack.axis = .vertical
+        contentStack.spacing = Layout.largeSpacing
+        contentStack.alignment = .fill
+
+        firstRowStack.axis = .horizontal
+        firstRowStack.spacing = Layout.smallSpacing
+        firstRowStack.distribution = .fillEqually
+
+        secondRowStack.axis = .horizontal
+        secondRowStack.distribution = .fillProportionally
+
+        view.addSubview(scrollView)
+        scrollView.addSubview(contentStack)
+
+        nextStepButton.translatesAutoresizingMaskIntoConstraints = false
+        nextStepButton.heightAnchor.constraint(equalToConstant: 44).isActive = true
+        nextStepButton.widthAnchor.constraint(equalToConstant: 205).isActive = true
+
+        contentStack.addArrangedSubview(titleSection)
+        contentStack.addArrangedSubview(label1)
+        contentStack.addArrangedSubview(firstRowStack)
+        contentStack.addArrangedSubview(label2)
+        contentStack.addArrangedSubview(secondRowStack)
+
+        contentStack.addArrangedSubview(nextStepButton)
+
+        NSLayoutConstraint.activate([
+            scrollView.topAnchor.constraint(equalTo: view.safeAreaLayoutGuide.topAnchor),
+            scrollView.leadingAnchor.constraint(equalTo: view.leadingAnchor),
+            scrollView.trailingAnchor.constraint(equalTo: view.trailingAnchor),
+            scrollView.bottomAnchor.constraint(equalTo: view.bottomAnchor),
+
+            contentStack.topAnchor.constraint(equalTo: scrollView.contentLayoutGuide.topAnchor, constant: 16),
+            contentStack.leadingAnchor.constraint(equalTo: scrollView.frameLayoutGuide.leadingAnchor, constant: Layout.mediumSpacing),
+            contentStack.trailingAnchor.constraint(equalTo: scrollView.frameLayoutGuide.trailingAnchor, constant: -Layout.mediumSpacing),
+            contentStack.bottomAnchor.constraint(equalTo: scrollView.contentLayoutGuide.bottomAnchor, constant: -40)
+        ])
+
         nextStepButton.addTarget(self, action: #selector(didTapDoneButton), for: .touchUpInside)
     }
     
+    private func configureNavBar() {
+        navigationItem.title = "add_assisted".localized
+        
+        let closeButton = UIBarButtonItem(
+            title: "close".localized,
+            style: .plain,
+            target: self,
+            action: #selector(didTapClose)
+        )
+        navigationItem.rightBarButtonItem = closeButton
+
+        let appearance = UINavigationBarAppearance()
+        appearance.configureWithOpaqueBackground()
+        
+        appearance.titleTextAttributes = [
+            .foregroundColor: UIColor.black10,
+            .font: UIFont.systemFont(ofSize: 17, weight: .medium)
+        ]
+        
+        appearance.buttonAppearance.normal.titleTextAttributes = [
+            .foregroundColor: UIColor.blue30,
+            .font: UIFont.systemFont(ofSize: 17, weight: .regular)
+        ]
+        
+        navigationItem.standardAppearance = appearance
+        navigationItem.scrollEdgeAppearance = appearance
+    }
+
     private func setupComorbidityButtons() {
-        let firstRowDiseases: [ComorbidityButton.Comorbidity] = [.heartFailure, .diabetes, .hypertension]
-        for disease in firstRowDiseases {
+        let firstRow: [ComorbidityButton.Comorbidity] = [.circulatory, .diabetes, .cognition]
+
+        for disease in firstRow {
             let button = ComorbidityButton(comorbidity: disease)
             button.addTarget(self, action: #selector(didTapComorbidityButton(_:)), for: .touchUpInside)
-            
-            button.translatesAutoresizingMaskIntoConstraints = false
-            NSLayoutConstraint.activate([
-                button.widthAnchor.constraint(equalToConstant: 115),
-                button.heightAnchor.constraint(equalToConstant: 190)
-            ])
-            
+            button.heightAnchor.constraint(equalToConstant: 190).isActive = true
             firstRowStack.addArrangedSubview(button)
         }
         
-        let bedriddenMovableButton = BedriddenButton(bedriddenState: .movement)
-        let bedriddenNoMovementButton = BedriddenButton(bedriddenState: .noMovement)
+        bedriddenMovableButton.heightAnchor.constraint(equalToConstant: 210).isActive = true
+        bedriddenNoMovementButton.heightAnchor.constraint(equalToConstant: 210).isActive = true
+        bedriddenMovableButton.widthAnchor.constraint(equalToConstant: 170).isActive = true
+        bedriddenNoMovementButton.widthAnchor.constraint(equalToConstant: 170).isActive = true
 
         bedriddenMovableButton.addTarget(self, action: #selector(didTapBedriddenButton(_:)), for: .touchUpInside)
         bedriddenNoMovementButton.addTarget(self, action: #selector(didTapBedriddenButton(_:)), for: .touchUpInside)
 
-        secondRowStack.addArrangedSubview(bedriddenNoMovementButton)
         secondRowStack.addArrangedSubview(bedriddenMovableButton)
-        
-        NSLayoutConstraint.activate([
-            secondRowStack.widthAnchor.constraint(equalToConstant: 115),
-            secondRowStack.heightAnchor.constraint(equalToConstant: 210)
-        ])
+        secondRowStack.addArrangedSubview(bedriddenNoMovementButton)
+        secondRowStack.distribution = .equalSpacing
     }
-    
-    
-    @objc
-    private func didTapComorbidityButton(_ sender: ComorbidityButton) {
-        sender.toggleState()
 
+    @objc private func didTapComorbidityButton(_ sender: ComorbidityButton) {
+        sender.toggleState()
         if sender.isSelectedState {
             diseasesList.append(DiseaseDraft(name: sender.comorbidity.name))
         } else {
-            if let index = diseasesList.firstIndex(where: { $0.name == sender.comorbidity.name }) {
-                diseasesList.remove(at: index)
-            }
+            diseasesList.removeAll { $0.name == sender.comorbidity.name }
         }
     }
-    
-    @objc
-    private func didTapBedriddenButton(_ sender: BedriddenButton) {
-        if sender.backgroundColor == .blue40 {
-            sender.backgroundColor = .white70
+
+    @objc private func didTapBedriddenButton(_ sender: BedriddenButton) {
+        if sender.isSelectedState {
+            sender.toggleState()
             bedriddenStatus = .notBedridden
             return
         }
 
-        for case let button as BedriddenButton in secondRowStack.arrangedSubviews {
-            button.backgroundColor = .white70
-        }
+        bedriddenMovableButton.setSelectedState(false)
+        bedriddenNoMovementButton.setSelectedState(false)
 
-        sender.backgroundColor = .blue40
+        sender.setSelectedState(true)
 
-        switch sender.bedriddenState {
-        case .movement:
-            bedriddenStatus = .bedriddenMovable
-        case .noMovement:
-            bedriddenStatus = .notBedridden
-        }
+        bedriddenStatus = sender.bedriddenState == .needsHelp ? .bedriddenMovable : .bedriddenImmobile
+    }
+
+    @objc func didTapDoneButton() {
+        viewModel.updateHealthProblems(diseases: diseasesList, bedriddenStatus: bedriddenStatus)
+        delegate?.goToShiftForms(receivedPatientViaShare: false, patient: nil)
     }
     
-    @objc
-    func didTapDoneButton() {
-        viewModel.updateHealthProblems(diseases: diseasesList, bedriddenStatus: bedriddenStatus)
-        delegate?.goToShiftForms()
+    @objc private func didTapClose() {
+        dismiss(animated: true, completion: nil)
     }
 }

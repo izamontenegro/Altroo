@@ -39,23 +39,19 @@ private extension ProfileHeader {
         let headerStack = setupHeaderSection()
         addSubview(headerStack)
 
-//        let medicalRecordCard = setupMedicalRecordCard()
-//        addSubview(medicalRecordCard)
+        let medicalRecordCard = setupMedicalRecordCard()
+        addSubview(medicalRecordCard)
 
         NSLayoutConstraint.activate([
             headerStack.topAnchor.constraint(equalTo: topAnchor, constant: 12),
             headerStack.leadingAnchor.constraint(equalTo: leadingAnchor, constant: 12),
             headerStack.trailingAnchor.constraint(equalTo: trailingAnchor, constant: -12),
 
-//            medicalRecordCard.topAnchor.constraint(equalTo: headerStack.bottomAnchor, constant: 10),
-//            medicalRecordCard.leadingAnchor.constraint(equalTo: leadingAnchor),
-//            medicalRecordCard.trailingAnchor.constraint(equalTo: trailingAnchor),
-//            medicalRecordCard.bottomAnchor.constraint(equalTo: bottomAnchor)
+            medicalRecordCard.topAnchor.constraint(equalTo: headerStack.bottomAnchor, constant: 10),
+            medicalRecordCard.leadingAnchor.constraint(equalTo: leadingAnchor),
+            medicalRecordCard.trailingAnchor.constraint(equalTo: trailingAnchor),
+            medicalRecordCard.bottomAnchor.constraint(equalTo: bottomAnchor)
         ])
-        
-        let bottom = headerStack.bottomAnchor.constraint(equalTo: bottomAnchor, constant: -12)
-                    bottom.priority = .required
-                    bottom.isActive = true
     }
 
     func setupHeaderSection() -> UIStackView {
@@ -80,7 +76,7 @@ private extension ProfileHeader {
     func setupInfoStack() -> UIStackView {
         let data = careRecipient.personalData
 
-        let nameText = data?.name ?? "Nome não informado"
+        let nameText = data?.name?.abbreviatedName ?? "Nome não informado"
         let birthText = DateFormatterHelper.birthDateFormatter(from: data?.dateOfBirth)
         let weightText = formattedWeight(from: data?.weight)
         let heightText = formattedHeight(from: data?.height)
@@ -94,15 +90,15 @@ private extension ProfileHeader {
         )
         nameLabel.translatesAutoresizingMaskIntoConstraints = false
 
-        let birthTitle = StandardLabel(labelText: "Nascimento", labelFont: .sfPro, labelType: .subHeadline, labelColor: .black20, labelWeight: .semibold)
+        let birthTitle = StandardLabel(labelText: "birth".localized, labelFont: .sfPro, labelType: .subHeadline, labelColor: .black20, labelWeight: .semibold)
         let birthValue = StandardLabel(labelText: birthText, labelFont: .sfPro, labelType: .subHeadline, labelColor: .black20, labelWeight: .regular)
         let birthRow = horizontalRow([birthTitle, birthValue])
 
-        let weightTitle = StandardLabel(labelText: "Peso", labelFont: .sfPro, labelType: .subHeadline, labelColor: .black20, labelWeight: .semibold)
+        let weightTitle = StandardLabel(labelText: "weight".localized, labelFont: .sfPro, labelType: .subHeadline, labelColor: .black20, labelWeight: .semibold)
         let weightValue = StandardLabel(labelText: weightText, labelFont: .sfPro, labelType: .subHeadline, labelColor: .black20, labelWeight: .regular)
         let weightRow = horizontalRow([weightTitle, weightValue])
 
-        let heightTitle = StandardLabel(labelText: "Altura", labelFont: .sfPro, labelType: .subHeadline, labelColor: .black20, labelWeight: .semibold)
+        let heightTitle = StandardLabel(labelText: "height".localized, labelFont: .sfPro, labelType: .subHeadline, labelColor: .black20, labelWeight: .semibold)
         let heightValue = StandardLabel(labelText: heightText, labelFont: .sfPro, labelType: .subHeadline, labelColor: .black20, labelWeight: .regular)
         let heightRow = horizontalRow([heightTitle, heightValue])
 
@@ -137,7 +133,7 @@ private extension ProfileHeader {
         card.layer.cornerRadius = 8
 
         let label = StandardLabel(
-            labelText: "Ficha médica",
+            labelText: "medical_record".localized,
             labelFont: .sfPro,
             labelType: .callOut,
             labelColor: .pureWhite,
@@ -206,6 +202,6 @@ private extension ProfileHeader {
 
     func formattedHeight(from height: Double?) -> String {
         guard let height else { return "—" }
-        return String(format: "%.2f m", height)
+        return String(format: "%.0f cm", height)
     }
 }

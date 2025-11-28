@@ -17,10 +17,10 @@ class ProfileToolbarContainer: UIView {
     weak var delegate: ProfileToolbarDelegate?
 
     private lazy var headerProfile = HeaderProfile(name: careRecipient.personalData?.name ?? "Assistido")
-    private let careRecipient: CareRecipient
+    private var careRecipient: CareRecipient
     private let gradientView = GradientArcView()
     private let capsuleButton = CapsuleWithCircleView(
-        text: "Editar Seções",
+        capsuleColor: .teal80, text: "edit_section_title".localized,
         textColor: .teal20,
         nameIcon: "pencil",
         nameIconColor: .pureWhite,
@@ -45,33 +45,45 @@ class ProfileToolbarContainer: UIView {
         
         gradientView.translatesAutoresizingMaskIntoConstraints = false
         headerProfile.translatesAutoresizingMaskIntoConstraints = false
+        capsuleButton.translatesAutoresizingMaskIntoConstraints = false
         
         NSLayoutConstraint.activate([
             gradientView.topAnchor.constraint(equalTo: topAnchor),
             gradientView.leadingAnchor.constraint(equalTo: leadingAnchor),
             gradientView.trailingAnchor.constraint(equalTo: trailingAnchor),
-            gradientView.heightAnchor.constraint(equalToConstant: 400),
+            gradientView.heightAnchor.constraint(equalToConstant: 150),
             
-            headerProfile.topAnchor.constraint(equalTo: topAnchor, constant: 85),
+            headerProfile.topAnchor.constraint(equalTo: safeAreaLayoutGuide.topAnchor, constant: 30),
             headerProfile.leadingAnchor.constraint(equalTo: leadingAnchor, constant: 16),
-            headerProfile.widthAnchor.constraint(equalToConstant: 350),
-            headerProfile.heightAnchor.constraint(equalToConstant: 100),
+            headerProfile.trailingAnchor.constraint(equalTo: trailingAnchor, constant: -16),
             
-            capsuleButton.bottomAnchor.constraint(equalTo: headerProfile.topAnchor, constant: 25),
-            capsuleButton.trailingAnchor.constraint(equalTo: headerProfile.trailingAnchor, constant: 16),
+            capsuleButton.centerYAnchor.constraint(equalTo: headerProfile.topAnchor),
+            capsuleButton.trailingAnchor.constraint(equalTo: headerProfile.trailingAnchor),
             capsuleButton.heightAnchor.constraint(equalToConstant: 31),
-            capsuleButton.widthAnchor.constraint(equalToConstant: 137)
+            capsuleButton.widthAnchor.constraint(equalToConstant: 137),
+            
+            bottomAnchor.constraint(equalTo: headerProfile.bottomAnchor, constant: 16)
         ])
     }
-    
+
     private func setupGesture() {
         let tapProfileGesture = UITapGestureRecognizer(target: self, action: #selector(didTapProfileView))
         headerProfile.isUserInteractionEnabled = true
         headerProfile.addGestureRecognizer(tapProfileGesture)
+        headerProfile.enablePressEffect()
         
-        let tapEditGesture = UITapGestureRecognizer(target: self, action: #selector(didTapEditCapsuleView))
-        capsuleButton.isUserInteractionEnabled = true
-        capsuleButton.addGestureRecognizer(tapEditGesture)
+        capsuleButton.enablePressEffect()
+
+        capsuleButton.onTap = { [weak self] in
+            DispatchQueue.main.asyncAfter(deadline: .now() + 0.1) {
+                self?.didTapEditCapsuleView()
+            }
+        }
+    }
+    
+    func update(with newCareRecipient: CareRecipient) {
+        self.careRecipient = newCareRecipient
+        headerProfile.update(name: newCareRecipient.personalData?.name ?? "Assistido")
     }
     
     @objc private func didTapProfileView() {
@@ -80,6 +92,27 @@ class ProfileToolbarContainer: UIView {
     
     @objc private func didTapEditCapsuleView() {
         delegate?.didTapEditCapsuleView()
+    }
+}
+
+// MARK: - Helpers
+private extension CGFloat {
+    func percentOfWidth(_ view: UIView) -> CGFloat {
+        return view.bounds.width * (self / 100)
+    }
+    
+    func percentOfHeight(_ view: UIView) -> CGFloat {
+        return view.bounds.height * (self / 100)
+    }
+}
+
+private extension Int {
+    func percentOfWidth(_ view: UIView) -> CGFloat {
+        return CGFloat(self) * view.bounds.width / 100
+    }
+    
+    func percentOfHeight(_ view: UIView) -> CGFloat {
+        return CGFloat(self) * view.bounds.height / 100
     }
 }
 

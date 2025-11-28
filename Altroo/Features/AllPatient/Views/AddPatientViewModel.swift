@@ -10,7 +10,6 @@ import Combine
 import CoreData
 
 final class AddPatientViewModel: ObservableObject {
-    
     private let careRecipientFacade: CareRecipientFacade
     private let userService: UserServiceProtocol
     
@@ -22,10 +21,23 @@ final class AddPatientViewModel: ObservableObject {
     @Published var weight: Double = 0
     @Published var address: String = ""
     
-    @Published var contacts: [ContactDraft] = []
+    @Published var contact: ContactDraft = ContactDraft(name: "")
     @Published var diseases: [DiseaseDraft] = []
     @Published var bedriddenStatus: BedriddenStatus = .notBedridden
     
+    // TODO: REALLY UPDATE THE USERNAME HERE
+    @Published var userName: String = ""
+    @Published var userNameError: String?
+    @Published var userPhone: String = ""
+    @Published var userPhoneError: String?
+    @Published var selectedUserRelationship: String = "caregiver".localized
+    @Published var selectedContactRelationship: String = "child".localized
+
+    @Published var isAllDay = true
+    
+    @Published private(set) var fieldErrors: [String: String] = [:]
+    private let validator = FormValidator()
+
     private var cancellables = Set<AnyCancellable>()
     
     init(careRecipientFacade: CareRecipientFacade, userService: UserServiceProtocol) {
@@ -49,9 +61,10 @@ final class AddPatientViewModel: ObservableObject {
         self.address = address
     }
     
-    func addContact(name: String, contactDescription: String?, contactMethod: String?) {
-        let contact = ContactDraft(name: name, description: contactDescription, method: contactMethod)
-        contacts.append(contact)
+    func updateContact(name: String, phone: String?) {
+        contact.name = name
+        contact.phone = phone
+        contact.relationship = selectedContactRelationship
     }
     
     func updateHealthProblems(diseases: [DiseaseDraft], bedriddenStatus: BedriddenStatus) {
@@ -59,56 +72,129 @@ final class AddPatientViewModel: ObservableObject {
         self.bedriddenStatus = bedriddenStatus
     }
     
-    func finalizeCareRecipient() {
-        newPatient = careRecipientFacade.buildCareRecipient { pd, pc, hp, mental, physical, routine, basicNeeds, event, symptom in
+    func finalizeCareRecipient() {        
+        newPatient = careRecipientFacade.buildCareRecipient { personalData, personalCare, healthProblems, mental, physical, routine, basicNeeds, event in
             
             // Personal Data
-            self.careRecipientFacade.addName(name: self.name, in: pd)
-            self.careRecipientFacade.addGender(gender: self.gender, in: pd)
-            self.careRecipientFacade.addDateOfBirth(birthDate: self.dateOfBirth, in: pd)
-            self.careRecipientFacade.addHeight(height: self.height, in: pd)
-            self.careRecipientFacade.addWeight(weight: self.weight, in: pd)
-            self.careRecipientFacade.addAddress(address: self.address, in: pd)
+            self.careRecipientFacade.addName(name: self.name, in: personalData)
+            self.careRecipientFacade.addGender(gender: self.gender, in: personalData)
+            self.careRecipientFacade.addDateOfBirth(birthDate: self.dateOfBirth, in: personalData)
+            self.careRecipientFacade.addHeight(height: self.height, in: personalData)
+            self.careRecipientFacade.addWeight(weight: self.weight, in: personalData)
+            self.careRecipientFacade.addAddress(address: self.address, in: personalData)
             
             // Contacts
-            for contact in self.contacts {
+            if !contact.name.isEmpty {
                 self.careRecipientFacade.addContact(
                     name: contact.name,
-                    contactDescription: contact.description,
-                    contactMethod: contact.method,
-                    in: pd
+                    relationship: contact.relationship,
+                    phone: contact.phone,
+                    in: personalData
                 )
             }
             
             // Health Problems
             for disease in self.diseases {
-                self.careRecipientFacade.addDisease(name: disease.name, in: hp)
+                self.careRecipientFacade.addDisease(name: disease.name, in: healthProblems)
             }
-            hp.bedridden = self.bedriddenStatus.rawValue
+            healthProblems.bedridden = self.bedriddenStatus.rawValue
         }
         
         guard let newPatient else { return }
+        newPatient.creationDate = Date()
+        newPatient.sharedUUID = UUID().uuidString
         userService.addPatient(newPatient)
         userService.setCurrentPatient(newPatient)
         
-        contacts = []
+        guard let user = userService.fetchUser() else { return }
+        careRecipientFacade.addCaregiver(newPatient, for: user)
+                
         diseases = []
         bedriddenStatus = .notBedridden
     }
     
-    func setShift(_ shift: [PeriodEnum]) {
-        userService.setShift(shift)
+    func finalizeUser(startDate: Date, endDate: Date) {
+        if userService.fetchUser()?.name == "" {
+            userService.setName(userName)
+            if !userPhone.isEmpty {
+                userService.setPhone(userPhone)
+            }
+        }
+        
+        userService.setCategory(selectedUserRelationship)
+        
+        if isAllDay {
+            userService.setShift([.afternoon, .overnight, .morning, .night])
+        } else {
+            let shift = PeriodEnum.shifts(for: startDate, end: endDate)
+            userService.setShift(shift)
+        }
+    }
+    
+    func finalizeNewCaregiver(to patient: CareRecipient) {
+        userService.addPatient(patient)
+        userService.setCurrentPatient(patient)
+        
+        guard let user = userService.fetchUser() else { return }
+        careRecipientFacade.addCaregiver(patient, for: user)
     }
 }
 
 struct ContactDraft: Identifiable {
     let id = UUID()
     var name: String
-    var description: String?
-    var method: String?
+    var relationship: String?
+    var phone: String?
 }
 
 struct DiseaseDraft: Identifiable {
     let id = UUID()
     var name: String
+}
+
+
+//MARK: - VALIDATION
+extension AddPatientViewModel {
+    func validateProfile() -> Bool {
+        var newErrors: [String: String] = [:]
+
+        _ = validator.isEmpty(name, error: &newErrors["name"])
+        
+        if !weight.isZero {
+            _ = validator.invalidValue(value: Int(weight), minValue: 1, maxValue: 999, error: &newErrors["weight"])
+        }
+        
+        if !height.isZero {
+            _ = validator.invalidValue(value: Int(height), minValue: 9, maxValue: 999, error: &newErrors["height"])
+        }
+        
+        if let phone = contact.phone, !phone.isEmpty {
+            if !validator.invalidPhoneFormat(value: phone, minValue: 10, maxValue: 11, error: &newErrors["phone"]) {
+            }
+        }
+
+        _ = validator.checkAge(13, date: dateOfBirth, error: &newErrors["age"])
+
+        fieldErrors = newErrors
+
+        return newErrors.isEmpty
+    }
+    
+    func validateUser() -> Bool {
+        
+        if userService.fetchUser()?.name != "" { return true }
+        guard validator.isEmpty(userName, error: &userNameError) else { return false }
+        
+        if !userPhone.isEmpty {
+            guard validator.invalidPhoneFormat(value: userPhone, minValue: 10, maxValue: 11, error: &userPhoneError) else {
+                return false
+            }
+        }
+        
+        return true
+    }
+    
+    func fetchUser() -> User?{
+        return userService.fetchUser()
+    }
 }

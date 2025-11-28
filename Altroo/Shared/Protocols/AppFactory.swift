@@ -12,45 +12,49 @@ protocol AppFactory:
     AssociatePatientFactory,
     MainFlowFactory,
     TodayFactory,
+    SymptomFactory,
     ProfileFactory,
+    EditMedicalRecordFactory,
     EventsFactory,
     MedicationFactory,
     BasicNeedsFactory,
     RoutineActivitiesFactory,
     MeasurementFactory,
-    SymptomFactory,
     GeneralFactory,
     HistoryFactory,
     SettingsFactory,
-    ServiceFactory {
+    ServiceFactory
+{
 }
 
 // MARK: - ONBOARDING FLOW
 protocol OnboardingFactory {
-    func makeWelcomeOnboardingViewController(delegate: WelcomeOnboardingViewControllerDelegate) -> UIViewController
+    func makeWelcomeOnboardingViewController(delegate: OnboardingContainerViewControllerDelegate) -> UIViewController
 }
 
 // MARK: - ALL PATIENT FLOW
 protocol AssociatePatientFactory {
-    func makeAssociatePatientViewController(delegate: AssociatePatientViewControllerDelegate) -> UIViewController
+    func makeAssociatePatientViewController(delegate: AssociatePatientViewControllerDelegate, context: CareRecipientContext) -> UIViewController
     func makeTutorialAddSheet() -> UIViewController
+    func makeLoading() -> UIViewController
     func makePatientFormViewController(delegate: AssociatePatientViewControllerDelegate) -> UIViewController
     func makeComorbiditiesFormViewController(delegate: AssociatePatientViewControllerDelegate) -> UIViewController
-    func makeShiftFormViewController(delegate: ShiftFormsViewControllerDelegate) -> UIViewController
+    func makeShiftFormViewController(delegate: ShiftFormsViewControllerDelegate, receivedPatientViaShare: Bool, patient: CareRecipient?) -> UIViewController
 }
 
 // MARK: - MAIN FLOW
 protocol MainFlowFactory {
-    func makeSettingsViewController(delegate: SettingsViewControllerDelegate) -> UIViewController
+    func makeReportViewController() -> UIViewController
     func makeTodayViewController(delegate: TodayViewControllerDelegate) -> UIViewController
     func makeHistoryViewController(delegate: HistoryViewControllerDelegate) -> UIViewController
-    func makeAnalysisViewController() -> UIViewController
+    func makeSettingsViewController(delegate: SettingsViewControllerDelegate) -> UIViewController
 }
 
 // MARK: - TODAY FLOW
 protocol TodayFactory {
     func makeEditSectionsViewController() -> UIViewController
-    
+    func makePolicyViewController() -> UIViewController
+    func makePrivacyViewController() -> UIViewController
 }
 
 //MARK: - SYMPTOM FLOW
@@ -63,10 +67,14 @@ protocol SymptomFactory {
 // MARK: - PROFILE FLOW
 protocol ProfileFactory {
     func makeProfileViewController(delegate: ProfileViewControllerDelegate) -> UIViewController
-    func makeChangeCareRecipientViewController(delegate: ChangeCareRecipientViewControllerDelegate) -> UIViewController
-    func makeMedicalRecordViewController() -> UIViewController
-    
-//    func makeEditCaregiverViewController() -> UIViewController
+    func makeMedicalRecordViewController(delegate: EditMedicalRecordViewControllerDelegate?) -> UIViewController
+}
+protocol EditMedicalRecordFactory {
+    func makeEditPersonalDataViewController(delegate: EditMedicalRecordViewControllerDelegate) -> UIViewController
+    func makeEditHealthProblemsViewController(delegate: EditMedicalRecordViewControllerDelegate) -> UIViewController
+    func makeEditPhysicalStateViewController(delegate: EditMedicalRecordViewControllerDelegate) -> UIViewController
+    func makeEditMentalStateViewController(delegate: EditMedicalRecordViewControllerDelegate) -> UIViewController
+    func makeEditPersonalCareViewController(delegate: EditMedicalRecordViewControllerDelegate) -> UIViewController
 }
 
 // MARK: - EVENTS FLOW
@@ -94,10 +102,10 @@ protocol BasicNeedsFactory {
 
 // MARK: - ROUTINE ACTIVITIES FLOW
 protocol RoutineActivitiesFactory {
-    func makeAllTasksViewController(onTaskSelected: ((TaskInstance) -> Void)?) -> UIViewController
+    func makeAllTasksViewController() -> UIViewController
     func makeAddTaskViewController() -> UIViewController
     func makeEditTaskViewController(task: RoutineTask) -> UIViewController
-    func makeTaskDetailViewController(task: TaskInstance) -> UIViewController
+    func makeTaskDetailViewController(mode: TaskDetailMode) -> UIViewController
 }
 
 // MARK: - MEASUREMENT FLOW
@@ -121,8 +129,9 @@ protocol HistoryFactory {
 
 // MARK: - SETTINGS FLOW
 protocol SettingsFactory {
-    func makeUserProfileViewController() -> UIViewController
-    func makePrivacySecurityViewController() -> UIViewController
+    func makeMyProfileViewController() -> UIViewController
+    func makePrivacyViewController() -> UIViewController
+    func makePolicyViewController() -> UIViewController
     func makeDevelopersViewController() -> UIViewController
 }
 

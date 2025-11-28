@@ -4,16 +4,28 @@
 //
 //  Created by Raissa Parente on 02/10/25.
 //
+//
+//  HydrationRecordViewController.swift
+//  Altroo
+//
+//  Created by Raissa Parente on 02/10/25.
+//
 import UIKit
 import Combine
 
-final class HydrationRecordViewController: GradientNavBarViewController {
+final class HydrationRecordViewController: UIViewController {
     private let viewModel: HydrationRecordViewModel
     private var cancellables = Set<AnyCancellable>()
     
     private var amountButtons: [UIButton] = []
-    private var customValueField: UITextField!
+    private var customValueView: HydrationMeasureInputView!
+    private var hydrationTargetView: HydrationMeasureInputView!
+    private var hydrationAmountSectionView: BasicNeedsCardsScrollSectionView?
+    private var customValueSection: UIStackView!
+    
     private var confirmationButton: StandardConfirmationButton!
+    
+    var onDismiss: (() -> Void)?
 
     init(viewModel: HydrationRecordViewModel) {
         self.viewModel = viewModel
@@ -24,33 +36,54 @@ final class HydrationRecordViewController: GradientNavBarViewController {
         fatalError("init(coder:) has not been implemented")
     }
 
-    override func viewWillAppear(_ animated: Bool) {
-        super.viewWillAppear(animated)
-        tabBarController?.tabBar.isHidden = true
-    }
-
-    override func viewWillDisappear(_ animated: Bool) {
-        super.viewWillDisappear(animated)
-        tabBarController?.tabBar.isHidden = false
-    }
-
     override func viewDidLoad() {
         super.viewDidLoad()
         view.backgroundColor = .pureWhite
+        
+        viewModel.loadTargetValue()
         setupLayout()
         bindViewModel()
         setupTapToDismiss()
+        configureNavBar()
+        
+        hydrationTargetView.value = Int(viewModel.targetValue)
+    }
+    
+    private func configureNavBar() {
+        let closeButton = UIBarButtonItem(title: "close".localized, style: .done, target: self, action: #selector(closeTapped))
+        closeButton.tintColor = .blue20
+        navigationItem.leftBarButtonItem = closeButton
+        
+        let appearance = UINavigationBarAppearance()
+        appearance.configureWithOpaqueBackground()
+        navigationItem.scrollEdgeAppearance = appearance
+    }
+    
+    @objc func closeTapped() {
+        dismiss(animated: true)
+    }
+
+    
+    override func viewDidDisappear(_ animated: Bool) {
+        super.viewDidDisappear(animated)
+        if isBeingDismissed {
+            onDismiss?()
+        }
     }
 
     // MARK: - Layout
     private func setupLayout() {
-
+        let header = StandardHeaderView(
+            title: "record_hydration".localized,
+            subtitle: "Registre a quantidade ingerida de líquidos"
+        )
         let amountSection = makeAmountSection()
         let customSection = makeCustomValueSection()
+        let targetSection = makeHydrationTargetValueSection()
         
         confirmationButton = configureConfirmationButton()
         
-        let contentStack = UIStackView(arrangedSubviews: [amountSection, customSection])
+        let contentStack = UIStackView(arrangedSubviews: [header, amountSection, customSection, targetSection])
         contentStack.axis = .vertical
         contentStack.spacing = 24
         contentStack.translatesAutoresizingMaskIntoConstraints = false
@@ -71,55 +104,39 @@ final class HydrationRecordViewController: GradientNavBarViewController {
     }
 
     private func makeAmountSection() -> UIView {
-        let title = StandardLabel(
-            labelText: "Quantidade",
-            labelFont: .sfPro,
-            labelType: .callOut,
-            labelColor: .black10,
-            labelWeight: .semibold
+        let categories = HydrationAmountEnum.allCases
+        
+        let imageNames = categories.map { $0.displayImageName }
+        let subtitles = categories.map { _ in "Medida" }
+        let titles = categories.map { $0.displayText }
+        
+        let selectedIndex: Int?
+        if let selected = viewModel.selectedAmount,
+           let idx = categories.firstIndex(of: selected) {
+            selectedIndex = idx
+        } else {
+            selectedIndex = nil
+        }
+        
+        let section = BasicNeedsCardsScrollSectionView(
+            title: "Quantidade?",
+            imageNames: imageNames,
+            subtitles: subtitles,
+            titles: titles,
+            selectedIndex: selectedIndex,
+            scrollHeight: 170,
+            spacing: 12,
+            leadingPadding: 5,
+            trailingContentInset: 16
         )
-
-        let container = UIStackView()
-        container.axis = .vertical
-        container.spacing = 12
-
-        var currentRow = UIStackView()
-        currentRow.axis = .horizontal
-        currentRow.spacing = 12
-        currentRow.distribution = .fillEqually
-
-        var buttonsInCurrentRow = 0
-
-        for (index, option) in HydrationAmountEnum.allCases.enumerated() {
-            let button = PrimaryStyleButton(title: option.displayText)
-            button.backgroundColor = .black40
-            button.setTitleColor(.white, for: .normal)
-            button.tag = index
-            button.addTarget(self, action: #selector(amountTapped(_:)), for: .touchUpInside)
-
-           
-            amountButtons.append(button)
-
-            currentRow.addArrangedSubview(button)
-            buttonsInCurrentRow += 1
-
-            if buttonsInCurrentRow == 2 {
-                container.addArrangedSubview(currentRow)
-                currentRow = UIStackView()
-                currentRow.axis = .horizontal
-                currentRow.spacing = 12
-                currentRow.distribution = .fillProportionally 
-                buttonsInCurrentRow = 0
-            }
+        
+        section.onCardSelected = { [weak self] index in
+            guard let self else { return }
+            let tappedCategory = HydrationAmountEnum.allCases[index]
+            self.viewModel.selectedAmount = tappedCategory
         }
-
-        if buttonsInCurrentRow > 0 {
-            container.addArrangedSubview(currentRow)
-        }
-
-        let section = UIStackView(arrangedSubviews: [title, container])
-        section.axis = .vertical
-        section.spacing = 16
+        
+        self.hydrationAmountSectionView = section
         return section
     }
 
@@ -132,26 +149,78 @@ final class HydrationRecordViewController: GradientNavBarViewController {
             labelWeight: .semibold
         )
 
-        let textField = StandardTextfield()
-        textField.placeholder = "ml"
-        textField.keyboardType = .numberPad
-        textField.addTarget(self, action: #selector(customValueChanged(_:)), for: .editingChanged)
-        self.customValueField = textField
+        let input = HydrationMeasureInputView(
+            initialValue: Int(viewModel.customValue),
+            unit: .milliliter,
+            minValue: 0,
+            maxValue: 5000
+        )
 
-        let stack = UIStackView(arrangedSubviews: [title, textField])
+        input.onValueChanged = { [weak self] value, unit in
+            guard let self else { return }
+            self.viewModel.customValue = Double(value)
+            self.viewModel.customUnit = unit
+        }
+
+        self.customValueView = input
+
+        let stack = UIStackView(arrangedSubviews: [title, input])
         stack.axis = .vertical
         stack.spacing = 8
+        stack.alignment = .leading
+        stack.translatesAutoresizingMaskIntoConstraints = false
+
+        self.customValueSection = stack
+
+        stack.isHidden = (viewModel.selectedAmount != .custom)
+
+        return stack
+    }
+    
+    private func makeHydrationTargetValueSection() -> UIView {
+        let title = StandardLabel(
+            labelText: "Meta",
+            labelFont: .sfPro,
+            labelType: .callOut,
+            labelColor: .black10,
+            labelWeight: .semibold
+        )
+
+        let input = HydrationMeasureInputView(
+            initialValue: Int(viewModel.targetValue),
+            unit: .milliliter,
+            minValue: 0,
+            maxValue: 10000
+        )
+
+        input.onValueChanged = { [weak self] value, unit in
+            guard let self else { return }
+            self.viewModel.targetValue = Double(value)
+            self.viewModel.targetUnit = unit
+        }
+
+        input.setContentHuggingPriority(.required, for: .horizontal)
+        input.setContentCompressionResistancePriority(.required, for: .horizontal)
+
+        self.hydrationTargetView = input
+
+        let stack = UIStackView(arrangedSubviews: [title, input])
+        stack.axis = .vertical
+        stack.spacing = 8
+        stack.alignment = .leading
+        
         return stack
     }
 
     private func configureConfirmationButton() -> StandardConfirmationButton {
         let button = StandardConfirmationButton(title: "Salvar")
-        button.addTarget(self, action: #selector(saveHydrationRecord), for: .touchUpInside)
+        button.addTarget(self, action: #selector(save), for: .touchUpInside)
         button.translatesAutoresizingMaskIntoConstraints = false
         return button
     }
 
     // MARK: - Actions
+    
     @objc private func amountTapped(_ sender: PrimaryStyleButton) {
         let tappedOption = HydrationAmountEnum.allCases[sender.tag]
 
@@ -167,16 +236,13 @@ final class HydrationRecordViewController: GradientNavBarViewController {
         }
 
         let isCustom = viewModel.selectedAmount == .custom
-        customValueField.isUserInteractionEnabled = isCustom
-        customValueField.alpha = isCustom ? 1.0 : 0.4
+        customValueView.isUserInteractionEnabled = isCustom
+        customValueSection.isHidden = !isCustom
     }
-
-    @objc private func customValueChanged(_ sender: UITextField) {
-        viewModel.customValue = Double(sender.text ?? "") ?? 0
-    }
-
-    @objc private func saveHydrationRecord() {
-        viewModel.saveHydrationRecord()
+    
+    @objc private func save() {
+        viewModel.saveHydrationTarget()
+        viewModel.saveHydrationMeasure()
         dismiss(animated: true)
     }
 
@@ -199,11 +265,31 @@ final class HydrationRecordViewController: GradientNavBarViewController {
 
     // MARK: - Combine Binding
     private func bindViewModel() {
-        Publishers.CombineLatest(viewModel.$selectedAmount, viewModel.$customValue)
-            .sink { [weak self] amount, value in
-                let valid = (amount != nil && (amount != .custom || value > 0))
-                self?.updateConfirmationButtonState(enabled: valid)
+        Publishers.CombineLatest3(
+            viewModel.$selectedAmount,
+            viewModel.$customValue,
+            viewModel.$targetValue
+        )
+        .sink { [weak self] amount, custom, target in
+            guard let self else { return }
+            
+            let isCustom = amount == .custom
+            
+            self.customValueSection?.isHidden = !isCustom
+
+            let customInt = Int(custom)
+            if customInt != self.customValueView.value {
+                self.customValueView.value = customInt
             }
-            .store(in: &cancellables)
-    }
-}
+
+            let targetInt = Int(target)
+            if targetInt != self.hydrationTargetView.value {
+                self.hydrationTargetView.value = targetInt
+            }
+
+            let measureValid = (amount != nil && (amount != .custom || custom > 0))
+            let targetValid = target > 0
+            self.updateConfirmationButtonState(enabled: measureValid || targetValid)
+        }
+        .store(in: &cancellables)
+    }}

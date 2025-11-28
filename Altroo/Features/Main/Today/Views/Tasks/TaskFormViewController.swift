@@ -8,24 +8,32 @@
 import UIKit
 import Combine
 
-class TaskFormViewController: GradientNavBarViewController {
+class TaskFormViewController: UIViewController {
+    
+    private var keyboardHandler: KeyboardHandler?
 
-    let titleLabel = StandardLabel(labelText: "", labelFont: .sfPro, labelType: .title2, labelColor: UIColor(resource: .black10), labelWeight: .semibold)
+    let titleLabel = StandardHeaderView(title: "", subtitle: "")
     
     let confirmButton = StandardConfirmationButton(title: "")
-    let deleteButton = OutlineButton(title: "Deletar", color: .red20)
+    let deleteButton = OutlineButton(title: "delete".localized, color: .red20)
     private var confirmBottomConstraint: NSLayoutConstraint?
 
-    let nameTexfield = TestTextfield(placeholder: "Nome")
-    let noteTexfield = TestTextfield(placeholder: "Observação")
-
-    var hourPickers: [UIDatePicker] = []
-    let addTimeButton = PrimaryStyleButton(title: "Novo Horário")
-    let startDatePicker: UIDatePicker = UIDatePicker.make(mode: .date)
-    let endDatePicker: UIDatePicker = UIDatePicker.make(mode: .date)
+    let nameTexfield = StandardTextfield(placeholder: "taskform_name".localized)
+    let noteTexfield = ObservationView(placeholder: "observations".localized)
     
-    let hourStack: UIStackView = {
-        let stackView = UIStackView()
+    //TIME
+    lazy var deleteTimeButton: MinusButton = {
+        let btn = MinusButton()
+        btn.widthAnchor.constraint(equalToConstant: 18).isActive = true
+        btn.addTarget(self, action: #selector(didDeleteLastTime), for: .touchUpInside)
+        return btn
+    }()
+    
+    let addTimeButton = OutlineWithIconButton(title: "taskform_new_time".localized, iconName: "plus.circle.fill")
+    var addTimeViews: [UIView] = []
+    lazy var timePickersFlowView = FlowLayoutView(views: addTimeViews)
+    lazy var hourStack: UIStackView = {
+        let stackView = UIStackView(arrangedSubviews: [timePickersFlowView])
         stackView.axis = .vertical
         stackView.alignment = .leading
         stackView.distribution = .fill
@@ -33,133 +41,172 @@ class TaskFormViewController: GradientNavBarViewController {
         stackView.translatesAutoresizingMaskIntoConstraints = false
         return stackView
     }()
-
-    let dateStack: UIStackView = {
-        let stackView = UIStackView()
+    
+    
+    //DATE
+    let startDatePicker: UIDatePicker = UIDatePicker.make(mode: .date)
+    let endDatePicker: UIDatePicker = UIDatePicker.make(mode: .date)
+    private lazy var dateRow: UIStackView = {
+        let stackView = UIStackView(arrangedSubviews: [startSection, endSection])
         stackView.axis = .horizontal
-        stackView.alignment = .fill
-        stackView.distribution = .equalSpacing
+        stackView.distribution = .fillProportionally
         stackView.spacing = 8
         stackView.translatesAutoresizingMaskIntoConstraints = false
         return stackView
     }()
-
-    let contentStack: UIStackView = {
+    
+    let dateContent: UIStackView = {
         let stackView = UIStackView()
+        stackView.axis = .vertical
+        stackView.alignment = .leading
+        stackView.distribution = .fillProportionally
+        stackView.spacing = 8
+        stackView.translatesAutoresizingMaskIntoConstraints = false
+        return stackView
+    }()
+    lazy var nameSection = FormSectionView(title: "name".localized, content: nameTexfield)
+    private lazy var hourSection = FormSectionView(title: String(localized: "time"), content: hourStack)
+        
+    private lazy var repeatSection = FormSectionView(title: "taskform_repeat".localized, content: weekdayRow)
+    lazy var dateSection = FormSectionView(title: "taskform_duration".localized, content: dateContent)
+        
+    lazy var startSection = FormSectionView(title: "taskform_start".localized, content: startDatePicker, isSubsection: true)
+        //"taskform_end".localized
+    lazy var endSection = FormSectionView(title: "taskform_end".localized, content: endDatePicker, isSubsection: true)
+
+    var continuousButton: PopupMenuButton!
+    private lazy var noteSection = FormSectionView(title: "observations".localized, content: noteTexfield)
+
+    private lazy var contentStack: UIStackView = {
+        let stackView = UIStackView(arrangedSubviews: [
+            titleLabel,
+            nameSection,
+            hourSection,
+            repeatSection,
+            dateSection,
+            noteSection,
+            confirmButton,
+            deleteButton
+        ])
         stackView.axis = .vertical
         stackView.alignment = .fill
         stackView.distribution = .fill
         stackView.spacing = 16
         stackView.translatesAutoresizingMaskIntoConstraints = false
+        
         return stackView
     }()
 
-    var endDateSection: UIView!
-    var continuousButton: PopupMenuButton!
-    var weekdayRow: RepeatDaysRow!
+    var weekdayRow: RepeatDaysRow = RepeatDaysRow()
     
-    var cancellables = Set<AnyCancellable>()
-    
+    let scrollView = UIScrollView.make(direction: .vertical)
+        
     override func viewDidLoad() {
         super.viewDidLoad()
         setupUI()
+        keyboardHandler = KeyboardHandler(viewController: self)
     }
     
     func setupUI() {
         view.backgroundColor = .pureWhite
-        view.addSubview(titleLabel)
-        view.addSubview(confirmButton)
-        view.addSubview(contentStack)
+        view.addSubview(scrollView)
+        scrollView.addSubview(contentStack)
+        
+        nameTexfield.delegate = self
+        noteTexfield.delegate = self
         
         NSLayoutConstraint.activate([
-            titleLabel.topAnchor.constraint(equalTo: view.safeAreaLayoutGuide.topAnchor, constant: 16),
-            titleLabel.leadingAnchor.constraint(equalTo: view.safeAreaLayoutGuide.leadingAnchor, constant: 16),
-            titleLabel.trailingAnchor.constraint(equalTo: view.safeAreaLayoutGuide.trailingAnchor, constant: -16),
+            scrollView.topAnchor.constraint(equalTo: view.safeAreaLayoutGuide.topAnchor),
+            scrollView.leadingAnchor.constraint(equalTo: view.leadingAnchor),
+            scrollView.trailingAnchor.constraint(equalTo: view.trailingAnchor),
+            scrollView.bottomAnchor.constraint(equalTo: view.bottomAnchor),
             
-            contentStack.topAnchor.constraint(equalTo: titleLabel.bottomAnchor, constant: 16),
-            contentStack.leadingAnchor.constraint(equalTo: view.safeAreaLayoutGuide.leadingAnchor, constant: 16),
-            contentStack.trailingAnchor.constraint(equalTo: view.safeAreaLayoutGuide.trailingAnchor, constant: -16),
-            
-            confirmButton.centerXAnchor.constraint(equalTo: view.centerXAnchor),
+            contentStack.topAnchor.constraint(equalTo: scrollView.contentLayoutGuide.topAnchor, constant: Layout.smallSpacing),
+            contentStack.leadingAnchor.constraint(equalTo: scrollView.contentLayoutGuide.leadingAnchor, constant: Layout.mediumSpacing),
+            contentStack.trailingAnchor.constraint(equalTo: scrollView.contentLayoutGuide.trailingAnchor, constant: -Layout.mediumSpacing),
+            contentStack.bottomAnchor.constraint(equalTo: scrollView.contentLayoutGuide.bottomAnchor, constant: -Layout.smallSpacing),
+            contentStack.widthAnchor.constraint(equalTo: scrollView.frameLayoutGuide.widthAnchor, constant: -2 * Layout.mediumSpacing)
         ])
+        
+        let tapGesture = UITapGestureRecognizer(target: self, action: #selector(dismissKeyboard))
+        tapGesture.cancelsTouchesInView = false
+        view.addGestureRecognizer(tapGesture)
+        
+        startDatePicker.addTarget(self, action: #selector(startDateChanged(_:)), for: .valueChanged)
+        endDatePicker.addTarget(self, action: #selector(endDateChanged(_:)), for: .valueChanged)
     }
 
-    func configure(title: String, confirmButtonText: String, showDelete: Bool = false) {
-        titleLabel.text = title
+    func configure(title: String, subtitle: String, confirmButtonText: String, showDelete: Bool = false, continuousButtonTitle: String) {
+        titleLabel.update(title: title, subtitle: subtitle)
+        
         confirmButton.updateTitle(confirmButtonText)
         
-        if showDelete {
-            deleteButton.updateColor(.red10)
-            view.addSubview(deleteButton)
-            NSLayoutConstraint.activate([
-                deleteButton.centerXAnchor.constraint(equalTo: view.centerXAnchor),
-                deleteButton.bottomAnchor.constraint(equalTo: view.safeAreaLayoutGuide.bottomAnchor, constant: -Layout.mediumSpacing)
-            ])
-            confirmBottomConstraint = confirmButton.bottomAnchor.constraint(equalTo: deleteButton.topAnchor, constant: -Layout.mediumSpacing)
-            confirmBottomConstraint?.isActive = true
-        } else {
-            deleteButton.removeFromSuperview()
-            confirmBottomConstraint = confirmButton.bottomAnchor.constraint(equalTo: view.safeAreaLayoutGuide.bottomAnchor, constant: -Layout.bigButtonBottomPadding)
-            confirmBottomConstraint?.isActive = true
-        }
+        deleteButton.isHidden = !showDelete
+        
+        setupContinuousButton(with: continuousButtonTitle)
     }
+    
+    func setupContinuousButton(with title: String) {
+        continuousButton = PopupMenuButton(title: title)
+        continuousButton.showsMenuAsPrimaryAction = true
+        continuousButton.changesSelectionAsPrimaryAction = true
+    }
+    
+    func reloadDurationSection(startDate: Date?, endDate: Date?) {
+        //reset everything
+        dateContent.clearContent()
+        
+        startDatePicker.date = startDate ?? .now
+        
+            endSection.updateContent(continuousButton)
+        if let endDate {
+            endDatePicker.date = endDate
+            endSection.updateContent(endDatePicker)
 
-    func setupContent() {
-            //name
-            let nameSection = FormSectionView(title: "Nome", content: nameTexfield)
-            contentStack.addArrangedSubview(nameSection)
-
-            //time
-            let hourSection = FormSectionView(title: "Horário", content: hourStack)
-            hourStack.addArrangedSubview(addTimeButton)
-            contentStack.addArrangedSubview(hourSection)
-
-            //repeat
-            weekdayRow = RepeatDaysRow()
-            let repeatSection = FormSectionView(title: "Repetir", content: weekdayRow)
-            contentStack.addArrangedSubview(repeatSection)
-
-            //duration
-            startDatePicker.addTarget(self, action: #selector(startDateChanged(_:)), for: .valueChanged)
-            let startSection = FormSectionView(title: "Início", content: startDatePicker)
-            endDatePicker.addTarget(self, action: #selector(endDateChanged(_:)), for: .valueChanged)
-            endDateSection = FormSectionView(title: "Término", content: endDatePicker)
+            dateContent.addArrangedSubview(dateRow)
+            dateContent.addArrangedSubview(continuousButton)
+        } else {
+            endSection.updateContent(continuousButton)
             
-            dateStack.addArrangedSubview(startSection)
-            contentStack.addArrangedSubview(dateStack)
-
-
-            //notes
-            let noteSection = FormSectionView(title: "Observações", content: noteTexfield)
-            contentStack.addArrangedSubview(noteSection)
-        }
-    
-    private func updateEndDateVisibility(_ isContinuous: Bool) {
-        if isContinuous {
-            endDateSection.removeFromSuperview()
-        } else {
-            dateStack.insertArrangedSubview(endDateSection, at: 1)
+            dateContent.addArrangedSubview(dateRow)
         }
     }
     
-    func insertContinuousPicker(_ button: PopupMenuButton, showEndDate: Bool) {
-        continuousButton = button
-         let durationSection = FormSectionView(title: "Duração", content: continuousButton)
-         dateStack.addArrangedSubview(durationSection)
-         if showEndDate {
-             dateStack.insertArrangedSubview(endDateSection, at: 1)
-         }
-     }
-
-    func addEndDate() {
-        dateStack.insertArrangedSubview(endDateSection, at: 1)
-    }
-    
-    func removeEndDate() {
-        endDateSection.removeFromSuperview()
-    }
-
     @objc func startDateChanged(_ picker: UIDatePicker) {}
     @objc func endDateChanged(_ picker: UIDatePicker) {}
+    
+    @objc private func dismissKeyboard() {
+        view.endEditing(true)
+    }
+   
+    @objc func didDeleteLastTime() {}
+
+    
 }
 
+extension TaskFormViewController: UITextFieldDelegate {
+    func textFieldShouldReturn(_ textField: UITextField) -> Bool {
+        textField.resignFirstResponder()
+        return true
+    }
+}
+
+extension TaskFormViewController: UITextViewDelegate {
+    func textView(_ textView: UITextView,
+                  shouldChangeTextIn range: NSRange,
+                  replacementText text: String) -> Bool {
+        if text == "\n" {
+            textView.resignFirstResponder()
+            return false
+        }
+        return true
+    }
+}
+
+extension TaskFormViewController: ObservationViewDelegate {
+    func observationView(_ view: ObservationView, didChangeText text: String) {
+        if let addTaskViewController = self as? AddTaskViewController {
+            addTaskViewController.viewModel.note = text
+        }
+    }
+}

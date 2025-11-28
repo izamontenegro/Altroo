@@ -12,7 +12,7 @@ class PrimaryStyleButton: UIButton {
 
     var associatedData: Any?
     let color = UIColor(resource: .teal20)
-    
+    // only add the shadow once
     private var innerShadowView: InnerShadowView?
     
     init() {
@@ -45,7 +45,8 @@ class PrimaryStyleButton: UIButton {
         layer.cornerRadius = 8
         layer.masksToBounds = true
         
-        contentEdgeInsets = UIEdgeInsets(top: 8, left: 16, bottom: 8, right: 16)
+        contentEdgeInsets = UIEdgeInsets(top: 8,left: 16,
+                                         bottom: 8, right: 16)
         
         translatesAutoresizingMaskIntoConstraints = false
     }
@@ -63,7 +64,7 @@ class PrimaryStyleButton: UIButton {
         addSubview(shadow)
         innerShadowView = shadow
     }
-    
+    // animation when clicking the button
     override var isHighlighted: Bool {
         didSet {
             UIView.animate(withDuration: 0.1) {
@@ -73,8 +74,6 @@ class PrimaryStyleButton: UIButton {
             }
         }
     }
-
-
 }
 
 //#Preview {

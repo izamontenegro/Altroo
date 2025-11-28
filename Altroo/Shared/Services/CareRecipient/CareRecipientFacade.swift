@@ -29,7 +29,7 @@ class CareRecipientFacade {
 extension CareRecipientFacade {
     
     func buildCareRecipient(
-        configure: (PersonalData, PersonalCare, HealthProblems, MentalState, PhysicalState, RoutineActivities, BasicNeeds, CareRecipientEvent, Symptom) -> Void
+        configure: (PersonalData, PersonalCare, HealthProblems, MentalState, PhysicalState, RoutineActivities, BasicNeeds, CareRecipientEvent) -> Void
     ) -> CareRecipient {
         let context = persistenceService.stack.context
         
@@ -42,7 +42,6 @@ extension CareRecipientFacade {
         let routineActivities = RoutineActivities(context: context)
         let basicNeeds = BasicNeeds(context: context)
         let careRecipientEvent = CareRecipientEvent(context: context)
-        let symptom = Symptom(context: context)
         
         careRecipient.personalData = personalData
         careRecipient.personalCare = personalCare
@@ -52,14 +51,31 @@ extension CareRecipientFacade {
         careRecipient.routineActivities = routineActivities
         careRecipient.basicNeeds = basicNeeds
         careRecipient.careRecipientEvents = [careRecipientEvent]
-        careRecipient.symptoms = [symptom]
+        careRecipient.symptoms = []
+        careRecipient.waterTarget = 2000.0
+        careRecipient.waterMeasure = 250.0
         careRecipient.id = UUID()
+        careRecipient.recordUpdatedAt = Date()
         
-        configure(personalData, personalCare, healthProblems, mentalState, physicalState, routineActivities, basicNeeds, careRecipientEvent, symptom)
+        configure(personalData, personalCare, healthProblems, mentalState, physicalState, routineActivities, basicNeeds, careRecipientEvent)
         
         persistenceService.save()
         
         return careRecipient
+    }
+    
+    func addCaregiver(_ careRecipient: CareRecipient, for user: User) {
+        if let id = user.id, !(careRecipient.usersID?.contains(id) ?? false) {
+            careRecipient.usersID?.append(id)
+            persistenceService.save()
+        } else {
+            print("Caregiver already added or invalid ID")
+        }
+    }
+    
+    func updateMedicalRecord(careRecipient: CareRecipient) {
+        careRecipient.recordUpdatedAt = Date()
+        persistenceService.save()
     }
     
     func fetchCareRecipient(by id: UUID) -> CareRecipient? {
@@ -79,5 +95,22 @@ extension CareRecipientFacade {
     func deleteCareRecipient(_ careRecipient: CareRecipient) {
         persistenceService.deleteCareRecipient(careRecipient)
     }
-
+    
+    func setWaterTarget(_ waterTarget: Double, _ careRecipient: CareRecipient) {
+        careRecipient.waterTarget = waterTarget
+        persistenceService.save()
+    }
+    
+    func setWaterMeasure(_ waterMeasure: Double, _ careRecipient: CareRecipient) {
+        careRecipient.waterMeasure = waterMeasure
+        persistenceService.save()
+    }
+    
+    func getWaterTarget(_ careRecipient: CareRecipient) -> Double {
+        return careRecipient.waterTarget
+    }
+    
+    func getWaterMeasure(_ careRecipient: CareRecipient) -> Double {
+        return careRecipient.waterMeasure
+    }
 }

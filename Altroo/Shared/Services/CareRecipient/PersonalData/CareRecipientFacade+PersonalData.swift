@@ -43,7 +43,7 @@ extension CareRecipientFacade: PersonalDataServiceProtocol {
     }
     
     func addName(name: String, in personalData: PersonalData) {
-        personalData.name = name
+        personalData.name = name.titleCasedName
         
         persistenceService.save()
     }

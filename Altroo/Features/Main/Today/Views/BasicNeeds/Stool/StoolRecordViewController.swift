@@ -7,25 +7,27 @@
 
 import UIKit
 import Combine
+import SwiftUI
 
 protocol StoolRecordNavigationDelegate: AnyObject {
     func didFinishAddingStoolRecord()
 }
 
-final class StoolRecordViewController: GradientNavBarViewController {
+final class StoolRecordViewController: UIViewController {
     weak var delegate: StoolRecordNavigationDelegate?
-
+    
+    private var keyboardHandler: KeyboardHandler?
+    
+    var selectedStoolType: StoolTypesEnum?
+    
     private let viewModel: StoolRecordViewModel
     private var cancellables = Set<AnyCancellable>()
     
-    private let stoolColors: [UIColor] = [
-        .stoolBrown, .stoolYellow, .stoolBlack, .stoolRed, .stoolGreen
-    ]
+    private var stoolColorsSectionView: ColorsCardsSectionView?
+    private var stoolTypesSectionView: BasicNeedsCardsScrollSectionView?
     
-    private var colorButtons: [UIButton] = []
-    private var stoolTypesButtons: [UIButton] = []
-    private var observationField: UITextField?
-        
+    private var observationView: ObservationView?
+    
     init(viewModel: StoolRecordViewModel) {
         self.viewModel = viewModel
         super.init(nibName: nil, bundle: nil)
@@ -35,14 +37,6 @@ final class StoolRecordViewController: GradientNavBarViewController {
         fatalError("init(coder:) has not been implemented")
     }
     
-    override func viewWillAppear(_ animated: Bool) {
-        tabBarController?.tabBar.isHidden = true
-    }
-    
-    override func viewWillDisappear(_ animated: Bool) {
-        tabBarController?.tabBar.isHidden = false
-    }
-    
     override func viewDidLoad() {
         super.viewDidLoad()
         view.backgroundColor = .pureWhite
@@ -50,201 +44,180 @@ final class StoolRecordViewController: GradientNavBarViewController {
         setupLayout()
         setupTapToDismiss()
         bindViewModel()
+        configureNavBar()
+        
+        keyboardHandler = KeyboardHandler(viewController: self, scrollView: scrollView)
     }
     
-    // MARK: - View Layout
+    private func configureNavBar() {
+        let closeButton = UIBarButtonItem(title: "close".localized, style: .done, target: self, action: #selector(closeTapped))
+        closeButton.tintColor = .blue20
+        navigationItem.leftBarButtonItem = closeButton
+        
+        let appearance = UINavigationBarAppearance()
+        appearance.configureWithOpaqueBackground()
+        navigationItem.scrollEdgeAppearance = appearance
+    }
+    
+    @objc func closeTapped() {
+        dismiss(animated: true)
+    }
+    
+    var scrollView: UIScrollView = {
+        let scrollView = UIScrollView()
+        scrollView.translatesAutoresizingMaskIntoConstraints = false
+        scrollView.alwaysBounceVertical = true
+        return scrollView
+    }()
     
     private func setupLayout() {
-        let viewTitle = StandardLabel(labelText: "Registrar fezes", labelFont: .sfPro, labelType: .title2, labelColor: .black10, labelWeight: .semibold)
-        
+
         let content = UIStackView()
         content.axis = .vertical
         content.alignment = .fill
-        content.spacing = 24
+        content.spacing = 18
         content.translatesAutoresizingMaskIntoConstraints = false
-            
+
+        view.addSubview(scrollView)
+        scrollView.addSubview(content)
+
+        let viewTitle = StandardHeaderView(
+            title: "record_stool".localized,
+            subtitle: "Registre uma evacuação e as características das fezes do assistido."
+        )
+
         let stoolTypesSection = makeStoolTypesSection()
         let stoolColorsSection = makeStoolColorSection()
         let stoolNotesSection = makeStoolNotesSection()
         let addButton = configureAddButton()
-        
+
         content.addArrangedSubview(viewTitle)
         content.addArrangedSubview(stoolTypesSection)
         content.addArrangedSubview(stoolColorsSection)
         content.addArrangedSubview(stoolNotesSection)
-        
-        view.addSubview(content)
-        view.addSubview(addButton)
-        
+
+        let buttonContainer = UIView()
+        buttonContainer.translatesAutoresizingMaskIntoConstraints = false
+
+        buttonContainer.addSubview(addButton)
+
         NSLayoutConstraint.activate([
-            content.topAnchor.constraint(equalTo: view.safeAreaLayoutGuide.topAnchor, constant: 24),
-            content.leadingAnchor.constraint(equalTo: view.leadingAnchor, constant: 16),
-            content.trailingAnchor.constraint(equalTo: view.trailingAnchor, constant: -16),
-            
-            addButton.bottomAnchor.constraint(equalTo: view.safeAreaLayoutGuide.bottomAnchor, constant: -24),
-            addButton.centerXAnchor.constraint(equalTo: view.centerXAnchor)
+            addButton.centerXAnchor.constraint(equalTo: buttonContainer.centerXAnchor),
+            addButton.topAnchor.constraint(equalTo: buttonContainer.topAnchor),
+            addButton.bottomAnchor.constraint(equalTo: buttonContainer.bottomAnchor),
+            addButton.widthAnchor.constraint(equalToConstant: 188),
+            addButton.heightAnchor.constraint(equalToConstant: 48)
+        ])
+
+        let bottomSpacer = UIView()
+        bottomSpacer.heightAnchor.constraint(equalToConstant: 32).isActive = true
+
+        content.addArrangedSubview(buttonContainer)
+        content.addArrangedSubview(bottomSpacer)
+
+        NSLayoutConstraint.activate([
+            scrollView.topAnchor.constraint(equalTo: view.safeAreaLayoutGuide.topAnchor),
+            scrollView.leadingAnchor.constraint(equalTo: view.leadingAnchor),
+            scrollView.trailingAnchor.constraint(equalTo: view.trailingAnchor),
+            scrollView.bottomAnchor.constraint(equalTo: view.bottomAnchor),
+
+            content.topAnchor.constraint(equalTo: scrollView.contentLayoutGuide.topAnchor, constant: 16),
+            content.leadingAnchor.constraint(equalTo: scrollView.frameLayoutGuide.leadingAnchor, constant: 16),
+            content.trailingAnchor.constraint(equalTo: scrollView.frameLayoutGuide.trailingAnchor, constant: -16),
+            content.bottomAnchor.constraint(equalTo: scrollView.contentLayoutGuide.bottomAnchor, constant: -24),
+
+            content.widthAnchor.constraint(equalTo: scrollView.frameLayoutGuide.widthAnchor, constant: -32)
         ])
     }
-    
     // MARK: - Sections
-    
     private func makeStoolColorSection() -> UIView {
-        let title = StandardLabel(
-            labelText: "Cor das Fezes?",
-            labelFont: .sfPro, labelType: .callOut, labelColor: .black10, labelWeight: .semibold
-        )
+        let colors = StoolColorsEnum.allCases.map { $0.color }
+        let titles = StoolColorsEnum.allCases.map { $0.displayText }
         
-        let row = UIStackView()
-        row.axis = .horizontal
-        row.spacing = 18
-        row.alignment = .center
-        row.distribution = .fillEqually
-        
-        for color in stoolColors {
-            let button = UIButton(type: .system)
-            button.translatesAutoresizingMaskIntoConstraints = false
-            button.backgroundColor = color
-            button.layer.borderWidth = 2
-            button.layer.borderColor = UIColor.white70.cgColor
-            button.addTarget(self, action: #selector(colorTapped(_:)), for: .touchUpInside)
-
-            let buttonSize = UIScreen.main.bounds.width * 0.15
-            
-            NSLayoutConstraint.activate([
-                button.widthAnchor.constraint(equalToConstant: buttonSize),
-                button.heightAnchor.constraint(equalToConstant: buttonSize)
-            ])
-            button.layer.cornerRadius = buttonSize / 2
-
-            row.addArrangedSubview(button)
-            colorButtons.append(button)
+        let selectedIndex: Int?
+        if let selected = viewModel.selectedStoolColor,
+           let idx = StoolColorsEnum.allCases.firstIndex(of: selected) {
+            selectedIndex = idx
+        } else {
+            selectedIndex = nil
         }
-
         
-        let section = UIStackView(arrangedSubviews: [title, row])
-        section.axis = .vertical
-        section.alignment = .leading
-        section.spacing = 16
-        return section
-    }
-    
-    private func makeStoolTypeButton(type: StoolTypesEnum, index: Int) -> UIButton {
-        let button = UIButton(type: .system)
-        button.tag = index
-        button.translatesAutoresizingMaskIntoConstraints = false
-        button.backgroundColor = .blue80
-        button.layer.cornerRadius = 12
-        button.layer.masksToBounds = true
-        button.layer.borderWidth = 0
-        button.layer.borderColor = UIColor.blue40.cgColor
-
-        let contentStack = UIStackView()
-        contentStack.axis = .vertical
-        contentStack.alignment = .center
-        contentStack.spacing = 8
-        contentStack.translatesAutoresizingMaskIntoConstraints = false
-
-        let imageView = UIImageView(image: UIImage(named: type.displayImage))
-        imageView.contentMode = .scaleAspectFit
-        imageView.setContentHuggingPriority(.required, for: .vertical)
-
-        let titleLabel = StandardLabel(
-            labelText: type.displayText,
-            labelFont: .sfPro,
-            labelType: .footnote,
-            labelColor: .blue20,
-            labelWeight: .medium
+        let section = ColorsCardsSectionView(
+            title: "Cor das Fezes?",
+            colors: colors,
+            titles: titles,
+            selectedIndex: selectedIndex
         )
-        titleLabel.textAlignment = .center
-        titleLabel.numberOfLines = 2
-
-        contentStack.addArrangedSubview(imageView)
-        contentStack.addArrangedSubview(titleLabel)
-
-        button.addSubview(contentStack)
-        NSLayoutConstraint.activate([
-            button.widthAnchor.constraint(equalToConstant: 120),
-            button.heightAnchor.constraint(equalToConstant: 120),
-
-            contentStack.leadingAnchor.constraint(equalTo: button.leadingAnchor, constant: 12),
-            contentStack.trailingAnchor.constraint(equalTo: button.trailingAnchor, constant: -12),
-            contentStack.topAnchor.constraint(equalTo: button.topAnchor, constant: 12),
-            contentStack.bottomAnchor.constraint(equalTo: button.bottomAnchor, constant: -12),
-
-            imageView.heightAnchor.constraint(greaterThanOrEqualToConstant: 56)
-        ])
-
-       
-        contentStack.isUserInteractionEnabled = false
-        imageView.isUserInteractionEnabled = false
-        titleLabel.isUserInteractionEnabled = false
-
-        button.addTarget(self, action: #selector(typeTapped(_:)), for: .touchUpInside)
-        return button
+        
+        section.onColorSelected = { [weak self] index, _ in
+            guard let self else { return }
+            let selectedEnum = StoolColorsEnum.allCases[index]
+            self.viewModel.selectedStoolColor = selectedEnum
+        }
+        
+        self.stoolColorsSectionView = section
+        return section
     }
     
     private func makeStoolTypesSection() -> UIView {
-        let title = StandardLabel(
-            labelText: "Como foi o tipo de Fezes?",
-            labelFont: .sfPro,
-            labelType: .callOut,
-            labelColor: .black10,
-            labelWeight: .semibold
-        )
-
-        let scrollView = UIScrollView()
-        scrollView.showsHorizontalScrollIndicator = false
-        scrollView.translatesAutoresizingMaskIntoConstraints = false
-
-        let row = UIStackView()
-        row.axis = .horizontal
-        row.alignment = .fill
-        row.spacing = 12
-        row.translatesAutoresizingMaskIntoConstraints = false
-
-        scrollView.addSubview(row)
-        NSLayoutConstraint.activate([
-            row.leadingAnchor.constraint(equalTo: scrollView.contentLayoutGuide.leadingAnchor, constant: 2),
-            row.trailingAnchor.constraint(equalTo: scrollView.contentLayoutGuide.trailingAnchor, constant: -2),
-            row.topAnchor.constraint(equalTo: scrollView.contentLayoutGuide.topAnchor),
-            row.bottomAnchor.constraint(equalTo: scrollView.contentLayoutGuide.bottomAnchor),
-
-            row.heightAnchor.constraint(equalTo: scrollView.frameLayoutGuide.heightAnchor)
-        ])
-
-        for (index, type) in StoolTypesEnum.allCases.enumerated() {
-            let button = makeStoolTypeButton(type: type, index: index)
-            stoolTypesButtons.append(button)
-            row.addArrangedSubview(button)
+        let types = StoolTypesEnum.allCases
+        
+        let imageNames = types.map { $0.displayImage }
+        let subtitles = types.map { _ in "Tipo" }
+        let titles = types.map { $0.displayText }
+        
+        let selectedIndex: Int?
+        if let selected = viewModel.selectedStoolType,
+           let idx = types.firstIndex(of: selected) {
+            selectedIndex = idx
+        } else {
+            selectedIndex = nil
         }
-
-        let section = UIStackView(arrangedSubviews: [title, scrollView])
-        section.axis = .vertical
-        section.spacing = 12
-
-        scrollView.heightAnchor.constraint(equalToConstant: 120).isActive = true
-
+        
+        let section = BasicNeedsCardsScrollSectionView(
+            title: "Qual foi o tipo de Fezes?",
+            imageNames: imageNames,
+            subtitles: subtitles,
+            titles: titles,
+            selectedIndex: selectedIndex,
+            scrollHeight: 160,
+            spacing: 12,
+            leadingPadding: 5,
+            trailingContentInset: 16
+        )
+        
+        section.onCardSelected = { [weak self] index in
+            guard let self else { return }
+            let selectedType = StoolTypesEnum.allCases[index]
+            self.viewModel.selectedStoolType = selectedType
+        }
+        
+        self.stoolTypesSectionView = section
         return section
     }
+    
     private func makeStoolNotesSection() -> UIView {
         let title = StandardLabel(
-            labelText: "Observação",
+            labelText: "observation".localized,
             labelFont: .sfPro, labelType: .callOut, labelColor: .black10, labelWeight: .semibold
         )
-
-        let field = StandardTextfield()
-        field.addTarget(self, action: #selector(observationChanged(_:)), for: .editingChanged)
         
-        self.observationField = field
+        let observationView = ObservationView(placeholder: "Detalhes opcionais")
+        observationView.delegate = self
+        observationView.translatesAutoresizingMaskIntoConstraints = false
         
-        let section = UIStackView(arrangedSubviews: [title, field])
+        self.observationView = observationView
+        
+        let section = UIStackView(arrangedSubviews: [title, observationView])
         section.axis = .vertical
         section.spacing = 8
         return section
     }
     
+    // MARK: - Components
+    
     private func configureAddButton() -> UIView {
-        let button = StandardConfirmationButton(title: "Adicionar")
+        let button = StandardConfirmationButton(title: "add".localized)
         button.addTarget(self, action: #selector(createStoolRecord), for: .touchUpInside)
         button.translatesAutoresizingMaskIntoConstraints = false
         return button
@@ -252,57 +225,15 @@ final class StoolRecordViewController: GradientNavBarViewController {
     
     // MARK: - Actions
     
-    @objc private func colorTapped(_ sender: UIButton) {
-        guard let index = colorButtons.firstIndex(of: sender) else { return }
-        let selectedColor = stoolColors[index]
-        viewModel.selectedStoolColor = selectedColor
-
-        colorButtons.forEach { button in
-            button.layer.borderColor = UIColor.white70.cgColor
-            button.subviews.forEach { if $0.tag == 999 { $0.removeFromSuperview() } }
-        }
-
-        sender.layer.borderColor = UIColor.pureWhite.cgColor
-        sender.layer.borderWidth = 3
-
-        let check = UIImageView(image: UIImage(systemName: "checkmark"))
-        check.tintColor = .pureWhite
-        check.translatesAutoresizingMaskIntoConstraints = false
-        check.tag = 999
-        sender.addSubview(check)
-        
-        let checkSize = UIScreen.main.bounds.width * 0.07
-        
-        NSLayoutConstraint.activate([
-            check.centerXAnchor.constraint(equalTo: sender.centerXAnchor),
-            check.centerYAnchor.constraint(equalTo: sender.centerYAnchor),
-            check.widthAnchor.constraint(equalToConstant: checkSize),
-            check.heightAnchor.constraint(equalToConstant: checkSize)
-        ])
-    }
-
-    @objc private func typeTapped(_ sender: UIButton) {
-        let type = StoolTypesEnum.allCases[sender.tag]
-        viewModel.selectedStoolType = type
-
-        for (i, button) in stoolTypesButtons.enumerated() {
-            if i == sender.tag {
-                button.layer.borderWidth = 2
-                button.layer.borderColor = UIColor.blue40.cgColor
-            } else {
-                button.layer.borderWidth = 0
-            }
-        }
-    }
-    
-    @objc private func observationChanged(_ sender: UITextField) {
-        viewModel.notes = sender.text ?? ""
-    }
-    
     @objc private func createStoolRecord() {
         viewModel.createStoolRecord()
-        
         delegate?.didFinishAddingStoolRecord()
+        dismiss(animated: true)
+
+    }
+    
+    @objc private func dismissKeyboard() {
+        view.endEditing(true)
     }
     
     private func setupTapToDismiss() {
@@ -310,37 +241,48 @@ final class StoolRecordViewController: GradientNavBarViewController {
         tap.cancelsTouchesInView = false
         view.addGestureRecognizer(tap)
     }
-
-    @objc private func dismissKeyboard() {
-        view.endEditing(true)
-    }
-
     
-    // MARK: - Combine Bindings
+    // MARK: - Combine Binding
     
     private func bindViewModel() {
         viewModel.$selectedStoolColor
-            .sink { [weak self] color in
+            .sink { [weak self] selected in
                 guard let self else { return }
-                for button in self.colorButtons {
-                    button.layer.borderColor = (button.backgroundColor == color) ? UIColor.blue50.cgColor : UIColor.white70.cgColor
+                
+                let index: Int?
+                if let selected,
+                   let idx = StoolColorsEnum.allCases.firstIndex(of: selected) {
+                    index = idx
+                } else {
+                    index = nil
                 }
+                
+                self.stoolColorsSectionView?.updateSelection(index: index)
             }
             .store(in: &cancellables)
-
+        
         viewModel.$selectedStoolType
             .sink { [weak self] selected in
                 guard let self else { return }
-                for (index, button) in self.stoolTypesButtons.enumerated() {
-                    if StoolTypesEnum.allCases.indices.contains(index),
-                       StoolTypesEnum.allCases[index] == selected {
-                        button.layer.borderWidth = 2
-                        button.layer.borderColor = UIColor.blue40.cgColor
-                    } else {
-                        button.layer.borderWidth = 0
-                    }
+                
+                let index: Int?
+                if let selected,
+                   let idx = StoolTypesEnum.allCases.firstIndex(of: selected) {
+                    index = idx
+                } else {
+                    index = nil
                 }
+                
+                self.stoolTypesSectionView?.updateSelection(index: index)
             }
             .store(in: &cancellables)
+    }
+}
+
+// MARK: - ObservationViewDelegate
+
+extension StoolRecordViewController: ObservationViewDelegate {
+    func observationView(_ view: ObservationView, didChangeText text: String) {
+        viewModel.notes = text.isEmpty ? "--" : text
     }
 }

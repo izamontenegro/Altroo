@@ -54,21 +54,12 @@ class ComponentPreviewViewController: UIViewController {
     private func previewComponents() {
         // TEXTFIELD
         let textField = StandardTextfield(
-            width: 250,
-            height: 45,
-//            title: StandardLabel(labelText: "Nome",
-//                                 labelFont: .sfPro,
-//                                 labelType: .title3,
-//                                 labelColor: UIColor(resource: .black10),
-//                                 labelWeight: .medium
-//                                ),
             placeholder: "Maria Clara"
         )
 
         // SEGMENTEDCONTROL
         let segmentedControl = StandardSegmentedControl(
             items: ["F", "M"],
-            width: 113,
             height: 35,
             backgroundColor: UIColor(resource: .white70),
             selectedColor: UIColor(resource: .teal20),
@@ -98,7 +89,7 @@ class ComponentPreviewViewController: UIViewController {
         let capsule1 = CapsuleIconView(iconName: "drop.fill",
                                        text: "250ml")
         
-        let capsule2 = CapsuleWithCircleView(text: "Editar",
+        let capsule2 = CapsuleWithCircleView(capsuleColor: .teal20, text: "Editar",
                                              textColor: .teal20,
                                              nameIcon: "pencil",
                                              nameIconColor: .pureWhite,

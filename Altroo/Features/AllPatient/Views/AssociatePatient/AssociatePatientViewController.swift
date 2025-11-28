@@ -6,45 +6,72 @@
 //
 
 import UIKit
+import Combine
 
 protocol AssociatePatientViewControllerDelegate: AnyObject {
     func goToPatientForms()
     func goToComorbiditiesForms()
-    func goToShiftForms()
+    func goToShiftForms(receivedPatientViaShare: Bool, patient: CareRecipient?)
     func goToTutorialAddSheet()
     func goToMainFlow()
 }
 
-class AssociatePatientViewController: UIViewController {
+enum CareRecipientContext { case associatePatient, patientSelection }
+
+class AssociatePatientViewController: GradientHeader {
+    
     weak var delegate: AssociatePatientViewControllerDelegate?
     private let viewModel: AssociatePatientViewModel
+    let context: CareRecipientContext
 
-    let viewLabel = StandardLabel(
-        labelText: "Nenhum Assistido encontrado.\nClique no botão \"Adicionar\" para criar.",
-        labelFont: .sfPro,
-        labelType: .title3,
-        labelColor: .black40,
-        labelWeight: .regular
-    )
-    
-    let addNewPatientButton = StandardConfirmationButton(title: "Adicionar")
-    
+    private var cancellables = Set<AnyCancellable>()
+
+    private lazy var addNewPatientButton: CareRecipientCard = {
+        let btn = CareRecipientCard(
+            name: "add_assisted".localized,
+            isPlusButton: true
+        )
+        let tapGesture = UITapGestureRecognizer(target: self, action: #selector(didTapAddNewPatientButton))
+        btn.addGestureRecognizer(tapGesture)
+        btn.isUserInteractionEnabled = true
+        btn.enablePressEffect()
+        
+        return btn
+    }()
+
     let addExistingPatientButton: UIButton = {
         let button = UIButton(type: .system)
         let label = StandardLabel(
-            labelText: "Já tenho uma pessoa cadastrada",
+            labelText: "already_have_assisted".localized,
             labelFont: .sfPro,
-            labelType: .title3,
+            labelType: .body,
             labelColor: .teal10,
-            labelWeight: .regular
+            labelWeight: .medium
         )
-        button.setAttributedTitle(NSAttributedString(string: label.labelText, attributes: [
-            .font: label.font!,
-            .foregroundColor: label.textColor!
-        ]), for: .normal)
+        
+        let image = UIImage(systemName: "info.circle")
+        button.setImage(image, for: .normal)
+        button.tintColor = label.labelColor
+        
+        button.setTitle(label.labelText, for: .normal)
+        button.titleLabel?.font = label.font
+        button.setTitleColor(label.textColor, for: .normal)
+        
+        button.semanticContentAttribute = .forceLeftToRight
+        button.imageEdgeInsets = UIEdgeInsets(top: 0, left: -4, bottom: 0, right: 4)
+        
         button.backgroundColor = .clear
         button.translatesAutoresizingMaskIntoConstraints = false
+        
+        button.enableHighlightEffect()
         return button
+    }()
+    
+    private lazy var refreshControl: UIRefreshControl = {
+        let refreshControl = UIRefreshControl()
+        refreshControl.tintColor = .black30
+        refreshControl.addTarget(self, action: #selector(handleRefresh), for: .valueChanged)
+        return refreshControl
     }()
     
     private let scrollView: UIScrollView = {
@@ -58,15 +85,23 @@ class AssociatePatientViewController: UIViewController {
     let vStack: UIStackView = {
         let stackView = UIStackView(arrangedSubviews: [])
         stackView.axis = .vertical
-        stackView.distribution = .fillEqually
-        stackView.spacing = 20
-        
+        stackView.distribution = .equalSpacing
+        stackView.spacing = Layout.mediumSpacing
         stackView.translatesAutoresizingMaskIntoConstraints = false
         return stackView
     }()
     
-    init(viewModel: AssociatePatientViewModel) {
+    private let loadingIndicator: UIActivityIndicatorView = {
+        let indicator = UIActivityIndicatorView(style: .large)
+        indicator.color = .teal10
+        indicator.translatesAutoresizingMaskIntoConstraints = false
+        indicator.hidesWhenStopped = true
+        return indicator
+    }()
+    
+    init(viewModel: AssociatePatientViewModel, context: CareRecipientContext) {
         self.viewModel = viewModel
+        self.context = context
         super.init(nibName: nil, bundle: nil)
     }
     
@@ -75,101 +110,130 @@ class AssociatePatientViewController: UIViewController {
     }
 
     override func viewDidLoad() {
-        super.viewDidLoad()
-        
-        view.backgroundColor = .white
-        navigationItem.title = "Seus Assistidos"
-        
-        let appearance = UINavigationBarAppearance()
-        appearance.configureWithOpaqueBackground()
-        appearance.backgroundColor = .pureWhite
-        appearance.titleTextAttributes = [.foregroundColor: UIColor.black10]
+        setNavbarItems(title: "assisted".localized, subtitle: "assisted_subtitle".localized)
 
-        navigationController?.navigationBar.standardAppearance = appearance
-        navigationController?.navigationBar.scrollEdgeAppearance = appearance
+        super.viewDidLoad()
+        view.backgroundColor = .blue80
+        
+        scrollView.refreshControl = refreshControl
+        refreshControl.bounds = refreshControl.bounds.offsetBy(dx: 0, dy: -20)
 
         setupLayout()
         updateView()
+        bindViewModel()
+        
+        NotificationCenter.default.addObserver(
+            self,
+            selector: #selector(remoteDataChanged),
+            name: .didFinishCloudKitSync,
+            object: nil
+        )
     }
     
+    override func viewWillAppear(_ animated: Bool) {
+        super.viewWillAppear(animated)
+        navigationController?.setNavigationBarHidden(true, animated: false)
+        showTabBar(true)
+    }
+
+    //TODO: - Add loading view
+    @objc private func remoteDataChanged() {
+        DispatchQueue.main.async {
+            self.loadingIndicator.stopAnimating()
+            self.loadingIndicator.removeFromSuperview()
+            self.viewModel.refreshData()
+        }
+    }
+
     private func setupLayout() {
         view.addSubview(scrollView)
         scrollView.addSubview(vStack)
-        view.addSubview(addNewPatientButton)
-        view.addSubview(addExistingPatientButton)
-
-        let buttonsStack = UIStackView(arrangedSubviews: [addNewPatientButton, addExistingPatientButton])
-        buttonsStack.axis = .vertical
-        buttonsStack.spacing = 7
-        buttonsStack.alignment = .center
-        buttonsStack.translatesAutoresizingMaskIntoConstraints = false
-        view.addSubview(buttonsStack)
 
         NSLayoutConstraint.activate([
-            scrollView.topAnchor.constraint(equalTo: view.safeAreaLayoutGuide.topAnchor, constant: 20),
-            scrollView.leadingAnchor.constraint(equalTo: view.leadingAnchor, constant: 24),
-            scrollView.trailingAnchor.constraint(equalTo: view.trailingAnchor, constant: -24),
-            scrollView.bottomAnchor.constraint(equalTo: buttonsStack.topAnchor, constant: -20),
+            scrollView.topAnchor.constraint(equalTo: gradientView.bottomAnchor),
+            scrollView.leadingAnchor.constraint(equalTo: view.leadingAnchor, constant: Layout.mediumSpacing),
+            scrollView.trailingAnchor.constraint(equalTo: view.trailingAnchor, constant: -Layout.mediumSpacing),
+            scrollView.bottomAnchor.constraint(equalTo: view.bottomAnchor, constant: context == .patientSelection ? -Layout.bigButtonBottomPadding : -20),
 
-            vStack.topAnchor.constraint(equalTo: scrollView.topAnchor),
+            vStack.topAnchor.constraint(equalTo: scrollView.topAnchor, constant: 20),
             vStack.leadingAnchor.constraint(equalTo: scrollView.leadingAnchor),
             vStack.trailingAnchor.constraint(equalTo: scrollView.trailingAnchor),
-            vStack.bottomAnchor.constraint(equalTo: scrollView.bottomAnchor),
+            vStack.bottomAnchor.constraint(equalTo: scrollView.bottomAnchor, constant: context == .patientSelection ? -20 : 0),
             vStack.widthAnchor.constraint(equalTo: scrollView.widthAnchor),
-
-            buttonsStack.centerXAnchor.constraint(equalTo: view.centerXAnchor),
-            buttonsStack.bottomAnchor.constraint(equalTo: view.safeAreaLayoutGuide.bottomAnchor, constant: -20),
-            buttonsStack.leadingAnchor.constraint(equalTo: view.leadingAnchor, constant: 40),
-            buttonsStack.trailingAnchor.constraint(equalTo: view.trailingAnchor, constant: -40),
-
-            addNewPatientButton.heightAnchor.constraint(equalToConstant: 50),
-            addNewPatientButton.widthAnchor.constraint(equalToConstant: 229)
         ])
 
-        addNewPatientButton.addTarget(self, action: #selector(didTapAddNewPatientButton), for: .touchUpInside)
         addExistingPatientButton.addTarget(self, action: #selector(didTapAddExistingPatientButton), for: .touchUpInside)
     }
 
     private func updateView() {
-        let careRecipients = viewModel.allPatients
+        let careRecipients = viewModel.fetchAvailableCareRecipients()
         
         vStack.arrangedSubviews.forEach { $0.removeFromSuperview() }
         
-        if careRecipients.isEmpty {
-            viewLabel.text = "Nenhum Assistido encontrado.\nClique no botão \"Adicionar\" para criar."
-            vStack.addArrangedSubview(viewLabel)
-        } else {
             for careRecipient in careRecipients {
                 let card = CareRecipientCard(
                     name: careRecipient.personalData?.name ?? "",
-                    age: careRecipient.personalData?.age ?? 0,
-                    careRecipient: careRecipient
+                    careRecipient: careRecipient,
+                    currentCareRecipient: careRecipient == viewModel.getCurrentCareRecipient()
                 )
                 
                 let tapGesture = UITapGestureRecognizer(target: self, action: #selector(didTapCareRecipientCard(_:)))
                 card.addGestureRecognizer(tapGesture)
                 card.isUserInteractionEnabled = true
+                card.enablePressEffect()
                 
                 vStack.addArrangedSubview(card)
             }
-        }
+        
+        vStack.addArrangedSubview(addNewPatientButton)
+        vStack.setCustomSpacing(Layout.smallSpacing, after: addNewPatientButton)
+        vStack.addArrangedSubview(addExistingPatientButton)
     }
-
+    
     @objc private func didTapCareRecipientCard(_ sender: UITapGestureRecognizer) {
         guard let card = sender.view as? CareRecipientCard,
               let careRecipient = card.careRecipient else { return }
         
-        viewModel.setCurrentPatient(careRecipient)
-        delegate?.goToMainFlow()
+        switch context {
+        case .associatePatient:
+            viewModel.setCurrentCareRecipient(careRecipient)
+            delegate?.goToMainFlow()
+        case .patientSelection:
+            if viewModel.getCurrentCareRecipient() == careRecipient {
+                delegate?.goToMainFlow()
+            } else {
+                viewModel.setCurrentCareRecipient(careRecipient)
+            }
+        }
+    }
+    
+    private func bindViewModel() {
+        viewModel.$careRecipients
+            .receive(on: RunLoop.main)
+            .sink { [weak self] _ in
+                self?.updateView()
+            }
+            .store(in: &cancellables)
+        
+        viewModel.$currentCareRecipient
+            .receive(on: RunLoop.main)
+            .sink { [weak self] _ in
+                self?.updateView()
+            }
+            .store(in: &cancellables)
+    }
+    
+    private func fetchData() {
+        updateView()
+        
+        if refreshControl.isRefreshing {
+            refreshControl.endRefreshing()
+        }
     }
     
     @objc func didTapAddNewPatientButton() { delegate?.goToPatientForms() }
     
     @objc func didTapAddExistingPatientButton() { delegate?.goToTutorialAddSheet() }
+    
+    @objc private func handleRefresh() { fetchData() }
 }
-
-//#Preview {
-//    let mockService = UserServiceSession(context: AppDependencies().coreDataService.stack.context)
-//    let viewModel = AssociatePatientViewModel(userService: mockService)
-//    AssociatePatientViewController(viewModel: viewModel)
-//}

@@ -13,11 +13,14 @@ class StandardToggle: UIControl {
     
     private(set) var isOn = false
     
-    var onColor: UIColor = UIColor(resource: .teal30)
-    var offColor: UIColor = UIColor(resource: .teal80)
-    var onThumbColor: UIColor = UIColor(resource: .pureWhite)
-    var offThumbColor: UIColor = UIColor(resource: .teal30)
-
+    var onColor: UIColor = .blue30
+    var offColor: UIColor = .white70
+    var onThumbColor: UIColor = .white70
+    var offThumbColor: UIColor = .pureWhite
+    
+    private let defaultHeight: CGFloat = 20
+    private var defaultWidth: CGFloat { defaultHeight * 1.8 }
+    
     override init(frame: CGRect) {
         super.init(frame: frame)
         setupView()
@@ -29,36 +32,32 @@ class StandardToggle: UIControl {
         setupView()
         setupGesture()
     }
+    
     // MARK: - Setup
+    override var intrinsicContentSize: CGSize {
+            return CGSize(width: defaultWidth, height: defaultHeight)
+     }
+    
     private func setupView() {
         backgroundColor = .clear
         
         backgroundView.backgroundColor = offColor
-        backgroundView.layer.cornerRadius = 14
+        backgroundView.layer.cornerRadius = defaultHeight / 2
         backgroundView.layer.shadowColor = UIColor.black10.cgColor
         backgroundView.layer.shadowOpacity = 0.2
         backgroundView.layer.shadowOffset = CGSize(width: 2, height: 2)
         backgroundView.layer.shadowRadius = 3
-        
-        addSubview(backgroundView)
         backgroundView.translatesAutoresizingMaskIntoConstraints = false
-        
-        NSLayoutConstraint.activate([
-            backgroundView.topAnchor.constraint(equalTo: topAnchor),
-            backgroundView.bottomAnchor.constraint(equalTo: bottomAnchor),
-            backgroundView.leadingAnchor.constraint(equalTo: leadingAnchor),
-            backgroundView.trailingAnchor.constraint(equalTo: trailingAnchor)
-        ])
+        addSubview(backgroundView)
         
         thumbView.backgroundColor = offThumbColor
-        thumbView.layer.cornerRadius = 11
+        thumbView.layer.cornerRadius = (defaultHeight - 8) / 2
         thumbView.layer.shadowColor = UIColor.black10.cgColor
         thumbView.layer.shadowOpacity = 0.2
         thumbView.layer.shadowOffset = CGSize(width: 1, height: 1)
         thumbView.layer.shadowRadius = 2
-        
-        addSubview(thumbView)
         thumbView.translatesAutoresizingMaskIntoConstraints = false
+        addSubview(thumbView)
     }
     
     private func setupGesture() {
@@ -68,31 +67,34 @@ class StandardToggle: UIControl {
     
     override func layoutSubviews() {
         super.layoutSubviews()
-        
+
         let thumbSize = bounds.height - 8
-        let thumbY = bounds.midY - thumbSize / 2
         
-        if thumbView.constraints.isEmpty {
-            thumbView.frame = CGRect(
-                x: 4,
-                y: thumbY,
-                width: thumbSize,
-                height: thumbSize
-            )
-        }
+        backgroundView.frame = bounds
+        backgroundView.layer.cornerRadius = bounds.height / 2
+        
+        let thumbY = (bounds.height - thumbSize) / 2
+        let thumbX = isOn ? bounds.width - thumbSize - 4 : 4
+        thumbView.frame = CGRect(x: thumbX, y: thumbY, width: thumbSize, height: thumbSize)
+        thumbView.layer.cornerRadius = thumbSize / 2
+        
+        backgroundView.backgroundColor = isOn ? onColor : offColor
+        thumbView.backgroundColor = isOn ? onThumbColor : offThumbColor
     }
+    
     // MARK: - Actions
-    @objc private func toggle() {
+    @objc func toggle() {
         setOn(!isOn, animated: true)
         sendActions(for: .valueChanged)
     }
     
     func setOn(_ on: Bool, animated: Bool) {
+        guard isOn != on else { return }
         isOn = on
         let thumbSize = bounds.height - 8
         let newX = on ? bounds.width - thumbSize - 4 : 4
         
-        UIView.animate(withDuration: animated ? 0.5 : 0.0,
+        UIView.animate(withDuration: animated ? 0.4 : 0.0,
                        delay: 0,
                        usingSpringWithDamping: 0.7,
                        initialSpringVelocity: 0.5,
@@ -125,15 +127,15 @@ private struct StandardTogglePreviewWrapper: UIViewRepresentable {
 //    override func viewDidLoad() {
 //        super.viewDidLoad()
 //        view.backgroundColor = UIColor.systemGray6
-//        
+//
 //        let toggle = StandardToggle(frame: CGRect(x: 100, y: 200, width: 50, height: 30))
 //        toggle.onColor = UIColor.systemTeal
 //        toggle.offColor = UIColor.systemGray5
 //        view.addSubview(toggle)
-//        
+//
 //        toggle.addTarget(self, action: #selector(switchChanged(_:)), for: .valueChanged)
 //    }
-//    
+//
 //    @objc func switchChanged(_ sender: StandardToggle) {
 //        print("Switch state: \(sender.isOn)")
 //    }

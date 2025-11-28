@@ -8,7 +8,7 @@
 import Foundation
 
 protocol SymptomProtocol {
-    func addSymptom(name: String, symptomDescription: String, date: Date, in careRecipient: CareRecipient) -> Symptom?
+    func addSymptom(name: String, symptomDescription: String, date: Date, author: String, in careRecipient: CareRecipient) -> Symptom?
     func editSymptom(symptom: Symptom, name: String, symptomDescription: String, date: Date)
     func deleteSymptom(symptomRecord: Symptom, from careRecipient: CareRecipient)
     func fetchAllSymptoms(from careRecipient: CareRecipient) -> [Symptom]
@@ -17,7 +17,7 @@ protocol SymptomProtocol {
 
 extension CareRecipientFacade: SymptomProtocol {
     @discardableResult
-    func addSymptom(name: String, symptomDescription: String, date: Date, in careRecipient: CareRecipient) -> Symptom? {
+    func addSymptom(name: String, symptomDescription: String, date: Date, author: String, in careRecipient: CareRecipient) -> Symptom? {
         
         guard let context = careRecipient.managedObjectContext else { return nil }
         
@@ -25,6 +25,7 @@ extension CareRecipientFacade: SymptomProtocol {
         newSymptom.name = name
         newSymptom.symptomDescription = symptomDescription
         newSymptom.date = date
+        newSymptom.author = author
         
         let symptoms = careRecipient.mutableSetValue(forKey: "symptoms")
         symptoms.add(newSymptom)

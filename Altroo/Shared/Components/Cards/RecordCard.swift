@@ -16,18 +16,19 @@ class RecordCard: InnerShadowView {
     
     var addButtonPosition: Position = .none
     let addButton = PlusButton()
-    let waterCapsule = WaterCapsule(text: "250ml")
+    let waterCapsule: WaterCapsule
     var onAddButtonTap: (() -> Void)? //call closure using [weak self]
     
     let padding = 8.0
     let contentView: UIView?
     
-    init(frame: CGRect = .zero, title: String, iconName: String, showPlusButton: Bool = true, addButtonPosition: Position = .top, contentView: UIView? = nil) {
+    init(frame: CGRect = .zero, title: String, iconName: String, showPlusButton: Bool = true, addButtonPosition: Position = .top, contentView: UIView? = nil, waterText: String = "250ml" ) {
         self.title = title
         self.iconName = iconName
         self.showPlusButton = showPlusButton
         self.addButtonPosition = addButtonPosition
         self.contentView = contentView
+        self.waterCapsule = WaterCapsule(text: waterText)
         
         super.init(frame: frame, color: .blue70)
         
@@ -38,9 +39,7 @@ class RecordCard: InnerShadowView {
     }
     
     convenience init(frame: CGRect) {
-        self.init(frame: frame,
-                  title: "",
-                  iconName: "questionmark.circle")
+        self.init(frame: frame, title: "", iconName: "questionmark.circle")
     }
     
     required init?(coder: NSCoder) {
@@ -89,11 +88,15 @@ class RecordCard: InnerShadowView {
         }
         
         if showPlusButton {
+            addButton.enablePressEffect()
             addButton.addTarget(self, action: #selector(buttonWasTapped), for: .touchUpInside)
         } else {
-            let tap = UITapGestureRecognizer(target: self, action: #selector(buttonWasTapped))
-            waterCapsule.isUserInteractionEnabled = true
-            waterCapsule.addGestureRecognizer(tap)
+            waterCapsule.enablePressEffect()
+            waterCapsule.onTap = { [weak self] in
+                DispatchQueue.main.asyncAfter(deadline: .now() + 0.1) {
+                    self?.buttonWasTapped()
+                }
+            }
         }
     }
     
@@ -151,7 +154,7 @@ class RecordCard: InnerShadowView {
     @objc private func buttonWasTapped() {
         onAddButtonTap?()
     }
-    
+
     enum Position {
         case top, bottom, none
     }

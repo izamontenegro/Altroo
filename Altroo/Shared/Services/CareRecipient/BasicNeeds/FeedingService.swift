@@ -6,31 +6,51 @@
 //
 
 import Foundation
+import CoreData
 
 protocol FeedingServiceProtocol {
-    func addFeedingRecord(amountEaten: MealAmountEatenEnum, Date: Date, period: PeriodEnum, notes: String, photo: Data?, mealCategory: MealCategoryEnum, in careRecipient: CareRecipient)
+    func addFeedingRecord(amountEaten: MealAmountEatenEnum?, date: Date, period: PeriodEnum, notes: String, photo: Data?, mealCategory: MealCategoryEnum, author: String, in careRecipient: CareRecipient)
     
     func deleteFeedingRecord(feedingRecord: FeedingRecord, from careRecipient: CareRecipient)
+    
+    func fetchFeedings(for careRecipient: CareRecipient) -> [FeedingRecord]
 }
 
 class FeedingService: FeedingServiceProtocol {
-    func addFeedingRecord(amountEaten: MealAmountEatenEnum, Date: Date, period: PeriodEnum, notes: String, photo: Data?, mealCategory: MealCategoryEnum, in careRecipient: CareRecipient) {
-        
-        guard let context = careRecipient.managedObjectContext else { return }
-        let newFeedingRecord = FeedingRecord(context: context)
-        
-        newFeedingRecord.notes = notes
-        newFeedingRecord.amountEaten = amountEaten.displayText
-        newFeedingRecord.date = Date
-        newFeedingRecord.period = period.rawValue
-        newFeedingRecord.photo = photo
-        newFeedingRecord.mealCategory = mealCategory.displayText
-        
-        if let basicNeeds = careRecipient.basicNeeds {
-            let mutableFeeding = basicNeeds.mutableSetValue(forKey: "feeding")
-            mutableFeeding.add(newFeedingRecord)
+        func addFeedingRecord(
+            amountEaten: MealAmountEatenEnum?,
+            date: Date,
+            period: PeriodEnum,
+            notes: String,
+            photo: Data?,
+            mealCategory: MealCategoryEnum,
+            author: String,
+            in careRecipient: CareRecipient
+        ) {
+            
+            guard let context = careRecipient.managedObjectContext else { return }
+            let newFeedingRecord = FeedingRecord(context: context)
+            
+            newFeedingRecord.notes = notes
+            
+            if amountEaten != nil {
+                newFeedingRecord.amountEaten = amountEaten?.displayText
+            } else {
+                newFeedingRecord.amountEaten = ""
+            }
+            
+            newFeedingRecord.date = date
+            newFeedingRecord.period = period.rawValue
+            newFeedingRecord.photo = photo
+            newFeedingRecord.mealCategory = mealCategory.displayName
+            newFeedingRecord.author = author
+            
+            if let basicNeeds = careRecipient.basicNeeds {
+                let mutable = basicNeeds.mutableSetValue(forKey: "feeding")
+                mutable.add(newFeedingRecord)
+            }
         }
-    }
+
     
     func deleteFeedingRecord(feedingRecord: FeedingRecord, from careRecipient: CareRecipient) {
         if let basicNeeds = careRecipient.basicNeeds {
@@ -39,4 +59,18 @@ class FeedingService: FeedingServiceProtocol {
         }
     }
     
+    func fetchFeedings(for careRecipient: CareRecipient) -> [FeedingRecord] {
+        guard let context = careRecipient.managedObjectContext else { return []}
+        let request: NSFetchRequest<FeedingRecord> = FeedingRecord.fetchRequest()
+        request.predicate = NSPredicate(format: "basicNeeds.careRecipient == %@", careRecipient)
+        request.sortDescriptors = [
+            NSSortDescriptor(key: "date", ascending: false)
+        ]
+
+        do {
+            return try context.fetch(request)
+        } catch {
+            return []
+        }
+    }
 }

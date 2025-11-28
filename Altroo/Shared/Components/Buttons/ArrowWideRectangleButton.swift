@@ -10,12 +10,10 @@ import UIKit
 class ArrowWideRectangleButton: WideRectangleButton {
     
     let icon = UIImage(systemName: "chevron.right")
-    private var innerShadowView: InnerShadowView?
     
     override init(title: String) {
         super.init(title: title)
         setupButton()
-        setupInnerShadow()
     }
     
     required init?(coder: NSCoder) {
@@ -24,8 +22,6 @@ class ArrowWideRectangleButton: WideRectangleButton {
     
     override func layoutSubviews() {
         super.layoutSubviews()
-        
-        innerShadowView?.frame = bounds
         
         guard let titleLabel = titleLabel, let imageView = imageView else { return }
         
@@ -54,20 +50,13 @@ class ArrowWideRectangleButton: WideRectangleButton {
         titleLabel?.font = UIFont.systemFont(ofSize: 17, weight: .medium)
         
         contentHorizontalAlignment = .left
-        contentEdgeInsets = UIEdgeInsets(top: 10, left: 16, bottom: 10, right: 16)
+        contentEdgeInsets = UIEdgeInsets(top: 10, left: 16,
+                                         bottom: 10, right: 16)
         titleEdgeInsets = .zero
         imageEdgeInsets = .zero
         
         layer.cornerRadius = 8
         clipsToBounds = true
-    }
-    
-    private func setupInnerShadow() {
-        let shadow = InnerShadowView(frame: bounds, color: UIColor.teal0, opacity: 0.20)
-        shadow.isUserInteractionEnabled = false
-        shadow.layer.cornerRadius = layer.cornerRadius
-        addSubview(shadow)
-        innerShadowView = shadow
     }
 }
 

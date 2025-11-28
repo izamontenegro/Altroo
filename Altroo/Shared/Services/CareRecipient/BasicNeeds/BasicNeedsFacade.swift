@@ -5,6 +5,7 @@
 //  Created by Izadora de Oliveira Albuquerque Montenegro on 29/09/25.
 //
 import Foundation
+import CoreData
 
 final class BasicNeedsFacade: BasicNeedsFacadeProtocol {
     // MARK: Services
@@ -30,8 +31,9 @@ final class BasicNeedsFacade: BasicNeedsFacadeProtocol {
     
     // MARK: - FEEDING ACTIONS
     
-    func addFeeding(amountEaten: MealAmountEatenEnum, date: Date, period: PeriodEnum, notes: String, mealCategory: MealCategoryEnum, in careRecipient: CareRecipient) {
-        feedingService.addFeedingRecord(amountEaten: amountEaten, Date: date, period: period, notes: notes, photo: nil, mealCategory: mealCategory, in: careRecipient)
+    func addFeeding(amountEaten: MealAmountEatenEnum?, date: Date, period: PeriodEnum, notes: String, mealCategory: MealCategoryEnum, author: String, in careRecipient: CareRecipient) {
+        
+        feedingService.addFeedingRecord(amountEaten: amountEaten, date: date, period: period, notes: notes, photo: nil, mealCategory: mealCategory, author: author, in: careRecipient)
         
         persistenceService.save()
     }
@@ -41,9 +43,13 @@ final class BasicNeedsFacade: BasicNeedsFacadeProtocol {
         persistenceService.save()
     }
     
+    func fetchFeedings(for careRecipient: CareRecipient) -> [FeedingRecord] {
+        return feedingService.fetchFeedings(for: careRecipient)
+    }
+    
     // MARK: - HYDRATION ACTIONS
-    func addHydration(period: PeriodEnum, date: Date, waterQuantity: Double, in careRecipient: CareRecipient) {
-        hydrationService.addHydrationRecord(period: period, date: date, waterQuantity: waterQuantity, in: careRecipient)
+    func addHydration(period: PeriodEnum, date: Date, waterQuantity: Double, author: String, in careRecipient: CareRecipient) {
+        hydrationService.addHydrationRecord(period: period, date: date, waterQuantity: waterQuantity, author: author, in: careRecipient)
         persistenceService.save()
     }
     
@@ -52,9 +58,14 @@ final class BasicNeedsFacade: BasicNeedsFacadeProtocol {
         persistenceService.save()
     }
     
+    func fetchHydrations(for careRecipient: CareRecipient) -> [HydrationRecord] {
+        hydrationService.fetchHydrations(for: careRecipient)
+    }
+
+    
     // MARK: - STOOL ACTIONS
-    func addStool(period: PeriodEnum, date: Date, format: String, notes: String, color: String, in careRecipient: CareRecipient) {
-        stoolService.addStoolRecord(period: period, date: date, format: format, notes: notes, color: color, in: careRecipient)
+    func addStool(period: PeriodEnum, date: Date, format: StoolTypesEnum?, notes: String, color: StoolColorsEnum?, author: String, in careRecipient: CareRecipient) {
+        stoolService.addStoolRecord(period: period, date: date, format: format, notes: notes, color: color, author: author, in: careRecipient)
         persistenceService.save()
     }
 
@@ -63,21 +74,25 @@ final class BasicNeedsFacade: BasicNeedsFacadeProtocol {
         persistenceService.save()
     }
     
+    func fetchStools(for careRecipient: CareRecipient) -> [StoolRecord] {
+        stoolService.fetchStools(for: careRecipient)
+    }
+
+    
     // MARK: - URINE ACTIONS
     func addUrine(
         period: PeriodEnum,
         date: Date,
-        color: String,
+        color: UrineColorsEnum?,
         in careRecipient: CareRecipient,
-        urineCharacteristics: [UrineCharacteristicsEnum],
+        author: String,
         observation: String?
     ) {
         urineService.addUrineRecord(
             period: period,
             date: date,
             color: color,
-            characteristics: urineCharacteristics,
-            observation: observation,
+            observation: observation, author: author,
             to: careRecipient
         )
         persistenceService.save()
@@ -87,8 +102,7 @@ final class BasicNeedsFacade: BasicNeedsFacadeProtocol {
         _ record: UrineRecord,
         period: PeriodEnum? = nil,
         date: Date? = nil,
-        color: String? = nil,
-        characteristics: [UrineCharacteristicsEnum]? = nil,
+        color: UrineColorsEnum? = nil,
         observation: String? = nil
     ) {
         urineService.updateUrineRecord(
@@ -96,7 +110,6 @@ final class BasicNeedsFacade: BasicNeedsFacadeProtocol {
             period: period,
             date: date,
             color: color,
-            characteristics: characteristics,
             observation: observation
         )
         persistenceService.save()
@@ -109,5 +122,9 @@ final class BasicNeedsFacade: BasicNeedsFacadeProtocol {
     func deleteUrine(urineRecord: UrineRecord, from careRecipient: CareRecipient) {
         urineService.deleteUrineRecord(urineRecord, from: careRecipient)
         persistenceService.save()
+    }
+    
+    func fetchUrines(for careRecipient: CareRecipient) -> [UrineRecord] {
+        urineService.fetchUrines(for: careRecipient)
     }
 }

@@ -4,47 +4,89 @@
 //
 //  Created by Raissa Parente on 13/10/25.
 //
+
 import Combine
 import Foundation
 
 class TodayViewModel {
+    
     let careRecipientFacade: CareRecipientFacade
+    let basicNeedsFacade: BasicNeedsFacade
     let userService: UserServiceProtocol
+    let coreDataService: CoreDataService
+    let historyService: HistoryService
     var taskService: RoutineActivitiesFacade
     
-    var currentCareRecipient: CareRecipient?
-    
+    @Published var currentCareRecipient: CareRecipient?
+        
     @Published var todaySymptoms: [Symptom] = []
     @Published var periodTasks: [TaskInstance] = []
     
     @Published var todayStoolQuantity: Int = 0
     @Published var todayUrineQuantity: Int = 0
-    var waterQuantity: Double = 0 {
-        didSet {
-            onWaterQuantityUpdated?(waterQuantity)
-        }
-    }
+    @Published var waterQuantity: Double = 0.0
+    @Published var waterMeasure: Double = 0.0
+    @Published var todayFeedingRecords: [FeedingRecord] = []
     
-    var onWaterQuantityUpdated: ((Double) -> Void)?
-    
-    init(careRecipientFacade: CareRecipientFacade, userService: UserServiceProtocol, taskService: RoutineActivitiesFacade) {
+    private var cancellables = Set<AnyCancellable>()
+        
+    init(careRecipientFacade: CareRecipientFacade, basicNeedsFacade: BasicNeedsFacade, userService: UserServiceProtocol, taskService: RoutineActivitiesFacade, coreDataService: CoreDataService, historyService: HistoryService) {
         self.careRecipientFacade = careRecipientFacade
+        self.basicNeedsFacade = basicNeedsFacade
         self.userService = userService
         self.taskService = taskService
+        self.coreDataService = coreDataService
+        self.historyService = historyService
         
         fetchCareRecipient()
+        setupBindings()
+    }
+    
+    private func setupBindings() {
+        userService.currentPatientPublisher
+            .receive(on: DispatchQueue.main)
+            .sink { [weak self] newPatient in
+                guard let self = self else { return }
+                self.currentCareRecipient = newPatient
+                self.reloadDataForCurrentPatient()
+            }
+            .store(in: &cancellables)
+        
+        BasicNeedsEventBus.shared.publisher
+            .receive(on: DispatchQueue.main)
+            .sink { [weak self] event in
+                guard let self = self else { return }
+
+                switch event {
+                case .stoolAdded:
+                    self.fetchStoolQuantity()
+                case .urineAdded:
+                    self.fetchUrineQuantity()
+                case .feedingAdded:
+                    self.fetchFeedingRecords()
+                case .hydrationAdded:
+                    self.fetchWaterQuantity()
+                }
+            }
+            .store(in: &cancellables)
+    }
+
+    private func reloadDataForCurrentPatient() {
         fetchAllTodaySymptoms()
         fetchAllPeriodTasks()
         fetchUrineQuantity()
         fetchStoolQuantity()
+        fetchWaterMeasure()
+        fetchWaterQuantity()
     }
     
     private func fetchCareRecipient() {
-        currentCareRecipient = userService.fetchCurrentPatient()
+        currentCareRecipient = userService.fetchCurrentPatient() ?? userService.fetchPatients().last
     }
     
     func fetchAllTodaySymptoms() {
-        todaySymptoms = careRecipientFacade.fetchAllSymptomForDate(.now, from: currentCareRecipient!)
+        guard let currentCareRecipient = currentCareRecipient else { return }
+        todaySymptoms = careRecipientFacade.fetchAllSymptomForDate(.now, from: (currentCareRecipient))
     }
     
     func fetchAllPeriodTasks() {
@@ -55,37 +97,39 @@ class TodayViewModel {
         
         let currentPeriod = PeriodEnum.current
         let today = Date()
-        let todayWeekday = Locale.Weekday.from(calendarWeekday: Calendar.current.component(.weekday, from: today))
+        let todayWeekday = Locale.Weekday.fromDay(calendarWeekday: Calendar.current.component(.weekday, from: today))
         
         periodTasks = allTasks.filter { task in
             guard let start = task.template?.startDate else { return false }
             let end = task.template?.endDate
             
-            let isTodayInInterval = start <= today && (end == nil || end! >= today)
-            let isTodayWeekday = task.template?.weekdays.contains(todayWeekday ?? .monday) ?? false
+            let isTodayInInterval = Calendar.current.isDateInToday(task.time ?? .distantPast)
             let isCurrentPeriod = task.period == currentPeriod
             
-            return isTodayInInterval && isTodayWeekday && isCurrentPeriod
+            return isTodayInInterval && isCurrentPeriod
         }
         .sorted(by: { $0.time ?? .distantPast < $1.time ?? .distantPast })
     }
     
     func markAsDone(_ instance: TaskInstance) {
-        taskService.toggleInstanceIsDone(instance)
+        guard let careRecipient = userService.fetchCurrentPatient() else { return }
+        let author = coreDataService.currentPerformerName(for: careRecipient)
+        taskService.toggleInstanceIsDone(instance, author: author, time: .now)
     }
     
     func fetchUrineQuantity() {
         guard let currentCareRecipient = currentCareRecipient else { return }
-        
+            
         let calendar = Calendar.current
         let today = Date()
-        
+            
         let todayUrine = currentCareRecipient.basicNeeds?.urine?.filter { urineRecord in
             calendar.isDate((urineRecord as AnyObject).date ?? Date(), inSameDayAs: today)
         }
-        
-        todayUrineQuantity = todayUrine?.count ?? 0
+            
+        self.todayUrineQuantity = todayUrine?.count ?? 0
     }
+
     
     func fetchStoolQuantity() {
         guard let currentCareRecipient = currentCareRecipient else { return }
@@ -97,15 +141,15 @@ class TodayViewModel {
             calendar.isDate((stoolRecord as AnyObject).date ?? Date(), inSameDayAs: today)
         }
         
-        todayStoolQuantity = todayStool?.count ?? 0
+        self.todayStoolQuantity = todayStool?.count ?? 0
     }
     
-    func fetchFeedingRecords() -> [FeedingRecord] {
-        guard let currentCareRecipient = currentCareRecipient else { return [] }
-
+    func fetchFeedingRecords() {
+        guard let currentCareRecipient = currentCareRecipient else { return }
+            
         let calendar = Calendar.current
         let today = Date()
-
+            
         let todayFeedings = currentCareRecipient.basicNeeds?.feeding?
             .compactMap { $0 as? FeedingRecord }
             .filter { record in
@@ -113,10 +157,10 @@ class TodayViewModel {
                 return calendar.isDate(date, inSameDayAs: today)
             }
             .sorted { ($0.date ?? Date()) > ($1.date ?? Date()) } ?? []
-
-        return todayFeedings
+            
+        self.todayFeedingRecords = todayFeedings
     }
-
+    
     func fetchWaterQuantity() {
         guard let currentCareRecipient = currentCareRecipient else { return }
         
@@ -136,4 +180,47 @@ class TodayViewModel {
         self.waterQuantity = totalWater / 1000
     }
     
+    // func to save a hydration record
+    func saveHydrationRecord() {
+        guard
+            let careRecipient = userService.fetchCurrentPatient()
+        else { return }
+        
+        let author = coreDataService.currentPerformerName(for: careRecipient)
+                
+        basicNeedsFacade.addHydration(
+            period: PeriodEnum.current,
+            date: Date(),
+            waterQuantity: careRecipientFacade.getWaterMeasure(careRecipient), author: author,
+            in: careRecipient
+        )
+    
+        historyService.addHistoryItem(title: "Bebeu \(careRecipientFacade.getWaterMeasure(careRecipient))ml de água", author: author, date: Date(), type: .hydration, to: careRecipient)
+        
+        BasicNeedsEventBus.shared.publisher.send(.hydrationAdded)
+        
+        self.fetchWaterQuantity()
+    }
+    
+    func fetchWaterMeasure() {
+        guard let careRecipient = currentCareRecipient else { return }
+        waterMeasure = careRecipientFacade.getWaterMeasure(careRecipient)
+    }
+
+    func getWaterTarget() -> Double {
+        guard let careRecipient = currentCareRecipient else { return 0 }
+        return careRecipientFacade.getWaterTarget(careRecipient)
+    }
+}
+
+enum BasicNeedsEvent {
+    case stoolAdded
+    case urineAdded
+    case feedingAdded
+    case hydrationAdded
+}
+
+class BasicNeedsEventBus {
+    static let shared = BasicNeedsEventBus()
+    let publisher = PassthroughSubject<BasicNeedsEvent, Never>()
 }

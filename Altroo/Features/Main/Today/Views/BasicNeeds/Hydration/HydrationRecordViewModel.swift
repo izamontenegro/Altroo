@@ -9,55 +9,72 @@ import Combine
 import CoreData
 
 final class HydrationRecordViewModel {
-    private let basicNeedsFacade: BasicNeedsFacade
+    private let careRecipientFacade: CareRecipientFacade
     private let userService: UserServiceSession
+    private let coreDataService: CoreDataService
+    private let historyService: HistoryService
 
     @Published var selectedAmount: HydrationAmountEnum? = nil
+
     @Published var customValue: Double = 0
+    @Published var customUnit: HydrationUnit = .milliliter
 
-    init(basicNeedsFacade: BasicNeedsFacade, userService: UserServiceSession) {
-        self.basicNeedsFacade = basicNeedsFacade
+    @Published var targetValue: Double = 0
+    @Published var targetUnit: HydrationUnit = .milliliter
+
+    init(
+        careRecipientFacade: CareRecipientFacade,
+        userService: UserServiceSession,
+        coreDataService: CoreDataService,
+        historyService: HistoryService
+    ) {
+        self.careRecipientFacade = careRecipientFacade
         self.userService = userService
+        self.coreDataService = coreDataService
+        self.historyService = historyService
     }
-
-    func saveHydrationRecord() {
+    
+    private func convertToMl(_ value: Double, unit: HydrationUnit) -> Double {
+        switch unit {
+        case .milliliter:
+            return value
+        case .liter:
+            return value * 1000.0
+        }
+    }
+    
+    func saveHydrationMeasure() {
         guard
             let careRecipient = userService.fetchCurrentPatient(),
             let amount = selectedAmount
         else { return }
-
-        let totalWater = amount == .custom ? customValue : amount.milliliters
         
-        basicNeedsFacade.addHydration(
-            period: PeriodEnum.current,
-            date: Date(),
-            waterQuantity: totalWater,
-            in: careRecipient
-        )
+        let totalWaterMl: Double
         
-        checkSavedRecord()
-    }
-
-    private func checkSavedRecord() {
-        guard let careRecipient = userService.fetchCurrentPatient() else { return }
-
-        if let context = careRecipient.managedObjectContext {
-            let request: NSFetchRequest<HydrationRecord> = HydrationRecord.fetchRequest()
-            do {
-                let results = try context.fetch(request)
-//                print("💧 [DEBUG] Total hydration records encontrados: \(results.count)")
-//                if let last = results.last {
-//                    print("💧 [DEBUG] Last Record:")
-//                    print("• ID:", last.id)
-//                    print("• Date:", last.date ?? Date())
-//                    print("• Period:", last.period ?? "—")
-//                    print("• Quantity:", last.waterQuantity)
-//                }
-            } catch {
-                print("⚠️ [DEBUG] Error fetching HydrationRecord:", error.localizedDescription)
-            }
+        if amount == .custom {
+            totalWaterMl = convertToMl(customValue, unit: customUnit)
         } else {
-            print("⚠️ [DEBUG] None managedObjectContext.")
+            totalWaterMl = amount.milliliters
         }
+        
+        careRecipientFacade.setWaterMeasure(totalWaterMl, careRecipient)
+    }
+    
+    func saveHydrationTarget() {
+        guard
+            let careRecipient = userService.fetchCurrentPatient()
+        else { return }
+       
+        let targetMl = convertToMl(targetValue, unit: targetUnit)
+        careRecipientFacade.setWaterTarget(targetMl, careRecipient)
+    }
+    
+    func loadTargetValue() {
+        guard
+            let careRecipient = userService.fetchCurrentPatient()
+        else { return }
+        
+        targetValue = careRecipient.waterTarget
+        targetUnit = .milliliter
     }
 }

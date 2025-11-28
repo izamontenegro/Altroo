@@ -7,20 +7,24 @@
 
 import UIKit
 import CloudKit
+import Combine
 
 protocol ProfileViewControllerDelegate: AnyObject {
-    func openChangeCareRecipientSheet()
     func openShareCareRecipientSheet(_ careRecipient: CareRecipient)
     func goToMedicalRecordViewController()
-    func careRecipientProfileWantsChangeAssociate(_ controller: UIViewController)
+    func goToAllPatient() async
 }
 
 final class CareRecipientProfileViewController: GradientNavBarViewController {
     weak var delegate: ProfileViewControllerDelegate?
-    
-    private(set) var mockPerson: CareRecipient!
-    
     let viewModel: CareRecipientProfileViewModel
+    var goToEdit: Bool = false
+    
+    var emergencyContact: ContactDisplayItem?
+    var copyTarget: AnyObject?
+    var copyAction: Selector?
+    
+    private var cancellables = Set<AnyCancellable>()
     
     // MARK: - Lifecycle
     init(viewModel: CareRecipientProfileViewModel) {
@@ -36,27 +40,72 @@ final class CareRecipientProfileViewController: GradientNavBarViewController {
     // MARK: - Lifecycle
     override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
+        goToEdit = false
         viewModel.buildData()
-        tabBarController?.tabBar.isHidden = true
-    }
-    
-    override func viewWillDisappear(_ animated: Bool) {
-        super.viewWillDisappear(animated)
-        tabBarController?.tabBar.isHidden = false
     }
     
     override func viewDidLoad() {
         super.viewDidLoad()
         viewModel.buildData()
-        setupProfileHeader()
+        setupUI()
+        bindViewModel()
     }
     
-    private func setupProfileHeader() {
+    // MARK: - View Layout
+    private func setupUI() {
+    
+        let scrollView = UIScrollView()
+        scrollView.translatesAutoresizingMaskIntoConstraints = false
+        scrollView.alwaysBounceVertical = true
+        
+        let content = UIStackView()
+        content.axis = .vertical
+        content.alignment = .fill
+        content.spacing = 16
+        content.translatesAutoresizingMaskIntoConstraints = false
+            
+        scrollView.addSubview(content)
+        view.addSubview(scrollView)
+        
+        NSLayoutConstraint.activate([
+            content.topAnchor.constraint(equalTo: scrollView.contentLayoutGuide.topAnchor, constant: 24),
+            content.leadingAnchor.constraint(equalTo: scrollView.frameLayoutGuide.leadingAnchor, constant: 16),
+            content.trailingAnchor.constraint(equalTo: scrollView.frameLayoutGuide.trailingAnchor, constant: -16),
+            content.bottomAnchor.constraint(equalTo: scrollView.contentLayoutGuide.bottomAnchor, constant: -24)
+        ])
+        
+        let headerSection = setupProfileHeader()
+        let emergencySection = setupEmergencyContactSection()
+//        let aboutYouSection = setupAboutYouSection()
+        let permissionsSection = setupCaregiversSection()
+        let button = setupBottomButtons()
+        
+        content.addArrangedSubview(headerSection)
+        content.addArrangedSubview(emergencySection)
+//        content.addArrangedSubview(aboutYouSection)
+        content.addArrangedSubview(permissionsSection)
+        content.addArrangedSubview(button)
+        
+        NSLayoutConstraint.activate([
+            scrollView.topAnchor.constraint(equalTo: view.safeAreaLayoutGuide.topAnchor),
+            scrollView.leadingAnchor.constraint(equalTo: view.leadingAnchor),
+            scrollView.trailingAnchor.constraint(equalTo: view.trailingAnchor),
+            scrollView.bottomAnchor.constraint(equalTo: view.bottomAnchor)
+//
+//            content.topAnchor.constraint(equalTo: scrollView.contentLayoutGuide.topAnchor, constant: 24),
+//            content.leadingAnchor.constraint(equalTo: scrollView.frameLayoutGuide.leadingAnchor, constant: 16),
+//            content.trailingAnchor.constraint(equalTo: scrollView.frameLayoutGuide.trailingAnchor, constant: -16),
+//            content.bottomAnchor.constraint(equalTo: scrollView.contentLayoutGuide.bottomAnchor, constant: -24)
+        ])
+    }
+    
+    // MARK: - ASSISTED CARD
+    private func setupProfileHeader() -> UIView {
         view.backgroundColor = .pureWhite
         
-        view.subviews.forEach { $0.removeFromSuperview() }
+//        view.subviews.forEach { $0.removeFromSuperview() }
         
-        guard let person = viewModel.currentCareRecipient() else {
+        guard let person = viewModel.currentCareRecipient else {
             let empty = StandardLabel(
                 labelText: "Nenhum assistido selecionado",
                 labelFont: .sfPro,
@@ -66,120 +115,247 @@ final class CareRecipientProfileViewController: GradientNavBarViewController {
             )
             empty.translatesAutoresizingMaskIntoConstraints = false
             view.addSubview(empty)
+            
             NSLayoutConstraint.activate([
                 empty.centerXAnchor.constraint(equalTo: view.centerXAnchor),
                 empty.centerYAnchor.constraint(equalTo: view.centerYAnchor)
             ])
-            return
+            
+            return empty
         }
         
+        // MARK: - ASSISTED CARD
         let header = ProfileHeader(careRecipient: person, percent: viewModel.completionPercent)
         header.translatesAutoresizingMaskIntoConstraints = false
-        view.addSubview(header)
         
-        NSLayoutConstraint.activate([
-            header.topAnchor.constraint(equalTo: view.safeAreaLayoutGuide.topAnchor, constant: 30),
-            header.leadingAnchor.constraint(equalTo: view.leadingAnchor, constant: 16),
-            header.trailingAnchor.constraint(equalTo: view.trailingAnchor, constant: -16)
-        ])
+        let updatedLabel = StandardLabel(
+            labelText: "last_update".localized,
+            labelFont: .sfPro,
+            labelType: .subHeadline,
+            labelColor: .black30,
+            labelWeight: .medium
+        )
+        
+        let updatedLabelDate = StandardLabel(
+            labelText: viewModel.getUpdatedAt(),
+            labelFont: .sfPro,
+            labelType: .subHeadline,
+            labelColor: .black30,
+            labelWeight: .regular
+        )
+        
+        let updatedStack = UIStackView()
+        updatedStack.axis = .horizontal
+        updatedStack.spacing = 0
+        updatedStack.addArrangedSubview(updatedLabel)
+        updatedStack.addArrangedSubview(updatedLabelDate)
+        updatedStack.translatesAutoresizingMaskIntoConstraints = false
         
         header.isUserInteractionEnabled = true
         let tap = UITapGestureRecognizer(target: self, action: #selector(didTapHeader))
         header.addGestureRecognizer(tap)
+        header.enableHighlightEffect()
         
-        setupCaregiversSection(below: header)
+        let stack = UIStackView()
+        stack.axis = .vertical
+        stack.spacing = 8
+        
+        stack.addArrangedSubview(header)
+        stack.addArrangedSubview(updatedStack)
+
+        
+        return stack
     }
-    
-    private func setupCaregiversSection(below header: UIView) {
-        let titleLabel = StandardLabel(
-            labelText: "Cuidadores",
+    // MARK: - EMERGENCY CONTACT
+    private func setupEmergencyContactSection() -> UIView {
+        guard let contact = viewModel.getContactDisplayItem() else {
+            return UIView()
+        }
+        
+        let contactTitleLabel = StandardLabel(
+            labelText: "Contato de Emergência",
             labelFont: .sfPro,
             labelType: .title2,
             labelColor: .black10,
             labelWeight: .semibold
         )
+        contactTitleLabel.translatesAutoresizingMaskIntoConstraints = false
         
-        let inviteButton = CapsuleIconView(iconName: "paperplane", text: "Convidar cuidador")
-        addTap(to: inviteButton, action: #selector(didTapShareCareRecipientButton))
+        let contactCard = ContactCardView(
+            name: contact.name,
+            relation: contact.relationship,
+            phone: contact.phone,
+            copyTarget: copyTarget,
+            copyAction: copyAction ?? #selector(UIView.didMoveToSuperview)
+        )
+        contactCard.translatesAutoresizingMaskIntoConstraints = false
+        
+        let emergencyContactView = UIStackView(arrangedSubviews: [contactTitleLabel, contactCard])
+        emergencyContactView.axis = .vertical
+        emergencyContactView.spacing = 8
+        emergencyContactView.translatesAutoresizingMaskIntoConstraints = false
+        
+        return emergencyContactView
+    }
+    // MARK: - ABOUT YOU
+//    private func setupAboutYouSection() -> UIView {
+//        let titleLabel = StandardLabel(
+//            labelText: "Sobre você",
+//            labelFont: .sfPro,
+//            labelType: .title2,
+//            labelColor: .black10,
+//            labelWeight: .semibold
+//        )
+//        let editButton = CapsuleWithCircleView(
+//            capsuleColor: .teal20, text: "edit".localized,
+//            textColor: .pureWhite, nameIcon: "pencil",
+//            nameIconColor: .teal20, circleIconColor: .pureWhite
+//        )
+//        editButton.enablePressEffect()
+//        
+//        //        let shiftRow = InfoRowView(title: "Turno", info: viewModel.)
+//        //        let relationshipRow = InfoRowView(title: "Relação", info: viewModel.)
+//        
+//        let horizontalStack = UIStackView(arrangedSubviews: [titleLabel, editButton])
+//        horizontalStack.axis = .horizontal
+//        horizontalStack.distribution = .equalSpacing
+//        horizontalStack.alignment = .leading
+//        horizontalStack.translatesAutoresizingMaskIntoConstraints = false
+//        
+////        let rowsStack = UIStackView(arrangedSubviews: [shiftRow, relationshipRow])
+////        rowsStack.axis = .vertical
+////        rowsStack.spacing = 8
+////        rowsStack.alignment = .leading
+////        rowsStack.translatesAutoresizingMaskIntoConstraints = false
+////        view.addSubview(rowsStack)
+////        
+////        let aboutYouView = UIStackView(arrangedSubviews: [horizontalStack, rowsStack])
+////        aboutYouView.axis = .vertical
+////        aboutYouView.spacing = 16
+////        aboutYouView.translatesAutoresizingMaskIntoConstraints = false
+////        view.addSubview(aboutYouView)
+//        
+////        NSLayoutConstraint.activate([
+////            aboutYouView.topAnchor.constraint(equalTo: emergencyContactView.bottomAnchor, constant: 16),
+////            aboutYouView.leadingAnchor.constraint(equalTo: view.leadingAnchor, constant: 16),
+////            aboutYouView.trailingAnchor.constraint(equalTo: view.trailingAnchor, constant: -16)
+////        ])
+//        
+//    }
+    // MARK: - PERMISSIONS
+    private func setupCaregiversSection() -> UIView {
+        let caregivers = viewModel.caregiversFor(recipient: viewModel.currentCareRecipient)
+        let uniqueCaregivers = caregivers.unique { $0.name }
+        
+        let titleLabel = StandardLabel(
+            labelText: "permissions".localized,
+            labelFont: .sfPro,
+            labelType: .title2,
+            labelColor: .black10,
+            labelWeight: .semibold
+        )
+        let inviteButton = CapsuleWithCircleView(
+            capsuleColor: .teal20, text: "invite_caregiver".localized,
+            textColor: .pureWhite, nameIcon: "paperplane",
+            nameIconColor: .teal20, circleIconColor: .pureWhite
+        )
+        
+        inviteButton.enablePressEffect()
+        inviteButton.onTap = { [weak self] in
+            guard let self = self else { return }
+            
+            let spinner = UIActivityIndicatorView(style: .medium)
+            spinner.translatesAutoresizingMaskIntoConstraints = false
+            spinner.startAnimating()
+            
+            let wrapper = UIView()
+            wrapper.translatesAutoresizingMaskIntoConstraints = false
+            wrapper.addSubview(spinner)
+            
+            NSLayoutConstraint.activate([
+                spinner.centerXAnchor.constraint(equalTo: wrapper.centerXAnchor, constant: -20),
+                spinner.centerYAnchor.constraint(equalTo: wrapper.centerYAnchor)
+            ])
+            
+            if let stack = inviteButton.superview as? UIStackView,
+               let index = stack.arrangedSubviews.firstIndex(of: inviteButton) {
+                inviteButton.isHidden = true
+                stack.insertArrangedSubview(wrapper, at: index)
+            }
+            self.didTapShareCareRecipientButton()
+            
+            DispatchQueue.main.asyncAfter(deadline: .now() + 1) {
+                wrapper.removeFromSuperview()
+                inviteButton.isHidden = false
+            }
+        }
+        
+        guard let careRecipient = viewModel.userService.fetchCurrentPatient() else { return UIView()}
+        let isOwner = viewModel.coreDataService.isOwner(object: careRecipient)
+        inviteButton.isHidden = !(uniqueCaregivers.isEmpty || isOwner)
         
         let topStack = UIStackView(arrangedSubviews: [titleLabel, inviteButton])
         topStack.axis = .horizontal
         topStack.distribution = .equalSpacing
-        topStack.alignment = .center
         topStack.translatesAutoresizingMaskIntoConstraints = false
-        view.addSubview(topStack)
-        
-        NSLayoutConstraint.activate([
-            topStack.topAnchor.constraint(equalTo: header.bottomAnchor, constant: 24),
-            topStack.leadingAnchor.constraint(equalTo: view.leadingAnchor, constant: 16),
-            topStack.trailingAnchor.constraint(equalTo: view.trailingAnchor, constant: -16)
-        ])
-        
-        let caregivers = viewModel.caregiversForCurrentRecipient()
         
         let cardsStack = UIStackView()
         cardsStack.axis = .vertical
         cardsStack.spacing = 8
         cardsStack.translatesAutoresizingMaskIntoConstraints = false
-        view.addSubview(cardsStack)
         
-        if caregivers.isEmpty {
-            let none = StandardLabel(
-                labelText: "Nenhum cuidador ainda. Toque em “Convidar cuidador”.",
-                labelFont: .sfPro,
-                labelType: .footnote,
-                labelColor: .black20,
-                labelWeight: .regular
+        let caregiverSection = UIStackView(arrangedSubviews: [topStack, cardsStack])
+        caregiverSection.axis = .vertical
+        caregiverSection.spacing = 16
+        caregiverSection.translatesAutoresizingMaskIntoConstraints = false
+        
+        if uniqueCaregivers.count <= 1 {
+            let card = CaregiverProfileCardView(
+                coreDataService: viewModel.coreDataService,
+                name: "you".localized,
+                category: viewModel.userService.fetchUser()?.category ?? "caregiver".localized,
+                permission: .readWrite,
+                isOwner: true
             )
-            cardsStack.addArrangedSubview(none)
+            
+            card.translatesAutoresizingMaskIntoConstraints = false
+            card.heightAnchor.constraint(equalToConstant: 54).isActive = true
+            cardsStack.addArrangedSubview(card)
         } else {
-            for item in caregivers {
-                print("Nome: \(item.name) | Categoria: \(item.category) | Permissão: \(item.permission.rawValue)")
+            for item in uniqueCaregivers {
+                guard let careRecipient = viewModel.userService.fetchCurrentPatient() else { continue }
+                let participants = viewModel.coreDataService.fetchParticipants(for: careRecipient) ?? []
+                guard let participant = participants.first(where: {
+                    viewModel.coreDataService.matches($0, with: item, in: careRecipient)
+                }) else { continue }
                 
                 let card = CaregiverProfileCardView(
-                    name: item.name,
+                    coreDataService: viewModel.coreDataService,
+                    participant: participant,
+                    parentObject: careRecipient,
+                    name: item.name.abbreviatedName,
                     category: item.category,
-                    permission: item.permission
+                    permission: participant.permission,
+                    isOwner: viewModel.coreDataService.isOwner(object: careRecipient)
                 )
+                
                 card.translatesAutoresizingMaskIntoConstraints = false
                 card.heightAnchor.constraint(equalToConstant: 54).isActive = true
                 cardsStack.addArrangedSubview(card)
             }
         }
         
-        NSLayoutConstraint.activate([
-            cardsStack.topAnchor.constraint(equalTo: topStack.bottomAnchor, constant: 12),
-            cardsStack.leadingAnchor.constraint(equalTo: view.leadingAnchor, constant: 16),
-            cardsStack.trailingAnchor.constraint(equalTo: view.trailingAnchor, constant: -16)
-        ])
-        
-        setupBottomButtons(below: cardsStack)
+        return caregiverSection
     }
-    
-    private func setupBottomButtons(below lastView: UIView) {
-        let swapButton = makeFilledButton(
-            icon: UIImage(systemName: "arrow.2.squarepath"),
-            title: "Trocar Perfil de Assistido",
-            action: #selector(didTapChangeCareRecipientButton)
-        )
-        
+    // MARK: - BUTTON END FOLLOW UP
+    private func setupBottomButtons() -> UIView {
         let endButton = makeOutlineButton(
-            title: "Encerrar Cuidado",
+            title: "end_follow_up".localized,
             action: #selector(didTapEndCareButton)
         )
+        endButton.enablePressAnimation()
         
-        let buttonsStack = UIStackView(arrangedSubviews: [swapButton, endButton])
-        buttonsStack.axis = .vertical
-        buttonsStack.spacing = 12
-        buttonsStack.translatesAutoresizingMaskIntoConstraints = false
-        view.addSubview(buttonsStack)
-        
-        NSLayoutConstraint.activate([
-            buttonsStack.leadingAnchor.constraint(equalTo: view.leadingAnchor, constant: 16),
-            buttonsStack.trailingAnchor.constraint(equalTo: view.trailingAnchor, constant: -16),
-            buttonsStack.topAnchor.constraint(greaterThanOrEqualTo: lastView.bottomAnchor, constant: 24),
-            buttonsStack.bottomAnchor.constraint(equalTo: view.safeAreaLayoutGuide.bottomAnchor, constant: -16)
-        ])
+        return endButton
     }
     
     private func makeFilledButton(icon: UIImage?, title: String, action: Selector) -> UIButton {
@@ -223,7 +399,7 @@ final class CareRecipientProfileViewController: GradientNavBarViewController {
         let button = UIButton(type: .system)
         button.backgroundColor = .clear
         button.layer.cornerRadius = 23
-        button.layer.borderWidth = 2
+        button.layer.borderWidth = 3
         button.layer.borderColor = UIColor.teal10.cgColor
         button.heightAnchor.constraint(equalToConstant: 46).isActive = true
         button.addTarget(self, action: action, for: .touchUpInside)
@@ -246,43 +422,61 @@ final class CareRecipientProfileViewController: GradientNavBarViewController {
         return button
     }
     
+    private func bindViewModel() {
+        Publishers.CombineLatest(
+            viewModel.$currentCareRecipient,
+            viewModel.$completionPercent
+        )
+        .receive(on: RunLoop.main)
+        .sink { [weak self] _, _ in
+//            self?.setupUI()
+        }
+        .store(in: &cancellables)
+        
+        viewModel.$caregivers
+            .receive(on: RunLoop.main)
+            .sink { [weak self] _ in
+//                self?.setupUI()
+            }
+            .store(in: &cancellables)
+    }
+    
     private func addTap(to view: UIView, action: Selector) {
         view.isUserInteractionEnabled = true
         view.addGestureRecognizer(UITapGestureRecognizer(target: self, action: action))
     }
     
     @objc private func didTapHeader() {
-//        delegate?.goToMedicalRecordViewController()
+        goToEdit = true
+        delegate?.goToMedicalRecordViewController()
     }
-    @objc private func didTapChangeCareRecipientButton() { delegate?.openChangeCareRecipientSheet() }
+    
     @objc private func didTapShareCareRecipientButton() {
-        guard let careRecipient = viewModel.currentCareRecipient() else { return }
+        guard let careRecipient = viewModel.currentCareRecipient else { return }
         delegate?.openShareCareRecipientSheet(careRecipient)
     }
     
     @objc private func didTapEndCareButton() {
         let alertController = UIAlertController(
-            title: "Tem certeza?",
-            message: "Essa ação é irreversível.",
+            title: "Deseja encerrar o acompanhamento de \(viewModel.getCurrentCareRecipientName())?",
+            message: "Você precisará ser convidado novamente para ter acesso aos dados do paciente.",
             preferredStyle: .alert
         )
         
         let confirmAction = UIAlertAction(title: "Encerrar", style: .destructive) { [weak self] _ in
-            guard let self = self else { return } 
+            guard let self = self else { return }
             self.viewModel.finishCare()
-            self.delegate?.careRecipientProfileWantsChangeAssociate(self)
+            
+            Task {
+                await self.delegate?.goToAllPatient()
+            }
         }
         
-        let cancelAction = UIAlertAction(title: "Cancelar", style: .cancel, handler: nil)
+        let cancelAction = UIAlertAction(title: "cancel".localized, style: .cancel, handler: nil)
         
         alertController.addAction(cancelAction)
         alertController.addAction(confirmAction)
         
         present(alertController, animated: true, completion: nil)
     }
-    //    @objc private func didTapEditCaregiverButton() { delegate?.openEditCaregiversSheet() }
 }
-//
-//#Preview {
-//    UINavigationController(rootViewController: CareRecipientProfileViewController()
-//}

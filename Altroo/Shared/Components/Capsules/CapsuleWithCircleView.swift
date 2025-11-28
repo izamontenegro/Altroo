@@ -8,6 +8,8 @@ import UIKit
 
 class CapsuleWithCircleView: UIView {
     
+    var capsuleColor: UIColor = UIColor(resource: .teal20)
+    
     var text: String!
     var textColor: UIColor = UIColor(resource: .teal20)
    
@@ -15,20 +17,20 @@ class CapsuleWithCircleView: UIView {
     var nameIconColor: UIColor = UIColor(resource: .pureWhite)
     var circleIconColor: UIColor = UIColor(resource: .teal20)
     
+    var onTap: (() -> Void)?
+    var isTapEnabled: Bool = true
+    
     override init(frame: CGRect) {
         super.init(frame: frame)
-        
         self.translatesAutoresizingMaskIntoConstraints = false
-        NSLayoutConstraint.activate([
-            self.widthAnchor.constraint(equalToConstant: 137),
-            self.heightAnchor.constraint(equalToConstant: 31)
-        ])
-
+        self.isUserInteractionEnabled = true
+        setupTapGesture()
     }
     
-    convenience init(text: String, textColor: UIColor, nameIcon: String, nameIconColor: UIColor, circleIconColor: UIColor) {
+    convenience init(capsuleColor: UIColor, text: String, textColor: UIColor, nameIcon: String, nameIconColor: UIColor, circleIconColor: UIColor) {
         
         self.init(frame: .zero)
+        self.capsuleColor = capsuleColor
         self.text = text
         self.textColor = textColor
         self.nameIcon = nameIcon
@@ -46,7 +48,7 @@ class CapsuleWithCircleView: UIView {
     }
     
     func makeCapsule() {
-        self.backgroundColor = UIColor(resource: .teal80)
+        self.backgroundColor = capsuleColor
         self.translatesAutoresizingMaskIntoConstraints = false
         
         let stackView = UIStackView()
@@ -67,10 +69,9 @@ class CapsuleWithCircleView: UIView {
         //label
         let label = StandardLabel(labelText: text,
                                   labelFont: .sfPro,
-                                  labelType: .subHeadline,
+                                  labelType: .body,
                                   labelColor: textColor,
-                                  labelWeight: .medium)
-        
+                                  labelWeight: .regular)
         label.adjustsFontSizeToFitWidth = true
         label.minimumScaleFactor = 0.95
         label.lineBreakMode = .byTruncatingTail
@@ -109,22 +110,24 @@ class CapsuleWithCircleView: UIView {
         stackView.addArrangedSubview(container)
     }
     
-//    private func setupInnerShadow() {
-//        let shadow = InnerShadowView(frame: bounds,
-//                                     color: UIColor.blue40,
-//                                     opacity: 0.15)
-//        shadow.isUserInteractionEnabled = false
-//        shadow.layer.cornerRadius = layer.cornerRadius
-//        addSubview(shadow)
-//        innerShadowView = shadow
-//    }
+    private func setupTapGesture() {
+        let tapGesture = UITapGestureRecognizer(target: self, action: #selector(handleTap))
+        addGestureRecognizer(tapGesture)
+        isUserInteractionEnabled = true
+    }
+    
+    @objc private func handleTap() {
+        guard isTapEnabled else { return }
+        onTap?()
+    }
 }
 
 //#Preview {
-//    let button = CapsuleWithCircleView(text: "Editar Seções",
-//                                       textColor: .teal20,
+//    let button = CapsuleWithCircleView(capsuleColor: .teal20,
+//                                       text: "Editar",
+//                                       textColor: .pureWhite,
 //                                       nameIcon: "pencil",
-//                                       nameIconColor: .pureWhite,
-//                                       circleIconColor: .teal20)
+//                                       nameIconColor: .teal20,
+//                                       circleIconColor: .pureWhite)
 //    return button
 //}

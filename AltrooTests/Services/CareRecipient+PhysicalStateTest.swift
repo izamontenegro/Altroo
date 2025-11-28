@@ -4,7 +4,6 @@
 //
 //  Created by Layza Maria Rodrigues Carneiro on 02/10/25.
 //
-
 import XCTest
 import CoreData
 @testable import Altroo
@@ -19,7 +18,6 @@ final class CareRecipientPhysicalStateTests: XCTestCase {
     override func setUp() {
         super.setUp()
         
-        // Core Data in-memory
         let container = NSPersistentContainer(name: "AltrooDataModel")
         let description = NSPersistentStoreDescription()
         description.type = NSInMemoryStoreType
@@ -49,57 +47,57 @@ final class CareRecipientPhysicalStateTests: XCTestCase {
     
     // MARK: - Unit Tests
     func test_addVisionState_updatesProperty_andCallsSave() {
-        sut.addVisionState(visionState: .complete, physicalState: physicalState)
-        XCTAssertEqual(physicalState.visionState, VisionEnum.complete.rawValue)
+        sut.addVisionState(visionState: .lowVision, physicalState: physicalState)
+        XCTAssertEqual(physicalState.visionState, VisionEnum.lowVision.rawValue)
         XCTAssertEqual(persistenceMock.saveCalledCount, 1)
     }
     
     func test_addHearingState_updatesProperty_andCallsSave() {
-        sut.addHearingState(hearingState: .completelyImpaired, physicalState: physicalState)
-        XCTAssertEqual(physicalState.hearingState, HearingEnum.completelyImpaired.rawValue)
+        sut.addHearingState(hearingState: .withDeficit, physicalState: physicalState)
+        XCTAssertEqual(physicalState.hearingState, HearingEnum.withDeficit.rawValue)
         XCTAssertEqual(persistenceMock.saveCalledCount, 1)
     }
     
     func test_addOralHealthState_updatesProperty_andCallsSave() {
-        sut.addOralHealthState(oralHealthState: .allTeethPresent, physicalState: physicalState)
-        XCTAssertEqual(physicalState.oralHealthState, OralHealthEnum.allTeethPresent.rawValue)
+        sut.addOralHealthState(oralHealthState: [.allTeethPresent], physicalState: physicalState)
+        XCTAssertEqual(physicalState.oralHealthState?.first, OralHealthEnum.allTeethPresent.rawValue)
         XCTAssertEqual(persistenceMock.saveCalledCount, 1)
     }
     
     func test_addMobilityState_updatesProperty_andCallsSave() {
-        sut.addMobilityState(mobilityState: .bedriddenWithMovement, physicalState: physicalState)
-        XCTAssertEqual(physicalState.mobilityState, MobilityEnum.bedriddenWithMovement.rawValue)
+        sut.addMobilityState(mobilityState: .bedridden, physicalState: physicalState)
+        XCTAssertEqual(physicalState.mobilityState, MobilityEnum.bedridden.rawValue)
         XCTAssertEqual(persistenceMock.saveCalledCount, 1)
     }
 
     func test_updateAllPhysicalStates_together() {
-        sut.addVisionState(visionState: .completelyImpaired, physicalState: physicalState)
-        sut.addHearingState(hearingState: .complete, physicalState: physicalState)
-        sut.addOralHealthState(oralHealthState: .someTeethMissing, physicalState: physicalState)
-        sut.addMobilityState(mobilityState: .humanAssisted, physicalState: physicalState)
+        sut.addVisionState(visionState: .lowVision, physicalState: physicalState)
+        sut.addHearingState(hearingState: .withDeficit, physicalState: physicalState)
+        sut.addOralHealthState(oralHealthState: [.someTeethMissing], physicalState: physicalState)
+        sut.addMobilityState(mobilityState: .bedridden, physicalState: physicalState)
         
-        XCTAssertEqual(physicalState.visionState, VisionEnum.completelyImpaired.rawValue)
-        XCTAssertEqual(physicalState.hearingState, HearingEnum.complete.rawValue)
-        XCTAssertEqual(physicalState.oralHealthState, OralHealthEnum.someTeethMissing.rawValue)
-        XCTAssertEqual(physicalState.mobilityState, MobilityEnum.humanAssisted.rawValue)
+        XCTAssertEqual(physicalState.visionState, VisionEnum.lowVision.rawValue)
+        XCTAssertEqual(physicalState.hearingState, HearingEnum.withDeficit.rawValue)
+        XCTAssertEqual(physicalState.oralHealthState?.first, OralHealthEnum.someTeethMissing.rawValue)
+        XCTAssertEqual(physicalState.mobilityState, MobilityEnum.bedridden.rawValue)
         XCTAssertEqual(persistenceMock.saveCalledCount, 4)
     }
     
     // MARK: - Integration tests
     func test_addAllPhysicalStates_together_persistsToCoreData() {
-        sut.addVisionState(visionState: .complete, physicalState: physicalState)
-        sut.addHearingState(hearingState: .partiallyImpaired, physicalState: physicalState)
-        sut.addOralHealthState(oralHealthState: .allTeethPresent, physicalState: physicalState)
-        sut.addMobilityState(mobilityState: .bedriddenWithMovement, physicalState: physicalState)
+        sut.addVisionState(visionState: .lowVision, physicalState: physicalState)
+        sut.addHearingState(hearingState: .withDeficit, physicalState: physicalState)
+        sut.addOralHealthState(oralHealthState: [.allTeethPresent], physicalState: physicalState)
+        sut.addMobilityState(mobilityState: .bedridden, physicalState: physicalState)
         
         try? context.save()
         
         let fetch: NSFetchRequest<PhysicalState> = PhysicalState.fetchRequest()
         let results = try? context.fetch(fetch)
         
-        XCTAssertEqual(results?.first?.visionState, VisionEnum.complete.rawValue)
-        XCTAssertEqual(results?.first?.hearingState, HearingEnum.partiallyImpaired.rawValue)
-        XCTAssertEqual(results?.first?.oralHealthState, OralHealthEnum.allTeethPresent.rawValue)
-        XCTAssertEqual(results?.first?.mobilityState, MobilityEnum.bedriddenWithMovement.rawValue)
+        XCTAssertEqual(results?.first?.visionState, VisionEnum.lowVision.rawValue)
+        XCTAssertEqual(results?.first?.hearingState, HearingEnum.withDeficit.rawValue)
+        XCTAssertEqual(results?.first?.oralHealthState?.first, OralHealthEnum.allTeethPresent.rawValue)
+        XCTAssertEqual(results?.first?.mobilityState, MobilityEnum.bedridden.rawValue)
     }
 }

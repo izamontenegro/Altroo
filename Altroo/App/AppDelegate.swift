@@ -18,6 +18,20 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
             UIWindow.appearance().overrideUserInterfaceStyle = .light
         }
         
+        _ = CoreDataStack.shared
+        
+        NotificationCenter.default.addObserver(
+            forName: NSPersistentCloudKitContainer.eventChangedNotification,
+            object: CoreDataStack.shared.persistentContainer,
+            queue: .main
+        ) { notification in
+            guard let event = notification.userInfo?[NSPersistentCloudKitContainer.eventNotificationUserInfoKey] as? NSPersistentCloudKitContainer.Event else { return }
+            
+            if event.type == .import && event.endDate != nil {
+                NotificationCenter.default.post(name: .didFinishCloudKitSync, object: nil)
+            }
+        }
+        
         return true
     }
 
@@ -78,6 +92,5 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
             }
         }
     }
-
 }
 

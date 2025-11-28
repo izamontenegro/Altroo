@@ -4,6 +4,7 @@
 //
 //  Created by Izadora de Oliveira Albuquerque Montenegro on 22/09/25.
 //
+
 import UIKit
 
 // MARK: - DefaultAppFactory
@@ -14,27 +15,27 @@ final class DefaultAppFactory: AppFactory {
     
     init(dependencies: AppDependencies) {
         self.dependencies = dependencies
-        self.addPatientViewModel = AddPatientViewModel(careRecipientFacade: dependencies.careRecipientFacade, userService: dependencies.userService)
+        self.addPatientViewModel = AddPatientViewModel(
+            careRecipientFacade: dependencies.careRecipientFacade,
+            userService: dependencies.userService)
     }
 }
 
 // MARK: - OnboardingFactory
 extension DefaultAppFactory {
-    func makeWelcomeOnboardingViewController(delegate: WelcomeOnboardingViewControllerDelegate) -> UIViewController {
-        let vc = WelcomeOnboardingViewController()
+    func makeWelcomeOnboardingViewController(delegate: OnboardingContainerViewControllerDelegate) -> UIViewController {
+        let vc = OnboardingContainerViewController()
         vc.delegateOnboarding = delegate
-        vc.title = "Welcome!"
         return vc
     }
 }
 
 // MARK: - AssociatePatientFactory
 extension DefaultAppFactory {
-    
-    func makeAssociatePatientViewController(delegate: AssociatePatientViewControllerDelegate) -> UIViewController {
-        let vc = AssociatePatientViewController(viewModel: AssociatePatientViewModel(userService: dependencies.userService))
+
+    func makeAssociatePatientViewController(delegate: AssociatePatientViewControllerDelegate, context: CareRecipientContext) -> UIViewController {
+        let vc = AssociatePatientViewController(viewModel: AssociatePatientViewModel(userService: dependencies.userService), context: context)
         vc.delegate = delegate
-        vc.title = "Associate Patient View"
         return vc
     }
     
@@ -43,54 +44,67 @@ extension DefaultAppFactory {
         return vc
     }
     
+    func makeLoading() -> UIViewController {
+        let loadingviewModel = LoadingViewModel()
+        let vc = LoadingViewController(viewModel: loadingviewModel)
+        return vc
+    }
+    
     func makePatientFormViewController(delegate: AssociatePatientViewControllerDelegate) -> UIViewController {
         let vc = PatientFormsViewController(viewModel: addPatientViewModel)
         vc.delegate = delegate
-        vc.title = "Perfil do Assistido"
         return vc
     }
     
     func makeComorbiditiesFormViewController(delegate: AssociatePatientViewControllerDelegate) -> UIViewController {
         let vc = ComorbiditiesFormsViewController(viewModel: addPatientViewModel)
         vc.delegate = delegate
-        vc.title = "Comorbidades"
         return vc
     }
     
-    func makeShiftFormViewController(delegate: ShiftFormsViewControllerDelegate) -> UIViewController {
-        let vc = ShiftFormViewController(viewModel: addPatientViewModel)
+    func makeShiftFormViewController(delegate: ShiftFormsViewControllerDelegate, receivedPatientViaShare: Bool, patient: CareRecipient?) -> UIViewController {
+        let vc = ShiftFormViewController(viewModel: addPatientViewModel, receivedPatientViaShare: receivedPatientViaShare, patient: patient)
         vc.delegate = delegate
-        vc.title = "Turnos"
         return vc
     }
 }
 
 // MARK: - MainFlowFactory
 extension DefaultAppFactory {
-    func makeSettingsViewController(delegate: SettingsViewControllerDelegate) -> UIViewController {
-        let vc = SettingsViewController()
-        vc.title = "Settings"
-        vc.delegate = delegate
+    
+    func makeReportViewController() -> UIViewController {
+        let vm = DailyReportViewModel(basicNeedsFacade: dependencies.basicNeedsFacade,
+                                      userService: dependencies.userService,
+                                      careRecipientFacade: dependencies.careRecipientFacade,
+                                      routineActivitiesFacade: dependencies.routineActivitiesFacade)
+        let vc = ReportViewController(viewModel: vm)
         return vc
     }
     
     func makeTodayViewController(delegate: TodayViewControllerDelegate) -> UIViewController {
-        let vm = TodayViewModel(careRecipientFacade: dependencies.careRecipientFacade, userService: dependencies.userService, taskService: dependencies.routineActivitiesFacade)
+        let vm = TodayViewModel(careRecipientFacade: dependencies.careRecipientFacade,
+                                basicNeedsFacade: dependencies.basicNeedsFacade,
+                                userService: dependencies.userService,
+                                taskService: dependencies.routineActivitiesFacade,
+                                coreDataService: dependencies.coreDataService,
+                                historyService: dependencies.historyService)
         let vc = TodayViewController(viewModel: vm)
         vc.delegate = delegate
         return vc
     }
     
     func makeHistoryViewController(delegate: HistoryViewControllerDelegate) -> UIViewController {
-        let vc = HistoryViewController()
-        vc.delegate = delegate
-        vc.title = "History"
+        let vm = HistoryViewModel(basicNeedsFacade: dependencies.basicNeedsFacade,
+                                  userService: dependencies.userService,
+                                  careRecipientFacade: dependencies.careRecipientFacade,
+                                  routineActivitiesFacade: dependencies.routineActivitiesFacade)
+        let vc = HistoryViewController(viewModel: vm, delegate: delegate)
         return vc
     }
     
-    func makeAnalysisViewController() -> UIViewController {
-        let vc = AnalysisViewController()
-        vc.title = "Analysis"
+    func makeSettingsViewController(delegate: SettingsViewControllerDelegate) -> UIViewController {
+        let vc = SettingsViewController()
+        vc.delegate = delegate
         return vc
     }
 }
@@ -101,15 +115,15 @@ extension DefaultAppFactory {
         let vc = EditSectionViewController()
         return vc
     }
-    
-    
 }
-
-//MARK: SymptomFactory
+// MARK: - SymptomFactory
 extension DefaultAppFactory {
+
     func makeAddSymptomViewController() -> UIViewController {
-        let vm = AddSymptomViewModel(careRecipientFacade: dependencies.careRecipientFacade, userService: dependencies.userService)
-        let vc = AddSymptomViewController(viewModel: vm)
+        let vm = AddSymptomViewModel(careRecipientFacade: dependencies.careRecipientFacade,
+                                     userService: dependencies.userService,
+                                     coreDataService: dependencies.coreDataService, mode: .create)
+        let vc = AddSymptomViewController(viewModel: vm, mode: .create)
         return vc
     }
     
@@ -119,32 +133,65 @@ extension DefaultAppFactory {
     }
     
     func makeEditSymptom(from symptom: Symptom) -> UIViewController {
-        let vm = EditSymptomViewModel(careRecipientFacade: dependencies.careRecipientFacade, userService: dependencies.userService, symptom: symptom)
-        let vc = EditSymptomViewController(viewModel: vm)
+        let vm = AddSymptomViewModel(careRecipientFacade: dependencies.careRecipientFacade,
+                                     userService: dependencies.userService,
+                                     coreDataService: dependencies.coreDataService, mode: .edit(existing: symptom))
+        let vc = AddSymptomViewController(viewModel: vm, mode: .edit(existing: symptom))
+        
         return vc
     }
-
 }
 
 //MARK: - ProfileFactory
 extension DefaultAppFactory {
+    
     func makeProfileViewController(delegate: ProfileViewControllerDelegate) -> UIViewController {
-        let vm = CareRecipientProfileViewModel(userService: dependencies.userService, coreDataService: dependencies.coreDataService)
+        let vm = CareRecipientProfileViewModel(userService: dependencies.userService,
+                                               coreDataService: dependencies.coreDataService)
         let vc = CareRecipientProfileViewController(viewModel: vm)
         vc.delegate = delegate
         return vc
     }
     
-    func makeChangeCareRecipientViewController(delegate: ChangeCareRecipientViewControllerDelegate) -> UIViewController {
-        let vm = ChangeCareRecipientViewModel(userService: dependencies.userService, coreDataService: dependencies.coreDataService)
-        let vc = ChangeCareRecipientViewController(viewModel: vm)
-        (vc as? ChangeCareRecipientViewController)?.delegate = delegate
-        return vc
-    }
-   
-    func makeMedicalRecordViewController() -> UIViewController {
+    func makeMedicalRecordViewController(delegate: EditMedicalRecordViewControllerDelegate?) -> UIViewController {
         let vm = MedicalRecordViewModel(userService: dependencies.userService)
         let vc = MedicalRecordViewController(viewModel: vm)
+        vc.delegate = delegate
+        return vc
+    }
+    
+    func makeEditPersonalDataViewController(delegate: any EditMedicalRecordViewControllerDelegate) -> UIViewController {
+        let vm = EditPersonalDataViewModel(userService: dependencies.userService, careRecipientFacade: dependencies.careRecipientFacade)
+        let vc = EditPersonalDataViewController(viewModel: vm)
+        vc.delegate = delegate
+        return vc
+    }
+    
+    func makeEditHealthProblemsViewController(delegate: any EditMedicalRecordViewControllerDelegate) -> UIViewController {
+        let vm = EditHealthProblemsViewModel(userService: dependencies.userService, careRecipientFacade: dependencies.careRecipientFacade)
+        let vc = EditHealthProblemsViewController(viewModel: vm)
+        vc.delegate = delegate
+        return vc
+    }
+    
+    func makeEditPhysicalStateViewController(delegate: any EditMedicalRecordViewControllerDelegate) -> UIViewController {
+        let vm = EditPhysicalStateViewModel(userService: dependencies.userService, careRecipientFacade: dependencies.careRecipientFacade)
+        let vc = EditPhysicalStateViewController(viewModel: vm)
+        vc.delegate = delegate
+        return vc
+    }
+    
+    func makeEditMentalStateViewController(delegate: any EditMedicalRecordViewControllerDelegate) -> UIViewController {
+        let vm = EditMentalStateViewModel(userService: dependencies.userService, careRecipientFacade: dependencies.careRecipientFacade)
+        let vc = EditMentalStateViewController(viewModel: vm)
+        vc.delegate = delegate
+        return vc
+    }
+    
+    func makeEditPersonalCareViewController(delegate: any EditMedicalRecordViewControllerDelegate) -> UIViewController {
+        let vm = EditPersonalCareViewModel(userService: dependencies.userService, careRecipientFacade: dependencies.careRecipientFacade)
+        let vc = EditPersonalCareViewController(viewModel: vm)
+        vc.delegate = delegate
         return vc
     }
 }
@@ -184,29 +231,40 @@ extension DefaultAppFactory {
         let vc = MedicationTimeSheetViewController()
         return vc
     }
-    
 }
 
 // MARK: - BasicNeedsFactory
 extension DefaultAppFactory {
     func makeStoolRecordViewController() -> UIViewController {
-        let vm = StoolRecordViewModel(stoolService: dependencies.basicNeedsFacade, coreDataService: dependencies.coreDataService, userService: dependencies.userService)
+        let vm = StoolRecordViewModel(stoolService: dependencies.basicNeedsFacade,
+                                      coreDataService: dependencies.coreDataService,
+                                      userService: dependencies.userService,
+                                      historyService: dependencies.historyService)
         let vc = StoolRecordViewController(viewModel: vm)
         return vc
     }
     func makeUrineRecordViewController() -> UIViewController {
-        let vm = UrineRecordViewModel(urineService: dependencies.basicNeedsFacade, coreDataService: dependencies.coreDataService, userService: dependencies.userService)
+        let vm = UrineRecordViewModel(urineService: dependencies.basicNeedsFacade,
+                                      coreDataService: dependencies.coreDataService,
+                                      userService: dependencies.userService,
+                                      historyService: dependencies.historyService)
         let vc = UrineRecordViewController(viewModel: vm)
-
+        
         return vc
     }
     func makeMealRecordViewController() -> UIViewController {
-        let vm = MealRecordViewModel(feedingService: dependencies.basicNeedsFacade, coreDataService: dependencies.coreDataService, userService: dependencies.userService)
+        let vm = MealRecordViewModel(feedingService: dependencies.basicNeedsFacade,
+                                     coreDataService: dependencies.coreDataService,
+                                     userService: dependencies.userService,
+                                     historyService: dependencies.historyService)
         let vc = MealRecordViewController(viewModel: vm)
         return vc
     }
     func makeHydrationRecordSheet() -> UIViewController {
-        let vm = HydrationRecordViewModel(basicNeedsFacade: dependencies.basicNeedsFacade, userService: dependencies.userService)
+        let vm = HydrationRecordViewModel(careRecipientFacade: dependencies.careRecipientFacade,
+                                          userService: dependencies.userService,
+                                          coreDataService: dependencies.coreDataService,
+                                          historyService: dependencies.historyService)
         let vc = HydrationRecordViewController(viewModel: vm)
         return vc
     }
@@ -214,26 +272,31 @@ extension DefaultAppFactory {
 
 // MARK: - TaskFactory
 extension DefaultAppFactory {
-    func makeAllTasksViewController(onTaskSelected: ((TaskInstance) -> Void)? = nil) -> UIViewController {
-        let vm = AllTasksViewModel(taskService: dependencies.routineActivitiesFacade, userService: dependencies.userService)
-        let vc = AllTasksViewController(viewModel: vm, onTaskSelected: onTaskSelected)
+    func makeAllTasksViewController() -> UIViewController {
+        let vm = AllTasksViewModel(taskService: dependencies.routineActivitiesFacade,
+                                   userService: dependencies.userService,
+                                   coreDataService: dependencies.coreDataService,
+                                   historyService: dependencies.historyService)
+        let vc = AllTasksViewController(viewModel: vm)
         return vc
     }
     func makeAddTaskViewController() -> UIViewController {
-        let vm = AddTaskViewModel(taskService: dependencies.routineActivitiesFacade, userService: dependencies.userService)
+        let vm = AddTaskViewModel(taskService: dependencies.routineActivitiesFacade,
+                                  userService: dependencies.userService)
         let vc = AddTaskViewController(viewModel: vm)
         return vc
     }
-    
     func makeEditTaskViewController(task: RoutineTask) -> UIViewController {
-        let vm = EditTaskViewModel(task: task, taskService: dependencies.routineActivitiesFacade, userService: dependencies.userService)
+        let vm = EditTaskViewModel(task: task,
+                                   taskService: dependencies.routineActivitiesFacade,
+                                   userService: dependencies.userService)
         let vc = EditTaskViewController(viewModel: vm)
         return vc
     }
-
-    func makeTaskDetailViewController(task: TaskInstance) -> UIViewController {
-        let vc = TaskDetailViewController(task: task)
-        vc.title = "Task"
+    func makeTaskDetailViewController(mode: TaskDetailMode) -> UIViewController {
+        let vm = TaskDetailViewModel(taskService: dependencies.routineActivitiesFacade,
+                                     userService: dependencies.userService)
+        let vc = TaskDetailViewController(mode: mode, viewModel: vm)
         return vc
     }
 }
@@ -244,22 +307,18 @@ extension DefaultAppFactory {
         let vc = RecordMeasurementViewController(measurementType: .heartRate)
         return vc
     }
-    
     func makerRecordGlycemiaSheet() -> UIViewController {
         let vc = RecordMeasurementViewController(measurementType: .glycemia)
         return vc
     }
-    
     func makeRecordBloodPressureSheet() -> UIViewController {
         let vc = RecordMeasurementViewController(measurementType: .bloodPressure)
         return vc
     }
-    
     func makeRecordTemperatureSheet() -> UIViewController {
         let vc = RecordMeasurementViewController(measurementType: .temperature)
         return vc
     }
-    
     func makeRecordSaturationSheet() -> UIViewController {
         let vc = RecordMeasurementViewController(measurementType: .saturation)
         return vc
@@ -268,8 +327,8 @@ extension DefaultAppFactory {
 
 // MARK: - GeneralFactory
 extension DefaultAppFactory {
-    func makeAddIntervalSheet() -> UIViewController { // TODO:
-        let vc = HistoryDetailViewController()
+    func makeAddIntervalSheet() -> UIViewController {
+        let vc = UIViewController()
         return vc
     }
 }
@@ -277,19 +336,24 @@ extension DefaultAppFactory {
 // MARK: - HistoryFactory
 extension DefaultAppFactory {
     func makeSeeHistoryDetailSheet() -> UIViewController {
-        let vc = HistoryDetailViewController()
+        let vc = UIViewController()
         return vc
     }
 }
 
 //MARK: - SettingsFactory
 extension DefaultAppFactory {
-    func makeUserProfileViewController() -> UIViewController {
-        let vc = UserProfileViewController()
+    func makeMyProfileViewController() -> UIViewController {
+        let vm = MyProfileViewModel(userService: dependencies.userService)
+        let vc = MyProfileViewController(viewModel: vm)
         return vc
     }
-    func makePrivacySecurityViewController() -> UIViewController {
-        let vc = PrivacySecurityViewController()
+    func makePrivacyViewController() -> UIViewController {
+        let vc = PrivacyViewController()
+        return vc
+    }
+    func makePolicyViewController() -> UIViewController {
+        let vc = PolicyViewController()
         return vc
     }
     func makeDevelopersViewController() -> UIViewController{
@@ -303,9 +367,7 @@ extension DefaultAppFactory {
     func makeBasicNeedsFacade() -> BasicNeedsFacade {
         dependencies.basicNeedsFacade
     }
-    
     func makeCareRecipientFacade() -> CareRecipientFacade {
         dependencies.careRecipientFacade
     }
 }
-

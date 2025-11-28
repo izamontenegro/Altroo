@@ -7,12 +7,16 @@
 
 import UIKit
 
-class CapsuleIconView: UIView {
+class CapsuleIconView: InnerShadowView {
     
     var iconName: String!
     var text: String!
     var mainColor: UIColor = UIColor(resource: .teal20)
     var accentColor: UIColor = UIColor(.white)
+    var iconSize: CGFloat = 18
+    
+    var onTap: (() -> Void)?
+    var isTapEnabled: Bool = true
     
     var labelIconSpacing: CGFloat = 6
     
@@ -29,8 +33,9 @@ class CapsuleIconView: UIView {
     private var leadingConstraint: NSLayoutConstraint?
     private var trailingConstraint: NSLayoutConstraint?
     
-    override init(frame: CGRect) {
+    init(frame: CGRect) {
         super.init(frame: frame)
+        setupTapGesture()
     }
     
     convenience init(
@@ -38,6 +43,7 @@ class CapsuleIconView: UIView {
         text: String,
         mainColor: UIColor = UIColor(resource: .teal20),
         accentColor: UIColor = UIColor(.pureWhite),
+        iconSize: CGFloat = 18,
         contentInsets: UIEdgeInsets? = nil
     ) {
         self.init(frame: .zero)
@@ -45,20 +51,20 @@ class CapsuleIconView: UIView {
         self.text = text
         self.mainColor = mainColor
         self.accentColor = accentColor
-        
+        self.iconSize = iconSize
         if let insets = contentInsets {
             self.contentInsets = insets
         }
         
-        makeCapsule()
-        setupInnerShadow()
+       
+            makeCapsule()
+        
     }
     
     required init?(coder: NSCoder) { super.init(coder: coder) }
     
     override func layoutSubviews() {
         super.layoutSubviews()
-        innerShadowView?.frame = bounds
         self.layer.cornerRadius = self.bounds.height / 2
     }
     
@@ -78,8 +84,9 @@ class CapsuleIconView: UIView {
         topConstraint = stackView.topAnchor.constraint(equalTo: self.topAnchor, constant: contentInsets.top)
         bottomConstraint = stackView.bottomAnchor.constraint(equalTo: self.bottomAnchor, constant: -contentInsets.bottom)
         leadingConstraint = stackView.leadingAnchor.constraint(equalTo: self.leadingAnchor, constant: 8)
+        trailingConstraint = stackView.trailingAnchor.constraint(equalTo: self.trailingAnchor, constant: -8)
 
-        NSLayoutConstraint.activate([topConstraint!, bottomConstraint!, leadingConstraint!])
+        NSLayoutConstraint.activate([topConstraint!, bottomConstraint!, leadingConstraint!, trailingConstraint!])
 
         let icon = UIImageView(image: UIImage(systemName: iconName))
         icon.tintColor = accentColor
@@ -88,7 +95,8 @@ class CapsuleIconView: UIView {
         stackView.addArrangedSubview(icon)
 
         NSLayoutConstraint.activate([
-            icon.widthAnchor.constraint(equalTo: icon.heightAnchor)
+            icon.widthAnchor.constraint(equalToConstant: iconSize),
+            icon.heightAnchor.constraint(equalToConstant: iconSize)
         ])
 
         let label = StandardLabel(
@@ -121,16 +129,15 @@ class CapsuleIconView: UIView {
         layoutIfNeeded()
     }
     
-    private func setupInnerShadow() {
-        let shadow = InnerShadowView(
-            frame: bounds,
-            color: UIColor.blue40,
-            opacity: 0.15
-        )
-        shadow.isUserInteractionEnabled = false
-        shadow.layer.cornerRadius = layer.cornerRadius
-        addSubview(shadow)
-        innerShadowView = shadow
+    private func setupTapGesture() {
+        let tapGesture = UITapGestureRecognizer(target: self, action: #selector(handleTap))
+        addGestureRecognizer(tapGesture)
+        isUserInteractionEnabled = true
+    }
+    
+    @objc private func handleTap() {
+        guard isTapEnabled else { return }
+        onTap?()
     }
 }
 

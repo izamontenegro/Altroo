@@ -17,7 +17,7 @@ class IntercurrenceHeader: UIView {
     
     private let titleLabel: StandardLabel = {
         let label = StandardLabel(
-            labelText: "Intercorrências",
+            labelText: "today_section_intercurrences".localized,
             labelFont: .sfPro,
             labelType: .title2,
             labelColor: .black10,
@@ -25,9 +25,10 @@ class IntercurrenceHeader: UIView {
         )
         return label
     }()
-    
+
     private lazy var plusButton: PlusButton = {
         let button = PlusButton()
+        button.enablePressEffect()
         button.addTarget(self, action: #selector(didTapPlusButton), for: .touchUpInside)
         return button
     }()

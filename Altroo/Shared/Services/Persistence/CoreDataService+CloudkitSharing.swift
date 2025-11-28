@@ -22,25 +22,17 @@ extension CoreDataService  {
     }
     
     func isOwner(object: NSManagedObject) -> Bool {
-        guard isShared(object: object) else { return false }
-        
-        do {
-            let shares = try stack.persistentContainer.fetchShares(matching: [object.objectID])
-            guard let share = shares[object.objectID] else {
-                print("No CKShare found for this object")
-                return false
-            }
-            
-            if let currentUser = share.currentUserParticipant, currentUser == share.owner {
-                return true
-            }
-            
-        } catch {
-            print("Get CKShare error: \(error.localizedDescription)")
-            return false
+        guard isShared(object: object) else { return true }
+        guard let share = try? stack.persistentContainer.fetchShares(matching: [object.objectID])[object.objectID] else {
+            print("Get ckshare error")
+            return true
         }
         
-        return false
+        if let currentUser = share.currentUserParticipant {
+            return currentUser == share.owner
+        }
+
+        return true
     }
     
     func getShare(_ careRecipient: CareRecipient) -> CKShare? {
@@ -72,5 +64,12 @@ extension CoreDataService  {
             }
         }
         return isShared
+    }
+    
+    func delete(_ careRecipient: CareRecipient) {
+        stack.context.perform {
+            self.stack.context.delete(careRecipient)
+            self.save()
+        }
     }
 }

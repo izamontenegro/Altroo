@@ -7,13 +7,32 @@
 
 import UIKit
 
-class TaskDetailViewController: UIViewController {
-    var taskInstance: TaskInstance
-    var taskTemplate: RoutineTask
+enum TaskDetailMode {
+    case instance(TaskInstance)
+    case template(RoutineTask)
+}
 
-    var onEditTapped: ((TaskInstance) -> Void)?
+class TaskDetailViewController: UIViewController {
+    let viewModel: TaskDetailViewModel
     
-    let vStack: UIStackView = {
+    private lazy var taskTemplate: RoutineTask = {
+        switch mode {
+        case .instance(let inst): return inst.template!
+        case .template(let tpl): return tpl
+        }
+    }()
+    
+    private lazy var taskInstance: TaskInstance? = {
+        switch mode {
+        case .instance(let inst): return inst
+        case .template(let tpl): return nil
+        }
+    }()
+    
+    var onEditTapped: ((RoutineTask) -> Void)?
+    var onDeleteTapped: (() -> Void)?
+    
+    lazy var vStack: UIStackView = {
         let stackView = UIStackView(arrangedSubviews: [])
         stackView.axis = .vertical
         stackView.distribution = .fill
@@ -23,11 +42,12 @@ class TaskDetailViewController: UIViewController {
         return stackView
     }()
     
-    init(task: TaskInstance) {
-        self.taskInstance = task
-        self.taskTemplate = task.template!
+    let mode: TaskDetailMode
+
+    init(mode: TaskDetailMode, viewModel: TaskDetailViewModel) {
+        self.mode = mode
+        self.viewModel = viewModel
         super.init(nibName: nil, bundle: nil)
-        
     }
     
     required init?(coder: NSCoder) {
@@ -43,17 +63,37 @@ class TaskDetailViewController: UIViewController {
     func setupUI() {
         view.backgroundColor = .white
         
-        let name = InfoRowView(title: "Nome", info: taskTemplate.name ?? "Nome")
-        let time = InfoRowView(title: "Horário", info: DateFormatterHelper.hourFormatter(date: taskInstance.time ?? .now))
-        let repetition = StandardLabel(labelText: "Repetição", labelFont: .sfPro, labelType: .callOut, labelColor: .black10, labelWeight: .semibold)
-        let period = InfoRowView(title: "Intervalo", info: makeTimeText())
-        let notes = InfoRowView(title: "Observação", info: taskTemplate.note ?? "Observação")
+        let name = InfoRowView(title: "name".localized, info: taskTemplate.name ?? "name".localized)
+        
+        let time: UIView = {
+            switch mode {
+            case .instance(let inst):
+                return InfoRowView(
+                    title: String(localized: "time"),
+                    info: DateFormatterHelper.hourFormatter(date: inst.time ?? .now),
+                    isLate: inst.isLateDay || inst.isLatePeriod
+                )
+            case .template(let tpl):
+                let label = StandardLabel(labelText: "times".localized, labelFont: .sfPro, labelType: .callOut, labelColor: .black40)
+                let times = makeTimesRow()
+                
+                let stack = UIStackView(arrangedSubviews: [label, times])
+                stack.axis = .vertical
+                stack.spacing = 6
+                stack.translatesAutoresizingMaskIntoConstraints = false
+                return stack
+            }
+        }()
+        let repetition = StandardLabel(labelText: "taskdetail_repeat".localized, labelFont: .sfPro, labelType: .callOut, labelColor: .black40)
+        let period = InfoRowView(title: "taskdetail_duration".localized, info: makeTimeText())
+        let notes = InfoRowView(title: "observation".localized, info: taskTemplate.note ?? "observation".localized)
         
         let dayRow = makeDayRow()
         
         vStack.addArrangedSubview(name)
         vStack.addArrangedSubview(time)
         vStack.addArrangedSubview(repetition)
+        vStack.setCustomSpacing(6, after: repetition)
         vStack.addArrangedSubview(dayRow)
         vStack.addArrangedSubview(period)
         vStack.addArrangedSubview(notes)
@@ -64,62 +104,69 @@ class TaskDetailViewController: UIViewController {
             vStack.topAnchor.constraint(equalTo: view.safeAreaLayoutGuide.topAnchor, constant: Layout.mediumSpacing),
             vStack.leadingAnchor.constraint(equalTo: view.leadingAnchor, constant: Layout.mediumSpacing),
             vStack.trailingAnchor.constraint(equalTo: view.trailingAnchor, constant: -Layout.mediumSpacing),
-            
         ])
     }
     
     private func configureNavBar() {
-        navigationItem.title = "Tarefa"
+        navigationItem.title = "task".localized
         
-        let closeButton = UIBarButtonItem(title: "Fechar", style: .done, target: self, action: #selector(closeTapped))
+        let closeButton = UIBarButtonItem(title: "close".localized, style: .plain, target: self, action: #selector(closeTapped))
         closeButton.tintColor = .blue10
         navigationItem.leftBarButtonItem = closeButton
         
-        let editButton = UIBarButtonItem(title: "Editar", style: .plain, target: self, action: #selector(editTapped))
-        editButton.tintColor = .blue10
-        navigationItem.rightBarButtonItem = editButton
+        if let taskInstance, taskInstance.isLateDay {
+            let deleteButton = UIBarButtonItem(title: "delete".localized, style: .done, target: self, action: #selector(deleteTapped))
+            deleteButton.tintColor = .red20
+            navigationItem.rightBarButtonItem = deleteButton
+        } else {
+            let editButton = UIBarButtonItem(title: "edit".localized, style: .done, target: self, action: #selector(editTapped))
+            editButton.tintColor = .blue10
+            navigationItem.rightBarButtonItem = editButton
+        }
         
         let appearance = UINavigationBarAppearance()
         appearance.configureWithOpaqueBackground()
         navigationItem.scrollEdgeAppearance = appearance
-        
     }
     
-    private func makeDayRow() -> UIStackView {
-        let stackView = UIStackView(arrangedSubviews: [])
-        stackView.axis = .horizontal
-        stackView.distribution = .equalCentering
-        stackView.translatesAutoresizingMaskIntoConstraints = false
-                
-        for day in Locale.Weekday.allCases {
-            //TODO: CHANGE FROM BUTTONS TO TAG
-            let tag = PrimaryStyleButton(title: day.rawValue.first!.uppercased())
-            if taskTemplate.daysOfTheWeek!.contains(day.rawValue) {
-                tag.backgroundColor = .blue30
-            } else {
-                tag.backgroundColor = .black40
-            }
-            stackView.addArrangedSubview(tag)
+    private func makeDayRow() -> FlowLayoutView {
+        var tags: [UIView] = []
+        for day in taskTemplate.weekdays {
+            let tag = DayTagView(text: day.localizedSymbol(style: .short).capitalized)
+            tags.append(tag)
         }
         
-        return stackView
+        let row = FlowLayoutView(views: tags)
+        return row
     }
+    
+    private func makeTimesRow() -> FlowLayoutView {
+        var tags: [UIView] = []
+        for time in taskTemplate.allTimes! {
+            let tag = DayTagView(text: "\(time.hour ?? 0):\(time.minute ?? 0)")
+            tags.append(tag)
+        }
+        
+        let row = FlowLayoutView(views: tags)
+        return row
+    }
+    
     
     private func makeTimeText() -> String {
         if let start = taskTemplate.startDate, let end = taskTemplate.endDate {
             let timeLabelText = "\(DateFormatterHelper.fullDayFormatter(date: start)) - \(DateFormatterHelper.fullDayFormatter(date: end))"
-        
+            
             return timeLabelText
             
         } else if let start = taskTemplate.startDate {
-            let timeLabelText = "\(DateFormatterHelper.fullDayFormatter(date: start)) - Contínuo"
-        
+            let timeLabelText = "\(DateFormatterHelper.fullDayFormatter(date: start)) - \("without_end".localized)"
+            
             return timeLabelText
         } else {
             return ""
         }
     }
-
+    
     
     @objc func closeTapped() {
         dismiss(animated: true)
@@ -127,20 +174,33 @@ class TaskDetailViewController: UIViewController {
     
     @objc func editTapped() {
         dismiss(animated: true)
-        onEditTapped?(taskInstance)
-
+        onEditTapped?(taskTemplate)
+    }
+    
+    @objc func deleteTapped() {
+        presentDeleteAlert()
+    }
+    
+    func presentDeleteAlert() {
+        let alertController = UIAlertController(
+            title: "delete_task_confirmation_title".localized,
+            message: "delete_task_confirmation_msg".localized,
+            preferredStyle: .alert
+        )
+        
+        let confirmAction = UIAlertAction(title: "delete".localized, style: .destructive) { [weak self] _ in
+            guard let self = self else { return }
+            viewModel.deleteTask(taskTemplate)
+            onDeleteTapped?()
+            dismiss(animated: true)
+        }
+        
+        let cancelAction = UIAlertAction(title: "cancel".localized, style: .cancel, handler: nil)
+        
+        alertController.addAction(cancelAction)
+        alertController.addAction(confirmAction)
+        
+        present(alertController, animated: true, completion: nil)
     }
 }
 
-//#Preview {
-//    TaskDetailViewController(task: MockTask(
-//        name: "Administer medications",
-//        note: "Check medication log for proper dosage and timing.",
-//        reminder: true,
-//        time: Calendar.current.date(from: DateComponents(hour: 7, minute: 30))!,
-//        daysOfTheWeek: [.friday, .sunday],
-//        startDate: Calendar.current.date(from: DateComponents(year: 2025, month: 10, day: 10))!,
-//        endDate: nil
-//    )
-//    )
-//}

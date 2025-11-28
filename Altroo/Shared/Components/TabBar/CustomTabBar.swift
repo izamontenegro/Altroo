@@ -9,23 +9,25 @@ import UIKit
 import SwiftUI
 
 enum Tab: String, CaseIterable {
-    case today, history, report, settings
+    case patients, report, today, history, settings
     
     var tabIcon: String {
         switch self {
+        case .patients: "person.fill"
+        case .report: "chart.bar.xaxis.ascending.badge.clock"
         case .today: "heart.text.square.fill"
         case .history: "folder.fill"
-        case .report: "chart.bar.xaxis.ascending.badge.clock"
         case .settings: "gearshape.fill"
         }
     }
     
     var tabName: String {
         switch self {
-        case .today: "Hoje"
-        case .history: "Histórico"
-        case .report: "Relatório"
-        case .settings: "Ajustes"
+        case .patients: "assisted".localized
+        case .report: "report".localized
+        case .today: "today".localized
+        case .history: "records".localized
+        case .settings: "settings".localized
         }
     }
 }
@@ -81,7 +83,6 @@ struct CustomTabBar: View {
         }
         .frame(height: 70)
         .padding(.top, 17)
-        .padding(.horizontal, 16)
         .background() {
             UnevenRoundedRectangle(topLeadingRadius: 10,
                                    bottomLeadingRadius: 0,
@@ -106,14 +107,11 @@ struct CustomTabBar: View {
     
     func getIndex() -> Int {
         switch model.currentTab {
-        case .today:
-            return 0
-        case .history:
-            return 1
-        case .report:
-            return 2
-        case .settings:
-            return 3
+        case .patients: return 0
+        case .report: return 1
+        case .today: return 2
+        case .history: return 3
+        case .settings: return 4
         }
     }
 }

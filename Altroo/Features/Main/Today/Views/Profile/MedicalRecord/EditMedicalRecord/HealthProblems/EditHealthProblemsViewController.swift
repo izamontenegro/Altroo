@@ -1,0 +1,369 @@
+//
+//  EditHealthProblems.swift
+//  Altroo
+//
+//  Created by Izadora de Oliveira Albuquerque Montenegro on 30/10/25.
+//
+import UIKit
+
+final class EditHealthProblemsViewController: UIViewController {
+
+    let viewModel: EditHealthProblemsViewModel
+    
+    weak var delegate: EditMedicalRecordViewControllerDelegate?
+    private var keyboardHandler: KeyboardHandler?
+
+
+    private let scrollView = UIScrollView()
+    private let contentView = UIView()
+
+    private lazy var diseaseTextField = StandardTextfield(placeholder: "Doenças separadas por vírgulas")
+    private lazy var allergiesTextField = StandardTextfield(placeholder: "Alergias separadas por vírgulas")
+    private lazy var surgeryNameTextField = StandardTextfield(placeholder: "Nome da cirurgia")
+
+    private let surgeryDatePicker: UIDatePicker = {
+        let datePicker = UIDatePicker()
+        datePicker.datePickerMode = .date
+        datePicker.maximumDate = Date()
+        datePicker.preferredDatePickerStyle = .compact
+        datePicker.translatesAutoresizingMaskIntoConstraints = false
+        datePicker.setContentHuggingPriority(.required, for: .horizontal)
+        datePicker.setContentCompressionResistancePriority(.required, for: .horizontal)
+        datePicker.contentHorizontalAlignment = .leading
+        return datePicker
+    }()
+
+    private lazy var addSurgeryButton: OutlineButton = {
+        let button = OutlineButton(title: "+", color: .blue40, cornerRadius: 8)
+        button.translatesAutoresizingMaskIntoConstraints = false
+        return button
+    }()
+
+    private lazy var observationView: ObservationView = {
+        let view = ObservationView(placeholder: "Adicione outras ocorrências passadas (exemplo: queda, fraturas)")
+        view.translatesAutoresizingMaskIntoConstraints = false
+        return view
+    }()
+
+    private lazy var surgeriesListStack: UIStackView = {
+        let stack = UIStackView()
+        stack.axis = .vertical
+        stack.alignment = .fill
+        stack.spacing = 12
+        stack.translatesAutoresizingMaskIntoConstraints = false
+        return stack
+    }()
+
+    private let header: EditSectionHeaderView = {
+        let header = EditSectionHeaderView(
+            sectionTitle: "Problemas de Saúde",
+            sectionDescription: "patient_profile_description".localized,
+            sectionIcon: "heart.fill"
+        )
+        header.translatesAutoresizingMaskIntoConstraints = false
+        return header
+    }()
+
+    private lazy var formStack: UIStackView = {
+        let diseasesSection = FormSectionView(title: "Doenças", content: diseaseTextField)
+        diseaseTextField.heightAnchor.constraint(greaterThanOrEqualToConstant: 44).isActive = true
+        allergiesTextField.heightAnchor.constraint(greaterThanOrEqualToConstant: 44).isActive = true
+        surgeryNameTextField.heightAnchor.constraint(greaterThanOrEqualToConstant: 44).isActive = true
+
+        NSLayoutConstraint.activate([
+            surgeryNameTextField.widthAnchor.constraint(equalToConstant: 246)
+        ])
+
+        let surgeriesHorizontalStack = UIStackView(arrangedSubviews: [surgeryNameTextField, surgeryDatePicker])
+        surgeriesHorizontalStack.axis = .horizontal
+        surgeriesHorizontalStack.spacing = 12
+        surgeriesHorizontalStack.alignment = .fill
+        surgeriesHorizontalStack.distribution = .fillProportionally
+
+        let surgeriesVerticalStack = UIStackView(arrangedSubviews: [surgeriesHorizontalStack, addSurgeryButton, surgeriesListStack])
+        surgeriesVerticalStack.axis = .vertical
+        surgeriesVerticalStack.spacing = 12
+        surgeriesVerticalStack.alignment = .fill
+        surgeriesVerticalStack.distribution = .fill
+
+        let surgeriesSection = FormSectionView(title: "Cirurgias", content: surgeriesVerticalStack)
+        let allergiesSection = FormSectionView(title: "Alergias", content: allergiesTextField)
+        let observationsSection = FormSectionView(title: "observations".localized, content: observationView)
+        
+        let stack = UIStackView(arrangedSubviews: [
+            diseasesSection,
+            surgeriesSection,
+            allergiesSection,
+            observationsSection
+        ])
+        stack.axis = .vertical
+        stack.alignment = .fill
+        stack.spacing = 16
+        stack.translatesAutoresizingMaskIntoConstraints = false
+        return stack
+    }()
+
+    private lazy var contentStack: UIStackView = {
+        let stack = UIStackView(arrangedSubviews: [header, formStack])
+        stack.axis = .vertical
+        stack.alignment = .fill
+        stack.spacing = 16
+        stack.translatesAutoresizingMaskIntoConstraints = false
+        return stack
+    }()
+
+    private var endEditingObserver: NSObjectProtocol?
+
+    deinit {
+        if let observer = endEditingObserver {
+            NotificationCenter.default.removeObserver(observer)
+        }
+    }
+
+    init(viewModel: EditHealthProblemsViewModel) {
+        self.viewModel = viewModel
+        super.init(nibName: nil, bundle: nil)
+    }
+
+    @MainActor required init?(coder: NSCoder) {
+        fatalError("init(coder:) has not been implemented")
+    }
+
+    override func viewDidLoad() {
+        super.viewDidLoad()
+        setupUI()
+        configureNavBar()
+        bindUI()
+        fillInformations()
+        reloadSurgeriesList()
+        
+        keyboardHandler = KeyboardHandler(viewController: self, scrollView: scrollView)
+
+    }
+    
+    private func configureNavBar() {
+        navigationItem.title = "Editar".localized
+        
+        let closeButton = UIBarButtonItem(title: "close".localized, style: .done, target: self, action: #selector(closeTapped))
+        closeButton.tintColor = .blue10
+        navigationItem.leftBarButtonItem = closeButton
+        
+        let appearance = UINavigationBarAppearance()
+        appearance.configureWithOpaqueBackground()
+        navigationItem.scrollEdgeAppearance = appearance
+        
+    }
+    
+    private func configureConfirmationButton() -> StandardConfirmationButton {
+        let button = StandardConfirmationButton(title: "Salvar")
+        button.addTarget(self, action: #selector(persistAllFromView), for: .touchUpInside)
+        button.translatesAutoresizingMaskIntoConstraints = false
+        return button
+    }
+
+    private func setupUI() {
+        view.backgroundColor = .pureWhite
+
+        view.addSubview(scrollView)
+        scrollView.translatesAutoresizingMaskIntoConstraints = false
+        scrollView.alwaysBounceVertical = true
+        scrollView.keyboardDismissMode = .interactive
+
+        NSLayoutConstraint.activate([
+            scrollView.topAnchor.constraint(equalTo: view.safeAreaLayoutGuide.topAnchor),
+            scrollView.leadingAnchor.constraint(equalTo: view.leadingAnchor),
+            scrollView.trailingAnchor.constraint(equalTo: view.trailingAnchor),
+            scrollView.bottomAnchor.constraint(equalTo: view.safeAreaLayoutGuide.bottomAnchor, constant: -90)
+        ])
+
+        scrollView.addSubview(contentView)
+        contentView.translatesAutoresizingMaskIntoConstraints = false
+        contentView.layoutMargins = UIEdgeInsets(top: 15, left: 16, bottom: 20, right: 16)
+
+        contentView.addSubview(contentStack)
+
+        let saveButton = configureConfirmationButton()
+        view.addSubview(saveButton)
+
+        
+        NSLayoutConstraint.activate([
+            saveButton.bottomAnchor.constraint(equalTo: view.safeAreaLayoutGuide.bottomAnchor, constant: -20),
+            saveButton.centerXAnchor.constraint(equalTo: view.centerXAnchor),
+            saveButton.bottomAnchor.constraint(equalTo: view.safeAreaLayoutGuide.bottomAnchor, constant: -20),
+        ])
+
+        NSLayoutConstraint.activate([
+            contentView.topAnchor.constraint(equalTo: scrollView.contentLayoutGuide.topAnchor),
+            contentView.leadingAnchor.constraint(equalTo: scrollView.contentLayoutGuide.leadingAnchor),
+            contentView.trailingAnchor.constraint(equalTo: scrollView.contentLayoutGuide.trailingAnchor),
+            contentView.bottomAnchor.constraint(equalTo: scrollView.contentLayoutGuide.bottomAnchor),
+
+            contentView.widthAnchor.constraint(equalTo: scrollView.frameLayoutGuide.widthAnchor)
+        ])
+
+        NSLayoutConstraint.activate([
+            contentStack.topAnchor.constraint(equalTo: contentView.layoutMarginsGuide.topAnchor),
+            contentStack.leadingAnchor.constraint(equalTo: contentView.layoutMarginsGuide.leadingAnchor),
+            contentStack.trailingAnchor.constraint(equalTo: contentView.layoutMarginsGuide.trailingAnchor),
+            contentStack.bottomAnchor.constraint(equalTo: contentView.layoutMarginsGuide.bottomAnchor)
+        ])
+    }
+
+    private func bindUI() {
+        diseaseTextField.addTarget(self, action: #selector(diseasesChanged), for: .editingChanged)
+        diseaseTextField.addTarget(self, action: #selector(diseasesEditingEnded), for: .editingDidEnd)
+
+        allergiesTextField.addTarget(self, action: #selector(allergiesChanged), for: .editingChanged)
+        allergiesTextField.addTarget(self, action: #selector(allergiesEditingEnded), for: .editingDidEnd)
+
+        surgeryNameTextField.addTarget(self, action: #selector(surgeryNameChanged), for: .editingChanged)
+        surgeryDatePicker.addTarget(self, action: #selector(handleDateChanged), for: .valueChanged)
+        addSurgeryButton.addTarget(self, action: #selector(addSurgeryTapped), for: .touchUpInside)
+
+        observationView.delegate = self
+
+        endEditingObserver = NotificationCenter.default.addObserver(
+            forName: UITextView.textDidEndEditingNotification,
+            object: observationView.textView,
+            queue: .main
+        ) { [weak self] _ in
+            guard let self = self else { return }
+            self.viewModel.updateObservationText(self.observationView.textView.text)
+            self.viewModel.persistObservation()
+        }
+    }
+
+    @objc private func diseasesChanged() {
+        viewModel.updateDiseasesText(diseaseTextField.text ?? "")
+    }
+
+    @objc private func diseasesEditingEnded() {
+        viewModel.persistDiseaseFormState()
+        diseaseTextField.text = viewModel.diseaseFormState.diseasesText
+    }
+
+    @objc private func allergiesChanged() {
+        viewModel.updateAllergiesText(allergiesTextField.text ?? "")
+    }
+
+    @objc private func allergiesEditingEnded() {
+        viewModel.persistAllergies()
+    }
+
+    @objc private func surgeryNameChanged() {
+        viewModel.updateSurgeryName(surgeryNameTextField.text ?? "")
+    }
+
+    @objc private func handleDateChanged() {
+        viewModel.updateSurgeryDate(surgeryDatePicker.date)
+    }
+
+    @objc private func addSurgeryTapped() {
+        viewModel.addSurgeryFromState()
+        surgeryNameTextField.text = ""
+        reloadSurgeriesList()
+    }
+
+    func fillInformations() {
+        viewModel.loadAllInitialStates()
+        diseaseTextField.text = viewModel.diseaseFormState.diseasesText
+        allergiesTextField.text = viewModel.healthFormState.allergiesText
+        observationView.textView.text = viewModel.healthFormState.observationText
+        surgeryDatePicker.date = viewModel.healthFormState.surgeryDate
+    }
+
+    @objc func persistAllFromView() {
+        viewModel.addSurgeryFromState()
+        viewModel.updateObservationText(observationView.textView.text)
+        viewModel.persistObservation()
+        viewModel.persistAllergies()
+        viewModel.persistDiseaseFormState()
+        
+        dismiss(animated: true)
+    }
+
+    private func reloadSurgeriesList() {
+        surgeriesListStack.arrangedSubviews.forEach { view in
+            surgeriesListStack.removeArrangedSubview(view)
+            view.removeFromSuperview()
+        }
+
+        guard let healthProblems = viewModel.currentPatient()?.healthProblems,
+              let surgeriesSet = healthProblems.surgeries as? Set<Surgery> else { return }
+
+        let surgeries = surgeriesSet.sorted {
+            let dateA = $0.date ?? .distantPast
+            let dateB = $1.date ?? .distantPast
+            if dateA == dateB { return ($0.name ?? "") < ($1.name ?? "") }
+            return dateA > dateB
+        }
+
+        for surgery in surgeries {
+            surgeriesListStack.addArrangedSubview(makeSurgeryRow(for: surgery))
+        }
+    }
+
+    private func makeSurgeryRow(for surgery: Surgery) -> UIView {
+        let name = surgery.name ?? "—"
+        let dateString = DateFormatterHelper.fullDateFormaterr(from: surgery.date ?? Date())
+        let nameLabel = StandardLabel(labelText: name, labelFont: .sfPro, labelType: .body, labelColor: .black10, labelWeight: .regular)
+        
+        let dateLabel = StandardLabel(labelText: dateString, labelFont: .sfPro, labelType: .subHeadline, labelColor: .black20, labelWeight: .regular)
+        
+        let vStack = UIStackView()
+        vStack.axis = .vertical
+        vStack.spacing = 0
+        vStack.alignment = .leading
+        
+        vStack.addArrangedSubview(nameLabel)
+        vStack.addArrangedSubview(dateLabel)
+
+        let deleteButton = UIButton(type: .system)
+        deleteButton.setImage(UIImage(systemName: "minus.circle.fill"), for: .normal)
+        deleteButton.tintColor = UIColor(resource: .red20)
+        deleteButton.translatesAutoresizingMaskIntoConstraints = false
+        
+        NSLayoutConstraint.activate([
+            deleteButton.widthAnchor.constraint(equalToConstant: 16),
+            deleteButton.heightAnchor.constraint(equalToConstant: 16)
+
+        ])
+
+        objc_setAssociatedObject(deleteButton, &AssociatedKeys.surgeryKey, surgery, .OBJC_ASSOCIATION_RETAIN_NONATOMIC)
+        deleteButton.addTarget(self, action: #selector(deleteSurgeryTapped(_:)), for: .touchUpInside)
+
+        let row = UIStackView(arrangedSubviews: [vStack, deleteButton])
+        row.axis = .horizontal
+        row.alignment = .center
+        row.spacing = 12
+
+        vStack.setContentHuggingPriority(.defaultLow, for: .horizontal)
+        deleteButton.setContentHuggingPriority(.required, for: .horizontal)
+
+        return row
+    }
+
+    @objc private func dismissKeyboard() {
+        view.endEditing(true)
+    }
+
+    @objc private func deleteSurgeryTapped(_ sender: UIButton) {
+        guard let surgery = objc_getAssociatedObject(sender, &AssociatedKeys.surgeryKey) as? Surgery else { return }
+        viewModel.deleteSurgery(surgery)
+        reloadSurgeriesList()
+    }
+    
+    
+    @objc func closeTapped() {
+        dismiss(animated: true)
+    }
+    
+}
+
+private enum AssociatedKeys { static var surgeryKey: UInt8 = 0 }
+
+extension EditHealthProblemsViewController: ObservationViewDelegate {
+    func observationView(_ view: ObservationView, didChangeText text: String) {
+        viewModel.updateObservationText(text)
+    }
+}

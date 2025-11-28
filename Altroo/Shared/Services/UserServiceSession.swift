@@ -7,27 +7,53 @@
 
 import CoreData
 import UIKit
+import Combine
 
 class UserServiceSession: UserServiceProtocol {
     
     private let context: NSManagedObjectContext
-
+    private let cloudKitChangeSubject = PassthroughSubject<Void, Never>()
+    
+    @Published private var currentPatient: CareRecipient?
+    
+    var currentPatientPublisher: AnyPublisher<CareRecipient?, Never> {
+        return $currentPatient.eraseToAnyPublisher()
+    }
+    
+    var cloudKitDidChangePublisher: AnyPublisher<Void, Never> {
+        cloudKitChangeSubject.eraseToAnyPublisher()
+    }
+    
+    func handleCloudKitChange() {
+        cloudKitChangeSubject.send()
+    }
+    
     init(context: NSManagedObjectContext) {
         self.context = context
+        if let saved = fetchCurrentPatientFromStorage() {
+            self.currentPatient = saved
+        }
     }
-
-    func fetchUser() -> User? {
-        let request = User.fetchRequest()
-        request.fetchLimit = 1
-        return try? context.fetch(request).first
+    
+    private func fetchCurrentPatientFromStorage() -> CareRecipient? {
+        guard let user = fetchUser(),
+              let id = user.activeCareRecipient else { return nil }
+        return fetchCareRecipient(id: id)
     }
     
     func createUser(name: String, category: String) -> User {
         let user = User(context: context)
+        user.id = UUID()
         user.name = name
         user.category = category
         try? context.save()
         return user
+    }
+    
+    func fetchUser() -> User? {
+        let request = User.fetchRequest()
+        request.fetchLimit = 1
+        return try? context.fetch(request).first
     }
     
     func setName(_ name: String) {
@@ -42,40 +68,92 @@ class UserServiceSession: UserServiceProtocol {
         save()
     }
     
-    func setCurrentPatient(_ patient: CareRecipient) {
+    func setPhone(_ phone: String) {
         guard let user = fetchUser() else { return }
-        user.activeCareRecipient = patient
+        user.phone = phone
         save()
+    }
+    
+    func setCurrentPatient(_ patient: CareRecipient) {
+        currentPatient = patient
+        if let user = fetchUser(), let id = patient.id {
+            user.activeCareRecipient = id
+            save()
+        }
     }
     
     func addPatient(_ patient: CareRecipient) {
         guard let user = fetchUser() else { return }
-        user.addToCareRecipient(patient)
-        save()
+        
+        if user.careRecipient == nil {
+            user.careRecipient = []
+        }
+        
+        if let id = patient.id, !(user.careRecipient?.contains(id) ?? false) {
+            user.careRecipient?.append(id)
+            save()
+        } else {
+            print("Patient already added or invalid ID")
+        }
     }
     
     func removePatient(_ patient: CareRecipient) {
-        guard let user = fetchUser() else { return }
-        user.removeFromCareRecipient(patient)
-        save()
+        guard let user = fetchUser(),
+              var ids = user.careRecipient,
+              let id = patient.id
+        else { return }
+        
+        if let index = ids.firstIndex(of: id) {
+            ids.remove(at: index)
+            user.careRecipient = ids
+            save()
+        }
     }
     
-    func fetchPatients() -> [CareRecipient] {
-        guard let user = fetchUser() else { return [] }
-        return user.careRecipient?.allObjects as? [CareRecipient] ?? []
+    func fetchCareRecipient(id: UUID) -> CareRecipient? {
+        let context = CoreDataStack.shared.context
+        let request: NSFetchRequest<CareRecipient> = CareRecipient.fetchRequest()
+        request.predicate = NSPredicate(format: "id == %@", id as CVarArg)
+        
+        let coordinator = context.persistentStoreCoordinator
+        
+        if let result = try? context.fetch(request).first {
+            return result
+        }
+        
+        request.affectedStores = coordinator?.persistentStores
+        return try? context.fetch(request).first
     }
     
     func fetchCurrentPatient() -> CareRecipient? {
-        guard let user = fetchUser(), let patient = user.activeCareRecipient else {
-            return nil
+        return currentPatient
+    }
+    
+    func fetchPatients() -> [CareRecipient] {
+        guard
+            let user = fetchUser(),
+            let ids = user.careRecipient
+        else {
+            return []
         }
-        return patient
+        
+        var patients: [CareRecipient] = []
+        
+        for (_, id) in ids.enumerated() {
+            if let patient = fetchCareRecipient(id: id) {
+                patients.append(patient)
+            }
+        }
+        
+        return patients
     }
     
     func removeCurrentPatient() {
-        guard let user = fetchUser(), user.activeCareRecipient != nil else { return }
-        user.activeCareRecipient = nil
-        save()
+        currentPatient = nil
+        if let user = fetchUser() {
+            user.activeCareRecipient = nil
+            save()
+        }
     }
     
     func setShift(_ shifts: [PeriodEnum]) {
@@ -91,6 +169,39 @@ class UserServiceSession: UserServiceProtocol {
             .split(separator: ",")
             .compactMap { PeriodEnum(rawValue: String($0)) }
     }
+    
+    func fetchSharedPatients() -> [CareRecipient] {
+        let context = CoreDataStack.shared.context
+        let request: NSFetchRequest<CareRecipient> = CareRecipient.fetchRequest()
+        
+        request.affectedStores = [CoreDataStack.shared.sharedPersistentStore]
+
+        do {
+            let result = try context.fetch(request)
+
+            print("---- PACIENTES NO SHARED STORE ----")
+            if result.isEmpty {
+                print("Nenhum paciente encontrado no shared store.")
+            } else {
+                result.forEach { patient in
+                    print("""
+                    ------------------------------
+                    ID: \(patient.id?.uuidString ?? "nil")
+                    Nome: \(patient.personalData?.name ?? "Sem nome")
+                    Data de Nascimento: \(patient.personalData?.dateOfBirth ?? Date.distantPast)
+                    ------------------------------
+                    """)
+                }
+            }
+            print("-----------------------------------")
+
+            return result
+        } catch {
+            print("Erro ao buscar pacientes do shared store: \(error)")
+            return []
+        }
+    }
+
     
     // MARK: - Helpers
     private func save() {
